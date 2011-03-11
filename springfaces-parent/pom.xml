@@ -13,7 +13,7 @@
 	<properties>
 		<eclipse.project.autoformat>https://anonsvn.springframework.org/svn/spring-framework/trunk/eclipse-code-formatter.xml</eclipse.project.autoformat>
 		<org.springframework-version>3.0.5.RELEASE</org.springframework-version>
-		<org.springwebflow-version>2.3.0.RELEASE</org.springwebflow-version>
+		<org.springwebflow-version>2.2.1.RELEASE</org.springwebflow-version>
 	</properties>
 	<repositories>
 		<repository>
