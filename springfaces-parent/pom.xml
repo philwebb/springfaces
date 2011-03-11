@@ -10,4 +10,7 @@
 		<module>../springfaces</module>
 		<module>../springfaces-sample</module>
 	</modules>
+	<properties>
+		<eclipse.project.autoformat>https://anonsvn.springframework.org/svn/spring-framework/trunk/eclipse-code-formatter.xml</eclipse.project.autoformat>
+	</properties>
 </project>
