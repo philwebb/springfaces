@@ -41,12 +41,12 @@
     </bean>
 
     <bean id="facesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass" value="org.springframework.faces.mvc.JsfView"/>
+		<property name="viewClass" value="org.springframework.springfaces.FacesView"/>
 		<property name="prefix" value="/WEB-INF/pages/" />
 		<property name="suffix" value=".xhtml" />
 		<property name="order" value="100"/>
 	</bean>
 
-	<bean class="org.springframework.springfaces.FacesBeanFactoryPostProcessor"/>
+	<bean class="org.springframework.springfaces.FacesHandlerMapping"/>
 	<bean class="org.springframework.springfaces.FacesHandlerAdapter"/>
 </beans>
