@@ -4,12 +4,18 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://java.sun.com/jsf/core">
 
+	<f:metadata>
+		<f:viewParam name="test" required="true" requiredMessage="Please provide a test"/>
+	</f:metadata>
+
+
 	<h:head>
 		<title>test</title>
 	</h:head>
 
 	<h:body>
 		<h:form>
+			<h:messages showDetail="true" showSummary="true"/>
 			<h:outputText value="Hello"/>
 			<h:commandButton value="go" action="go"/>
 		</h:form>

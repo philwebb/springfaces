@@ -15,10 +15,13 @@ public class FacesHandlerAdapter extends WebContentGenerator implements HandlerA
 
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+
+		//FIXME restore the view somehow
 		String viewName = "test";
 		FacesView view = new FacesView("/WEB-INF/pages/test.xhtml");
 		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
-		view.render(request, response, true);
+
+		FacesHandlerInterceptor.getContext().render(view);
 		return null;
 	}
 

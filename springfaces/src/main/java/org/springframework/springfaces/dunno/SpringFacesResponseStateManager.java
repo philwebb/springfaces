@@ -7,7 +7,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.FacesView;
+import org.springframework.springfaces.FacesHandlerInterceptor;
 import org.springframework.springfaces.support.ResponseStateManagerWrapper;
 
 public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper {
@@ -27,7 +27,8 @@ public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper
 
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
-		if (RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId) && FacesView.getCurrentInstance() != null) {
+		if (RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)
+				&& FacesHandlerInterceptor.getContext().isRendering()) {
 			ResponseWriter writer = context.getResponseWriter();
 			writer.write("<input type=\"hidden\" id=\"org.spring.springfaces\" name=\"org.spring.springfaces\" value=\"somedata\"");
 		}
