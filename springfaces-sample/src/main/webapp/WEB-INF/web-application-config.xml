@@ -47,6 +47,7 @@
 		<property name="order" value="100"/>
 	</bean>
 
+	<bean class="org.springframework.springfaces.dunno.SpringFacesFactories"/>
 	<bean class="org.springframework.springfaces.FacesHandlerMapping"/>
 	<bean class="org.springframework.springfaces.FacesHandlerAdapter"/>
 </beans>

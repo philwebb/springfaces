@@ -15,6 +15,8 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class FacesView extends AbstractUrlBasedView {
 
+	//FIXME include the postback URL as an option, default is back to self?
+
 	private static final ThreadLocal<FacesView> renderInstance = new NamedThreadLocal<FacesView>(
 			"FacesView Render Instance");
 

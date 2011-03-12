@@ -1,4 +1,4 @@
-package org.springframework.springfaces;
+package org.springframework.springfaces.dunno;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
@@ -7,17 +7,19 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
-public class SpringViewHandlerWrapper extends ViewHandlerWrapper {
+import org.springframework.springfaces.FacesView;
 
-	private ViewHandler viewHandler;
+public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
-	public SpringViewHandlerWrapper(ViewHandler viewHandler) {
-		this.viewHandler = viewHandler;
+	private ViewHandler delegate;
+
+	public SpringFacesViewHandler(ViewHandler delegate) {
+		this.delegate = delegate;
 	}
 
 	@Override
 	public ViewHandler getWrapped() {
-		return viewHandler;
+		return delegate;
 	}
 
 	@Override
