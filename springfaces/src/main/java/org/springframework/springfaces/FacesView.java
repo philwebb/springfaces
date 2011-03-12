@@ -17,7 +17,7 @@ public class FacesView extends AbstractUrlBasedView {
 
 	//FIXME include the postback URL as an option, default is back to self?
 
-	private static final ThreadLocal<FacesView> renderInstance = new NamedThreadLocal<FacesView>(
+	private static final ThreadLocal<FacesView> currentInstance = new NamedThreadLocal<FacesView>(
 			"FacesView Render Instance");
 
 	public FacesView() {
@@ -35,7 +35,7 @@ public class FacesView extends AbstractUrlBasedView {
 	}
 
 	void render(HttpServletRequest request, HttpServletResponse response) {
-		renderInstance.set(this);
+		currentInstance.set(this);
 		try {
 			Lifecycle lifecycle = FacesFactory.get(LifecycleFactory.class).getLifecycle(
 					LifecycleFactory.DEFAULT_LIFECYCLE);
@@ -49,7 +49,7 @@ public class FacesView extends AbstractUrlBasedView {
 				facesContext.release();
 			}
 		} finally {
-			renderInstance.remove();
+			currentInstance.remove();
 		}
 	}
 
@@ -59,8 +59,8 @@ public class FacesView extends AbstractUrlBasedView {
 		return super.checkResource(locale);
 	}
 
-	public static FacesView getRenderInstance() {
-		return renderInstance.get();
+	public static FacesView getCurrentInstance() {
+		return currentInstance.get();
 	}
 
 }

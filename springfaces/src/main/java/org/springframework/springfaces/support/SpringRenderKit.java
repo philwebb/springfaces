@@ -8,6 +8,7 @@ public class SpringRenderKit extends RenderKitWrapper {
 
 	private RenderKit delegate;
 	private String renderKitId;
+	private ResponseStateManager responseStateManager;
 
 	public SpringRenderKit(String renderKitId, RenderKit delegate) {
 		this.renderKitId = renderKitId;
@@ -21,7 +22,9 @@ public class SpringRenderKit extends RenderKitWrapper {
 
 	@Override
 	public ResponseStateManager getResponseStateManager() {
-		return new SpringResponseStateManager(renderKitId, super.getResponseStateManager());
+		if (responseStateManager == null) {
+			responseStateManager = new SpringResponseStateManager(renderKitId, super.getResponseStateManager());
+		}
+		return responseStateManager;
 	}
-
 }

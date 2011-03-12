@@ -4,6 +4,6 @@ import javax.faces.render.ResponseStateManager;
 
 public interface ResponseStateManagerFactory {
 
-	ResponseStateManager newResponseStateManager(ResponseStateManager delegate, String renderKitId);
+	ResponseStateManager newResponseStateManager(String renderKitId, ResponseStateManager delegate);
 
 }

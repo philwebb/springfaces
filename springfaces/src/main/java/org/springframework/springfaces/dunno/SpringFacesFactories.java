@@ -13,7 +13,7 @@ public class SpringFacesFactories implements ResponseStateManagerFactory, ViewHa
 		return new SpringFacesViewHandler(delegate);
 	}
 
-	public ResponseStateManager newResponseStateManager(ResponseStateManager delegate, String renderKitId) {
-		return delegate;
+	public ResponseStateManager newResponseStateManager(String renderKitId, ResponseStateManager delegate) {
+		return new SpringFacesResponseStateManager(renderKitId, delegate);
 	}
 }

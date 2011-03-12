@@ -1,6 +1,5 @@
 package org.springframework.springfaces.support;
 
-import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
@@ -18,11 +17,17 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 	}
 
 	@Override
-	public RenderKit getRenderKit(FacesContext context, String renderKitId) {
-		RenderKit renderKit = super.getRenderKit(context, renderKitId);
-		if (renderKit == null) {
-			return null;
-		}
-		return new SpringRenderKit(renderKitId, renderKit);
+	public void addRenderKit(String renderKitId, RenderKit renderKit) {
+		super.addRenderKit(renderKitId, new SpringRenderKit(renderKitId, renderKit));
 	}
+
+	//
+	//	@Override
+	//	public RenderKit getRenderKit(FacesContext context, String renderKitId) {
+	//		RenderKit renderKit = super.getRenderKit(context, renderKitId);
+	//		if (renderKit == null) {
+	//			return null;
+	//		}
+	//		return new SpringRenderKit(renderKitId, renderKit);
+	//	}
 }

@@ -27,7 +27,8 @@ public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 		delegate = rootDelegate;
 		for (ResponseStateManagerFactory factory : SpringFacesUtils.getBeans(ResponseStateManagerFactory.class)) {
 			//FIXME log detail
-			delegate = factory.newResponseStateManager(delegate, renderKitId);
+			delegate = factory.newResponseStateManager(renderKitId, delegate);
 		}
 	}
+
 }

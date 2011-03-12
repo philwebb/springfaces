@@ -39,7 +39,7 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
-		if (FacesView.getRenderInstance() != null) {
+		if (FacesView.getCurrentInstance() != null) {
 			//FIXME
 			ExternalContext extContext = context.getExternalContext();
 			String contextPath = extContext.getRequestContextPath();
@@ -49,8 +49,8 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 	}
 
 	private String convertViewId(String viewId) {
-		if (FacesView.getRenderInstance() != null) {
-			return FacesView.getRenderInstance().getUrl();
+		if (FacesView.getCurrentInstance() != null) {
+			return FacesView.getCurrentInstance().getUrl();
 		}
 		return viewId;
 	}
