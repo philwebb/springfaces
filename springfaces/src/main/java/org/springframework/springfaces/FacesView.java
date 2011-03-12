@@ -5,12 +5,14 @@ import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
+import javax.faces.context.Flash;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class FacesView extends AbstractUrlBasedView {
@@ -31,10 +33,10 @@ public class FacesView extends AbstractUrlBasedView {
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		render(request, response);
+		render(request, response, false);
 	}
 
-	void render(HttpServletRequest request, HttpServletResponse response) {
+	void render(HttpServletRequest request, HttpServletResponse response, boolean releaseAfterRender) {
 		currentInstance.set(this);
 		try {
 			Lifecycle lifecycle = FacesFactory.get(LifecycleFactory.class).getLifecycle(
@@ -42,15 +44,34 @@ public class FacesView extends AbstractUrlBasedView {
 			FacesContext facesContext = FacesFactory.get(FacesContextFactory.class).getFacesContext(
 					getServletContext(), request, response, lifecycle);
 			try {
-
 				lifecycle.execute(facesContext);
+				storeModelMapInFlash(facesContext);
 				lifecycle.render(facesContext);
 			} finally {
 				facesContext.release();
 			}
 		} finally {
-			currentInstance.remove();
+			if (releaseAfterRender) {
+				release();
+			}
 		}
+	}
+
+	private void storeModelMapInFlash(FacesContext facesContext) {
+		//FIXME perhaps better in viewScope ?  perhaps as model?
+		Flash flash = facesContext.getExternalContext().getFlash();
+		ModelMap modelMap = (ModelMap) facesContext.getExternalContext().getRequestMap()
+				.get(FacesHandlerInterceptor.KEY);
+		if (modelMap == null) {
+			modelMap = (ModelMap) flash.get(FacesHandlerInterceptor.KEY);
+		}
+		if (modelMap != null) {
+			flash.put(FacesHandlerInterceptor.KEY, modelMap);
+		}
+	}
+
+	void release() {
+		currentInstance.remove();
 	}
 
 	@Override

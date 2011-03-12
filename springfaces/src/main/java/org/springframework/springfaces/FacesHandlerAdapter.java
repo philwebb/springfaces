@@ -18,7 +18,7 @@ public class FacesHandlerAdapter extends WebContentGenerator implements HandlerA
 		String viewName = "test";
 		FacesView view = new FacesView("/WEB-INF/pages/test.xhtml");
 		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
-		view.render(request, response);
+		view.render(request, response, true);
 		return null;
 	}
 

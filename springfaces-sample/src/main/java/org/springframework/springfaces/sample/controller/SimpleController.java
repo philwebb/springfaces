@@ -1,6 +1,7 @@
 package org.springframework.springfaces.sample.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class SimpleController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public void simple() {
+	public void simple(Model model) {
+		Hotel hotel = new Hotel();
+		hotel.setId(123L);
+		model.addAttribute(hotel);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

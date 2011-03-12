@@ -1,10 +1,25 @@
 FacesWebArgumentResolver
+
+
 Navigation
-ModelBinder/ModelAttribute
-FlashScope/ViewScope
+
 ReverseDataBinder / f:param expansion
+
 Converter stuff
+
 EL Resolvers
+
 Exception Handler
+
+FlashScope/ViewScope
+
+@ModelAttribute support
+ - proof of concept done that stores model in flash scope
+
+
+
 Expose @Controller
+
+Look at @ManagedBean @RequestScoped @ViewScoped @ApplicationScoped
+
 

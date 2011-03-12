@@ -18,6 +18,11 @@
         http://www.springframework.org/schema/faces/spring-faces-2.2.xsd">
 
 	<mvc:annotation-driven/>
+
+	<mvc:interceptors>
+		<bean class="org.springframework.springfaces.FacesHandlerInterceptor"/>
+	</mvc:interceptors>
+
 	<context:component-scan base-package="org.springframework.springfaces.sample.controller" />
 
     <webflow:flow-executor id="flowExecutor">
