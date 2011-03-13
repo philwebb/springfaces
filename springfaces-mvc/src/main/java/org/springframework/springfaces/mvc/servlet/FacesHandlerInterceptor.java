@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.s;
+package org.springframework.springfaces.mvc.servlet;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;

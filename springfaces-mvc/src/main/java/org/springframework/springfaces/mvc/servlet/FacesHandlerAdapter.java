@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.s;
+package org.springframework.springfaces.mvc.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
