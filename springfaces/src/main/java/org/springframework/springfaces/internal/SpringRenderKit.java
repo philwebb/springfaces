@@ -1,4 +1,4 @@
-package org.springframework.springfaces.integration;
+package org.springframework.springfaces.internal;
 
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitWrapper;

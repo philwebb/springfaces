@@ -1,4 +1,4 @@
-package org.springframework.springfaces.integration;
+package org.springframework.springfaces.internal;
 
 import java.util.Map;
 import java.util.Map.Entry;

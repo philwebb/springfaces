@@ -1,4 +1,4 @@
-package org.springframework.springfaces.integration;
+package org.springframework.springfaces.internal;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
