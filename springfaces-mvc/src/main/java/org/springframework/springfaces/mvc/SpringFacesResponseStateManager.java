@@ -7,7 +7,7 @@ import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.RenderKitIdAware;
+import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
 public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {

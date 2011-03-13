@@ -1,6 +1,6 @@
 package org.springframework.springfaces;
 
-public interface FacesWrapperFactory<T> {
+public interface FacesWrapperFactoryBean<T> {
 
 	public T newWrapper(T delegate);
 

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.springfaces.FacesWrapperFactory;
+import org.springframework.springfaces.FacesWrapperFactoryBean;
 import org.springframework.springfaces.util.MapEntryValueComparator;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -44,14 +44,14 @@ class WrapperHandler<T> {
 			return delegate;
 		}
 
-		Map<String, FacesWrapperFactory> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext,
-				FacesWrapperFactory.class);
-		Set<Entry<String, FacesWrapperFactory>> orderdBans = MapEntryValueComparator.entrySet(beans,
+		Map<String, FacesWrapperFactoryBean> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext,
+				FacesWrapperFactoryBean.class);
+		Set<Entry<String, FacesWrapperFactoryBean>> orderdBans = MapEntryValueComparator.entrySet(beans,
 				new AnnotationAwareOrderComparator());
 
 		T rtn = delegate;
-		for (Entry<String, FacesWrapperFactory> entry : orderdBans) {
-			FacesWrapperFactory factory = entry.getValue();
+		for (Entry<String, FacesWrapperFactoryBean> entry : orderdBans) {
+			FacesWrapperFactoryBean factory = entry.getValue();
 			if (isFactorySupported(factory)) {
 				T wrapper = (T) factory.newWrapper(rtn);
 				//FIXME assert T
@@ -97,12 +97,12 @@ class WrapperHandler<T> {
 		return (WebApplicationContext) object;
 	}
 
-	private boolean isFactorySupported(FacesWrapperFactory factory) {
-		Class typeArg = GenericTypeResolver.resolveTypeArgument(factory.getClass(), FacesWrapperFactory.class);
+	private boolean isFactorySupported(FacesWrapperFactoryBean factory) {
+		Class typeArg = GenericTypeResolver.resolveTypeArgument(factory.getClass(), FacesWrapperFactoryBean.class);
 		if (typeArg == null) {
 			Class targetClass = AopUtils.getTargetClass(this.wrapped);
 			if (targetClass != this.wrapped.getClass()) {
-				typeArg = GenericTypeResolver.resolveTypeArgument(targetClass, FacesWrapperFactory.class);
+				typeArg = GenericTypeResolver.resolveTypeArgument(targetClass, FacesWrapperFactoryBean.class);
 			}
 		}
 		return (typeArg == null || typeArg.isAssignableFrom(typeClass));
