@@ -2,35 +2,19 @@ package org.springframework.springfaces.integration;
 
 import javax.faces.application.ConfigurableNavigationHandler;
 
-import org.springframework.springfaces.application.NavigationHandlerFactory;
-import org.springframework.springfaces.dunno.SpringFacesUtils;
 import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
 
 public class SpringNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
-	private ConfigurableNavigationHandler rootDelegate;
-	private ConfigurableNavigationHandler delegate;
+	private WrapperHandler<ConfigurableNavigationHandler> wrapperHandler;
 
 	public SpringNavigationHandler(ConfigurableNavigationHandler delegate) {
-		this.rootDelegate = delegate;
+		this.wrapperHandler = WrapperHandler.get(ConfigurableNavigationHandler.class, delegate);
 	}
 
 	@Override
 	public ConfigurableNavigationHandler getWrapped() {
-		if (delegate == null) {
-			setupDelegate();
-		}
-		return delegate;
+		return wrapperHandler.getWrapped();
 	}
-
-	private void setupDelegate() {
-		delegate = rootDelegate;
-		for (NavigationHandlerFactory factory : SpringFacesUtils.getBeans(NavigationHandlerFactory.class)) {
-			//FIXME log detail
-			delegate = factory.newNavigationHandler(delegate);
-		}
-	}
-
-	//FIXME all our integration points are looking very similar, can we make a utility
 
 }

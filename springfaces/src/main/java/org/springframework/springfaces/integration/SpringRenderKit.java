@@ -4,21 +4,20 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitWrapper;
 import javax.faces.render.ResponseStateManager;
 
-
 public class SpringRenderKit extends RenderKitWrapper {
 
-	private RenderKit delegate;
 	private String renderKitId;
-	private ResponseStateManager responseStateManager;
+	SpringResponseStateManager responseStateManager;
+	private WrapperHandler<RenderKit> wrapperHandler;
 
 	public SpringRenderKit(String renderKitId, RenderKit delegate) {
 		this.renderKitId = renderKitId;
-		this.delegate = delegate;
+		this.wrapperHandler = WrapperHandler.get(RenderKit.class, delegate);
 	}
 
 	@Override
 	public RenderKit getWrapped() {
-		return delegate;
+		return wrapperHandler.getWrapped();
 	}
 
 	@Override

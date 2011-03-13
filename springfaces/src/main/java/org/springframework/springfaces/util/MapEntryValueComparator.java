@@ -1,4 +1,4 @@
-package org.springframework.springfaces.integration;
+package org.springframework.springfaces.util;
 
 import java.util.Collections;
 import java.util.Comparator;

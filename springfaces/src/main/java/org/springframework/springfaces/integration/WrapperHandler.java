@@ -11,15 +11,16 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.context.SpringFacesContext;
+import org.springframework.springfaces.util.MapEntryValueComparator;
 
-public class SpringDelegatingWrapperFactory<T> {
+class WrapperHandler<T> {
 
 	private Class<?> typeClass;
 	private T delegate;
 	private T wrapped;
 
-	public SpringDelegatingWrapperFactory(T delegate) {
-		this.typeClass = GenericTypeResolver.resolveTypeArgument(this.getClass(), SpringDelegatingWrapperFactory.class);
+	public WrapperHandler(Class<T> typeClass, T delegate) {
+		this.typeClass = typeClass;
 		this.delegate = delegate;
 	}
 
@@ -30,7 +31,7 @@ public class SpringDelegatingWrapperFactory<T> {
 		return wrapped;
 	}
 
-	private T wrap(T delegate) {
+	protected T wrap(T delegate) {
 		ApplicationContext applicationContext = SpringFacesContext.getCurrentInstance().getApplicationContext();
 		if (applicationContext == null) {
 			//FIXME log a warning
@@ -71,5 +72,9 @@ public class SpringDelegatingWrapperFactory<T> {
 	}
 
 	protected void postProcessWrapper(T wrapped) {
+	}
+
+	public static <T> WrapperHandler<T> get(Class<T> typeClass, T delegate) {
+		return new WrapperHandler<T>(typeClass, delegate);
 	}
 }
