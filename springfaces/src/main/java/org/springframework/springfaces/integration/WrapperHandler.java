@@ -4,20 +4,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.springfaces.FacesWrapperFactory;
-import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.util.MapEntryValueComparator;
+import org.springframework.web.context.WebApplicationContext;
 
 class WrapperHandler<T> {
+
+	private static final String DISPATECHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE = "org.springframework.web.servlet.DispatecherServlet.CONTEXT";
 
 	private Class<?> typeClass;
 	private T delegate;
 	private T wrapped;
+	private ApplicationContext applicationContext;
 
 	public WrapperHandler(Class<T> typeClass, T delegate) {
 		this.typeClass = typeClass;
@@ -32,7 +38,7 @@ class WrapperHandler<T> {
 	}
 
 	protected T wrap(T delegate) {
-		ApplicationContext applicationContext = SpringFacesContext.getCurrentInstance().getApplicationContext();
+		ApplicationContext applicationContext = getApplicationContext();
 		if (applicationContext == null) {
 			//FIXME log a warning
 			return delegate;
@@ -58,6 +64,37 @@ class WrapperHandler<T> {
 			}
 		}
 		return rtn;
+	}
+
+	private ApplicationContext getApplicationContext() {
+		if (applicationContext == null) {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			applicationContext = asWebApplicationContext(externalContext.getRequestMap().get(
+					DISPATECHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE));
+			if (applicationContext == null) {
+				applicationContext = asWebApplicationContext(externalContext.getApplicationMap().get(
+						WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE));
+			}
+			//FIXME assert not null
+		}
+		return applicationContext;
+	}
+
+	private static WebApplicationContext asWebApplicationContext(Object object) {
+		if (object == null) {
+			return null;
+		}
+		if (object instanceof RuntimeException) {
+			throw (RuntimeException) object;
+		}
+		if (object instanceof Error) {
+			throw (Error) object;
+		}
+		if (!(object instanceof WebApplicationContext)) {
+			throw new IllegalStateException("Root context attribute is not of type WebApplicationContext: " + object);
+		}
+		return (WebApplicationContext) object;
 	}
 
 	private boolean isFactorySupported(FacesWrapperFactory factory) {

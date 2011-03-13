@@ -22,4 +22,18 @@
 			<url>http://download.java.net/maven/2</url>
 		</repository>
 	</repositories>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>2.0.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
