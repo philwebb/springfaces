@@ -3,9 +3,9 @@ package org.springframework.springfaces.integration;
 import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.dunno.SpringFacesUtils;
+import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.render.ResponseStateManagerFactory;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
-
 
 public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 
@@ -29,7 +29,10 @@ public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 		delegate = rootDelegate;
 		for (ResponseStateManagerFactory factory : SpringFacesUtils.getBeans(ResponseStateManagerFactory.class)) {
 			//FIXME log detail
-			delegate = factory.newResponseStateManager(renderKitId, delegate);
+			delegate = factory.newResponseStateManager(delegate);
+			if (delegate instanceof RenderKitIdAware) {
+				((RenderKitIdAware) delegate).setRenderKitId(renderKitId);
+			}
 		}
 	}
 
