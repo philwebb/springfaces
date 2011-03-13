@@ -1,8 +1,8 @@
 package org.springframework.springfaces.internal;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -43,13 +43,11 @@ class WrapperHandler<T> {
 			return delegate;
 		}
 
-		Map<String, FacesWrapperFactoryBean> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext,
-				FacesWrapperFactoryBean.class);
-		Set<Entry<String, FacesWrapperFactoryBean>> orderdBans = MapEntryValueComparator.entrySet(beans,
-				new AnnotationAwareOrderComparator());
-
+		SortedSet<Map.Entry<String, FacesWrapperFactoryBean>> orderdBans = new TreeSet(new OrderedMapEntryComparator());
+		orderdBans.addAll(BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext,
+				FacesWrapperFactoryBean.class).entrySet());
 		T rtn = delegate;
-		for (Entry<String, FacesWrapperFactoryBean> entry : orderdBans) {
+		for (Map.Entry<String, FacesWrapperFactoryBean> entry : orderdBans) {
 			FacesWrapperFactoryBean factory = entry.getValue();
 			if (isFactorySupported(factory)) {
 				T wrapper = (T) factory.newWrapper(rtn);
@@ -112,5 +110,12 @@ class WrapperHandler<T> {
 
 	public static <T> WrapperHandler<T> get(Class<T> typeClass, T delegate) {
 		return new WrapperHandler<T>(typeClass, delegate);
+	}
+
+	private static class OrderedMapEntryComparator extends AnnotationAwareOrderComparator {
+		@Override
+		public int compare(Object o1, Object o2) {
+			return super.compare(((Map.Entry) o1).getValue(), ((Map.Entry) o2).getValue());
+		}
 	}
 }
