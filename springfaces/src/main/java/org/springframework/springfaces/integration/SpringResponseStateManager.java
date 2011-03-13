@@ -2,7 +2,7 @@ package org.springframework.springfaces.integration;
 
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.RenderKitIdAware;
+import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
 public class SpringResponseStateManager extends ResponseStateManagerWrapper {

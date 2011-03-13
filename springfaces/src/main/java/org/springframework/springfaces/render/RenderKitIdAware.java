@@ -1,4 +1,4 @@
-package org.springframework.springfaces;
+package org.springframework.springfaces.render;
 
 public interface RenderKitIdAware {
 
