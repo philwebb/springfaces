@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.servlet.handler;
+package org.springframework.springfaces.mvc.servlet;
 
 import javax.faces.render.ResponseStateManager;
 import javax.servlet.http.HttpServletRequest;

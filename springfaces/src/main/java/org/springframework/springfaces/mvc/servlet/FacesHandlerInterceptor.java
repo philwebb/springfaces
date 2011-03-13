@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.servlet.handler;
+package org.springframework.springfaces.mvc.servlet;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.SpringFacesServletContext;
-import org.springframework.springfaces.mvc.servlet.view.FacesView;
-import org.springframework.springfaces.mvc.view.View;
+import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.util.FacesFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
@@ -60,7 +57,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		private HttpServletResponse response;
 		private Object handler;
 		private ModelMap modelMap;
-		private View rendering;
+		private FacesView rendering;
 		private WebApplicationContext applicationContext;
 
 		public SpringFacesContextImpl(ServletContext servletContext, HttpServletRequest request,
@@ -111,7 +108,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		@Override
-		public View getRendering() {
+		public FacesView getRendering() {
 			//FIXME check isRendering
 			return rendering;
 		}

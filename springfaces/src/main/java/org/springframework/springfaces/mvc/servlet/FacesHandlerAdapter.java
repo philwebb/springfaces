@@ -3,9 +3,7 @@ package org.springframework.springfaces.mvc.servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.handler.FacesHandlerMapping;
-import org.springframework.springfaces.mvc.servlet.view.FacesView;
+import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.WebContentGenerator;

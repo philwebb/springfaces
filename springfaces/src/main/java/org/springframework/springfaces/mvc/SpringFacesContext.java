@@ -1,10 +1,9 @@
-package org.springframework.springfaces.mvc.context;
+package org.springframework.springfaces.mvc;
 
 import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.NamedThreadLocal;
-import org.springframework.springfaces.mvc.view.View;
 import org.springframework.util.Assert;
 
 public abstract class SpringFacesContext {

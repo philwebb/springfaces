@@ -4,8 +4,6 @@ import javax.faces.application.ViewHandler;
 import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.FacesWrapperFactory;
-import org.springframework.springfaces.application.SpringFacesViewHandler;
-import org.springframework.springfaces.mvc.render.SpringFacesResponseStateManager;
 
 public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 
