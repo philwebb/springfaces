@@ -1,8 +1,11 @@
-package org.springframework.springfaces;
+package org.springframework.springfaces.servlet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.springfaces.context.SpringFacesContext;
+import org.springframework.springfaces.servlet.handler.FacesHandlerMapping;
+import org.springframework.springfaces.servlet.view.FacesView;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.WebContentGenerator;
@@ -21,7 +24,8 @@ public class FacesHandlerAdapter extends WebContentGenerator implements HandlerA
 		FacesView view = new FacesView("/WEB-INF/pages/test.xhtml");
 		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
 
-		FacesHandlerInterceptor.getContext().render(view);
+		//FIXME make typesafe
+		((SpringFacesServletContext) SpringFacesContext.getCurrentInstance()).render(view);
 		return null;
 	}
 

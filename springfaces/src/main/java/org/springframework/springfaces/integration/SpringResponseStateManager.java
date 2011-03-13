@@ -1,9 +1,11 @@
-package org.springframework.springfaces.support;
+package org.springframework.springfaces.integration;
 
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.SpringFacesUtils;
-import org.springframework.springfaces.dunno.ResponseStateManagerFactory;
+import org.springframework.springfaces.dunno.SpringFacesUtils;
+import org.springframework.springfaces.render.ResponseStateManagerFactory;
+import org.springframework.springfaces.util.ResponseStateManagerWrapper;
+
 
 public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 

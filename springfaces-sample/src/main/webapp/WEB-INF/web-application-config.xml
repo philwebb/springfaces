@@ -28,7 +28,7 @@
 	</bean>
 
 	<mvc:interceptors>
-		<bean class="org.springframework.springfaces.FacesHandlerInterceptor" />
+		<bean class="org.springframework.springfaces.servlet.handler.FacesHandlerInterceptor" />
 	</mvc:interceptors>
 
 	<context:component-scan
@@ -58,13 +58,13 @@
 
 	<bean id="facesViewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass" value="org.springframework.springfaces.FacesView" />
+		<property name="viewClass" value="org.springframework.springfaces.servlet.view.FacesView" />
 		<property name="prefix" value="/WEB-INF/pages/" />
 		<property name="suffix" value=".xhtml" />
 		<property name="order" value="100" />
 	</bean>
 
 	<bean class="org.springframework.springfaces.dunno.SpringFacesFactories" />
-	<bean class="org.springframework.springfaces.FacesHandlerMapping" />
-	<bean class="org.springframework.springfaces.FacesHandlerAdapter" />
+	<bean class="org.springframework.springfaces.servlet.handler.FacesHandlerMapping" />
+	<bean class="org.springframework.springfaces.servlet.FacesHandlerAdapter" />
 </beans>

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.dunno;
+package org.springframework.springfaces.render;
 
 import javax.faces.render.ResponseStateManager;
 

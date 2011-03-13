@@ -1,4 +1,4 @@
-package org.springframework.springfaces.dunno;
+package org.springframework.springfaces.application;
 
 import javax.faces.application.ViewHandler;
 

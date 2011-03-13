@@ -6,6 +6,8 @@ Navigation
 ReverseDataBinder / f:param expansion
 
 Converter stuff
+ - proof of concept done Spring -> JSF converter bridge
+
 
 EL Resolvers
 
@@ -21,6 +23,8 @@ FlashScope/ViewScope
 Expose @Controller
 
 Look at @ManagedBean @RequestScoped @ViewScoped @ApplicationScoped
+Look at @FacesConverter @FacesValidator (see ConfigAnnotationHandler subclasses)
 
 
 Allow @RequestParam to be bound to f:viewParameter
+

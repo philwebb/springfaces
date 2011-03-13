@@ -1,7 +1,10 @@
-package org.springframework.springfaces.support;
+package org.springframework.springfaces.integration;
 
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
+
+import org.springframework.springfaces.util.RenderKitFactoryWrapper;
+
 
 public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 

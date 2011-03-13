@@ -1,4 +1,4 @@
-package org.springframework.springfaces;
+package org.springframework.springfaces.dunno;
 
 import java.util.ArrayList;
 import java.util.Collection;

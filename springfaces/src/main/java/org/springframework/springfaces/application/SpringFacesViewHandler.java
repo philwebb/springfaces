@@ -1,4 +1,4 @@
-package org.springframework.springfaces.dunno;
+package org.springframework.springfaces.application;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
@@ -7,7 +7,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.springframework.springfaces.FacesHandlerInterceptor;
+import org.springframework.springfaces.context.SpringFacesContext;
 
 public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
@@ -39,7 +39,7 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
-		if (FacesHandlerInterceptor.getContext().isRendering()) {
+		if (SpringFacesContext.getCurrentInstance().isRendering()) {
 			//FIXME
 			ExternalContext extContext = context.getExternalContext();
 			String contextPath = extContext.getRequestContextPath();
@@ -49,8 +49,8 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 	}
 
 	private String convertViewId(String viewId) {
-		if (FacesHandlerInterceptor.getContext().isRendering()) {
-			return FacesHandlerInterceptor.getContext().getRendering().getUrl();
+		if (SpringFacesContext.getCurrentInstance().isRendering()) {
+			return SpringFacesContext.getCurrentInstance().getRendering().getUrl();
 		}
 		return viewId;
 	}

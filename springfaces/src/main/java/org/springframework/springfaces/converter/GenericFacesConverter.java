@@ -6,12 +6,10 @@ import java.util.Set;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.lifecycle.Lifecycle;
 
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.springfaces.FacesHandlerInterceptor;
-import org.springframework.springfaces.FacesHandlerInterceptor.FacesContextCallback;
+import org.springframework.springfaces.context.SpringFacesContext;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 public class GenericFacesConverter extends WebApplicationObjectSupport implements ConditionalGenericConverter {
@@ -28,19 +26,17 @@ public class GenericFacesConverter extends WebApplicationObjectSupport implement
 	}
 
 	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-
-		final Object[] rtn = new Object[1];
-		rtn[0] = null;
-
-		FacesHandlerInterceptor.getContext().doWithFacesContext(new FacesContextCallback() {
-			public void doWith(FacesContext facesContext, Lifecycle lifecycle) {
-				Converter converter = facesContext.getApplication().createConverter(targetType.getType());
-				UIComponent component = null;
-				String value = (String) source;
-				rtn[0] = converter.getAsObject(facesContext, component, value);
-			}
-		});
-
-		return rtn[0];
+		return SpringFacesContext.getCurrentInstance().doWithFacesContext(
+				new SpringFacesContext.FacesContextCallback<Object>() {
+					public Object doWithFacesContext(FacesContext facesContext) {
+						Converter converter = facesContext.getApplication().createConverter(targetType.getType());
+						if (converter == null) {
+							return null;
+						}
+						UIComponent component = null;
+						String value = (String) source;
+						return converter.getAsObject(facesContext, component, value);
+					}
+				});
 	}
 }

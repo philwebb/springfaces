@@ -1,4 +1,4 @@
-package org.springframework.springfaces.support;
+package org.springframework.springfaces.util;
 
 import java.util.Iterator;
 

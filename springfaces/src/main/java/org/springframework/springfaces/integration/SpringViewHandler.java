@@ -1,10 +1,11 @@
-package org.springframework.springfaces.support;
+package org.springframework.springfaces.integration;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 
-import org.springframework.springfaces.SpringFacesUtils;
-import org.springframework.springfaces.dunno.ViewHandlerFactory;
+import org.springframework.springfaces.application.ViewHandlerFactory;
+import org.springframework.springfaces.dunno.SpringFacesUtils;
+
 
 public class SpringViewHandler extends ViewHandlerWrapper {
 

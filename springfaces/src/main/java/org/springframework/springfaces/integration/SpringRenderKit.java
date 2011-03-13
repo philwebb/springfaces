@@ -1,8 +1,9 @@
-package org.springframework.springfaces.support;
+package org.springframework.springfaces.integration;
 
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitWrapper;
 import javax.faces.render.ResponseStateManager;
+
 
 public class SpringRenderKit extends RenderKitWrapper {
 

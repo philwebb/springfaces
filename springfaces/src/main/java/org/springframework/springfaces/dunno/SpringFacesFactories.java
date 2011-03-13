@@ -3,6 +3,11 @@ package org.springframework.springfaces.dunno;
 import javax.faces.application.ViewHandler;
 import javax.faces.render.ResponseStateManager;
 
+import org.springframework.springfaces.application.SpringFacesViewHandler;
+import org.springframework.springfaces.application.ViewHandlerFactory;
+import org.springframework.springfaces.render.ResponseStateManagerFactory;
+import org.springframework.springfaces.render.SpringFacesResponseStateManager;
+
 public class SpringFacesFactories implements ResponseStateManagerFactory, ViewHandlerFactory {
 
 	public SpringFacesFactories() {
