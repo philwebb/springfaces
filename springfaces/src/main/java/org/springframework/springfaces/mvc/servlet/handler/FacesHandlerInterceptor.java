@@ -1,4 +1,4 @@
-package org.springframework.springfaces.servlet.handler;
+package org.springframework.springfaces.mvc.servlet.handler;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.springfaces.context.SpringFacesContext;
-import org.springframework.springfaces.dunno.FacesFactory;
-import org.springframework.springfaces.servlet.SpringFacesServletContext;
-import org.springframework.springfaces.servlet.view.FacesView;
-import org.springframework.springfaces.view.View;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.servlet.SpringFacesServletContext;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
+import org.springframework.springfaces.mvc.view.View;
+import org.springframework.springfaces.util.FacesFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;

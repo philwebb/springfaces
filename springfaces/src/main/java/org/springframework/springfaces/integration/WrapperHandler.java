@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.springfaces.FacesWrapperFactory;
-import org.springframework.springfaces.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.util.MapEntryValueComparator;
 
 class WrapperHandler<T> {

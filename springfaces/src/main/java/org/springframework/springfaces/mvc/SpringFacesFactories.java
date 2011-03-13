@@ -1,11 +1,11 @@
-package org.springframework.springfaces.dunno;
+package org.springframework.springfaces.mvc;
 
 import javax.faces.application.ViewHandler;
 import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.application.SpringFacesViewHandler;
-import org.springframework.springfaces.render.SpringFacesResponseStateManager;
+import org.springframework.springfaces.mvc.render.SpringFacesResponseStateManager;
 
 public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 

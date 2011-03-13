@@ -1,4 +1,4 @@
-package org.springframework.springfaces.dunno;
+package org.springframework.springfaces.util;
 
 import javax.faces.FactoryFinder;
 

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.view;
+package org.springframework.springfaces.mvc.view;
 
 public interface View {
 

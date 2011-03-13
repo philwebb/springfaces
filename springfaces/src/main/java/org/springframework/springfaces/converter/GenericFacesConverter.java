@@ -9,7 +9,7 @@ import javax.faces.convert.Converter;
 
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.springfaces.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 public class GenericFacesConverter extends WebApplicationObjectSupport implements ConditionalGenericConverter {

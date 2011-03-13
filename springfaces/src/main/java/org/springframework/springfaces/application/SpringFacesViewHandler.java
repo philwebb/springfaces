@@ -7,7 +7,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
-import org.springframework.springfaces.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
 
 public class SpringFacesViewHandler extends ViewHandlerWrapper {
 

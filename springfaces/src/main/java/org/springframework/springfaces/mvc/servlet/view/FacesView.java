@@ -1,4 +1,4 @@
-package org.springframework.springfaces.servlet.view;
+package org.springframework.springfaces.mvc.servlet.view;
 
 import java.util.Locale;
 import java.util.Map;
@@ -6,9 +6,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.springfaces.context.SpringFacesContext;
-import org.springframework.springfaces.servlet.SpringFacesServletContext;
-import org.springframework.springfaces.view.View;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.servlet.SpringFacesServletContext;
+import org.springframework.springfaces.mvc.view.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class FacesView extends AbstractUrlBasedView implements View {
