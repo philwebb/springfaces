@@ -1,5 +1,6 @@
 package org.springframework.springfaces.mvc.servlet;
 
+import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.Flash;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.util.FacesFactory;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
@@ -137,15 +137,21 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 				return fcc.doWithFacesContextAndLifeCycle(facesContext, null);
 			}
 
-			Lifecycle lifecycle = FacesFactory.get(LifecycleFactory.class).getLifecycle(
+			Lifecycle lifecycle = getFacesFactory(LifecycleFactory.class).getLifecycle(
 					LifecycleFactory.DEFAULT_LIFECYCLE);
-			facesContext = FacesFactory.get(FacesContextFactory.class).getFacesContext(servletContext, request,
+			facesContext = getFacesFactory(FacesContextFactory.class).getFacesContext(servletContext, request,
 					response, lifecycle);
 			try {
 				return fcc.doWithFacesContextAndLifeCycle(facesContext, lifecycle);
 			} finally {
 				facesContext.release();
 			}
+		}
+
+		@SuppressWarnings("unchecked")
+		private <T> T getFacesFactory(Class<T> factoryClass) {
+			return (T) FactoryFinder.getFactory(factoryClass.getName());
+			//FIXME check return type?
 		}
 
 		private static interface FacesContextAndLifecycleCallback<T> {

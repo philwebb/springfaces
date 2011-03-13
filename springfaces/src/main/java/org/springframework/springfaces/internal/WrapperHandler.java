@@ -13,7 +13,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.springfaces.FacesWrapperFactoryBean;
-import org.springframework.springfaces.util.MapEntryValueComparator;
 import org.springframework.web.context.WebApplicationContext;
 
 class WrapperHandler<T> {
