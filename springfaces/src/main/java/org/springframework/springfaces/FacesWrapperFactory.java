@@ -1,6 +1,7 @@
 package org.springframework.springfaces;
 
 import javax.faces.FacesWrapper;
+import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
 import javax.faces.render.RenderKit;
@@ -14,6 +15,7 @@ import org.springframework.web.context.WebApplicationContext;
  * A factory that to create wrappers around various JSF objects. All factories from the Spring
  * {@link WebApplicationContext context} will be consulted when any of the following JSF objects are created:
  * <ul>
+ * <li>{@link Application}</li>
  * <li>{@link ConfigurableNavigationHandler}</li>
  * <li>{@link RenderKit}</li>
  * <li>{@link ResponseStateManager}</li>

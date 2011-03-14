@@ -37,7 +37,7 @@ class WrapperHandler<T> {
 	 * <tt>DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE</tt> to save a hard dependency to Spring MVC.
 	 */
 	static final String DISPATCHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE = "org.springframework."
-			+ "web.servlet.DispatecherServlet.CONTEXT";
+			+ "web.servlet.DispatcherServlet.CONTEXT";
 
 	/**
 	 * The type of JSF object being managed.
@@ -89,7 +89,9 @@ class WrapperHandler<T> {
 	private T wrap(T delegate) {
 		ApplicationContext applicationContext = getApplicationContext();
 		if (applicationContext == null) {
-			logger.warn("Unable to access Spring ApplicationContext.  Spring/JSF integration will not be availble");
+			if (logger.isWarnEnabled()) {
+				logger.warn("Unable to access Spring ApplicationContext.  Spring/JSF integration will not be availble");
+			}
 			return delegate;
 		}
 
@@ -105,8 +107,10 @@ class WrapperHandler<T> {
 				if (wrapper != null) {
 					Assert.isInstanceOf(typeClass, wrapper, "FacesWrapperFactory " + entry.getValue()
 							+ " returned incorrect type ");
-					logger.debug("Wrapping " + typeClass.getSimpleName() + " with " + wrapper.getClass()
-							+ " obtained from FacesWrapperFactory " + entry.getValue());
+					if (logger.isDebugEnabled()) {
+						logger.debug("Wrapping " + typeClass.getSimpleName() + " with " + wrapper.getClass()
+								+ " obtained from FacesWrapperFactory " + entry.getValue());
+					}
 					postProcessWrapper(wrapper);
 					rtn = wrapper;
 				}
