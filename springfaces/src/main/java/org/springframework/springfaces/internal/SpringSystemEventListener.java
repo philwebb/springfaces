@@ -1,7 +1,6 @@
 package org.springframework.springfaces.internal;
 
 import javax.faces.FactoryFinder;
-import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PostConstructApplicationEvent;
@@ -25,19 +24,17 @@ public class SpringSystemEventListener implements SystemEventListener {
 	}
 
 	public void processEvent(SystemEvent event) throws AbortProcessingException {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Processing system event " + event);
+		}
 		if (event instanceof PostConstructApplicationEvent) {
 			processPostConstructApplicationEvent((PostConstructApplicationEvent) event);
 		}
 	}
 
 	private void processPostConstructApplicationEvent(PostConstructApplicationEvent event) {
-		Application application = event.getApplication();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Wrapping Application " + application.getClass() + " to provide integration with Spring");
-		}
-		Application wrapped = WrapperHandler.get(Application.class, application).getWrapped();
 		ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-		factory.setApplication(wrapped);
+		factory.setApplication(new SpringApplication(event.getApplication()));
 	}
 
 }

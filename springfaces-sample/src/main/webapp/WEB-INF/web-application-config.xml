@@ -64,7 +64,7 @@
 		<property name="order" value="100" />
 	</bean>
 
-	<bean class="org.springframework.springfaces.SpringFacesSupport"/>
+	<bean class="org.springframework.springfaces.SpringFacesIntegration"/>
 	<bean class="org.springframework.springfaces.mvc.SpringFacesFactories" />
 	<bean class="org.springframework.springfaces.mvc.servlet.FacesHandlerMapping" />
 	<bean class="org.springframework.springfaces.mvc.servlet.FacesHandlerAdapter" />
