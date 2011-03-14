@@ -13,7 +13,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>springfaces</artifactId>
+			<artifactId>springfaces-mvc</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -55,6 +55,13 @@
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
 			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.seam.faces</groupId>
+			<artifactId>seam-faces</artifactId>
+			<version>3.0.0.CR1</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>

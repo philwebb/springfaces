@@ -17,6 +17,9 @@
 		<h:form>
 			<h:messages showDetail="true" showSummary="true"/>
 			<h:outputText value="Hello"/>
+			<h:inputText>
+				<f:validateLength minimum="3"/>
+			</h:inputText>
 			<h:commandButton value="go" action="go"/>
 		</h:form>
 	</h:body>
