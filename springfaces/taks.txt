@@ -28,3 +28,19 @@ Look at @FacesConverter @FacesValidator (see ConfigAnnotationHandler subclasses)
 
 Allow @RequestParam to be bound to f:viewParameter
 
+Create validator and components from Spring
+
+Injection for
+	* ManagedBean
+    * PhaseListener
+    * SystemEventListener
+    * Converter (Application)
+    * Validator (Application)
+    * Component (Application)
+    * Binding   (Application)
+    * ValueChangeListener
+    * ActionListener
+
+Flash/View Scope for Spring beans
+
+http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-763

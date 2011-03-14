@@ -6,9 +6,9 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
     version="2.0">
     <application>
-    	<view-handler>org.springframework.springfaces.integration.SpringViewHandler</view-handler>
+    	<view-handler>org.springframework.springfaces.internal.SpringViewHandler</view-handler>
     </application>
 	<factory>
-		<render-kit-factory>org.springframework.springfaces.integration.SpringRenderKitFactory</render-kit-factory>
+		<render-kit-factory>org.springframework.springfaces.internal.SpringRenderKitFactory</render-kit-factory>
 	</factory>
 </faces-config>
