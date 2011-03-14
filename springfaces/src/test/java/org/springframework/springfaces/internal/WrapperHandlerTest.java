@@ -6,16 +6,20 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.withSettings;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
 import org.junit.After;
 import org.junit.Before;
@@ -27,13 +31,16 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.FacesWrapperFactory;
+import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WrapperHandlerTest {
+
+	private static final String SPRING_FACES_INTEGRATION_ATTRIBUTE = SpringFacesIntegration.class.getName();
+	private static final String LAST_REFRESHED_DATE_ATTRIBUTE = SpringFacesIntegration.class.getName() + ".DATE";
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -43,8 +50,6 @@ public class WrapperHandlerTest {
 
 	@Mock
 	private ExternalContext externalContext;
-
-	private Map<String, Object> requestMap = new HashMap<String, Object>();
 
 	private Map<String, Object> applicationMap = new HashMap<String, Object>();
 
@@ -64,7 +69,6 @@ public class WrapperHandlerTest {
 	@Before
 	public void setup() {
 		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getRequestMap()).willReturn(requestMap);
 		given(externalContext.getApplicationMap()).willReturn(applicationMap);
 		given(applicationContext.getBeansOfType(FacesWrapperFactory.class)).willReturn(facesWrapperFactoryBeans);
 		this.delegate = new Object();
@@ -79,14 +83,17 @@ public class WrapperHandlerTest {
 		}
 	}
 
-	private void setupApplicationContext(Object dispatchServletContext, Object webContext) {
-		requestMap.put(WrapperHandler.DISPATCHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE, dispatchServletContext);
-		applicationMap.put(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, webContext);
+	private void setupApplicationContext(WebApplicationContext webContext) {
+		SpringFacesIntegration integration = new SpringFacesIntegration();
+		integration.setServletContext(mock(ServletContext.class));
+		integration.setApplicationContext(webContext);
+		applicationMap.put(SPRING_FACES_INTEGRATION_ATTRIBUTE, integration);
+		applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, new Date());
 	}
 
 	private Object setupWrapperFactory() {
 		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext, null);
+		setupApplicationContext(applicationContext);
 		facesWrapperFactoryBeans.put("bean", factory);
 		Object wrapped = new Object();
 		given(factory.newWrapper(Object.class, delegate)).willReturn(wrapped);
@@ -131,55 +138,10 @@ public class WrapperHandlerTest {
 	}
 
 	@Test
-	public void shouldFindDispatchServiceApplicationContextFirst() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		WebApplicationContext dispatchServletContext = mock(WebApplicationContext.class);
-		WebApplicationContext webContext = mock(WebApplicationContext.class);
-		setupApplicationContext(dispatchServletContext, webContext);
-		ApplicationContext actual = wrapperHandler.getApplicationContext();
-		assertSame(dispatchServletContext, actual);
-	}
-
-	@Test
-	public void shouldFindWebApplicationContextSecond() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		WebApplicationContext dispatchServletContext = null;
-		WebApplicationContext webContext = mock(WebApplicationContext.class);
-		setupApplicationContext(dispatchServletContext, webContext);
-		ApplicationContext actual = wrapperHandler.getApplicationContext();
-		assertSame(webContext, actual);
-	}
-
-	@Test
-	public void shouldRethrowRuntimeExceptionApplicationContext() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(null, new RuntimeException());
-		thrown.expect(RuntimeException.class);
-		wrapperHandler.getApplicationContext();
-	}
-
-	@Test
-	public void shouldRethrowErrorApplicationContext() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(null, new Error());
-		thrown.expect(Error.class);
-		wrapperHandler.getApplicationContext();
-	}
-
-	@Test
-	public void shouldThrowIfNotWebApplicationContext() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(null, "test");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Root context attribute is not of type WebApplicationContext");
-		wrapperHandler.getApplicationContext();
-	}
-
-	@Test
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void shouldWrapInOrder() throws Exception {
 		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext, null);
+		setupApplicationContext(applicationContext);
 
 		FacesWrapperFactory f1 = mock(FacesWrapperFactory.class, withSettings().extraInterfaces(Ordered.class));
 		FacesWrapperFactory f2 = mock(FacesWrapperFactory.class, withSettings().extraInterfaces(Ordered.class));
@@ -203,9 +165,8 @@ public class WrapperHandlerTest {
 
 	@Test
 	public void shouldFilterByGenerics() throws Exception {
-
 		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext, null);
+		setupApplicationContext(applicationContext);
 		facesWrapperFactoryBeans.put("long", new LongFacesWrapperFactory());
 		facesWrapperFactoryBeans.put("integer", new IntegerFacesWrapperFactory());
 
@@ -221,6 +182,17 @@ public class WrapperHandlerTest {
 		WrapperHandler<Object> spy = spy(wrapperHandler);
 		spy.getWrapped();
 		verify(spy).postProcessWrapper(wrapped);
+	}
+
+	@Test
+	public void shouldRewrapIfAppicationContextRefreshed() throws Exception {
+		setupWrapperFactory();
+		wrapperHandler.getWrapped();
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.SECOND, 1);
+		applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, c.getTime());
+		wrapperHandler.getWrapped();
+		verify(factory, times(2)).newWrapper(Object.class, delegate);
 	}
 
 	private abstract static class FacesContextSetter extends FacesContext {

@@ -3,8 +3,9 @@ package org.springframework.springfaces.internal;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 import javax.faces.application.ApplicationWrapper;
-import javax.faces.context.FacesContext;
+import javax.faces.event.AbortProcessingException;
 import javax.faces.event.SystemEvent;
+import javax.faces.event.SystemEventListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +35,6 @@ public class SpringApplicationFactory extends ApplicationFactory {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Wrapping Application " + application.getClass() + " to provide integration with Spring");
 			}
-			application = WrapperHandler.get(Application.class, application).getWrapped();
 			application = new SpringApplication(application);
 			setApplication(application);
 		}
@@ -48,46 +48,48 @@ public class SpringApplicationFactory extends ApplicationFactory {
 
 	public static class SpringApplication extends ApplicationWrapper {
 
-		private Application delegate;
+		private WrapperHandler<Application> wrapperHandler;
 
 		public SpringApplication(Application delegate) {
-			this.delegate = delegate;
+			wrapperHandler = WrapperHandler.get(Application.class, delegate);
 		}
 
 		@Override
 		public Application getWrapped() {
-			System.out.println("getwrapped");
-			new Exception().printStackTrace();
-			return delegate;
+			return wrapperHandler.getWrapped();
 		}
 
 		@Override
-		public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass,
-				Class<?> sourceBaseType, Object source) {
-			System.out.println(systemEventClass);
-			super.publishEvent(context, systemEventClass, sourceBaseType, source);
-		}
-
-		@Override
-		public void publishEvent(FacesContext context, Class<? extends SystemEvent> systemEventClass, Object source) {
-			System.out.println(systemEventClass);
-			super.publishEvent(context, systemEventClass, source);
+		public void subscribeToEvent(Class<? extends SystemEvent> systemEventClass, Class<?> sourceClass,
+				SystemEventListener listener) {
+			if (FindSpringApplicationSystemEventListener.class.equals(systemEventClass)) {
+				((FindSpringApplicationSystemEventListener) listener).setSpringApplication(this);
+			}
+			super.subscribeToEvent(systemEventClass, sourceClass, listener);
 		}
 
 		public static SpringApplication getSpringApplication(Application application) {
-			FindSpringApplicationSystemEvent event = new FindSpringApplicationSystemEvent(application);
-			return event.getSpringApplication();
+			if (application instanceof SpringApplication) {
+				return (SpringApplication) application;
+			}
+			FindSpringApplicationSystemEventListener listener = new FindSpringApplicationSystemEventListener();
+			application.subscribeToEvent(FindSpringApplicationSystemEvent.class, listener);
+			application.unsubscribeFromEvent(FindSpringApplicationSystemEvent.class, listener);
+			return listener.getSpringApplication();
 		}
 	}
 
 	public static class FindSpringApplicationSystemEvent extends SystemEvent {
-
 		private static final long serialVersionUID = 1L;
-		private SpringApplication springApplication;
 
 		public FindSpringApplicationSystemEvent(Object source) {
 			super(source);
 		}
+	}
+
+	public static class FindSpringApplicationSystemEventListener implements SystemEventListener {
+
+		private SpringApplication springApplication;
 
 		public void setSpringApplication(SpringApplication springApplication) {
 			this.springApplication = springApplication;
@@ -95,6 +97,13 @@ public class SpringApplicationFactory extends ApplicationFactory {
 
 		public SpringApplication getSpringApplication() {
 			return springApplication;
+		}
+
+		public void processEvent(SystemEvent event) throws AbortProcessingException {
+		}
+
+		public boolean isListenerForSource(Object source) {
+			return false;
 		}
 	}
 }

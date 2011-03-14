@@ -3,6 +3,7 @@ package org.springframework.springfaces.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,8 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.Order;
 import org.springframework.springfaces.FacesWrapperFactory;
+import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.util.Assert;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Utility class that can wrap JSF objects by consulting all {@link FacesWrapperFactory} objects registered with Spring.
@@ -56,6 +57,13 @@ class WrapperHandler<T> {
 	private T wrapped;
 
 	/**
+	 * The date that the application context used to create the wrapped object was last refreshed.
+	 */
+	private Date lastRefreshedDate;
+
+	private boolean warnOnMissingSpringFaces;
+
+	/**
 	 * Constructor.
 	 * @param typeClass The JSF type being wrapped
 	 * @param delegate The root delegate
@@ -68,13 +76,32 @@ class WrapperHandler<T> {
 	}
 
 	/**
+	 * Set if a warning message is logged due to {@link SpringFacesIntegration} not being installed. Defaults to false
+	 * as most wrappers can be instantiated before Spring.
+	 * @param warnOnMissingSpringFaces if a warning message should be logged
+	 */
+	public void setWarnOnMissingSpringFaces(boolean warnOnMissingSpringFaces) {
+		this.warnOnMissingSpringFaces = warnOnMissingSpringFaces;
+	}
+
+	/**
 	 * Creates a fully wrapped implementation of the delegate by consulting all {@link FacesWrapperFactory factories}
 	 * registered with {@link #getApplicationContext() Spring}.
 	 * @return A wrapped implementation
 	 */
 	public T getWrapped() {
-		if (wrapped == null) {
-			wrapped = wrap(delegate);
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+		if ((wrapped == null)
+				|| (SpringFacesIntegration.isInstalled(externalContext) && (!SpringFacesIntegration
+						.getLastRefreshedDate(externalContext).equals(lastRefreshedDate)))) {
+			if (logger.isDebugEnabled()) {
+				logger.debug((wrapped == null ? "Wrapping " : "Rewrapping ") + delegate.getClass());
+			}
+			wrapped = wrap(externalContext, delegate);
+			if (SpringFacesIntegration.isInstalled(externalContext)) {
+				lastRefreshedDate = SpringFacesIntegration.getLastRefreshedDate(externalContext);
+			}
 		}
 		return wrapped;
 	}
@@ -86,14 +113,19 @@ class WrapperHandler<T> {
 	 * @return A wrapped implementation
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private T wrap(T delegate) {
-		ApplicationContext applicationContext = getApplicationContext();
-		if (applicationContext == null) {
-			if (logger.isWarnEnabled()) {
-				logger.warn("Unable to access Spring ApplicationContext.  Spring/JSF integration will not be availble");
+	private T wrap(ExternalContext externalContext, T delegate) {
+		if (!SpringFacesIntegration.isInstalled(externalContext)) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("SpringFacesSupport is not yet installed, wrapping will be deferred");
+			}
+			if (logger.isWarnEnabled() && warnOnMissingSpringFaces) {
+				logger.warn("SpringFacesSupport is not installed, full Spring/JSF integration may not be availble");
 			}
 			return delegate;
 		}
+
+		ApplicationContext applicationContext = SpringFacesIntegration.getCurrentInstance(externalContext)
+				.getApplicationContext();
 
 		List<Map.Entry<String, FacesWrapperFactory>> orderdBeans = new ArrayList<Map.Entry<String, FacesWrapperFactory>>();
 		orderdBeans.addAll(BeanFactoryUtils
@@ -117,43 +149,6 @@ class WrapperHandler<T> {
 			}
 		}
 		return rtn;
-	}
-
-	/**
-	 * Returns the Spring {@link ApplicationContext} that will be used to locate {@link FacesWrapperFactory factories}.
-	 * @return The application context or <tt>null</tt>.
-	 */
-	protected ApplicationContext getApplicationContext() {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		WebApplicationContext applicationContext = asWebApplicationContext(externalContext.getRequestMap().get(
-				DISPATCHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE));
-		if (applicationContext == null) {
-			applicationContext = asWebApplicationContext(externalContext.getApplicationMap().get(
-					WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE));
-		}
-		return applicationContext;
-	}
-
-	/**
-	 * Obtain a {@link WebApplicationContext} from the given context object.
-	 * @param object The context object or a {@link RuntimeException} or {@link Error}.
-	 * @return The {@link WebApplicationContext} or <tt>null</tt>
-	 */
-	private static WebApplicationContext asWebApplicationContext(Object object) {
-		if (object == null) {
-			return null;
-		}
-		if (object instanceof RuntimeException) {
-			throw (RuntimeException) object;
-		}
-		if (object instanceof Error) {
-			throw (Error) object;
-		}
-		if (!(object instanceof WebApplicationContext)) {
-			throw new IllegalStateException("Root context attribute is not of type WebApplicationContext: " + object);
-		}
-		return (WebApplicationContext) object;
 	}
 
 	/**

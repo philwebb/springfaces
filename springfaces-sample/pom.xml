@@ -10,6 +10,18 @@
 	</parent>
 	<artifactId>springfaces-sample</artifactId>
 	<packaging>war</packaging>
+	<repositories>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
