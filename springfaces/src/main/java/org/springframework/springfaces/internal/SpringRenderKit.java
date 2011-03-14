@@ -4,6 +4,11 @@ import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitWrapper;
 import javax.faces.render.ResponseStateManager;
 
+/**
+ * A JSF {@link RenderKit} that provides integration with Spring.
+ * 
+ * @author Phillip Webb
+ */
 public class SpringRenderKit extends RenderKitWrapper {
 
 	private String renderKitId;

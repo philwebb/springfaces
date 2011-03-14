@@ -5,6 +5,11 @@ import javax.faces.render.RenderKitFactory;
 
 import org.springframework.springfaces.util.RenderKitFactoryWrapper;
 
+/**
+ * A JSF {@link RenderKitFactory} that provides integration with Spring.
+ * 
+ * @author Phillip Webb
+ */
 public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 
 	private RenderKitFactory delegate;

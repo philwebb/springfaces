@@ -7,6 +7,13 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
+/**
+ * Provides a simple implementation of {@link RenderKitFactory} that can be subclassed by developers wishing to provide
+ * specialised behaviour to an existing {@link RenderKitFactory instance}. The default implementation of all methods is
+ * to call through to the wrapped {@link RenderKitFactory}.
+ * 
+ * @author Phillip Webb
+ */
 public abstract class RenderKitFactoryWrapper extends RenderKitFactory implements FacesWrapper<RenderKitFactory> {
 
 	public abstract RenderKitFactory getWrapped();

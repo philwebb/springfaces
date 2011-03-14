@@ -3,6 +3,11 @@ package org.springframework.springfaces.internal;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 
+/**
+ * A JSF {@link ViewHandler} that provides integration with Spring.
+ * 
+ * @author Phillip Webb
+ */
 public class SpringViewHandler extends ViewHandlerWrapper {
 
 	private WrapperHandler<ViewHandler> wrapperHandler;

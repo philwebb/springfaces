@@ -5,6 +5,11 @@ import javax.faces.render.ResponseStateManager;
 import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
+/**
+ * A JSF {@link ResponseStateManager} that provides integration with Spring.
+ * 
+ * @author Phillip Webb
+ */
 public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 
 	private WrapperHandler<ResponseStateManager> wrapperHandler;
