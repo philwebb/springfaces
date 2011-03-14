@@ -3,11 +3,11 @@ package org.springframework.springfaces.mvc;
 import javax.faces.application.ViewHandler;
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.FacesWrapperFactoryBean;
+import org.springframework.springfaces.FacesWrapperFactory;
 
-public class SpringFacesFactories implements FacesWrapperFactoryBean<Object> {
+public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 
-	public Object newWrapper(Object delegate) {
+	public Object newWrapper(Class<?> typeClass, Object delegate) {
 		if (delegate instanceof ResponseStateManager) {
 			return new SpringFacesResponseStateManager((ResponseStateManager) delegate);
 		}
