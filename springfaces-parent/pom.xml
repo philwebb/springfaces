@@ -11,7 +11,7 @@
 		<module>../springfaces-sample</module>
 	</modules>
 	<properties>
-		<eclipse.project.autoformat>https://anonsvn.springframework.org/svn/spring-framework/trunk/eclipse-code-formatter.xml</eclipse.project.autoformat>
+		<eclipse.project.autoformat>http://svn.xp-dev.com/svn/spring-faces-mvc/spring-faces/trunk/springfaces-parent/eclipse-code-formatter.xml</eclipse.project.autoformat>
 		<org.springframework-version>3.0.5.RELEASE</org.springframework-version>
 		<org.springwebflow-version>2.2.1.RELEASE</org.springwebflow-version>
 	</properties>
