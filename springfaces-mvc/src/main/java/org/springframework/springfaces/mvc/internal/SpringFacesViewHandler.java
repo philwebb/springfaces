@@ -9,7 +9,7 @@ import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.view.ViewState;
+import org.springframework.springfaces.mvc.view.Renderable;
 
 public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
@@ -44,7 +44,7 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 		String actionUrl = null;
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 		if (springFacesContext != null && springFacesContext.getRendering() != null) {
-			ViewState rendering = springFacesContext.getRendering();
+			Renderable rendering = springFacesContext.getRendering();
 			if (viewId.equals(rendering.getViewId())) {
 				//FIXME currently action URL for the rendering view is the request, could push up to allow custom postback URLs
 				ExternalContext externalContext = context.getExternalContext();
@@ -61,7 +61,7 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 	private String convertViewId(String viewId) {
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 		if (springFacesContext != null && springFacesContext.getRendering() != null) {
-			//FIXME check view id matches action URL
+			//Use the view ID of the item being rendered instead
 			return springFacesContext.getRendering().getViewId();
 		}
 		return viewId;

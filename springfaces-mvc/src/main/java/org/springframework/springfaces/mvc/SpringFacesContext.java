@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.faces.context.FacesContext;
 
 import org.springframework.core.NamedThreadLocal;
-import org.springframework.springfaces.mvc.view.ViewState;
+import org.springframework.springfaces.mvc.view.Renderable;
 
 public abstract class SpringFacesContext {
 
@@ -14,9 +14,9 @@ public abstract class SpringFacesContext {
 
 	public abstract <T> T doWithFacesContext(FacesContextCallbackMode mode, FacesContextCallback<T> fcc);
 
-	public abstract void render(ViewState facesView);
+	public abstract void render(Renderable renderable);
 
-	public abstract ViewState getRendering();
+	public abstract Renderable getRendering();
 
 	public abstract void writeState(FacesContext context, Object state) throws IOException;
 

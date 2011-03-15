@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.view.ViewState;
+import org.springframework.springfaces.mvc.view.Renderable;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,7 +64,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		private HttpServletRequest request;
 		private HttpServletResponse response;
 		private ModelMap modelMap;
-		private ViewState rendering;
+		private Renderable rendering;
 
 		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response) {
 			this.request = request;
@@ -86,7 +86,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			});
 		}
 
-		public void render(ViewState view) {
+		public void render(Renderable view) {
 			this.rendering = view;
 			try {
 				doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<Object>() {
@@ -115,7 +115,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			}
 		}
 
-		public ViewState getRendering() {
+		public Renderable getRendering() {
 			return rendering;
 		}
 

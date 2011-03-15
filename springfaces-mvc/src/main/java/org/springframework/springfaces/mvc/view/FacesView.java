@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
-public class FacesView extends AbstractUrlBasedView implements ViewState {
+public class FacesView extends AbstractUrlBasedView implements Renderable {
 
 	public FacesView() {
 		super();

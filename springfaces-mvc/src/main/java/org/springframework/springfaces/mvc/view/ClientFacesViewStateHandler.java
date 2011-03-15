@@ -9,11 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 
 	private static final String ID = "org.springframework.springfaces.id";
-	private static final String NAME = "org.springframework.springfaces.name";
 
-	public void writeViewState(FacesContext facesContext, ViewState viewState) throws IOException {
+	public void writeViewState(FacesContext facesContext, Renderable viewState) throws IOException {
 		ResponseWriter writer = facesContext.getResponseWriter();
-		writeHiddenInput(writer, NAME, viewState.getViewName());
 		writeHiddenInput(writer, ID, viewState.getViewId());
 	}
 
@@ -29,14 +27,11 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 		writer.write("\"\\>");
 	}
 
-	public ViewState readViewState(HttpServletRequest request) throws IOException {
-		String name = request.getParameter(NAME);
+	public Renderable readViewState(HttpServletRequest request) throws IOException {
 		String id = request.getParameter(ID);
-		if (id == null || name == null) {
+		if (id == null) {
 			return null;
 		}
-		//Since we are a postback our action URL should be null
-		String actionUrl = null;
-		return new DefaultViewState(name, id, actionUrl);
+		return new RenderablePostback(id);
 	}
 }

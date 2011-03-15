@@ -12,7 +12,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.view.ViewState;
+import org.springframework.springfaces.mvc.view.Renderable;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerAdapter;
@@ -68,16 +68,16 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		if (request.getAttribute(DISABLE_ATTRIBUTE) != null) {
 			return null;
 		}
-		ViewState view = getStateHandler().readViewState(request);
+		Renderable view = getStateHandler().readViewState(request);
 		if (view == null) {
 			return null;
 		}
-		return new HandlerExecutionChain(new FacesPostback(view), new HandlerInterceptor[] { facesInterceptor });
+		return new HandlerExecutionChain(new Postback(view), new HandlerInterceptor[] { facesInterceptor });
 
 	}
 
 	public boolean supports(Object handler) {
-		return handler instanceof FacesPostback;
+		return handler instanceof Postback;
 	}
 
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -89,8 +89,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			HandlerExecutionChain chain = delegateDispatcherServlet.getHandler(request);
 			System.out.println(chain.getHandler());
 
-			ViewState view = ((FacesPostback) handler).getView();
-			getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, view.getViewName());
+			Renderable view = ((Postback) handler).getView();
 			SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 			Assert.state(springFacesContext != null, "Unable to locate the SpringFacesContext.  Ensure that a "
 					+ FacesHandlerInterceptor.class.getSimpleName() + " is registered in the web context");
@@ -128,15 +127,15 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		this.delegateDispatcherServlet.setDetectAllHandlerMappings(detectAllHandlerMappings);
 	}
 
-	private static class FacesPostback {
+	private static class Postback {
 
-		private ViewState view;
+		private Renderable view;
 
-		public FacesPostback(ViewState view) {
+		public Postback(Renderable view) {
 			this.view = view;
 		}
 
-		public ViewState getView() {
+		public Renderable getView() {
 			return view;
 		}
 	}
