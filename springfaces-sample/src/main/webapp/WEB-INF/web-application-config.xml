@@ -22,14 +22,11 @@
 		class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
-				<bean class="org.springframework.springfaces.mvc.GenericFacesConverter"/>
+				<bean
+					class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
 			</list>
 		</property>
 	</bean>
-
-	<mvc:interceptors>
-		<bean class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor" />
-	</mvc:interceptors>
 
 	<context:component-scan
 		base-package="org.springframework.springfaces.sample.controller" />
@@ -58,14 +55,30 @@
 
 	<bean id="facesViewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="viewClass" value="org.springframework.springfaces.mvc.servlet.FacesView" />
+		<property name="viewClass"
+			value="org.springframework.springfaces.mvc.view.FacesView" />
 		<property name="prefix" value="/WEB-INF/pages/" />
 		<property name="suffix" value=".xhtml" />
 		<property name="order" value="100" />
 	</bean>
 
-	<bean class="org.springframework.springfaces.SpringFacesIntegration"/>
+	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
+
+	<bean name="stateHandler"
+		class="org.springframework.springfaces.mvc.view.ClientFacesViewStateHandler" />
+
 	<bean class="org.springframework.springfaces.mvc.SpringFacesFactories" />
-	<bean class="org.springframework.springfaces.mvc.servlet.FacesHandlerMapping" />
-	<bean class="org.springframework.springfaces.mvc.servlet.FacesHandlerAdapter" />
+	<bean name="postbackHandler"
+		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
+		<property name="stateHandler" ref="stateHandler" />
+	</bean>
+
+	<mvc:interceptors>
+		<bean name="facesInterceptor"
+			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor">
+			<property name="stateHandler" ref="stateHandler" />
+		</bean>
+	</mvc:interceptors>
+
+
 </beans>
