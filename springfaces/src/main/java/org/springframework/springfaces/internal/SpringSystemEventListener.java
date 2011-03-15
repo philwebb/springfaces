@@ -36,5 +36,4 @@ public class SpringSystemEventListener implements SystemEventListener {
 		ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
 		factory.setApplication(new SpringApplication(event.getApplication()));
 	}
-
 }

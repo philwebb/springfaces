@@ -48,3 +48,6 @@ http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-763
 
 Functions located and installed from Spring
 
+@BeforePhase
+@AfterPhase
+

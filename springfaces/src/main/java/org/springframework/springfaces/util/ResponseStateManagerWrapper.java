@@ -54,5 +54,4 @@ public abstract class ResponseStateManagerWrapper extends ResponseStateManager i
 	public String getViewState(FacesContext context, Object state) {
 		return getWrapped().getViewState(context, state);
 	}
-
 }

@@ -21,13 +21,20 @@ import org.springframework.core.annotation.Order;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.util.Assert;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Utility class that can wrap JSF objects by consulting all {@link FacesWrapperFactory} objects registered with Spring.
- * 
- * @author Phillip Webb
+ * Utility class that can wrap JSF objects by consulting all {@link FacesWrapperFactory} objects registered within the
+ * {@link WebApplicationContext} containing the {@link SpringFacesIntegration} bean.
+ * <p>
+ * Wrapping will be re-applied if whenever the {@link WebApplicationContext} is reloaded. If no
+ * {@link SpringFacesIntegration} is {@link SpringFacesIntegration#isInstalled(ExternalContext) installed} then the
+ * original delegate is returned as the wrapped instance.
  * 
  * @param <T> The JSF type being managed
+ * @see #getWrapped()
+ * 
+ * @author Phillip Webb
  */
 class WrapperHandler<T> {
 

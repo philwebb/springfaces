@@ -32,5 +32,4 @@ public abstract class RenderKitFactoryWrapper extends RenderKitFactory implement
 	public Iterator<String> getRenderKitIds() {
 		return getWrapped().getRenderKitIds();
 	}
-
 }

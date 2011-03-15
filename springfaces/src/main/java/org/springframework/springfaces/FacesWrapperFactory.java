@@ -13,7 +13,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * A factory that to create wrappers around various JSF objects. All factories from the Spring
- * {@link WebApplicationContext context} will be consulted when any of the following JSF objects are created:
+ * {@link WebApplicationContext context} containing the {@link SpringFacesIntegration} bean will be consulted when any
+ * of the following JSF objects are created:
  * <ul>
  * <li>{@link Application}</li>
  * <li>{@link ConfigurableNavigationHandler}</li>
@@ -27,9 +28,10 @@ import org.springframework.web.context.WebApplicationContext;
  * Factories can implement the {@link Ordered} interface or use the {@link Order} annotation if a specific invocation
  * order is required.
  * 
- * @author Phillip Webb
- * 
  * @param <T> The type of class to be wrapped.
+ * @see FacesWrapperFactory
+ * 
+ * @author Phillip Webb
  */
 public interface FacesWrapperFactory<T> {
 
@@ -41,5 +43,4 @@ public interface FacesWrapperFactory<T> {
 	 * <tt>null</tt> if no wrapping is required.
 	 */
 	public T newWrapper(Class<?> typeClass, T delegate);
-
 }
