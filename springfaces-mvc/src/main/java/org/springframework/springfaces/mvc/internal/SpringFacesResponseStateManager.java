@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
+import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
@@ -27,8 +28,6 @@ public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper
 		return delegate;
 	}
 
-	//FIXME should delegate to strategy
-
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
 		if (RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)
@@ -37,5 +36,4 @@ public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper
 		}
 		super.writeState(context, state);
 	}
-
 }

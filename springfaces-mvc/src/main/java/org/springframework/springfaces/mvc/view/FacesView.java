@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.view;
 
 import java.util.Locale;
 import java.util.Map;
@@ -6,15 +6,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
-public class DefaultFacesView extends AbstractUrlBasedView implements FacesView {
+public class FacesView extends AbstractUrlBasedView implements ViewState {
 
-	public DefaultFacesView() {
+	public FacesView() {
 		super();
 	}
 
-	public DefaultFacesView(String url) {
+	public FacesView(String url) {
 		super(url);
 	}
 

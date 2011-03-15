@@ -1,8 +1,11 @@
 package org.springframework.springfaces.mvc;
 
+import java.io.IOException;
+
 import javax.faces.context.FacesContext;
 
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.springfaces.mvc.view.ViewState;
 
 public abstract class SpringFacesContext {
 
@@ -11,11 +14,11 @@ public abstract class SpringFacesContext {
 
 	public abstract <T> T doWithFacesContext(FacesContextCallbackMode mode, FacesContextCallback<T> fcc);
 
-	public abstract void render(FacesView facesView);
+	public abstract void render(ViewState facesView);
 
-	public abstract FacesView getRendering();
+	public abstract ViewState getRendering();
 
-	public abstract void writeState(FacesContext context, Object state);
+	public abstract void writeState(FacesContext context, Object state) throws IOException;
 
 	public static SpringFacesContext getCurrentInstance() {
 		return instance.get();

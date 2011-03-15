@@ -1,18 +1,20 @@
 package org.springframework.springfaces.mvc.servlet;
 
+import java.io.IOException;
+
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.Flash;
-import javax.faces.context.ResponseWriter;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.springfaces.mvc.FacesView;
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
+import org.springframework.springfaces.mvc.view.ViewState;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,16 +22,16 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
 
-	private FacesPostbackHandler postbackHandler;
-
 	private ServletContext servletContext;
 
-	public FacesHandlerInterceptor(FacesPostbackHandler postbackHandler) {
-		this.postbackHandler = postbackHandler;
-	}
+	private FacesViewStateHandler stateHandler;
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
+	}
+
+	public void setStateHandler(FacesViewStateHandler stateHandler) {
+		this.stateHandler = stateHandler;
 	}
 
 	@Override
@@ -41,7 +43,9 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		getSpringFacesContext().setModelMap(modelAndView.getModelMap());
+		if (modelAndView != null) {
+			getSpringFacesContext().setModelMap(modelAndView.getModelMap());
+		}
 	}
 
 	@Override
@@ -60,7 +64,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		private HttpServletRequest request;
 		private HttpServletResponse response;
 		private ModelMap modelMap;
-		private FacesView rendering;
+		private ViewState rendering;
 
 		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response) {
 			this.request = request;
@@ -82,7 +86,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			});
 		}
 
-		public void render(FacesView view) {
+		public void render(ViewState view) {
 			this.rendering = view;
 			try {
 				doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<Object>() {
@@ -111,16 +115,14 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			}
 		}
 
-		public FacesView getRendering() {
+		public ViewState getRendering() {
 			return rendering;
 		}
 
 		@Override
-		public void writeState(FacesContext context, Object state) {
+		public void writeState(FacesContext context, Object state) throws IOException {
 			if (getRendering() != null) {
-				FacesView view = getRendering();
-				ResponseWriter responseWriter = context.getResponseWriter();
-				postbackHandler.getStateHandler().writeState(view, responseWriter);
+				stateHandler.writeViewState(context, getRendering());
 			}
 		}
 

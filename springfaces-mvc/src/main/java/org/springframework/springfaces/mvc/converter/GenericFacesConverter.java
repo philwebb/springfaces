@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.converter;
 
 import java.util.Collections;
 import java.util.Set;
@@ -9,6 +9,7 @@ import javax.faces.convert.Converter;
 
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
+import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.SpringFacesContext.FacesContextCallbackMode;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
