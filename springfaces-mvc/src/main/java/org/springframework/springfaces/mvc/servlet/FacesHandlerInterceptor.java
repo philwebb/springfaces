@@ -4,22 +4,29 @@ import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.Flash;
+import javax.faces.context.ResponseWriter;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.springfaces.mvc.FacesView;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
 
+	private FacesPostbackHandler postbackHandler;
+
 	private ServletContext servletContext;
+
+	public FacesHandlerInterceptor(FacesPostbackHandler postbackHandler) {
+		this.postbackHandler = postbackHandler;
+	}
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
@@ -27,7 +34,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		new SpringFacesContextImpl(servletContext, request, response, handler);
+		new SpringFacesContextImpl(request, response);
 		return true;
 	}
 
@@ -48,27 +55,31 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		return (SpringFacesContextImpl) SpringFacesContext.getCurrentInstance();
 	}
 
-	private static class SpringFacesContextImpl extends SpringFacesContext {
+	private class SpringFacesContextImpl extends SpringFacesContext {
 
-		private ServletContext servletContext;
 		private HttpServletRequest request;
 		private HttpServletResponse response;
-		private Object handler;
 		private ModelMap modelMap;
 		private FacesView rendering;
-		private WebApplicationContext applicationContext;
 
-		public SpringFacesContextImpl(ServletContext servletContext, HttpServletRequest request,
-				HttpServletResponse response, Object handler) {
-			this.servletContext = servletContext;
+		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response) {
 			this.request = request;
 			this.response = response;
-			this.handler = handler;
 			setCurrentInstance(this);
 		}
 
 		public void setModelMap(ModelMap modelMap) {
 			this.modelMap = modelMap;
+		}
+
+		@Override
+		public <T> T doWithFacesContext(final FacesContextCallbackMode mode, final FacesContextCallback<T> fcc) {
+			return doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<T>() {
+				public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
+					//FIXME switch on mode
+					return fcc.doWithFacesContext(facesContext);
+				}
+			});
 		}
 
 		public void render(FacesView view) {
@@ -100,29 +111,17 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			}
 		}
 
-		@Override
-		public boolean isRendering() {
-			return rendering != null;
-		}
-
-		@Override
 		public FacesView getRendering() {
-			//FIXME check isRendering
 			return rendering;
 		}
 
 		@Override
-		public <T> T doWithFacesContext(FacesContextCallback<T> fcc) {
-			return doWithRequiredFacesContext(fcc);
-		}
-
-		@Override
-		public <T> T doWithRequiredFacesContext(final FacesContextCallback<T> fcc) {
-			return doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<T>() {
-				public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
-					return fcc.doWithFacesContext(facesContext);
-				}
-			});
+		public void writeState(FacesContext context, Object state) {
+			if (getRendering() != null) {
+				FacesView view = getRendering();
+				ResponseWriter responseWriter = context.getResponseWriter();
+				postbackHandler.getStateHandler().writeState(view, responseWriter);
+			}
 		}
 
 		public void release() {
@@ -130,13 +129,10 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		private <T> T doWithFacesContextAndLifecycle(FacesContextAndLifecycleCallback<T> fcc) {
-
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			if (facesContext != null) {
-				//FIXME log warning
 				return fcc.doWithFacesContextAndLifeCycle(facesContext, null);
 			}
-
 			Lifecycle lifecycle = getFacesFactory(LifecycleFactory.class).getLifecycle(
 					LifecycleFactory.DEFAULT_LIFECYCLE);
 			facesContext = getFacesFactory(FacesContextFactory.class).getFacesContext(servletContext, request,
@@ -153,10 +149,9 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			return (T) FactoryFinder.getFactory(factoryClass.getName());
 			//FIXME check return type?
 		}
-
-		private static interface FacesContextAndLifecycleCallback<T> {
-			public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle);
-		}
 	}
 
+	private static interface FacesContextAndLifecycleCallback<T> {
+		public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle);
+	}
 }

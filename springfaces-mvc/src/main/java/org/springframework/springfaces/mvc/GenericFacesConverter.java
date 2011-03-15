@@ -9,6 +9,7 @@ import javax.faces.convert.Converter;
 
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
+import org.springframework.springfaces.mvc.SpringFacesContext.FacesContextCallbackMode;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 public class GenericFacesConverter extends WebApplicationObjectSupport implements ConditionalGenericConverter {
@@ -25,7 +26,7 @@ public class GenericFacesConverter extends WebApplicationObjectSupport implement
 	}
 
 	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-		return SpringFacesContext.getCurrentInstance().doWithFacesContext(
+		return SpringFacesContext.getCurrentInstance().doWithFacesContext(FacesContextCallbackMode.IGNORE_IF_MISSING,
 				new SpringFacesContext.FacesContextCallback<Object>() {
 					public Object doWithFacesContext(FacesContext facesContext) {
 						Converter converter = facesContext.getApplication().createConverter(targetType.getType());

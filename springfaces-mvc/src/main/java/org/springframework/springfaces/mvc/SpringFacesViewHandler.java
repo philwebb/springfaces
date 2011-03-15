@@ -7,7 +7,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
 
-
 public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
@@ -38,18 +37,23 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
-		if (SpringFacesContext.getCurrentInstance().isRendering()) {
-			//FIXME
+		String actionUrl = null;
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			//FIXME get the action URL, will always be postback
 			ExternalContext extContext = context.getExternalContext();
 			String contextPath = extContext.getRequestContextPath();
 			return contextPath + "/spring/simple";
 		}
-		return super.getActionURL(context, viewId);
+		if (actionUrl == null) {
+			actionUrl = super.getActionURL(context, viewId);
+		}
+		return actionUrl;
 	}
 
 	private String convertViewId(String viewId) {
-		if (SpringFacesContext.getCurrentInstance().isRendering()) {
-			return SpringFacesContext.getCurrentInstance().getRendering().getUrl();
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
+		if (springFacesContext != null && springFacesContext.getRendering() != null) {
+			return springFacesContext.getRendering().getViewId();
 		}
 		return viewId;
 	}

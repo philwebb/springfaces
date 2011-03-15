@@ -3,7 +3,6 @@ package org.springframework.springfaces.mvc;
 import java.io.IOException;
 
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
@@ -33,9 +32,8 @@ public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
 		if (RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)
-				&& SpringFacesContext.getCurrentInstance().isRendering()) {
-			ResponseWriter writer = context.getResponseWriter();
-			writer.write("<input type=\"hidden\" id=\"org.spring.springfaces\" name=\"org.spring.springfaces\" value=\"somedata\"");
+				&& SpringFacesContext.getCurrentInstance() != null) {
+			SpringFacesContext.getCurrentInstance().writeState(context, state);
 		}
 		super.writeState(context, state);
 	}

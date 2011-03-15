@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.Ordered;
+import org.springframework.springfaces.mvc.FacesView;
 import org.springframework.springfaces.mvc.FacesViewStateHandler;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.HandlerAdapter;
@@ -21,7 +22,7 @@ public class FacesPostbackHandler extends WebContentGenerator implements Handler
 	}
 
 	public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-		FacesView view = stateHandler.readState(request);
+		FacesView view = getStateHandler().readState(request);
 		if (view == null) {
 			return null;
 		}
@@ -36,7 +37,7 @@ public class FacesPostbackHandler extends WebContentGenerator implements Handler
 			throws Exception {
 		//FIXME check supports
 		FacesView view = ((FacesPostback) handler).getView();
-		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, view.getBeanName());
+		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, view.getViewName());
 		SpringFacesContext.getCurrentInstance().render(view);
 		return null;
 	}
@@ -44,6 +45,10 @@ public class FacesPostbackHandler extends WebContentGenerator implements Handler
 	public long getLastModified(HttpServletRequest request, Object handler) {
 		//FIXME
 		return -1;
+	}
+
+	public FacesViewStateHandler getStateHandler() {
+		return stateHandler;
 	}
 
 	private static class FacesPostback {

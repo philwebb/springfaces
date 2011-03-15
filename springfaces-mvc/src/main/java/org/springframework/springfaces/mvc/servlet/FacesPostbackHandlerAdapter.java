@@ -3,6 +3,7 @@ package org.springframework.springfaces.mvc.servlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.springfaces.mvc.DefaultFacesView;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,7 @@ public class FacesPostbackHandlerAdapter extends WebContentGenerator implements 
 
 		//FIXME restore the view somehow
 		String viewName = "test";
-		FacesView view = new FacesView("/WEB-INF/pages/test.xhtml");
+		DefaultFacesView view = new DefaultFacesView("/WEB-INF/pages/test.xhtml");
 		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
 
 		//FIXME make typesafe
