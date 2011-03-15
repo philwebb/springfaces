@@ -45,4 +45,9 @@ public class OriginalHotelsController {
 		bookingService.cancelBooking(id);
 		return "redirect:../hotels/search";
 	}
+
+	//@NavigationCase(fromViewId, fromAction, fromOutcome, toView, redirect, condition)
+	//@NavigationRule()
+	//@NamedRedirect()
+
 }

@@ -35,6 +35,8 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 		if (id == null || name == null) {
 			return null;
 		}
-		return new DefaultViewState(name, id);
+		//Since we are a postback our action URL should be null
+		String actionUrl = null;
+		return new DefaultViewState(name, id, actionUrl);
 	}
 }

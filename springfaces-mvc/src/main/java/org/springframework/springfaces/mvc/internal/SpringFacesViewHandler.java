@@ -6,8 +6,10 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewDeclarationLanguage;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.view.ViewState;
 
 public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
@@ -40,11 +42,15 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
 		String actionUrl = null;
-		if (SpringFacesContext.getCurrentInstance() != null) {
-			//FIXME get the action URL, will always be postback
-			ExternalContext extContext = context.getExternalContext();
-			String contextPath = extContext.getRequestContextPath();
-			return contextPath + "/spring/simple/phil";
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
+		if (springFacesContext != null && springFacesContext.getRendering() != null) {
+			ViewState rendering = springFacesContext.getRendering();
+			if (viewId.equals(rendering.getViewId())) {
+				//FIXME currently action URL for the rendering view is the request, could push up to allow custom postback URLs
+				ExternalContext externalContext = context.getExternalContext();
+				HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
+				actionUrl = request.getServletPath() + request.getPathInfo();
+			}
 		}
 		if (actionUrl == null) {
 			actionUrl = super.getActionURL(context, viewId);
@@ -55,6 +61,7 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 	private String convertViewId(String viewId) {
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 		if (springFacesContext != null && springFacesContext.getRendering() != null) {
+			//FIXME check view id matches action URL
 			return springFacesContext.getRendering().getViewId();
 		}
 		return viewId;

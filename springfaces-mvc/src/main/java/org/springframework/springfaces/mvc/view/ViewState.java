@@ -6,4 +6,6 @@ public interface ViewState {
 
 	String getViewId();
 
+	//DC the action URL or null to use the request
+	String getActionUrl();
 }

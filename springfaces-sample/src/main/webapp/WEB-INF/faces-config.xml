@@ -9,5 +9,14 @@
 		<converter-for-class>org.springframework.springfaces.sample.controller.Name</converter-for-class>
 		<converter-class>org.springframework.springfaces.sample.controller.NameConverter</converter-class>
 	</converter>
+	<navigation-rule>
+		<display-name>test.xhtml</display-name>
+		<from-view-id>/test.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>go</from-outcome>
+			<to-view-id>/wibble/test2.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
 
 </faces-config>

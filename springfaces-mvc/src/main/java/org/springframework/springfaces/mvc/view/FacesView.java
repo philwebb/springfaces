@@ -41,4 +41,9 @@ public class FacesView extends AbstractUrlBasedView implements ViewState {
 	public String getViewName() {
 		return getBeanName();
 	}
+
+	public String getActionUrl() {
+		//FIXME we could support custom postbacks here
+		return null;
+	}
 }
