@@ -3,6 +3,7 @@ package org.springframework.springfaces.mvc;
 import javax.faces.context.FacesContext;
 
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.springfaces.mvc.servlet.FacesView;
 import org.springframework.util.Assert;
 
 public abstract class SpringFacesContext {
@@ -17,6 +18,9 @@ public abstract class SpringFacesContext {
 	public abstract <T> T doWithFacesContext(FacesContextCallback<T> fcc);
 
 	public abstract <T> T doWithRequiredFacesContext(FacesContextCallback<T> fcc);
+
+	//FIXME seems wrong here?
+	public abstract void render(FacesView view);
 
 	public static SpringFacesContext getCurrentInstance() {
 		SpringFacesContext context = instance.get();
@@ -62,6 +66,11 @@ public abstract class SpringFacesContext {
 				return fcc.doWithFacesContext(facesContext);
 			}
 			return null;
+		}
+
+		@Override
+		public void render(FacesView view) {
+			//FIXME
 		}
 	}
 

@@ -26,7 +26,7 @@ public class FacesView extends AbstractUrlBasedView implements View {
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		//FIXME check type
-		((SpringFacesServletContext) SpringFacesContext.getCurrentInstance()).render(this);
+		SpringFacesContext.getCurrentInstance().render(this);
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		return (SpringFacesContextImpl) SpringFacesContext.getCurrentInstance();
 	}
 
-	private static class SpringFacesContextImpl extends SpringFacesContext implements SpringFacesServletContext {
+	private static class SpringFacesContextImpl extends SpringFacesContext {
 
 		private ServletContext servletContext;
 		private HttpServletRequest request;

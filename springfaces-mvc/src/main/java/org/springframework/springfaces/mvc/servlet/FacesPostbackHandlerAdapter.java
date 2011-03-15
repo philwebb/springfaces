@@ -8,10 +8,10 @@ import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.WebContentGenerator;
 
-public class FacesHandlerAdapter extends WebContentGenerator implements HandlerAdapter {
+public class FacesPostbackHandlerAdapter extends WebContentGenerator implements HandlerAdapter {
 
 	public boolean supports(Object handler) {
-		return FacesHandlerMapping.class.equals(handler);
+		return FacesPostbackHandlerMapping.class.equals(handler);
 	}
 
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -23,7 +23,7 @@ public class FacesHandlerAdapter extends WebContentGenerator implements HandlerA
 		getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
 
 		//FIXME make typesafe
-		((SpringFacesServletContext) SpringFacesContext.getCurrentInstance()).render(view);
+		SpringFacesContext.getCurrentInstance().render(view);
 		return null;
 	}
 
