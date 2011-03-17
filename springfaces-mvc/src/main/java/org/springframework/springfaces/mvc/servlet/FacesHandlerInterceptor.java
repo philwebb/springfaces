@@ -87,6 +87,10 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		public void render(Renderable view) {
+			//FIXME we need probably be a little more intelligent about access to Rendering.
+			//During postback navigation may want to create a different view and a the moment
+			//rendering overrides all
+			//Better still is to push it closed to the RestoreViewPhase
 			this.rendering = view;
 			try {
 				doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<Object>() {

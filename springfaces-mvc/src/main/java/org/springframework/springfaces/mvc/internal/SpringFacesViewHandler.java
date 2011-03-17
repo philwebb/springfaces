@@ -26,21 +26,25 @@ public class SpringFacesViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public UIViewRoot createView(FacesContext context, String viewId) {
+		System.out.println("Create view " + context.getCurrentPhaseId() + " " + viewId);
 		return super.createView(context, convertViewId(viewId));
 	}
 
 	@Override
 	public UIViewRoot restoreView(FacesContext context, String viewId) {
+		System.out.println("Restore view " + context.getCurrentPhaseId() + " " + viewId);
 		return super.restoreView(context, convertViewId(viewId));
 	}
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
+		System.out.println("Get VDL " + context.getCurrentPhaseId() + " " + viewId);
 		return super.getViewDeclarationLanguage(context, convertViewId(viewId));
 	}
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
+		System.out.println("Get Action URL " + context.getCurrentPhaseId() + " " + viewId);
 		String actionUrl = null;
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 		if (springFacesContext != null && springFacesContext.getRendering() != null) {
