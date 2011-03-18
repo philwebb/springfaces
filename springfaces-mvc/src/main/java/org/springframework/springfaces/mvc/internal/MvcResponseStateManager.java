@@ -10,12 +10,12 @@ import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
-public class SpringFacesResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {
+public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {
 
 	private String renderKitId;
 	private ResponseStateManager delegate;
 
-	public SpringFacesResponseStateManager(ResponseStateManager delegate) {
+	public MvcResponseStateManager(ResponseStateManager delegate) {
 		this.delegate = delegate;
 	}
 

@@ -10,11 +10,11 @@ import javax.faces.context.FacesContext;
 import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
 import org.springframework.web.servlet.ViewResolver;
 
-public class SpringFacesMvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
+public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
 
-	public SpringFacesMvcNavigationHandler(ConfigurableNavigationHandler delegate) {
+	public MvcNavigationHandler(ConfigurableNavigationHandler delegate) {
 		this.delegate = delegate;
 	}
 

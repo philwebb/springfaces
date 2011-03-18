@@ -32,6 +32,6 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 		if (id == null) {
 			return null;
 		}
-		return new RenderablePostback(id);
+		return new Renderable(id);
 	}
 }

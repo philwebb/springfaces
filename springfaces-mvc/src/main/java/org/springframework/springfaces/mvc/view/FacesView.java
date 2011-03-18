@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
-public class FacesView extends AbstractUrlBasedView implements Renderable {
+public class FacesView extends AbstractUrlBasedView {
 
 	public FacesView() {
 		super();
@@ -25,7 +25,8 @@ public class FacesView extends AbstractUrlBasedView implements Renderable {
 
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 		//FIXME ANN
-		springFacesContext.render(this);
+
+		springFacesContext.render(new Renderable(getUrl()));
 	}
 
 	@Override
@@ -40,10 +41,5 @@ public class FacesView extends AbstractUrlBasedView implements Renderable {
 
 	public String getViewName() {
 		return getBeanName();
-	}
-
-	public String getActionUrl() {
-		//FIXME we could support custom postbacks here
-		return null;
 	}
 }
