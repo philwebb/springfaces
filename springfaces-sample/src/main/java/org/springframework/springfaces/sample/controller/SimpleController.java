@@ -17,6 +17,11 @@ public class SimpleController {
 		return "simple";
 	}
 
+	@RequestMapping("hello")
+	public String hello() {
+		return "testBeanView";
+	}
+
 	//	@RequestMapping(method = RequestMethod.POST)
 	//	public String postback() {
 	//		return "test";

@@ -1,6 +1,5 @@
 package org.springframework.springfaces.mvc.servlet;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,10 +32,6 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	private FacesViewStateHandler stateHandler;
 
 	private FacesHandlerInterceptor facesInterceptor;
-
-	private List<HandlerMapping> handlerMappings;
-
-	private boolean detectAllHandlerMappings;
 
 	public FacesPostbackHandler() {
 		super();
@@ -140,6 +135,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		}
 	}
 
+	//FIXME can we put this somewhere common, we also need support for viewListeners
 	private static class DelegateDispatcherServlet extends DispatcherServlet {
 		private static final long serialVersionUID = 1L;
 

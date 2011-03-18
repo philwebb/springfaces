@@ -1,17 +1,24 @@
 package org.springframework.springfaces.mvc.internal;
 
+import java.io.IOException;
+import java.util.Locale;
+
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
-import javax.faces.view.ViewDeclarationLanguage;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.view.FacesView;
 import org.springframework.springfaces.mvc.view.Renderable;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
 
 public class MvcViewHandler extends ViewHandlerWrapper {
 
@@ -19,8 +26,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 
-	public MvcViewHandler(ViewHandler delegate) {
+	private ViewResolver viewResolver;
+
+	public MvcViewHandler(ViewHandler delegate, ViewResolver viewResolver) {
 		this.delegate = delegate;
+		this.viewResolver = viewResolver;
 	}
 
 	@Override
@@ -34,12 +44,28 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (mvcViewId != null) {
 			return super.createView(context, mvcViewId);
 		}
-		return super.createView(context, viewId);
 		//FIXME
 		//if viewId starts with mvc:
 		//use a viewresolver to get the view
 		//if it is a JSF view use the details to restore
 		//otherwise create a special view root that will render the view
+
+		if (viewId.startsWith("mvc:")) {
+			String viewName = viewId.substring(4);
+			Locale locale = Locale.ENGLISH; //FIXME
+			try {
+				View view = viewResolver.resolveViewName(viewName, locale);
+				if (view instanceof FacesView) {
+					//FIXME create suing super
+				}
+				return new MvcUIViewRoot(view);
+			} catch (Exception e) {
+				//FIXME
+				e.printStackTrace();
+			}
+		}
+
+		return super.createView(context, viewId);
 	}
 
 	@Override
@@ -49,15 +75,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			return super.restoreView(context, mvcViewId);
 		}
 		return super.restoreView(context, viewId);
-	}
-
-	@Override
-	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		String mvcViewId = getMvcViewId(context, viewId);
-		if (mvcViewId != null) {
-			//	return super.getViewDeclarationLanguage(context, mvcViewId);
-		}
-		return super.getViewDeclarationLanguage(context, viewId);
 	}
 
 	private String getMvcViewId(FacesContext context, String viewId) {
@@ -100,5 +117,25 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			actionUrl = super.getActionURL(context, viewId);
 		}
 		return actionUrl;
+	}
+
+	private static class MvcUIViewRoot extends UIViewRoot {
+		private View view;
+
+		public MvcUIViewRoot(View view) {
+			this.view = view;
+		}
+
+		@Override
+		public void encodeEnd(FacesContext context) throws IOException {
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			try {
+				view.render(null, request, response);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

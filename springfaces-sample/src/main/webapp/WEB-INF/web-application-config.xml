@@ -53,6 +53,12 @@
 		<property name="flowExecutor" ref="flowExecutor" />
 	</bean>
 
+	<bean id="testBeanView" class="org.springframework.springfaces.sample.controller.TestBeanView"/>
+
+	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="50"/>
+	</bean>
+
 	<bean id="facesViewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass"

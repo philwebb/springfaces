@@ -16,7 +16,7 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 			return new MvcResponseStateManager((ResponseStateManager) delegate);
 		}
 		if (delegate instanceof ViewHandler) {
-			return new MvcViewHandler((ViewHandler) delegate);
+			return new MvcViewHandler((ViewHandler) delegate, null);
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
 			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate);
