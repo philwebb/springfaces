@@ -62,7 +62,7 @@
 	<bean id="facesViewResolver"
 		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass"
-			value="org.springframework.springfaces.mvc.view.FacesView" />
+			value="org.springframework.springfaces.mvc.servlet.view.FacesView" />
 		<property name="prefix" value="/WEB-INF/pages/" />
 		<property name="suffix" value=".xhtml" />
 		<property name="order" value="100" />
@@ -70,16 +70,19 @@
 
 	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
 
-	<bean name="stateHandler"
-		class="org.springframework.springfaces.mvc.view.ClientFacesViewStateHandler" />
+	<bean name="stateHandler" class="org.springframework.springfaces.render.ClientFacesViewStateHandler" />
 
-	<bean class="org.springframework.springfaces.mvc.SpringFacesFactories">
-		<property name="stateHandler" ref="stateHandler" />
+	<bean name="facesConfig" class="org.springframework.springfaces.mvc.servlet.DefaultFacesConfig"/>
+
+	<bean class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
+		<constructor-arg ref="stateHandler"/>
+		<constructor-arg ref="facesConfig"/>
 	</bean>
 
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
-		<property name="stateHandler" ref="stateHandler" />
+		<constructor-arg ref="stateHandler"/>
+		<constructor-arg ref="facesConfig"/>
 	</bean>
 
 	<mvc:interceptors>
@@ -87,6 +90,4 @@
 			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor">
 		</bean>
 	</mvc:interceptors>
-
-
 </beans>

@@ -10,6 +10,11 @@ import javax.faces.context.FacesContext;
 import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
 import org.springframework.web.servlet.ViewResolver;
 
+/**
+ * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC.
+ * 
+ * @author Phillip Webb
+ */
 public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
@@ -26,8 +31,8 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	@Override
 	public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
 
-		//ViewHandler h;
-		//h.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		// ViewHandler h;
+		// h.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 
 		if ("go2".equals(outcome)) {
 			String fromViewId = null;
@@ -49,18 +54,18 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 		ViewResolver viewResolver = null;
 
-		//1) direct view names, if they resolve to JSF.  eg. custom/home -> /WEB-INF/pages/custom/home.xhtml
-		//		View view = viewResolver.resolveViewName(outcome, context.getViewRoot().getLocale());
-		//		if(view instanceof FacesViewStateHandler) {
-		//			view.render(model, request, response);
-		//		}
+		// 1) direct view names, if they resolve to JSF. eg. custom/home -> /WEB-INF/pages/custom/home.xhtml
+		// View view = viewResolver.resolveViewName(outcome, context.getViewRoot().getLocale());
+		// if(view instanceof FacesViewStateHandler) {
+		// view.render(model, request, response);
+		// }
 
-		//2) mvc view
-		//		if(outcome starts with someprefix) {
-		//  			View view = viewResolver.resolveViewName(outcomeWithoutPrefix, context.getViewRoot().getLocale());
-		//		}
+		// 2) mvc view
+		// if(outcome starts with someprefix) {
+		// View view = viewResolver.resolveViewName(outcomeWithoutPrefix, context.getViewRoot().getLocale());
+		// }
 
-		//3) navigation on the controller
+		// 3) navigation on the controller
 
 		super.handleNavigation(context, fromAction, outcome);
 	}

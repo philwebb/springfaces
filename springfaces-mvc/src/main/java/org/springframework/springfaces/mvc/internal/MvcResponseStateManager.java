@@ -12,6 +12,11 @@ import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
+/**
+ * A JSF {@link ResponseStateManager} that provides integration with Spring MVC.
+ * 
+ * @author Phillip Webb
+ */
 public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {
 
 	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcResponseStateManager.class.getName() + ".RENDERING";
@@ -36,7 +41,8 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
-		if (SpringFacesContext.getCurrentInstance() != null && context.getAttributes().containsKey(VIEW_ARTIFACT_ATTRIBUTE)
+		if (SpringFacesContext.getCurrentInstance() != null
+				&& context.getAttributes().containsKey(VIEW_ARTIFACT_ATTRIBUTE)
 				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
 			ViewArtifact viewArtifact = (ViewArtifact) context.getAttributes().get(VIEW_ARTIFACT_ATTRIBUTE);
 			stateHandler.write(context, viewArtifact);

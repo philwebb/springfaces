@@ -23,6 +23,11 @@ import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 
+/**
+ * A JSF {@link ViewHandler} that provides integration with Spring MVC.
+ * 
+ * @author Phillip Webb
+ */
 public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcViewHandler.class.getName() + ".VIEW";
@@ -63,8 +68,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			MvcResponseStateManager.prepare(context, viewArtifact);
 			viewId = viewArtifact.toString();
 			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
-		} else if (create && viewIdResolver.isResolvable(cleanupViewId(viewId))) {
-			View view = viewIdResolver.resolveViewId(cleanupViewId(viewId), null); // FIXME
+		} else if (create && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), null); // FIXME
 			if (view instanceof FacesView) {
 				// FIXME setRendering(context, renderable, model);
 				// recurse
@@ -76,17 +81,19 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	}
 
-	private String cleanupViewId(String viewId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		if (viewId.startsWith("/mvc:")) {
+		if (viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
+	}
+
+	private String getResolvableViewId(String viewId) {
+		if (viewId != null && viewId.startsWith("/")) {
+			viewId = viewId.substring(1);
+		}
+		return viewId;
 	}
 
 	@Override
