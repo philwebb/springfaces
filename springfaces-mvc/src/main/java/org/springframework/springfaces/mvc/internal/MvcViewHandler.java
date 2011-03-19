@@ -16,10 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.ViewIdResolver;
-import org.springframework.springfaces.mvc.view.FacesView;
-import org.springframework.springfaces.mvc.view.ViewArtifact;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
+import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 

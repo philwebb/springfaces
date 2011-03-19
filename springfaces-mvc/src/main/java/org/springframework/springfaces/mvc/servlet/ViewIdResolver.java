@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Locale;
 

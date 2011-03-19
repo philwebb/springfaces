@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Locale;
 
@@ -12,7 +12,7 @@ import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
-import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
+import org.springframework.springfaces.render.FacesViewStateHandler;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.View;
 

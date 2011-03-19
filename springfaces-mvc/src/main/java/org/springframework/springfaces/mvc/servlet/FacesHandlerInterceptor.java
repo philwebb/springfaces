@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;

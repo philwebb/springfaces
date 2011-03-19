@@ -1,10 +1,11 @@
-package org.springframework.springfaces.mvc.view;
+package org.springframework.springfaces.render;
 
 import java.io.IOException;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
+
 
 public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 

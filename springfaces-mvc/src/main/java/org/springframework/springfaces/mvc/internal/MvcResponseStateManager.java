@@ -6,10 +6,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
-import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.view.ViewArtifact;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.render.FacesViewStateHandler;
 import org.springframework.springfaces.render.RenderKitIdAware;
+import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
 public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {

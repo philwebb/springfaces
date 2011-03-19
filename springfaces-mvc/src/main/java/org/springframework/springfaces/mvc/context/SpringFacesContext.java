@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc;
+package org.springframework.springfaces.mvc.context;
 
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.Lifecycle;

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.view;
+package org.springframework.springfaces.render;
 
 import java.io.Serializable;
 

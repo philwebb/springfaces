@@ -1,9 +1,10 @@
-package org.springframework.springfaces.mvc.view;
+package org.springframework.springfaces.render;
 
 import java.io.IOException;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * Strategy interface use to read and write {@link ViewArtifact} data.
