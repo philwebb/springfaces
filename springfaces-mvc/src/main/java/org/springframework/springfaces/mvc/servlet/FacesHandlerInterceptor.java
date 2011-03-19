@@ -1,7 +1,5 @@
 package org.springframework.springfaces.mvc.servlet;
 
-import java.io.IOException;
-
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
 import org.springframework.springfaces.mvc.view.Renderable;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.context.ServletContextAware;
@@ -24,17 +21,10 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 	private ServletContext servletContext;
 
-	private FacesViewStateHandler stateHandler;
-
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 
-	public void setStateHandler(FacesViewStateHandler stateHandler) {
-		this.stateHandler = stateHandler;
-	}
-
-	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		new SpringFacesContextImpl(request, response);
 		return true;
@@ -121,13 +111,6 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 		public Renderable getRendering() {
 			return rendering;
-		}
-
-		@Override
-		public void writeState(FacesContext context, Object state) throws IOException {
-			if (getRendering() != null) {
-				stateHandler.writeViewState(context, getRendering());
-			}
 		}
 
 		public void release() {

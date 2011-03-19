@@ -73,7 +73,10 @@
 	<bean name="stateHandler"
 		class="org.springframework.springfaces.mvc.view.ClientFacesViewStateHandler" />
 
-	<bean class="org.springframework.springfaces.mvc.SpringFacesFactories" />
+	<bean class="org.springframework.springfaces.mvc.SpringFacesFactories">
+		<property name="stateHandler" ref="stateHandler" />
+	</bean>
+
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<property name="stateHandler" ref="stateHandler" />
@@ -82,7 +85,6 @@
 	<mvc:interceptors>
 		<bean name="facesInterceptor"
 			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor">
-			<property name="stateHandler" ref="stateHandler" />
 		</bean>
 	</mvc:interceptors>
 

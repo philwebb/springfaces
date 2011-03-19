@@ -1,7 +1,5 @@
 package org.springframework.springfaces.mvc;
 
-import java.io.IOException;
-
 import javax.faces.context.FacesContext;
 
 import org.springframework.core.NamedThreadLocal;
@@ -17,8 +15,6 @@ public abstract class SpringFacesContext {
 	public abstract void render(Renderable renderable);
 
 	public abstract Renderable getRendering();
-
-	public abstract void writeState(FacesContext context, Object state) throws IOException;
 
 	public static SpringFacesContext getCurrentInstance() {
 		return instance.get();

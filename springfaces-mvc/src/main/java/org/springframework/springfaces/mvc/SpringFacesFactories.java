@@ -12,6 +12,7 @@ import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
+import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
@@ -19,10 +20,11 @@ import org.springframework.web.servlet.ViewResolver;
 public class SpringFacesFactories implements FacesWrapperFactory<Object>, ApplicationListener<ContextRefreshedEvent> {
 
 	private DelegateDispatcherServlet delegateDispatcherServlet = new DelegateDispatcherServlet();
+	private FacesViewStateHandler stateHandler;
 
 	public Object newWrapper(Class<?> typeClass, Object delegate) {
 		if (delegate instanceof ResponseStateManager) {
-			return new MvcResponseStateManager((ResponseStateManager) delegate);
+			return new MvcResponseStateManager((ResponseStateManager) delegate, stateHandler);
 		}
 		if (delegate instanceof ViewHandler) {
 			return new MvcViewHandler((ViewHandler) delegate, delegateDispatcherServlet);
@@ -35,6 +37,10 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>, Applic
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		delegateDispatcherServlet.onApplicationEvent(event);
+	}
+
+	public void setStateHandler(FacesViewStateHandler stateHandler) {
+		this.stateHandler = stateHandler;
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet implements ViewResolver {
