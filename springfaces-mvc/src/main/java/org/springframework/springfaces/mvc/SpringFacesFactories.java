@@ -15,7 +15,6 @@ import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
 
 public class SpringFacesFactories implements FacesWrapperFactory<Object>, ApplicationListener<ContextRefreshedEvent> {
 
@@ -43,11 +42,20 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>, Applic
 		this.stateHandler = stateHandler;
 	}
 
-	private static class DelegateDispatcherServlet extends DispatcherServlet implements ViewResolver {
+	private static class DelegateDispatcherServlet extends DispatcherServlet implements ViewIdResolver {
 		private static final long serialVersionUID = 1L;
 
-		public View resolveViewName(String viewName, Locale locale) throws Exception {
-			return resolveViewName(viewName, null, locale, null);
+		public boolean isResolvable(String viewId) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public View resolveViewId(String viewName, Locale locale) {
+			try {
+				return resolveViewName(viewName, null, locale, null);
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
 		}
 	}
 }

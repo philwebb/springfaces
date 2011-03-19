@@ -16,40 +16,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.mvc.FacesViewResolver;
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.ViewIdResolver;
 import org.springframework.springfaces.mvc.view.FacesView;
 import org.springframework.springfaces.mvc.view.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
 
 public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcViewHandler.class.getName() + ".VIEW";
 	private static final String MODEL_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
-	private static final String ACTION_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
-	private static final String DEFAULT_ACTION_URL = "";
+	private static final String ACTION_ATTRIBUTE = MvcViewHandler.class.getName() + ".ACTION";
 
 	private Log logger = LogFactory.getLog(MvcNavigationHandler.class);
 
 	private ViewHandler delegate;
 
-	private FacesViewResolver dunno = new FacesViewResolver() {
+	private ViewIdResolver viewIdResolver;
 
-		public boolean isSupported(String viewId) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public View getView(String viewName) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	};
-
-	public MvcViewHandler(ViewHandler delegate, ViewResolver viewResolver) {
+	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver) {
 		this.delegate = delegate;
+		this.viewIdResolver = viewIdResolver;
 	}
 
 	@Override
@@ -75,8 +63,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			MvcResponseStateManager.prepare(context, viewArtifact);
 			viewId = viewArtifact.toString();
 			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
-		} else if (create && dunno.isSupported(cleanupViewId(viewId))) {
-			View view = dunno.getView(cleanupViewId(viewId));
+		} else if (create && viewIdResolver.isResolvable(cleanupViewId(viewId))) {
+			View view = viewIdResolver.resolveViewId(cleanupViewId(viewId), null); // FIXME
 			if (view instanceof FacesView) {
 				// FIXME setRendering(context, renderable, model);
 				// recurse
@@ -134,7 +122,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 				return externalContext.getRequestContextPath() + externalContext.getRequestServletPath()
 						+ externalContext.getRequestPathInfo();
 			}
-			Assert.state(!dunno.isSupported(viewId), "Unable to return action URL for " + viewId);
+			Assert.state(!viewIdResolver.isResolvable(viewId), "Unable to return action URL for " + viewId);
 		}
 		return super.getActionURL(context, viewId);
 	}
