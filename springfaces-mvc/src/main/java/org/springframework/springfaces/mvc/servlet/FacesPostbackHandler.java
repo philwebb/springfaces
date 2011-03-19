@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.view.Renderable;
+import org.springframework.springfaces.mvc.view.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerAdapter;
@@ -65,12 +65,12 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		if (request.getAttribute(DISABLE_ATTRIBUTE) != null) {
 			return null;
 		}
-		Renderable view = getStateHandler().readViewState(request);
-		if (view == null) {
+		ViewArtifact viewArtifact = getStateHandler().read(request);
+		if (viewArtifact == null) {
 			return null;
 		}
 		//FIXME get the delegate handler here
-		return new HandlerExecutionChain(new Postback(view), new HandlerInterceptor[] { facesInterceptor });
+		return new HandlerExecutionChain(new Postback(viewArtifact), new HandlerInterceptor[] { facesInterceptor });
 
 	}
 
@@ -92,9 +92,9 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 					+ FacesHandlerInterceptor.class.getSimpleName() + " is registered in the web context");
 			FacesContext facesContext = springFacesContext.getFacesContext(true);
 			try {
-				Renderable renderable = ((Postback) handler).getView();
+				ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
 				//FIXME model?
-				MvcViewHandler.setRendering(facesContext, renderable, null);
+				MvcViewHandler.prepare(facesContext, viewArtifact, null);
 				springFacesContext.getLifecycle().execute(facesContext);
 				springFacesContext.getLifecycle().render(facesContext);
 			} finally {
@@ -136,14 +136,14 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 
 	private static class Postback {
 
-		private Renderable view;
+		private ViewArtifact viewArtifact;
 
-		public Postback(Renderable view) {
-			this.view = view;
+		public Postback(ViewArtifact viewArtifact) {
+			this.viewArtifact = viewArtifact;
 		}
 
-		public Renderable getView() {
-			return view;
+		public ViewArtifact getViewArtifact() {
+			return viewArtifact;
 		}
 	}
 

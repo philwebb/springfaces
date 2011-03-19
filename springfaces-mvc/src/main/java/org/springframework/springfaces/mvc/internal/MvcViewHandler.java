@@ -19,13 +19,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.Dunno;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.view.FacesView;
-import org.springframework.springfaces.mvc.view.Renderable;
+import org.springframework.springfaces.mvc.view.ViewArtifact;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 
 public class MvcViewHandler extends ViewHandlerWrapper {
 
-	private static final String VIEW_ATTRIBUTE = MvcViewHandler.class.getName() + ".VIEW";
+	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcViewHandler.class.getName() + ".VIEW";
 	private static final String MODEL_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
 	private static final String ACTION_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
 	private static final String DEFAULT_ACTION_URL = "";
@@ -67,14 +67,14 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
-		MvcResponseStateManager.setRendering(context, null);
+		MvcResponseStateManager.prepare(context, null);
 		context.getAttributes().remove(ACTION_ATTRIBUTE);
-		Renderable rendering = getRendering(context);
-		if (rendering != null) {
-			String actionUrl = rendering.getActionUrl();
+		ViewArtifact viewArtifact = getViewArtifact(context);
+		if (viewArtifact != null) {
+			String actionUrl = null; //FIXME rendering.getActionUrl();
 			context.getAttributes().put(ACTION_ATTRIBUTE, actionUrl == null ? DEFAULT_ACTION_URL : actionUrl);
-			MvcResponseStateManager.setRendering(context, rendering);
-			viewId = rendering.getViewId();
+			MvcResponseStateManager.prepare(context, viewArtifact);
+			viewId = viewArtifact.toString();
 		} else if (create && dunno.isSupported(cleanupViewId(viewId))) {
 			View view = dunno.getView(cleanupViewId(viewId));
 			if (view instanceof FacesView) {
@@ -118,9 +118,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		}
 	}
 
-	private Renderable getRendering(FacesContext context) {
+	private ViewArtifact getViewArtifact(FacesContext context) {
 		if (SpringFacesContext.getCurrentInstance() != null && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) {
-			return (Renderable) context.getAttributes().get(VIEW_ATTRIBUTE);
+			return (ViewArtifact) context.getAttributes().get(VIEW_ARTIFACT_ATTRIBUTE);
 		}
 		return null;
 	}
@@ -152,8 +152,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		}
 	}
 
-	public static void setRendering(FacesContext facesContext, Renderable renderable, Map<String, Object> model) {
-		facesContext.getAttributes().put(VIEW_ATTRIBUTE, renderable);
+	public static void prepare(FacesContext facesContext, ViewArtifact viewArtifact, Map<String, Object> model) {
+		facesContext.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
 		facesContext.getAttributes().put(MODEL_ATTRIBUTE, model);
 	}
 }

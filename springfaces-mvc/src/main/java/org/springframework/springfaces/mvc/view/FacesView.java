@@ -28,8 +28,8 @@ public class FacesView extends AbstractUrlBasedView {
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(true);
 		FacesContext facesContext = springFacesContext.getFacesContext(true);
 		try {
-			Renderable renderable = new Renderable(getUrl());
-			MvcViewHandler.setRendering(facesContext, renderable, model);
+			ViewArtifact viewArtifact = new ViewArtifact(getUrl());
+			MvcViewHandler.prepare(facesContext, viewArtifact, model);
 			springFacesContext.getLifecycle().execute(facesContext);
 			springFacesContext.getLifecycle().render(facesContext);
 		} finally {

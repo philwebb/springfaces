@@ -8,13 +8,13 @@ import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.view.Renderable;
+import org.springframework.springfaces.mvc.view.ViewArtifact;
 import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
 public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {
 
-	private static final String RENDERING_ATTRIBUTE = MvcResponseStateManager.class.getName() + ".RENDERING";
+	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcResponseStateManager.class.getName() + ".RENDERING";
 
 	private String renderKitId;
 	private ResponseStateManager delegate;
@@ -36,19 +36,19 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
-		if (SpringFacesContext.getCurrentInstance() != null && context.getAttributes().containsKey(RENDERING_ATTRIBUTE)
+		if (SpringFacesContext.getCurrentInstance() != null && context.getAttributes().containsKey(VIEW_ARTIFACT_ATTRIBUTE)
 				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
-			Renderable renderable = (Renderable) context.getAttributes().get(RENDERING_ATTRIBUTE);
-			stateHandler.writeViewState(context, renderable);
+			ViewArtifact viewArtifact = (ViewArtifact) context.getAttributes().get(VIEW_ARTIFACT_ATTRIBUTE);
+			stateHandler.write(context, viewArtifact);
 		}
 		super.writeState(context, state);
 	}
 
-	public static void setRendering(FacesContext context, Renderable renderable) {
-		if (renderable == null) {
-			context.getAttributes().remove(RENDERING_ATTRIBUTE);
+	public static void prepare(FacesContext context, ViewArtifact viewArtifact) {
+		if (viewArtifact == null) {
+			context.getAttributes().remove(VIEW_ARTIFACT_ATTRIBUTE);
 		} else {
-			context.getAttributes().put(RENDERING_ATTRIBUTE, renderable);
+			context.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
 		}
 
 	}

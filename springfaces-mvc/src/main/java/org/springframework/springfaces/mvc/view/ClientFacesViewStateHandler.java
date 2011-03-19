@@ -10,9 +10,9 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 
 	private static final String ID = "org.springframework.springfaces.id";
 
-	public void writeViewState(FacesContext facesContext, Renderable viewState) throws IOException {
+	public void write(FacesContext facesContext, ViewArtifact viewState) throws IOException {
 		ResponseWriter writer = facesContext.getResponseWriter();
-		writeHiddenInput(writer, ID, viewState.getViewId());
+		writeHiddenInput(writer, ID, viewState.toString());
 	}
 
 	private void writeHiddenInput(ResponseWriter writer, String id, String value) throws IOException {
@@ -27,11 +27,11 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 		writer.write("\"\\>");
 	}
 
-	public Renderable readViewState(HttpServletRequest request) throws IOException {
+	public ViewArtifact read(HttpServletRequest request) throws IOException {
 		String id = request.getParameter(ID);
 		if (id == null) {
 			return null;
 		}
-		return new Renderable(id);
+		return new ViewArtifact(id);
 	}
 }
