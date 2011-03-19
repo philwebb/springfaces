@@ -1,6 +1,7 @@
 package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -16,10 +17,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.mvc.Dunno;
+import org.springframework.springfaces.mvc.FacesViewResolver;
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.view.Bookmarkable;
 import org.springframework.springfaces.mvc.view.FacesView;
 import org.springframework.springfaces.mvc.view.ViewArtifact;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 
@@ -34,7 +37,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 
-	private Dunno dunno = new Dunno() {
+	private FacesViewResolver dunno = new FacesViewResolver() {
 
 		public boolean isSupported(String viewId) {
 			// TODO Auto-generated method stub
@@ -43,6 +46,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 		public View getView(String viewName) {
 			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Bookmarkable getBookmarkable(String viewName) {
 			return null;
 		}
 	};
@@ -71,15 +78,14 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		context.getAttributes().remove(ACTION_ATTRIBUTE);
 		ViewArtifact viewArtifact = getViewArtifact(context);
 		if (viewArtifact != null) {
-			String actionUrl = null; //FIXME rendering.getActionUrl();
-			context.getAttributes().put(ACTION_ATTRIBUTE, actionUrl == null ? DEFAULT_ACTION_URL : actionUrl);
 			MvcResponseStateManager.prepare(context, viewArtifact);
 			viewId = viewArtifact.toString();
+			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
 		} else if (create && dunno.isSupported(cleanupViewId(viewId))) {
 			View view = dunno.getView(cleanupViewId(viewId));
 			if (view instanceof FacesView) {
-				//FIXME setRendering(context, renderable, model);
-				//recurse
+				// FIXME setRendering(context, renderable, model);
+				// recurse
 			} else {
 				return new MvcUIViewRoot(viewId, view);
 			}
@@ -99,6 +105,20 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
+	}
+
+	@Override
+	public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+			boolean includeViewParams) {
+		if (dunno.isSupported(viewId)) {
+			Bookmarkable bookmarkable = dunno.getBookmarkable(viewId);
+			// FIXME ANN
+			// FIXME includeViewParams
+			return bookmarkable.getBookmarkURL(parameters);
+		}
+
+		// TODO Auto-generated method stub
+		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 	}
 
 	@Override
@@ -127,14 +147,14 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
-		if (SpringFacesContext.getCurrentInstance() != null && context.getAttributes().containsKey(ACTION_ATTRIBUTE)) {
-			String actionUrl = (String) context.getAttributes().get(ACTION_ATTRIBUTE);
-			if (DEFAULT_ACTION_URL.equals(actionUrl)) {
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			String actionViewId = (String) context.getAttributes().get(ACTION_ATTRIBUTE);
+			if (actionViewId != null && actionViewId.equals(viewId)) {
 				ExternalContext externalContext = context.getExternalContext();
-				actionUrl = externalContext.getRequestContextPath() + externalContext.getRequestServletPath()
+				return externalContext.getRequestContextPath() + externalContext.getRequestServletPath()
 						+ externalContext.getRequestPathInfo();
 			}
-			return actionUrl;
+			Assert.state(!dunno.isSupported(viewId), "Unable to return action URL for " + viewId);
 		}
 		return super.getActionURL(context, viewId);
 	}
