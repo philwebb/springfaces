@@ -18,5 +18,12 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/WEB-INF/pages/simple.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>go</from-outcome>
+			<to-view-id>mvc:testBeanView</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 
 </faces-config>

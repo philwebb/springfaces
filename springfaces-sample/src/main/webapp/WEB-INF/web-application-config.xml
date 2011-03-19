@@ -16,7 +16,7 @@
         http://www.springframework.org/schema/faces
         http://www.springframework.org/schema/faces/spring-faces-2.2.xsd">
 
-	<mvc:annotation-driven conversion-service="conversionService" />
+	<mvc:annotation-driven conversion-service="conversionService"/>
 
 	<bean id="conversionService"
 		class="org.springframework.context.support.ConversionServiceFactoryBean">

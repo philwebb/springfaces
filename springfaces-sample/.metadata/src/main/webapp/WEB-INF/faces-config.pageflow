@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf12999458416200" configfile="/springfaces-sample/src/main/webapp/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="test.xhtml" id="pf13002230710503" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13002230710504" path="/test.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="wibble/test2.xhtml" id="pf13002230710505" referenceLink="//@navigationRule.0/@navigationCase.1/@toViewId|" inlinks="pf13002230710504" path="/wibble/test2.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="test.xhtml" x="122" y="178" id="pf13002230710503" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13002230710504" path="/test.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="wibble/test2.xhtml" x="338" y="178" id="pf13002230710505" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13002230710504" path="/wibble/test2.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="WEB-INF/pages/simple.xml" x="122" y="562" id="pf13005270177357" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13005270177358" path="/WEB-INF/pages/simple.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="mvc:testBeanView" x="338" y="562" id="pf13005270177359" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13005270177358" path="mvc:testBeanView"/>
   <links id="pf13002230710504" target="pf13002230710505" source="pf13002230710503" outcome="go" redirect="true"/>
+  <links id="pf13005270177358" target="pf13005270177359" source="pf13005270177357" outcome="go"/>
 </pageflow:Pageflow>

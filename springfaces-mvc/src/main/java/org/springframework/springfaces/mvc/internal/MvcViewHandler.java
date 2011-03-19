@@ -3,12 +3,14 @@ package org.springframework.springfaces.mvc.internal;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
 import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
+import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,15 +52,15 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		//if it is a JSF view use the details to restore
 		//otherwise create a special view root that will render the view
 
-		if (viewId.startsWith("mvc:")) {
-			String viewName = viewId.substring(4);
+		if (viewId.startsWith("/mvc:")) {
+			String viewName = viewId.substring(5);
 			Locale locale = Locale.ENGLISH; //FIXME
 			try {
 				View view = viewResolver.resolveViewName(viewName, locale);
 				if (view instanceof FacesView) {
-					//FIXME create suing super
+					//FIXME create uing super
 				}
-				return new MvcUIViewRoot(view);
+				return new MvcUIViewRoot(viewId, view);
 			} catch (Exception e) {
 				//FIXME
 				e.printStackTrace();
@@ -75,6 +77,31 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			return super.restoreView(context, mvcViewId);
 		}
 		return super.restoreView(context, viewId);
+	}
+
+	@Override
+	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
+		if (viewId.startsWith("/mvc:")) {
+			return null;
+		}
+		return super.getViewDeclarationLanguage(context, viewId);
+	}
+
+	@Override
+	public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
+		if (viewToRender instanceof MvcUIViewRoot) {
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			try {
+				((MvcUIViewRoot) viewToRender).getView().render(null, request, response);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else {
+			super.renderView(context, viewToRender);
+		}
 	}
 
 	private String getMvcViewId(FacesContext context, String viewId) {
@@ -122,20 +149,13 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private static class MvcUIViewRoot extends UIViewRoot {
 		private View view;
 
-		public MvcUIViewRoot(View view) {
+		public MvcUIViewRoot(String viewId, View view) {
+			setViewId(viewId);
 			this.view = view;
 		}
 
-		@Override
-		public void encodeEnd(FacesContext context) throws IOException {
-			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-			try {
-				view.render(null, request, response);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		public View getView() {
+			return view;
 		}
 	}
 }
