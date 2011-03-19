@@ -1,7 +1,6 @@
 package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -19,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.FacesViewResolver;
 import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.view.Bookmarkable;
 import org.springframework.springfaces.mvc.view.FacesView;
 import org.springframework.springfaces.mvc.view.ViewArtifact;
 import org.springframework.util.Assert;
@@ -46,10 +44,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 		public View getView(String viewName) {
 			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public Bookmarkable getBookmarkable(String viewName) {
 			return null;
 		}
 	};
@@ -105,20 +99,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
-	}
-
-	@Override
-	public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
-			boolean includeViewParams) {
-		if (dunno.isSupported(viewId)) {
-			Bookmarkable bookmarkable = dunno.getBookmarkable(viewId);
-			// FIXME ANN
-			// FIXME includeViewParams
-			return bookmarkable.getBookmarkURL(parameters);
-		}
-
-		// TODO Auto-generated method stub
-		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 	}
 
 	@Override
