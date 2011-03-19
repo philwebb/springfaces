@@ -3,14 +3,8 @@ package org.springframework.springfaces.mvc.converter;
 import java.util.Collections;
 import java.util.Set;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.springfaces.mvc.SpringFacesContext;
-import org.springframework.springfaces.mvc.SpringFacesContext.FacesContextCallbackMode;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 public class GenericFacesConverter extends WebApplicationObjectSupport implements ConditionalGenericConverter {
@@ -27,17 +21,21 @@ public class GenericFacesConverter extends WebApplicationObjectSupport implement
 	}
 
 	public Object convert(final Object source, final TypeDescriptor sourceType, final TypeDescriptor targetType) {
-		return SpringFacesContext.getCurrentInstance().doWithFacesContext(FacesContextCallbackMode.IGNORE_IF_MISSING,
-				new SpringFacesContext.FacesContextCallback<Object>() {
-					public Object doWithFacesContext(FacesContext facesContext) {
-						Converter converter = facesContext.getApplication().createConverter(targetType.getType());
-						if (converter == null) {
-							return null;
-						}
-						UIComponent component = null;
-						String value = (String) source;
-						return converter.getAsObject(facesContext, component, value);
-					}
-				});
+		return null;
+		//FIXME
+		//		SpringFacesContext.getCurrentInstance();
+		//
+		//		return SpringFacesContext.getCurrentInstance().doWithFacesContext(FacesContextCallbackMode.IGNORE_IF_MISSING,
+		//				new SpringFacesContext.FacesContextCallback<Object>() {
+		//					public Object doWithFacesContext(FacesContext facesContext) {
+		//						Converter converter = facesContext.getApplication().createConverter(targetType.getType());
+		//						if (converter == null) {
+		//							return null;
+		//						}
+		//						UIComponent component = null;
+		//						String value = (String) source;
+		//						return converter.getAsObject(facesContext, component, value);
+		//					}
+		//				});
 	}
 }

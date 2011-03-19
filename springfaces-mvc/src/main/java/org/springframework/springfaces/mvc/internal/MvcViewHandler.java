@@ -1,7 +1,7 @@
 package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
-import java.util.Locale;
+import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.application.ViewHandler;
@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.springfaces.mvc.Dunno;
 import org.springframework.springfaces.mvc.SpringFacesContext;
 import org.springframework.springfaces.mvc.view.FacesView;
 import org.springframework.springfaces.mvc.view.Renderable;
@@ -24,15 +25,30 @@ import org.springframework.web.servlet.ViewResolver;
 
 public class MvcViewHandler extends ViewHandlerWrapper {
 
+	private static final String VIEW_ATTRIBUTE = MvcViewHandler.class.getName() + ".VIEW";
+	private static final String MODEL_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
+	private static final String ACTION_ATTRIBUTE = MvcViewHandler.class.getName() + ".MODEL";
+	private static final String DEFAULT_ACTION_URL = "";
+
 	private Log logger = LogFactory.getLog(MvcNavigationHandler.class);
 
 	private ViewHandler delegate;
 
-	private ViewResolver viewResolver;
+	private Dunno dunno = new Dunno() {
+
+		public boolean isSupported(String viewId) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public View getView(String viewName) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	};
 
 	public MvcViewHandler(ViewHandler delegate, ViewResolver viewResolver) {
 		this.delegate = delegate;
-		this.viewResolver = viewResolver;
 	}
 
 	@Override
@@ -42,41 +58,39 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public UIViewRoot createView(FacesContext context, String viewId) {
-		String mvcViewId = getMvcViewId(context, viewId);
-		if (mvcViewId != null) {
-			return super.createView(context, mvcViewId);
-		}
-		//FIXME
-		//if viewId starts with mvc:
-		//use a viewresolver to get the view
-		//if it is a JSF view use the details to restore
-		//otherwise create a special view root that will render the view
-
-		if (viewId.startsWith("/mvc:")) {
-			String viewName = viewId.substring(5);
-			Locale locale = Locale.ENGLISH; //FIXME
-			try {
-				View view = viewResolver.resolveViewName(viewName, locale);
-				if (view instanceof FacesView) {
-					//FIXME create uing super
-				}
-				return new MvcUIViewRoot(viewId, view);
-			} catch (Exception e) {
-				//FIXME
-				e.printStackTrace();
-			}
-		}
-
-		return super.createView(context, viewId);
+		return createOrRestoreView(context, viewId, true);
 	}
 
 	@Override
 	public UIViewRoot restoreView(FacesContext context, String viewId) {
-		String mvcViewId = getMvcViewId(context, viewId);
-		if (mvcViewId != null) {
-			return super.restoreView(context, mvcViewId);
+		return createOrRestoreView(context, viewId, false);
+	}
+
+	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
+		MvcResponseStateManager.setRendering(context, null);
+		context.getAttributes().remove(ACTION_ATTRIBUTE);
+		Renderable rendering = getRendering(context);
+		if (rendering != null) {
+			String actionUrl = rendering.getActionUrl();
+			context.getAttributes().put(ACTION_ATTRIBUTE, actionUrl == null ? DEFAULT_ACTION_URL : actionUrl);
+			MvcResponseStateManager.setRendering(context, rendering);
+			viewId = rendering.getViewId();
+		} else if (create && dunno.isSupported(cleanupViewId(viewId))) {
+			View view = dunno.getView(cleanupViewId(viewId));
+			if (view instanceof FacesView) {
+				//FIXME setRendering(context, renderable, model);
+				//recurse
+			} else {
+				return new MvcUIViewRoot(viewId, view);
+			}
 		}
-		return super.restoreView(context, viewId);
+		return (create ? super.createView(context, viewId) : super.restoreView(context, viewId));
+
+	}
+
+	private String cleanupViewId(String viewId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -104,46 +118,25 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		}
 	}
 
-	private String getMvcViewId(FacesContext context, String viewId) {
-
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
-
-		//Check if we are in a restore phase, createView can also be called during navigation.
-		if (!PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) {
-			return null;
+	private Renderable getRendering(FacesContext context) {
+		if (SpringFacesContext.getCurrentInstance() != null && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) {
+			return (Renderable) context.getAttributes().get(VIEW_ATTRIBUTE);
 		}
-
-		//Check if we are rendering an MVC view
-		if (springFacesContext == null || springFacesContext.getRendering() == null) {
-			return null;
-		}
-
-		//Use the MVC specified details to create the view
-		String mvcViewId = springFacesContext.getRendering().getViewId();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Restoring MVC handled view '" + mvcViewId + "' for JSF vew " + viewId);
-		}
-		return mvcViewId;
+		return null;
 	}
 
 	@Override
 	public String getActionURL(FacesContext context, String viewId) {
-		System.out.println("Get Action URL " + context.getCurrentPhaseId() + " " + viewId);
-		String actionUrl = null;
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
-		if (springFacesContext != null && springFacesContext.getRendering() != null) {
-			Renderable rendering = springFacesContext.getRendering();
-			if (viewId.equals(rendering.getViewId())) {
-				//FIXME currently action URL for the rendering view is the request, could push up to allow custom postback URLs
+		if (SpringFacesContext.getCurrentInstance() != null && context.getAttributes().containsKey(ACTION_ATTRIBUTE)) {
+			String actionUrl = (String) context.getAttributes().get(ACTION_ATTRIBUTE);
+			if (DEFAULT_ACTION_URL.equals(actionUrl)) {
 				ExternalContext externalContext = context.getExternalContext();
 				actionUrl = externalContext.getRequestContextPath() + externalContext.getRequestServletPath()
 						+ externalContext.getRequestPathInfo();
 			}
+			return actionUrl;
 		}
-		if (actionUrl == null) {
-			actionUrl = super.getActionURL(context, viewId);
-		}
-		return actionUrl;
+		return super.getActionURL(context, viewId);
 	}
 
 	private static class MvcUIViewRoot extends UIViewRoot {
@@ -157,5 +150,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		public View getView() {
 			return view;
 		}
+	}
+
+	public static void setRendering(FacesContext facesContext, Renderable renderable, Map<String, Object> model) {
+		facesContext.getAttributes().put(VIEW_ATTRIBUTE, renderable);
+		facesContext.getAttributes().put(MODEL_ATTRIBUTE, model);
 	}
 }

@@ -2,6 +2,7 @@ package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.view.FacesViewStateHandler;
 import org.springframework.springfaces.mvc.view.Renderable;
 import org.springframework.util.Assert;
@@ -67,6 +69,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		if (view == null) {
 			return null;
 		}
+		//FIXME get the delegate handler here
 		return new HandlerExecutionChain(new Postback(view), new HandlerInterceptor[] { facesInterceptor });
 
 	}
@@ -75,7 +78,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		return handler instanceof Postback;
 	}
 
-	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
+	public ModelAndView handle(final HttpServletRequest request, HttpServletResponse response, final Object handler)
 			throws Exception {
 		request.setAttribute(DISABLE_ATTRIBUTE, Boolean.TRUE);
 		try {
@@ -84,15 +87,24 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			HandlerExecutionChain chain = delegateDispatcherServlet.getHandler(request);
 			System.out.println(chain.getHandler());
 
-			Renderable view = ((Postback) handler).getView();
 			SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 			Assert.state(springFacesContext != null, "Unable to locate the SpringFacesContext.  Ensure that a "
 					+ FacesHandlerInterceptor.class.getSimpleName() + " is registered in the web context");
-			springFacesContext.render(view);
-			return null;
+			FacesContext facesContext = springFacesContext.getFacesContext(true);
+			try {
+				Renderable renderable = ((Postback) handler).getView();
+				//FIXME model?
+				MvcViewHandler.setRendering(facesContext, renderable, null);
+				springFacesContext.getLifecycle().execute(facesContext);
+				springFacesContext.getLifecycle().render(facesContext);
+			} finally {
+				facesContext.release();
+			}
+
 		} finally {
 			request.removeAttribute(DISABLE_ATTRIBUTE);
 		}
+		return null;
 	}
 
 	public long getLastModified(HttpServletRequest request, Object handler) {

@@ -3,10 +3,12 @@ package org.springframework.springfaces.mvc.view;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.SpringFacesContext;
+import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class FacesView extends AbstractUrlBasedView {
@@ -23,10 +25,16 @@ public class FacesView extends AbstractUrlBasedView {
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
-		//FIXME ANN
-
-		springFacesContext.render(new Renderable(getUrl()));
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(true);
+		FacesContext facesContext = springFacesContext.getFacesContext(true);
+		try {
+			Renderable renderable = new Renderable(getUrl());
+			MvcViewHandler.setRendering(facesContext, renderable, model);
+			springFacesContext.getLifecycle().execute(facesContext);
+			springFacesContext.getLifecycle().render(facesContext);
+		} finally {
+			facesContext.release();
+		}
 	}
 
 	@Override
