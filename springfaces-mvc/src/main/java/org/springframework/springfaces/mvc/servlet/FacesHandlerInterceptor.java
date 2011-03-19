@@ -59,7 +59,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	}
 
 	private SpringFacesContextImpl getSpringFacesContext() {
-		//FIXME cast check
+		// FIXME cast check
 		return (SpringFacesContextImpl) SpringFacesContext.getCurrentInstance();
 	}
 
@@ -81,7 +81,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 		@Override
 		public Object getHandler() {
-			//FIXME return handler, if it is postback return real one
+			// FIXME return handler, if it is postback return real one
 			return null;
 		}
 
@@ -91,8 +91,8 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		@Override
-		public FacesContext getFacesContext(boolean required) {
-			//FIXME make ref counted
+		public FacesContext getFacesContext() {
+			// FIXME make ref counted
 			if (facesContext == null) {
 				facesContext = facesContextFactory.getFacesContext(servletContext, request, response, lifecycle);
 			}
@@ -101,98 +101,98 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	}
 
 	//
-	//	private class SpringFacesContextImpl extends SpringFacesContext {
+	// private class SpringFacesContextImpl extends SpringFacesContext {
 	//
-	//		private HttpServletRequest request;
-	//		private HttpServletResponse response;
-	//		private ModelMap modelMap;
-	//		private Renderable rendering;
+	// private HttpServletRequest request;
+	// private HttpServletResponse response;
+	// private ModelMap modelMap;
+	// private Renderable rendering;
 	//
-	//		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response) {
-	//			this.request = request;
-	//			this.response = response;
-	//			setCurrentInstance(this);
-	//		}
+	// public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response) {
+	// this.request = request;
+	// this.response = response;
+	// setCurrentInstance(this);
+	// }
 	//
-	//		public void setModelMap(ModelMap modelMap) {
-	//			this.modelMap = modelMap;
-	//		}
+	// public void setModelMap(ModelMap modelMap) {
+	// this.modelMap = modelMap;
+	// }
 	//
-	//		@Override
-	//		public <T> T doWithFacesContext(final FacesContextCallbackMode mode, final FacesContextCallback<T> fcc) {
-	//			return doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<T>() {
-	//				public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
-	//					//FIXME switch on mode
-	//					return fcc.doWithFacesContext(facesContext);
-	//				}
-	//			});
-	//		}
+	// @Override
+	// public <T> T doWithFacesContext(final FacesContextCallbackMode mode, final FacesContextCallback<T> fcc) {
+	// return doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<T>() {
+	// public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
+	// //FIXME switch on mode
+	// return fcc.doWithFacesContext(facesContext);
+	// }
+	// });
+	// }
 	//
-	//		public void render(Renderable view) {
-	//			//FIXME we need probably be a little more intelligent about access to Rendering.
-	//			//During postback navigation may want to create a different view and a the moment
-	//			//rendering overrides all
-	//			//Better still is to push it closed to the RestoreViewPhase
-	//			this.rendering = view;
-	//			try {
-	//				doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<Object>() {
-	//					public Object doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
-	//						//FIXME assert life
-	//						lifecycle.execute(facesContext);
-	//						storeModelMapInFlash(facesContext);
-	//						lifecycle.render(facesContext);
-	//						return null;
-	//					}
-	//				});
-	//			} finally {
-	//				this.rendering = null;
-	//			}
-	//		}
+	// public void render(Renderable view) {
+	// //FIXME we need probably be a little more intelligent about access to Rendering.
+	// //During postback navigation may want to create a different view and a the moment
+	// //rendering overrides all
+	// //Better still is to push it closed to the RestoreViewPhase
+	// this.rendering = view;
+	// try {
+	// doWithFacesContextAndLifecycle(new FacesContextAndLifecycleCallback<Object>() {
+	// public Object doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle) {
+	// //FIXME assert life
+	// lifecycle.execute(facesContext);
+	// storeModelMapInFlash(facesContext);
+	// lifecycle.render(facesContext);
+	// return null;
+	// }
+	// });
+	// } finally {
+	// this.rendering = null;
+	// }
+	// }
 	//
-	//		private void storeModelMapInFlash(FacesContext facesContext) {
-	//			//FIXME perhaps better in viewScope ?  perhaps as model?
-	//			Flash flash = facesContext.getExternalContext().getFlash();
-	//			ModelMap modelMap = this.modelMap;
-	//			if (modelMap == null) {
-	//				modelMap = (ModelMap) flash.get("modelMap");
-	//			}
-	//			if (modelMap != null) {
-	//				flash.put("modelMap", modelMap);
-	//			}
-	//		}
+	// private void storeModelMapInFlash(FacesContext facesContext) {
+	// //FIXME perhaps better in viewScope ? perhaps as model?
+	// Flash flash = facesContext.getExternalContext().getFlash();
+	// ModelMap modelMap = this.modelMap;
+	// if (modelMap == null) {
+	// modelMap = (ModelMap) flash.get("modelMap");
+	// }
+	// if (modelMap != null) {
+	// flash.put("modelMap", modelMap);
+	// }
+	// }
 	//
-	//		public Renderable getRendering() {
-	//			return rendering;
-	//		}
+	// public Renderable getRendering() {
+	// return rendering;
+	// }
 	//
-	//		public void release() {
-	//			setCurrentInstance(null);
-	//		}
+	// public void release() {
+	// setCurrentInstance(null);
+	// }
 	//
-	//		private <T> T doWithFacesContextAndLifecycle(FacesContextAndLifecycleCallback<T> fcc) {
-	//			FacesContext facesContext = FacesContext.getCurrentInstance();
-	//			if (facesContext != null) {
-	//				return fcc.doWithFacesContextAndLifeCycle(facesContext, null);
-	//			}
-	//			Lifecycle lifecycle = getFacesFactory(LifecycleFactory.class).getLifecycle(
-	//					LifecycleFactory.DEFAULT_LIFECYCLE);
-	//			facesContext = getFacesFactory(FacesContextFactory.class).getFacesContext(servletContext, request,
-	//					response, lifecycle);
-	//			try {
-	//				return fcc.doWithFacesContextAndLifeCycle(facesContext, lifecycle);
-	//			} finally {
-	//				facesContext.release();
-	//			}
-	//		}
+	// private <T> T doWithFacesContextAndLifecycle(FacesContextAndLifecycleCallback<T> fcc) {
+	// FacesContext facesContext = FacesContext.getCurrentInstance();
+	// if (facesContext != null) {
+	// return fcc.doWithFacesContextAndLifeCycle(facesContext, null);
+	// }
+	// Lifecycle lifecycle = getFacesFactory(LifecycleFactory.class).getLifecycle(
+	// LifecycleFactory.DEFAULT_LIFECYCLE);
+	// facesContext = getFacesFactory(FacesContextFactory.class).getFacesContext(servletContext, request,
+	// response, lifecycle);
+	// try {
+	// return fcc.doWithFacesContextAndLifeCycle(facesContext, lifecycle);
+	// } finally {
+	// facesContext.release();
+	// }
+	// }
 	//
-	//		@SuppressWarnings("unchecked")
-	//		private <T> T getFacesFactory(Class<T> factoryClass) {
-	//			return (T) FactoryFinder.getFactory(factoryClass.getName());
-	//			//FIXME check return type?
-	//		}
-	//	}
+	// @SuppressWarnings("unchecked")
+	// private <T> T getFacesFactory(Class<T> factoryClass) {
+	// return (T) FactoryFinder.getFactory(factoryClass.getName());
+	// //FIXME check return type?
+	// }
+	// }
 
-	//	private static interface FacesContextAndLifecycleCallback<T> {
-	//		public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle);
-	//	}
+	// private static interface FacesContextAndLifecycleCallback<T> {
+	// public T doWithFacesContextAndLifeCycle(FacesContext facesContext, Lifecycle lifecycle);
+	// }
 }

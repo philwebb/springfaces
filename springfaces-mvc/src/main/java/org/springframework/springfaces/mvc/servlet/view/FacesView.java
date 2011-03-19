@@ -27,7 +27,7 @@ public class FacesView extends AbstractUrlBasedView {
 			HttpServletResponse response) throws Exception {
 
 		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(true);
-		FacesContext facesContext = springFacesContext.getFacesContext(true);
+		FacesContext facesContext = springFacesContext.getFacesContext();
 		try {
 			ViewArtifact viewArtifact = new ViewArtifact(getUrl());
 			MvcViewHandler.prepare(facesContext, viewArtifact, model);
@@ -40,7 +40,7 @@ public class FacesView extends AbstractUrlBasedView {
 
 	@Override
 	public boolean checkResource(Locale locale) throws Exception {
-		//FIXME check if the resource exists
+		// FIXME check if the resource exists
 		return super.checkResource(locale);
 	}
 

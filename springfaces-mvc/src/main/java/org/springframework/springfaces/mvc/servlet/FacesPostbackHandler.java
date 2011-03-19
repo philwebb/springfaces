@@ -69,7 +69,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		if (viewArtifact == null) {
 			return null;
 		}
-		//FIXME get the delegate handler here
+		// FIXME get the delegate handler here
 		return new HandlerExecutionChain(new Postback(viewArtifact), new HandlerInterceptor[] { facesInterceptor });
 
 	}
@@ -82,7 +82,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			throws Exception {
 		request.setAttribute(DISABLE_ATTRIBUTE, Boolean.TRUE);
 		try {
-			//FIXME check supports
+			// FIXME check supports
 
 			HandlerExecutionChain chain = delegateDispatcherServlet.getHandler(request);
 			System.out.println(chain.getHandler());
@@ -90,10 +90,10 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
 			Assert.state(springFacesContext != null, "Unable to locate the SpringFacesContext.  Ensure that a "
 					+ FacesHandlerInterceptor.class.getSimpleName() + " is registered in the web context");
-			FacesContext facesContext = springFacesContext.getFacesContext(true);
+			FacesContext facesContext = springFacesContext.getFacesContext();
 			try {
 				ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
-				//FIXME model?
+				// FIXME model?
 				MvcViewHandler.prepare(facesContext, viewArtifact, null);
 				springFacesContext.getLifecycle().execute(facesContext);
 				springFacesContext.getLifecycle().render(facesContext);
@@ -108,7 +108,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	}
 
 	public long getLastModified(HttpServletRequest request, Object handler) {
-		//FIXME
+		// FIXME
 		return -1;
 	}
 
@@ -125,10 +125,11 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	}
 
 	/**
-	 * Set whether to detect all HandlerMapping beans in this servlet's context. Otherwise,
-	 * just a single bean with name "handlerMapping" will be expected.
-	 * <p>Default is "true". Turn this off if you want this servlet to use a single
-	 * HandlerMapping, despite multiple HandlerMapping beans being defined in the context.
+	 * Set whether to detect all HandlerMapping beans in this servlet's context. Otherwise, just a single bean with name
+	 * "handlerMapping" will be expected.
+	 * <p>
+	 * Default is "true". Turn this off if you want this servlet to use a single HandlerMapping, despite multiple
+	 * HandlerMapping beans being defined in the context.
 	 */
 	public void setDetectAllHandlerMappings(boolean detectAllHandlerMappings) {
 		this.delegateDispatcherServlet.setDetectAllHandlerMappings(detectAllHandlerMappings);
@@ -147,7 +148,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		}
 	}
 
-	//FIXME can we put this somewhere common, we also need support for viewListeners
+	// FIXME can we put this somewhere common, we also need support for viewListeners
 	private static class DelegateDispatcherServlet extends DispatcherServlet {
 		private static final long serialVersionUID = 1L;
 
