@@ -31,7 +31,7 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 			return new MvcViewHandler((ViewHandler) delegate, viewIdResolver);
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
-			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate);
+			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, viewIdResolver);
 		}
 		return null;
 	}

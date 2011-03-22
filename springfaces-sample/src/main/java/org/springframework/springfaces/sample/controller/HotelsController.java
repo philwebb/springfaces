@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
+@NavigationRules({ @NavigationCase(on = "go", to = "mvc:@showHotel") })
 public class HotelsController {
 
 	private BookingService bookingService;
@@ -30,10 +31,10 @@ public class HotelsController {
 		List<Hotel> hotels = bookingService.findHotels(criteria);
 		model.addAttribute(hotels);
 		return "hotels/list";
-
 	}
 
 	@RequestMapping(value = "/hotels/{id}", method = RequestMethod.GET)
+	@Location("showHotel")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute(bookingService.findHotelById(id));
 		return "hotels/show";

@@ -1,6 +1,8 @@
 package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -20,7 +22,6 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
 import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.springfaces.render.ViewArtifact;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 
 /**
@@ -121,6 +122,18 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	@Override
+	public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+			boolean includeViewParams) {
+		if (SpringFacesContext.getCurrentInstance() != null && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+			Locale locale = context.getViewRoot().getLocale();
+			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), locale);
+			// FIXME handle bookmark
+			return "/springfaces-sample/spring/hello";
+		}
+		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+	}
+
+	@Override
 	public String getActionURL(FacesContext context, String viewId) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
 			String actionViewId = (String) context.getAttributes().get(ACTION_ATTRIBUTE);
@@ -129,7 +142,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 				return externalContext.getRequestContextPath() + externalContext.getRequestServletPath()
 						+ externalContext.getRequestPathInfo();
 			}
-			Assert.state(!viewIdResolver.isResolvable(viewId), "Unable to return action URL for " + viewId);
 		}
 		return super.getActionURL(context, viewId);
 	}
