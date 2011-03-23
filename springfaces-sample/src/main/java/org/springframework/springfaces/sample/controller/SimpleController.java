@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SimpleController {
 
 	@RequestMapping("simple/{name}")
-	//@Bookmark("simple")
 	public String simple(@PathVariable Name name, Model model) {
 		System.out.println(name);
 		Hotel hotel = new Hotel();

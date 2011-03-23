@@ -34,7 +34,6 @@ public class HotelsController {
 	}
 
 	@RequestMapping(value = "/hotels/{id}", method = RequestMethod.GET)
-	@Location("showHotel")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute(bookingService.findHotelById(id));
 		return "hotels/show";

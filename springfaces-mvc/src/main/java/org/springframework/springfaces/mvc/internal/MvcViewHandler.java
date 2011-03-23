@@ -1,6 +1,7 @@
 package org.springframework.springfaces.mvc.internal;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,8 +21,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
+import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.springfaces.render.ViewArtifact;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 
 /**
@@ -127,8 +130,24 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (SpringFacesContext.getCurrentInstance() != null && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			Locale locale = context.getViewRoot().getLocale();
 			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), locale);
-			// FIXME handle bookmark
-			return "/springfaces-sample/spring/hello";
+			Assert.isInstanceOf(Bookmarkable.class, view);
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			Map<String, Object> model = new HashMap<String, Object>();
+			for (Map.Entry<String, List<String>> parameter : parameters.entrySet()) {
+				if (parameter.getValue().size() == 1) {
+					model.put(parameter.getKey(), parameter.getValue().get(0));
+				} else {
+					if (logger.isWarnEnabled()) {
+						logger.warn("Unable to expose multi-value parameter '" + parameter.getKey()
+								+ "' to bookmark model");
+					}
+				}
+			}
+			try {
+				return ((Bookmarkable) view).getBookmarkUrl(model, request);
+			} catch (IOException e) {
+				throw new FacesException("IOException creating MVC bookmark", e);
+			}
 		}
 		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 	}

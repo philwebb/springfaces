@@ -60,7 +60,7 @@
 	</bean>
 
 	<bean id="facesViewResolver"
-		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">
 		<property name="viewClass"
 			value="org.springframework.springfaces.mvc.servlet.view.FacesView" />
 		<property name="prefix" value="/WEB-INF/pages/" />
