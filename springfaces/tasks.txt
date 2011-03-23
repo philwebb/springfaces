@@ -52,3 +52,6 @@ Functions located and installed from Spring
 @BeforePhase
 @AfterPhase
 
+
+
+@Formatter intergration with JSF converter
