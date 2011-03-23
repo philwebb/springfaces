@@ -19,6 +19,7 @@ FlashScope/ViewScope
  - proof of concept done that stores model in flash scope
 
 
+@Valid annotation, integrate with JSF validators, possible expose binding results
 
 Expose @Controller
 
