@@ -37,6 +37,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	@Override
 	protected void initApplicationContext() throws BeansException {
 		getServletContext().setAttribute(ATTRIBUTE, this);
+		getServletContext().setAttribute(LAST_REFRESHED_DATE_ATTRIBUTE, new Date());
 	}
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
