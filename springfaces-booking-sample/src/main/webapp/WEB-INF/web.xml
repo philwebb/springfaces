@@ -11,19 +11,19 @@
 			/WEB-INF/config/web-application-config.xml
 		</param-value>
 	</context-param>
-	
+
 	<!-- Use JSF view templates saved as *.xhtml, for use with Facelets -->
 	<context-param>
 		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 		<param-value>.xhtml</param-value>
 	</context-param>
-	
+
 	<!-- Enables special Facelets debug output during development -->
   	<context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
    		<param-value>Development</param-value>
   	</context-param>
-  	
+
   	<!-- Causes Facelets to refresh templates during development -->
   	<context-param>
   		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
@@ -38,13 +38,13 @@
 	</context-param>
 	-->
 
-  	
+
   	<!-- Declare Spring Security Facelets tag library -->
   	<context-param>
   		<param-name>javax.faces.FACELETS_LIBRARIES</param-name>
   		<param-value>/WEB-INF/springsecurity.taglib.xml</param-value>
   	</context-param>
-  	
+
     <!-- Enforce UTF-8 Character Encoding -->
     <filter>
         <filter-name>charEncodingFilter</filter-name>
@@ -58,18 +58,18 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
-    
+
     <filter-mapping>
         <filter-name>charEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+
 	<!-- Enables Spring Security -->
 	<filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
-	 
+
     <filter-mapping>
       <filter-name>springSecurityFilterChain</filter-name>
       <url-pattern>/*</url-pattern>
@@ -79,7 +79,7 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-  	
+
 	<!-- The front controller of this Spring Web application, responsible for handling all application requests -->
 	<servlet>
 		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
@@ -90,26 +90,26 @@
 		</init-param>
 		<load-on-startup>2</load-on-startup>
 	</servlet>
-		
+
 	<!-- Map all /spring requests to the Dispatcher Servlet for handling -->
 	<servlet-mapping>
 		<servlet-name>Spring MVC Dispatcher Servlet</servlet-name>
 		<url-pattern>/spring/*</url-pattern>
 	</servlet-mapping>
-
 	<!-- Just here so the JSF implementation can initialize, *not* used at runtime -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	
+
 	<!-- Just here so the JSF implementation can initialize -->
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.faces</url-pattern>
 	</servlet-mapping>
-	
+
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
