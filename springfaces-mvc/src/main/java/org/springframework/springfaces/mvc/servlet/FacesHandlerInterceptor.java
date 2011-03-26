@@ -7,16 +7,12 @@ import javax.faces.context.FacesContextWrapper;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.util.Assert;
-import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -27,43 +23,19 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @see FacesPostbackHandler
  * @author Phillip Webb
  */
-public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware,
-		ServletConfigAware, ApplicationListener<ContextRefreshedEvent> {
+public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
 
 	private ServletContext servletContext;
-	private ServletConfig servletConfig;
 	private FacesContextFactory facesContextFactory;
 	private Lifecycle lifecycle;
+	private String lifecycleId;
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 
-	public void setServletConfig(ServletConfig servletConfig) {
-		this.servletConfig = servletConfig;
-	}
-
-	public void onApplicationEvent(ContextRefreshedEvent event) {
-		onRefresh();
-	}
-
-	/**
-	 * Called on context-refresh to allow use to obtain early the {@link FacesContextFactory} and {@link Lifecycle} JSF
-	 * objects.
-	 */
-	private void onRefresh() {
-		facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
-		LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
-				.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-		String lifecycleId = servletConfig.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
-		if (lifecycleId == null) {
-			servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
-		}
-		lifecycle = lifecycleFactory.getLifecycle(lifecycleId == null ? LifecycleFactory.DEFAULT_LIFECYCLE
-				: lifecycleId);
-	}
-
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+		obtainFacesObjects();
 		if (handler instanceof Postback) {
 			handler = ((Postback) handler).getHandler();
 		}
@@ -71,10 +43,30 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		return true;
 	}
 
+	private void obtainFacesObjects() {
+		if (facesContextFactory == null) {
+			facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+		}
+		if (lifecycle == null) {
+			LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
+					.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
+			if (lifecycleId == null) {
+				servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+			}
+			lifecycle = lifecycleFactory.getLifecycle(lifecycleId == null ? LifecycleFactory.DEFAULT_LIFECYCLE
+					: lifecycleId);
+		}
+	}
+
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		getSpringFacesContext().release();
+	}
+
+	// FIXME DC FacesServlet.LIFECYCLE_ID_ATTR
+	public void setLifecycleId(String lifecycleId) {
+		this.lifecycleId = lifecycleId;
 	}
 
 	/**
