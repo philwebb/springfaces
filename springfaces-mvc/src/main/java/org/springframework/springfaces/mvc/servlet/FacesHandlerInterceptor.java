@@ -14,8 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * MVC {@link HandlerInterceptor} to setup and release a {@link SpringFacesContext} instance.
@@ -89,11 +91,13 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		private Object handler;
 		private ReferenceCountedFacesContext facesContext = new ReferenceCountedFacesContext();
 		private boolean released;
+		private WebApplicationContext webApplicationContext;
 
 		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response, Object handler) {
 			this.request = request;
 			this.response = response;
 			this.handler = handler;
+			this.webApplicationContext = RequestContextUtils.getWebApplicationContext(request, servletContext);
 			setCurrentInstance(this);
 		}
 
@@ -120,6 +124,11 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			checkNotRelased();
 			facesContext.addReference();
 			return facesContext;
+		}
+
+		@Override
+		public WebApplicationContext getWebApplicationContext() {
+			return webApplicationContext;
 		}
 
 		private void checkNotRelased() {

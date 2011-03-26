@@ -77,4 +77,7 @@
 			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor">
 		</bean>
 	</mvc:interceptors>
+
+	<bean class="org.springframework.springfaces.mvc.expression.el.StandardEvaluationContextPostProcessorSupport"/>
+	<bean class="org.springframework.springfaces.mvc.expression.el.FacesStandardEvaluationContextPostProcessor"/>
 </beans>

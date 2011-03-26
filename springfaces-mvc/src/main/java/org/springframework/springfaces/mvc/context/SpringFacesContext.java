@@ -6,6 +6,7 @@ import javax.faces.webapp.FacesServlet;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -47,6 +48,9 @@ public abstract class SpringFacesContext {
 	 * @return A {@link FacesContext} instance
 	 */
 	public abstract FacesContext getFacesContext();
+
+	// FIXME DOC
+	public abstract WebApplicationContext getWebApplicationContext();
 
 	/**
 	 * Returns the MVC Handler chosen by the {@link DispatcherServlet}.
