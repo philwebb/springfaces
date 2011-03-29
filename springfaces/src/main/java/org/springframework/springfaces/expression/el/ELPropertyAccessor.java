@@ -1,0 +1,97 @@
+package org.springframework.springfaces.expression.el;
+
+import javax.el.ELContext;
+import javax.el.ELResolver;
+
+import org.springframework.beans.factory.config.BeanExpressionContext;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.expression.AccessException;
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.PropertyAccessor;
+import org.springframework.expression.TypedValue;
+
+/**
+ * Spring read-only EL property accessor that acts as an adapter to a Java {@link ELContext}. Subclasses must provide
+ * {@link #getElContext access} to an actual {@link ELContext}.
+ * 
+ * @see #getElContext
+ * @see #getResolveBase
+ * @see #getResolveProperty
+ * 
+ * @author Phillip Webb
+ */
+public abstract class ELPropertyAccessor implements PropertyAccessor {
+
+	public boolean canRead(EvaluationContext context, Object target, String name) throws AccessException {
+		return (resolveValue(context, target, name) != null);
+	}
+
+	public TypedValue read(EvaluationContext context, Object target, String name) throws AccessException {
+		return resolveValue(context, target, name);
+	}
+
+	public boolean canWrite(EvaluationContext context, Object target, String name) throws AccessException {
+		return false;
+	}
+
+	public void write(EvaluationContext context, Object target, String name, Object newValue) throws AccessException {
+	}
+
+	public Class<?>[] getSpecificTargetClasses() {
+		return new Class[] { BeanExpressionContext.class };
+	}
+
+	/**
+	 * Resolve a value from the underlying {@link ELContext}.
+	 * @param context the evaluation context in which the access is being attempted
+	 * @param target the target object upon which the property is being accessed
+	 * @param name the name of the property being accessed
+	 * @return The resolved value or <tt>null</tt> if the property cannot be resolved.
+	 * @throws AccessException
+	 */
+	protected TypedValue resolveValue(EvaluationContext context, Object target, String name) throws AccessException {
+		ELContext elContext = getElContext(context, target);
+		if (elContext != null) {
+			ELResolver resolver = elContext.getELResolver();
+			Object base = getResolveBase(context, target);
+			Object property = getResolveProperty(context, target);
+			Class<?> type = resolver.getType(elContext, base, property);
+			Object value = resolver.getValue(elContext, base, property);
+			if (elContext.isPropertyResolved()) {
+				return new TypedValue(value, TypeDescriptor.valueOf(type));
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Strategy method used to obtain the Java {@link ELContext} to use.
+	 * @param context the evaluation context in which the access is being attempted
+	 * @param target the target object upon which the property is being accessed
+	 * @return The {@link ELContext} to use or <tt>null</tt> to skip this accessor
+	 */
+	protected abstract ELContext getElContext(EvaluationContext context, Object target);
+
+	/**
+	 * Strategy method called to obtain the <tt>base</tt> object to use when resolving {@link ELResolver#getValue
+	 * values} and {@link ELResolver#getType types} from the {@link ELContext}.
+	 * @param context the evaluation context in which the access is being attempted
+	 * @param target the target object upon which the property is being accessed
+	 * @return The base object. By default this implementation returns <tt>null</tt>
+	 */
+	protected Object getResolveBase(EvaluationContext context, Object target) {
+		return null;
+	}
+
+	/**
+	 * Strategy method called to obtain the <tt>property</tt> object to use when resolving {@link ELResolver#getValue
+	 * values} and {@link ELResolver#getType types} from the {@link ELContext}.
+	 * @param context the evaluation context in which the access is being attempted
+	 * @param target the target object upon which the property is being accessed
+	 * @return The base object. By default this implementation returns <tt>target</tt>
+	 */
+	protected Object getResolveProperty(EvaluationContext context, Object target) {
+		return target;
+	}
+
+}

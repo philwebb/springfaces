@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.expression.el;
+package org.springframework.springfaces.expression.spel.support;
 
 import java.util.Collection;
 
@@ -30,12 +30,8 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 		if (beanExpressionResolver != null) {
 			Assert.state(isReplaceable(beanExpressionResolver), "Unable to replace beanExpressionResolver "
 					+ beanExpressionResolver.getClass());
-			beanFactory.setBeanExpressionResolver(new FacesStandardBeanExpressionResolver());
+			beanFactory.setBeanExpressionResolver(new PostProcessorAwareStandardBeanExpressionResolver());
 		}
-	}
-
-	protected boolean isReplaceable(BeanExpressionResolver beanExpressionResolver) {
-		return beanExpressionResolver.getClass().equals(StandardBeanExpressionResolver.class);
 	}
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -44,8 +40,18 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 				StandardEvaluationContextPostProcessor.class).values();
 	}
 
-	private class FacesStandardBeanExpressionResolver extends StandardBeanExpressionResolver {
+	/**
+	 * Strategy method used to determine of a {@link BeanExpressionResolver} can be replaced with a
+	 * {@link StandardEvaluationContextPostProcessor} aware variant. By default only
+	 * {@link StandardBeanExpressionResolver}s can be replaced.
+	 * @param beanExpressionResolver The bean expression resolver being considered
+	 * @return <tt>true</tt> if the resolver can be replaced.
+	 */
+	protected boolean isReplaceable(BeanExpressionResolver beanExpressionResolver) {
+		return beanExpressionResolver.getClass().equals(StandardBeanExpressionResolver.class);
+	}
 
+	private class PostProcessorAwareStandardBeanExpressionResolver extends StandardBeanExpressionResolver {
 		@Override
 		protected void customizeEvaluationContext(StandardEvaluationContext evalContext) {
 			super.customizeEvaluationContext(evalContext);

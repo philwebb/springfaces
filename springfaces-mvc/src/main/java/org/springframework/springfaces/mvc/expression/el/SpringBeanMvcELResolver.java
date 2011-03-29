@@ -16,7 +16,7 @@ public class SpringBeanMvcELResolver extends SpringBeanELResolver {
 		if (SpringFacesContext.getCurrentInstance() == null) {
 			return EMPTY_BEAN_FACTORY;
 		}
-		// FIXME just becuase we have a context does not mean we are rendering
+		// FIXME just because we have a context does not mean we are rendering
 		// FIXME should we worry about stack overflow if bean references itself in a value?
 		return SpringFacesContext.getCurrentInstance().getWebApplicationContext();
 	}
