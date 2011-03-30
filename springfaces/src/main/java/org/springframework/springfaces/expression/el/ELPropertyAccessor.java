@@ -53,8 +53,8 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 		ELContext elContext = getElContext(context, target);
 		if (elContext != null) {
 			ELResolver resolver = elContext.getELResolver();
-			Object base = getResolveBase(context, target);
-			Object property = getResolveProperty(context, target);
+			Object base = getResolveBase(context, target, name);
+			Object property = getResolveProperty(context, target, name);
 			Class<?> type = resolver.getType(elContext, base, property);
 			Object value = resolver.getValue(elContext, base, property);
 			if (elContext.isPropertyResolved()) {
@@ -77,9 +77,10 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 	 * values} and {@link ELResolver#getType types} from the {@link ELContext}.
 	 * @param context the evaluation context in which the access is being attempted
 	 * @param target the target object upon which the property is being accessed
+	 * @param name the name of the property being accessed
 	 * @return The base object. By default this implementation returns <tt>null</tt>
 	 */
-	protected Object getResolveBase(EvaluationContext context, Object target) {
+	protected Object getResolveBase(EvaluationContext context, Object target, String name) {
 		return null;
 	}
 
@@ -88,10 +89,11 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 	 * values} and {@link ELResolver#getType types} from the {@link ELContext}.
 	 * @param context the evaluation context in which the access is being attempted
 	 * @param target the target object upon which the property is being accessed
-	 * @return The base object. By default this implementation returns <tt>target</tt>
+	 * @param name the name of the property being accessed
+	 * @return The base object. By default this implementation returns <tt>name</tt>
 	 */
-	protected Object getResolveProperty(EvaluationContext context, Object target) {
-		return target;
+	protected Object getResolveProperty(EvaluationContext context, Object target, String name) {
+		return name;
 	}
 
 }
