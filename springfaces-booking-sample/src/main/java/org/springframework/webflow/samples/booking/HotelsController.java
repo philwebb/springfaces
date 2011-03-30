@@ -25,11 +25,12 @@ public class HotelsController {
 	}
 
 	@RequestMapping(value = "/hotels/search", method = RequestMethod.GET)
-	public void search(SearchCriteria searchCriteria, Principal currentUser, Model model) {
+	public void search(Principal currentUser, Model model) {
 		if (currentUser != null) {
 			List<Booking> booking = bookingService.findBookings(currentUser.getName());
 			model.addAttribute(booking);
 		}
+		model.addAttribute("searchCriteria", new SearchCriteria());
 	}
 
 	@RequestMapping(value = "/hotels", method = RequestMethod.GET)

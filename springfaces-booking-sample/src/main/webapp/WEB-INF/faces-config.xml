@@ -14,4 +14,24 @@
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
 
+	
+	<navigation-rule>
+		<from-view-id>/WEB-INF/pages/hotels/search.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>search</from-outcome>
+			<to-view-id>mvc:redirect:/hotels</to-view-id>
+			<redirect>
+				<view-param>
+					<name>searchString</name>
+					<value>#{searchCriteria.searchString}</value>
+				</view-param>
+				<view-param>
+					<name>pageSize</name>
+					<value>#{searchCriteria.pageSize}</value>
+				</view-param>
+			</redirect>
+
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

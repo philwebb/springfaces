@@ -25,6 +25,7 @@ import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.View;
 
 /**
@@ -64,24 +65,36 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return createOrRestoreView(context, viewId, false);
 	}
 
+	@SuppressWarnings("unchecked")
 	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
 		MvcResponseStateManager.prepare(context, null);
 		context.getAttributes().remove(ACTION_ATTRIBUTE);
 		ViewArtifact viewArtifact = getViewArtifact(context);
+		Map<String, Object> model = null;
 		if (viewArtifact != null) {
 			MvcResponseStateManager.prepare(context, viewArtifact);
 			viewId = viewArtifact.toString();
 			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
+			model = (Map<String, Object>) context.getAttributes().get(MODEL_ATTRIBUTE);
 		} else if (create && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), null); // FIXME
 			if (view instanceof FacesView) {
-				// FIXME setRendering(context, renderable, model);
+				// FIXME prepare(context, renderable, model);
 				// recurse
 			} else {
 				return new MvcUIViewRoot(viewId, view);
 			}
 		}
-		return (create ? super.createView(context, viewId) : super.restoreView(context, viewId));
+		if (create) {
+			UIViewRoot viewRoot = super.createView(context, viewId);
+			if (model != null) {
+				// FIXME perhaps store as a single attribute and have an ELResolver to access?
+				// FIXME do we want scope support for the mode (eg request, session)
+				viewRoot.getViewMap().putAll(model);
+			}
+			return viewRoot;
+		}
+		return super.restoreView(context, viewId);
 
 	}
 
@@ -103,9 +116,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	@Override
 	public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
 		if (viewToRender instanceof MvcUIViewRoot) {
+			// FIXME what if we are in AJAX here!
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 			try {
+				// FIXME model
 				((MvcUIViewRoot) viewToRender).getView().render(null, request, response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -127,6 +142,25 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	@Override
 	public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
 			boolean includeViewParams) {
+		String url = getBookmarkUrlIfResolvable(context, viewId, parameters);
+		if (url != null) {
+			return url;
+		}
+		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+	}
+
+	@Override
+	public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
+			boolean includeViewParams) {
+		String url = getBookmarkUrlIfResolvable(context, viewId, parameters);
+		if (url != null) {
+			return url;
+		}
+		return super.getRedirectURL(context, viewId, parameters, includeViewParams);
+	}
+
+	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
+		// FIXME do we need to worry about char encoding
 		if (SpringFacesContext.getCurrentInstance() != null && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			Locale locale = context.getViewRoot().getLocale();
 			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), locale);
@@ -135,9 +169,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			Map<String, Object> model = new HashMap<String, Object>();
 			for (Map.Entry<String, List<String>> parameter : parameters.entrySet()) {
 				if (parameter.getValue().size() == 1) {
-					model.put(parameter.getKey(), parameter.getValue().get(0));
+					model.put(parameter.getKey(), evaluateExpression(context, parameter.getValue().get(0)));
 				} else {
 					if (logger.isWarnEnabled()) {
+						// FIXME should we be able to expose theses
 						logger.warn("Unable to expose multi-value parameter '" + parameter.getKey()
 								+ "' to bookmark model");
 					}
@@ -149,7 +184,24 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 				throw new FacesException("IOException creating MVC bookmark", e);
 			}
 		}
-		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		return null;
+	}
+
+	private String evaluateExpression(FacesContext context, String value) {
+		if (isExpression(value)) {
+			return context.getApplication().evaluateExpressionGet(context, value, String.class);
+		}
+		return value;
+	}
+
+	public static boolean isExpression(String expression) {
+		// FIXME implementation as ELUtils, can we use the RegEx
+		if (!StringUtils.hasLength(expression)) {
+			return false;
+		}
+		int start = expression.indexOf("#{");
+		int end = expression.indexOf('}');
+		return (start != -1) && (start < end);
 	}
 
 	@Override
