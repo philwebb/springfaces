@@ -78,6 +78,6 @@
 		</bean>
 	</mvc:interceptors>
 
-	<bean class="org.springframework.springfaces.mvc.expression.el.StandardEvaluationContextPostProcessorSupport"/>
-	<bean class="org.springframework.springfaces.mvc.expression.el.FacesStandardEvaluationContextPostProcessor"/>
+	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport"/>
+	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor"/>
 </beans>
