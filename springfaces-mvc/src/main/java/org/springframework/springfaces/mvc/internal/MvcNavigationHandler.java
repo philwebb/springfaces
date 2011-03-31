@@ -12,7 +12,7 @@ import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper
 
 /**
  * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC.
- * 
+ *
  * @author Phillip Webb
  */
 public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
@@ -40,6 +40,31 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		}
 		return super.getNavigationCase(context, fromAction, outcome);
 	}
+
+	//	private void dunno() {
+	//
+	//		NavigationRegistry registry = null;
+	//		NavigationContext navigationContext = null;
+	//		MappedNavigation mapped = registry.getMappedNavigation(navigationContext);
+	//		Object outcome = mapped.getOutcome(navigationContext);
+	//		//FIXME if rendered stop
+	//		if(mapped != null) {
+	//			if(mapped instanceof Bookmarkable) {
+	//				Bookmarkable navigationResult = (Bookmarkable) mapped;
+	//				String fromViewId;
+	//				String fromAction;
+	//				String fromOutcome;
+	//				String condition;
+	//				String toViewId = MvcViewHandler.registerBookmarkView(navigationResult);
+	//				Map<String, List<String>> parameters = null;
+	//				boolean redirect = true;
+	//				boolean includeViewParams = false;
+	//				NavigationCase navigationCase = new NavigationCase(fromViewId, fromAction, fromOutcome, condition, toViewId, parameters, redirect, includeViewParams);
+	//			} else {
+	//				//FIXME use the string value
+	//			}
+	//		}
+	//	}
 
 	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {

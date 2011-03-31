@@ -16,10 +16,12 @@ import org.springframework.web.util.WebUtils;
 /**
  * A {@link Bookmarkable} version of {@link RedirectView} that also supports expansion of path variables using the
  * model.
- * 
+ *
  * @author Phillip Webb
  */
 public class BookmarkableRedirectView extends RedirectView implements Bookmarkable {
+
+	//FIXME implicit model support
 
 	private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
 

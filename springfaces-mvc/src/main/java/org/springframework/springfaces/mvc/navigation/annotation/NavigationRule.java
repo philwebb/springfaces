@@ -1,4 +1,5 @@
-package org.springframework.springfaces.mvc.navigation;
+package org.springframework.springfaces.mvc.navigation.annotation;
+
 
 public @interface NavigationRule {
 	String fromViewId();
