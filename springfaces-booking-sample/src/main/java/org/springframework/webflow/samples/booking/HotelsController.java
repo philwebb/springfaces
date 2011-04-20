@@ -41,15 +41,21 @@ public class HotelsController {
 	}
 
 	@RequestMapping(value = "/hotels/{id}", method = RequestMethod.GET)
+	// @NavigationOutcomeMapping("select")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute(bookingService.findHotelById(id));
 		return "hotels/show";
 	}
 
+	// @NavigationOutcomeMapping("delete")
 	@RequestMapping(value = "/bookings/{id}", method = RequestMethod.DELETE)
 	public String deleteBooking(@PathVariable Long id) {
 		// bookingService.cancelBooking(id);
 		return "redirect:../hotels/search";
 	}
+
+	// // @NavigationCase("book")
+	// public String book() {
+	// }
 
 }
