@@ -3,12 +3,6 @@ package org.springframework.springfaces.sample.controller;
 import java.security.Principal;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.springfaces.sample.controller.dunno.Dunno;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HotelsController {
 
-	@Autowired
+	// @Autowired
 	private BookingService bookingService;
 
-	@Bean
-	private Dunno getDunno(@Value("#{criteria}") SearchCriteria searchCriteria) {
-		return new Dunno(searchCriteria, bookingService);
-	}
+	// @Bean
+	// private Dunno getDunno(@Value("#{criteria}") SearchCriteria searchCriteria) {
+	// return new Dunno(searchCriteria, bookingService);
+	// }
 
-	//Implicit view hotels/search
-	//On Search to hotels?#{searchCriteria}
+	// Implicit view hotels/search
+	// On Search to hotels?#{searchCriteria}
 	@RequestMapping(value = "/hotels/search", method = RequestMethod.GET)
 	public void search(SearchCriteria searchCriteria, Principal currentUser, Model model) {
 		if (currentUser != null) {
@@ -36,7 +30,7 @@ public class HotelsController {
 		}
 	}
 
-	//On select to /hotel/#{selected.id}
+	// On select to /hotel/#{selected.id}
 	@RequestMapping(value = "/hotels", method = RequestMethod.GET)
 	public String list(SearchCriteria criteria, Model model) {
 		List<Hotel> hotels = bookingService.findHotels(criteria);

@@ -10,7 +10,7 @@
        	http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
        	http://www.springframework.org/schema/faces
-       	http://www.springframework.org/schema/faces/spring-faces-2.2.xsd">
+       	http://www.springframework.org/schema/faces/spring-faces-2.0.xsd">
 
 	<faces:resources />
 

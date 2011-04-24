@@ -48,4 +48,6 @@ public interface FacesWrapperFactory<T> {
 	 * <tt>null</tt> if no wrapping is required.
 	 */
 	public T newWrapper(Class<?> typeClass, T delegate);
+
+	// FIXME callback interface when all done?
 }

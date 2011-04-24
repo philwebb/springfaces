@@ -12,4 +12,5 @@ public interface NavigationContext {
 
 	String getOutcome();
 
+	boolean isPreEmptive();
 }

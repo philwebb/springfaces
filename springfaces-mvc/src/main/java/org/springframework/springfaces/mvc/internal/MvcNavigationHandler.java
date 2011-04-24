@@ -1,28 +1,38 @@
 package org.springframework.springfaces.mvc.internal;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
-import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
+import org.springframework.springfaces.mvc.navigation.NavigationContext;
+import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
+import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
+import org.springframework.util.Assert;
 
 /**
  * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC.
- *
+ * 
  * @author Phillip Webb
  */
 public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
-	private ViewIdResolver viewIdResolver;
+	private NavigationOutcomeResolver navigationOutcomeResolver;
+	private DestinationRegistry destinationRegistry;
 
-	public MvcNavigationHandler(ConfigurableNavigationHandler delegate, ViewIdResolver viewIdResolver) {
+	public MvcNavigationHandler(ConfigurableNavigationHandler delegate,
+			NavigationOutcomeResolver navigationOutcomeResolver, DestinationRegistry destinationRegistry) {
 		this.delegate = delegate;
-		this.viewIdResolver = viewIdResolver;
+		this.navigationOutcomeResolver = navigationOutcomeResolver;
+		this.destinationRegistry = destinationRegistry;
 	}
 
 	@Override
@@ -32,49 +42,90 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	@Override
 	public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
-		// Handle implicit MVC navigation
-		if ((SpringFacesContext.getCurrentInstance() != null) && (viewIdResolver.isResolvable(outcome))) {
-			UIViewRoot root = context.getViewRoot();
-			String fromViewId = (root != null ? root.getViewId() : null);
-			return new NavigationCase(fromViewId, fromAction, outcome, null, outcome, null, false, false);
+		NavigationOutcome navigationOutcome = getNavigationOutcome(context, fromAction, outcome, true);
+		if (navigationOutcome == null) {
+			return super.getNavigationCase(context, fromAction, outcome);
 		}
-		return super.getNavigationCase(context, fromAction, outcome);
+		Assert.state(navigationOutcome.getDestination() != null, "Unable to construct NavigationCase from outcome '"
+				+ outcome + "' due to missing destination");
+		// FIXME assert not rendered directly
+		UIViewRoot root = context.getViewRoot();
+		String fromViewId = (root != null ? root.getViewId() : null);
+		String toViewId = destinationRegistry.put(navigationOutcome.getDestination());
+		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+		if (navigationOutcome.getParameters() != null) {
+			parameters.putAll(navigationOutcome.getParameters());
+		}
+		return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, parameters, false, false);
 	}
-
-	//	private void dunno() {
-	//
-	//		NavigationRegistry registry = null;
-	//		NavigationContext navigationContext = null;
-	//		MappedNavigation mapped = registry.getMappedNavigation(navigationContext);
-	//		Object outcome = mapped.getOutcome(navigationContext);
-	//		//FIXME if rendered stop
-	//		if(mapped != null) {
-	//			if(mapped instanceof Bookmarkable) {
-	//				Bookmarkable navigationResult = (Bookmarkable) mapped;
-	//				String fromViewId;
-	//				String fromAction;
-	//				String fromOutcome;
-	//				String condition;
-	//				String toViewId = MvcViewHandler.registerBookmarkView(navigationResult);
-	//				Map<String, List<String>> parameters = null;
-	//				boolean redirect = true;
-	//				boolean includeViewParams = false;
-	//				NavigationCase navigationCase = new NavigationCase(fromViewId, fromAction, fromOutcome, condition, toViewId, parameters, redirect, includeViewParams);
-	//			} else {
-	//				//FIXME use the string value
-	//			}
-	//		}
-	//	}
 
 	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-		// Handle implicit MVC navigation
-		if ((SpringFacesContext.getCurrentInstance() != null) && (viewIdResolver.isResolvable(outcome))) {
-			ViewHandler viewHandler = context.getApplication().getViewHandler();
-			context.setViewRoot(viewHandler.createView(context, outcome));
+		NavigationOutcome navigationOutcome = getNavigationOutcome(context, fromAction, outcome, false);
+		if (navigationOutcome == null) {
+			super.handleNavigation(context, fromAction, outcome);
 			return;
 		}
-		super.handleNavigation(context, fromAction, outcome);
+		String viewId = destinationRegistry.put(navigationOutcome.getDestination());
+		// FIXME stop if rendered directly
+		UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
+		setRenderAll(context, viewId);
+		context.setViewRoot(newRoot);
+		// FIXME logging
 	}
 
+	private void setRenderAll(FacesContext facesContext, String viewId) {
+		if (facesContext.getViewRoot().getViewId().equals(viewId)) {
+			return;
+		}
+		PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+		if (partialViewContext.isRenderAll()) {
+			return;
+		}
+		partialViewContext.setRenderAll(true);
+	}
+
+	private NavigationOutcome getNavigationOutcome(FacesContext context, String fromAction, String outcome,
+			boolean preEmptive) {
+		if (SpringFacesContext.getCurrentInstance() == null) {
+			return null;
+		}
+		NavigationContext navigationContext = new NavigationContextImpl(context, fromAction, outcome, preEmptive);
+		return navigationOutcomeResolver.getNavigationOutcome(navigationContext);
+	}
+
+	private static class NavigationContextImpl implements NavigationContext {
+
+		private FacesContext facesContext;
+		private String fromAction;
+		private String outcome;
+		private boolean preEmptive;
+
+		public NavigationContextImpl(FacesContext facesContext, String fromAction, String outcome, boolean preEmptive) {
+			this.facesContext = facesContext;
+			this.fromAction = fromAction;
+			this.outcome = outcome;
+			this.preEmptive = preEmptive;
+		}
+
+		public FacesContext getFacesContext() {
+			return facesContext;
+		}
+
+		public Object getHandler() {
+			return SpringFacesContext.getCurrentInstance().getHandler();
+		}
+
+		public String getFromAction() {
+			return fromAction;
+		}
+
+		public String getOutcome() {
+			return outcome;
+		}
+
+		public boolean isPreEmptive() {
+			return preEmptive;
+		}
+	}
 }

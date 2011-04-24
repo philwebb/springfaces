@@ -4,6 +4,8 @@ import java.util.Locale;
 
 import org.springframework.web.servlet.View;
 
+//FIXME replace with Implicit version
+@Deprecated
 public interface ViewIdResolver {
 
 	public boolean isResolvable(String viewId);

@@ -3,7 +3,6 @@ package org.springframework.springfaces.mvc.internal;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.FacesException;
@@ -42,12 +41,16 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private Log logger = LogFactory.getLog(MvcNavigationHandler.class);
 
 	private ViewHandler delegate;
-
 	private ViewIdResolver viewIdResolver;
+	private ViewArtifactHolder viewArtifactHolder;
+	private DestinationRegistry destinationRegistry;
 
-	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver) {
+	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver, ViewArtifactHolder viewArtifactHolder,
+			DestinationRegistry destinationRegistry) {
 		this.delegate = delegate;
 		this.viewIdResolver = viewIdResolver;
+		this.viewArtifactHolder = viewArtifactHolder;
+		this.destinationRegistry = destinationRegistry;
 	}
 
 	@Override
@@ -67,24 +70,27 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@SuppressWarnings("unchecked")
 	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
-		MvcResponseStateManager.prepare(context, null);
+		viewArtifactHolder.clear();
 		context.getAttributes().remove(ACTION_ATTRIBUTE);
 		ViewArtifact viewArtifact = getViewArtifact(context);
 		Map<String, Object> model = null;
 		if (viewArtifact != null) {
-			MvcResponseStateManager.prepare(context, viewArtifact);
+			viewArtifactHolder.put(viewArtifact);
 			viewId = viewArtifact.toString();
 			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
 			model = (Map<String, Object>) context.getAttributes().get(MODEL_ATTRIBUTE);
-		} else if (create && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
-			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), null); // FIXME
-			if (view instanceof FacesView) {
-				// FIXME prepare(context, renderable, model);
-				// recurse
-			} else {
-				return new MvcUIViewRoot(viewId, view);
+		} else if (create) {
+			View view = getView(viewId);
+			if (view != null) {
+				if (view instanceof FacesView) {
+					// FIXME prepare(context, renderable, model);
+					// recurse
+				} else {
+					return new MvcUIViewRoot(viewId, view);
+				}
 			}
 		}
+
 		if (create) {
 			UIViewRoot viewRoot = super.createView(context, viewId);
 			if (model != null) {
@@ -95,12 +101,35 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			return viewRoot;
 		}
 		return super.restoreView(context, viewId);
+	}
 
+	private View getView(String viewId) {
+		viewId = getResolvableViewId(viewId);
+		Object destination = destinationRegistry.get(viewId);
+		if (destination != null) {
+			View view = getViewForDestination(destination);
+			return view;
+		}
+		if (viewIdResolver.isResolvable(viewId)) {
+			return viewIdResolver.resolveViewId(viewId, null); // FIXME locale
+		}
+		return null;
+	}
+
+	private View getViewForDestination(Object destination) {
+		if (destination instanceof View) {
+			return (View) destination;
+		}
+		if (viewIdResolver.isResolvable(destination.toString())) {
+			return viewIdResolver.resolveViewId(destination.toString(), null); // FIXME locale
+		}
+		// FIXME view resolve not prefixed with MVC?
+		return null;
 	}
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		if (viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+		if (destinationRegistry.get(viewId) != null || viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
@@ -161,9 +190,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
 		// FIXME do we need to worry about char encoding
-		if (SpringFacesContext.getCurrentInstance() != null && viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
-			Locale locale = context.getViewRoot().getLocale();
-			View view = viewIdResolver.resolveViewId(getResolvableViewId(viewId), locale);
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			View view = getView(viewId);
+			if (view == null) {
+				return null;
+			}
 			Assert.isInstanceOf(Bookmarkable.class, view);
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			Map<String, Object> model = new HashMap<String, Object>();
@@ -230,6 +261,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		}
 	}
 
+	// FIXME make not static?
 	public static void prepare(FacesContext facesContext, ViewArtifact viewArtifact, Map<String, Object> model) {
 		facesContext.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
 		facesContext.getAttributes().put(MODEL_ATTRIBUTE, model);

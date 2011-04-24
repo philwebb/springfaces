@@ -19,15 +19,16 @@ import org.springframework.springfaces.util.ResponseStateManagerWrapper;
  */
 public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {
 
-	private static final String VIEW_ARTIFACT_ATTRIBUTE = MvcResponseStateManager.class.getName() + ".RENDERING";
-
 	private String renderKitId;
 	private ResponseStateManager delegate;
 	private FacesViewStateHandler stateHandler;
+	private ViewArtifactHolder viewArtifactHolder;
 
-	public MvcResponseStateManager(ResponseStateManager delegate, FacesViewStateHandler stateHandler) {
+	public MvcResponseStateManager(ResponseStateManager delegate, FacesViewStateHandler stateHandler,
+			ViewArtifactHolder viewArtifactHolder) {
 		this.delegate = delegate;
 		this.stateHandler = stateHandler;
+		this.viewArtifactHolder = viewArtifactHolder;
 	}
 
 	public void setRenderKitId(String renderKitId) {
@@ -42,20 +43,12 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
 		if (SpringFacesContext.getCurrentInstance() != null
-				&& context.getAttributes().containsKey(VIEW_ARTIFACT_ATTRIBUTE)
 				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
-			ViewArtifact viewArtifact = (ViewArtifact) context.getAttributes().get(VIEW_ARTIFACT_ATTRIBUTE);
-			stateHandler.write(context, viewArtifact);
+			ViewArtifact viewArtifact = viewArtifactHolder.get();
+			if (viewArtifact != null) {
+				stateHandler.write(context, viewArtifact);
+			}
 		}
 		super.writeState(context, state);
-	}
-
-	public static void prepare(FacesContext context, ViewArtifact viewArtifact) {
-		if (viewArtifact == null) {
-			context.getAttributes().remove(VIEW_ARTIFACT_ATTRIBUTE);
-		} else {
-			context.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
-		}
-
 	}
 }
