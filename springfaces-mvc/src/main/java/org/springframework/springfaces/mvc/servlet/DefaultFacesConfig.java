@@ -34,8 +34,11 @@ public class DefaultFacesConfig implements FacesPostbackOrginalHandlerLocator, V
 			String viewName = viewId.substring(viewIdPrefix.length());
 			return delegate.resolveViewId(viewName, locale);
 		}
-
 		return null;
+	}
+
+	public View resolveDirectViewId(String viewId, Locale locale) {
+		return delegate.resolveViewId(viewId, locale);
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet {

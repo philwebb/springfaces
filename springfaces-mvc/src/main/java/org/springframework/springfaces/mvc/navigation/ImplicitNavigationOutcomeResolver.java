@@ -1,6 +1,5 @@
 package org.springframework.springfaces.mvc.navigation;
 
-import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
 import org.springframework.util.StringUtils;
 
 /**
@@ -12,16 +11,12 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 
 	// FIXME DC this is to prevent "Unable to find matching navigation case" errors
 
-	private ViewIdResolver viewIdResolver;
-
-	public ImplicitNavigationOutcomeResolver(ViewIdResolver viewIdResolver) {
-		this.viewIdResolver = viewIdResolver;
-	}
+	private String prefix = "mvc:";
 
 	public NavigationOutcome getNavigationOutcome(NavigationContext context) {
 		String outcome = context.getOutcome();
-		if (StringUtils.hasLength(outcome) && viewIdResolver.isResolvable(outcome)) {
-			return new NavigationOutcome(outcome, null);
+		if (StringUtils.hasLength(outcome) && outcome.startsWith(prefix)) {
+			return new NavigationOutcome(outcome.substring(prefix.length()), null);
 		}
 		return null;
 	}

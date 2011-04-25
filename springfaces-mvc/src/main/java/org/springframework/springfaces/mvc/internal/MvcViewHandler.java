@@ -123,8 +123,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (viewIdResolver.isResolvable(destination.toString())) {
 			return viewIdResolver.resolveViewId(destination.toString(), null); // FIXME locale
 		}
-		// FIXME view resolve not prefixed with MVC?
-		return null;
+		return viewIdResolver.resolveDirectViewId(destination.toString(), null); // FIXME locale
 	}
 
 	@Override

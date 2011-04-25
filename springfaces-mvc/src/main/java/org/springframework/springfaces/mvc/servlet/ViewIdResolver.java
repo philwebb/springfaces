@@ -12,4 +12,6 @@ public interface ViewIdResolver {
 
 	public View resolveViewId(String viewId, Locale locale);
 
+	public View resolveDirectViewId(String viewId, Locale locale);
+
 }

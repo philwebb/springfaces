@@ -32,7 +32,7 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 		this.facesViewStateHandler = facesViewStateHandler;
 		this.viewIdResolver = viewIdResolver;
 		// FIXME
-		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver(viewIdResolver);
+		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
 		this.viewArtifactHolder = new DefaultViewArtifactHolder();
 		this.destinationRegistry = new DefaultDestinationRegistry();
 	}
