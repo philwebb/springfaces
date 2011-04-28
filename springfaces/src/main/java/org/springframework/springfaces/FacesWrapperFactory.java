@@ -10,6 +10,7 @@ import javax.faces.render.ResponseStateManager;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.springfaces.render.RenderKitIdAware;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -34,7 +35,9 @@ import org.springframework.web.context.WebApplicationContext;
  * be used and the original delegate returned.
  * 
  * @param <T> The type of class to be wrapped.
+ * 
  * @see FacesWrapperFactory
+ * @see RenderKitIdAware
  * 
  * @author Phillip Webb
  */
@@ -48,6 +51,4 @@ public interface FacesWrapperFactory<T> {
 	 * <tt>null</tt> if no wrapping is required.
 	 */
 	public T newWrapper(Class<?> typeClass, T delegate);
-
-	// FIXME callback interface when all done?
 }

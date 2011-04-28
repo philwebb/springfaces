@@ -9,7 +9,7 @@ import javax.el.ELResolver;
 import org.springframework.springfaces.internal.WrapperHandler.DelegateAccessType;
 
 /**
- * A {@link ELResolver} that provides integration with Spring.
+ * An {@link ELResolver} that provides integration with Spring.
  * 
  * @author Phillip Webb
  */

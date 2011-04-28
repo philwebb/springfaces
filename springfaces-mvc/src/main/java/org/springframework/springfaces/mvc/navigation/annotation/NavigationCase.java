@@ -2,15 +2,15 @@ package org.springframework.springfaces.mvc.navigation.annotation;
 
 public @interface NavigationCase {
 
-	String on();
+	String on() default "";
 
-	String fromAction();
+	String fromAction() default "";
 
-	String to();
+	String to() default "";
 
-	String condition();
+	String condition() default "";
 
-	String redirect();
+	boolean redirect() default true;
 
-	String redirectParameters();
+	String[] parameters() default {};
 }

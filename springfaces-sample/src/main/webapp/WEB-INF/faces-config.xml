@@ -25,5 +25,4 @@
 			<to-view-id>mvc:testBeanView</to-view-id>
 		</navigation-case>
 	</navigation-rule>
-
 </faces-config>

@@ -13,5 +13,4 @@ public class FacesStandardEvaluationContextPostProcessor implements StandardEval
 	public void postProcessStandardEvaluationContext(StandardEvaluationContext evaluationContext) {
 		evaluationContext.addPropertyAccessor(new FacesPropertyAccessor());
 	}
-
 }

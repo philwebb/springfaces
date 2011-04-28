@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.springfaces.mvc.navigation.annotation.NavigationCase;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,6 +35,7 @@ public class HotelsController {
 	}
 
 	@RequestMapping(value = "/hotels", method = RequestMethod.GET)
+	@NavigationCase(on = "search", parameters = { "#{searchCriteria}" })
 	public String list(SearchCriteria criteria, Model model) {
 		// List<Hotel> hotels = bookingService.findHotels(criteria);
 		// model.addAttribute(hotels);
@@ -41,14 +43,14 @@ public class HotelsController {
 	}
 
 	@RequestMapping(value = "/hotels/{id}", method = RequestMethod.GET)
-	// @NavigationOutcomeMapping("select")
+	@NavigationCase
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute(bookingService.findHotelById(id));
 		return "hotels/show";
 	}
 
-	// @NavigationOutcomeMapping("delete")
 	@RequestMapping(value = "/bookings/{id}", method = RequestMethod.DELETE)
+	@NavigationCase
 	public String deleteBooking(@PathVariable Long id) {
 		// bookingService.cancelBooking(id);
 		return "redirect:../hotels/search";

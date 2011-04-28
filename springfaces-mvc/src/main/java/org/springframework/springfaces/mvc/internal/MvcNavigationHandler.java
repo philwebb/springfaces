@@ -90,26 +90,20 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		if (SpringFacesContext.getCurrentInstance() == null) {
 			return null;
 		}
-		NavigationContext navigationContext = new NavigationContextImpl(context, fromAction, outcome, preEmptive);
+		NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, preEmptive);
 		return navigationOutcomeResolver.getNavigationOutcome(navigationContext);
 	}
 
 	private static class NavigationContextImpl implements NavigationContext {
 
-		private FacesContext facesContext;
 		private String fromAction;
 		private String outcome;
 		private boolean preEmptive;
 
-		public NavigationContextImpl(FacesContext facesContext, String fromAction, String outcome, boolean preEmptive) {
-			this.facesContext = facesContext;
+		public NavigationContextImpl(String fromAction, String outcome, boolean preEmptive) {
 			this.fromAction = fromAction;
 			this.outcome = outcome;
 			this.preEmptive = preEmptive;
-		}
-
-		public FacesContext getFacesContext() {
-			return facesContext;
 		}
 
 		public Object getHandler() {

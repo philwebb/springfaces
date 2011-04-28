@@ -26,6 +26,7 @@ public class FacesPropertyAccessor extends ELPropertyAccessor {
 		return null;
 	}
 
+	// FIXME does not seem to be used, delete?
 	public static EvaluationContext getConfiguredEvaluationContext() {
 		StandardEvaluationContext evaluationContext = new StandardEvaluationContext();
 		evaluationContext.setRootObject(null);
