@@ -12,6 +12,7 @@ import org.springframework.springfaces.FacesWrapperFactory;
  * @author Phillip Webb
  */
 public interface RenderKitIdAware {
+
 	/**
 	 * Callback that supplies the <tt>renderKitId</tt>.
 	 * @param renderKitId The render kit ID

@@ -31,6 +31,11 @@ public abstract class ConfigurableNavigationHandlerWrapper extends ConfigurableN
 	}
 
 	@Override
+	public void performNavigation(String outcome) {
+		getWrapped().performNavigation(outcome);
+	}
+
+	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
 		getWrapped().handleNavigation(context, fromAction, outcome);
 	}

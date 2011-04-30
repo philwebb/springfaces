@@ -26,6 +26,7 @@ public abstract class ResponseStateManagerWrapper extends ResponseStateManager i
 	}
 
 	@Override
+	@Deprecated
 	public void writeState(FacesContext context, SerializedView state) throws IOException {
 		getWrapped().writeState(context, state);
 	}
@@ -36,11 +37,13 @@ public abstract class ResponseStateManagerWrapper extends ResponseStateManager i
 	}
 
 	@Override
+	@Deprecated
 	public Object getTreeStructureToRestore(FacesContext context, String viewId) {
 		return getWrapped().getTreeStructureToRestore(context, viewId);
 	}
 
 	@Override
+	@Deprecated
 	public Object getComponentStateToRestore(FacesContext context) {
 		return getWrapped().getComponentStateToRestore(context);
 	}
