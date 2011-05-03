@@ -32,6 +32,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.Ordered;
+import org.springframework.springfaces.FacesContextSetter;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.web.context.WebApplicationContext;
@@ -193,12 +194,6 @@ public class WrapperHandlerTest {
 		applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, c.getTime());
 		wrapperHandler.getWrapped();
 		verify(factory, times(2)).newWrapper(Object.class, delegate);
-	}
-
-	private abstract static class FacesContextSetter extends FacesContext {
-		public static void setCurrentInstance(FacesContext facesContext) {
-			FacesContext.setCurrentInstance(facesContext);
-		}
 	}
 
 	private static class LongFacesWrapperFactory implements FacesWrapperFactory<Long> {
