@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
-import org.springframework.springfaces.mvc.servlet.view.FacesView;
+import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -57,43 +57,36 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public UIViewRoot createView(FacesContext context, String viewId) {
-		return createOrRestoreView(context, viewId, true);
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
+				// Creating view in response to a navigation event
+				View view = getView(viewId);
+				if (view != null) {
+					return new MvcUIViewRoot(viewId, view);
+				}
+			} else if (SpringFacesContext.getCurrentInstance().getRendering() != null) {
+				// Creating a view that was triggered from MVC
+				ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
+				UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
+				context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
+				if (rendering.getModel() != null) {
+					// FIXME perhaps store as a single attribute and have an ELResolver to access?
+					// FIXME do we want scope support for the mode (eg request, session)
+					// FIXME is storing the model the responsibility of the ViewHandler?
+					viewRoot.getViewMap().putAll(rendering.getModel());
+				}
+				return viewRoot;
+			}
+		}
+		return super.createView(context, viewId);
 	}
 
 	@Override
 	public UIViewRoot restoreView(FacesContext context, String viewId) {
-		return createOrRestoreView(context, viewId, false);
-	}
-
-	@SuppressWarnings("unchecked")
-	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
-		context.getAttributes().remove(ACTION_ATTRIBUTE);
-		ViewArtifact viewArtifact = getViewArtifact(context);
-		Map<String, Object> model = null;
-		if (viewArtifact != null) {
-			viewId = viewArtifact.toString();
-			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
-			model = (Map<String, Object>) context.getAttributes().get(MODEL_ATTRIBUTE);
-		} else if (create) {
-			View view = getView(viewId);
-			if (view != null) {
-				if (view instanceof FacesView) {
-					// FIXME prepare(context, renderable, model);
-					// recurse
-				} else {
-					return new MvcUIViewRoot(viewId, view);
-				}
-			}
-		}
-
-		if (create) {
-			UIViewRoot viewRoot = super.createView(context, viewId);
-			if (model != null) {
-				// FIXME perhaps store as a single attribute and have an ELResolver to access?
-				// FIXME do we want scope support for the mode (eg request, session)
-				viewRoot.getViewMap().putAll(model);
-			}
-			return viewRoot;
+		if (SpringFacesContext.getCurrentInstance() != null
+				&& SpringFacesContext.getCurrentInstance().getRendering() != null) {
+			ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
+			return super.restoreView(context, rendering.getViewArtifact().toString());
 		}
 		return super.restoreView(context, viewId);
 	}
