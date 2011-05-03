@@ -1,5 +1,7 @@
 package org.springframework.springfaces.mvc.servlet;
 
+import java.util.Map;
+
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
@@ -12,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.internal.MvcViewHandler;
+import org.springframework.springfaces.render.ModelAndViewArtifact;
+import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
@@ -92,6 +97,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		private ReferenceCountedFacesContext facesContext = new ReferenceCountedFacesContext();
 		private boolean released;
 		private WebApplicationContext webApplicationContext;
+		private ModelAndViewArtifact rendering;
 
 		public SpringFacesContextImpl(HttpServletRequest request, HttpServletResponse response, Object handler) {
 			this.request = request;
@@ -114,12 +120,6 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		@Override
-		public Lifecycle getLifecycle() {
-			checkNotRelased();
-			return lifecycle;
-		}
-
-		@Override
 		public FacesContext getFacesContext() {
 			checkNotRelased();
 			facesContext.addReference();
@@ -131,8 +131,37 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			return webApplicationContext;
 		}
 
+		@Override
+		public void render(ModelAndViewArtifact modelAndViewArtifact) {
+			checkNotRelased();
+			Assert.state(rendering == null, "The SpringFacesContext is already rendering");
+			this.rendering = modelAndViewArtifact;
+			try {
+				render(modelAndViewArtifact.getViewArtifact(), modelAndViewArtifact.getModel());
+			} finally {
+				this.rendering = null;
+			}
+		}
+
+		// FIXME sort out ModelAndViewArtifact
+		private void render(ViewArtifact viewArtifact, Map<String, Object> model) {
+			FacesContext facesContext = getFacesContext();
+			try {
+				MvcViewHandler.prepare(facesContext, viewArtifact, model);
+				lifecycle.execute(facesContext);
+				lifecycle.render(facesContext);
+			} finally {
+				facesContext.release();
+			}
+		}
+
+		@Override
+		public ModelAndViewArtifact getRendering() {
+			return rendering;
+		}
+
 		private void checkNotRelased() {
-			Assert.state(!released, "The SpringFacesContext has been release");
+			Assert.state(!released, "The SpringFacesContext has been released");
 		}
 
 		/**

@@ -7,10 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.faces.application.Application;
-import javax.faces.convert.Converter;
 
 /**
- * Declares the <tt>ID</tt> of a JSF {@link Converter} to use.
+ * Indicates that the {@link GenericFacesConverter} should use a specific JSF converter.
  * 
  * @see GenericFacesConverter
  * 

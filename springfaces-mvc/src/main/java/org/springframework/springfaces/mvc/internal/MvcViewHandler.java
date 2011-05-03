@@ -42,14 +42,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 	private ViewIdResolver viewIdResolver;
-	private ViewArtifactHolder viewArtifactHolder;
 	private DestinationRegistry destinationRegistry;
 
-	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver, ViewArtifactHolder viewArtifactHolder,
-			DestinationRegistry destinationRegistry) {
+	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver, DestinationRegistry destinationRegistry) {
 		this.delegate = delegate;
 		this.viewIdResolver = viewIdResolver;
-		this.viewArtifactHolder = viewArtifactHolder;
 		this.destinationRegistry = destinationRegistry;
 	}
 
@@ -70,12 +67,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@SuppressWarnings("unchecked")
 	private UIViewRoot createOrRestoreView(FacesContext context, String viewId, boolean create) {
-		viewArtifactHolder.clear();
 		context.getAttributes().remove(ACTION_ATTRIBUTE);
 		ViewArtifact viewArtifact = getViewArtifact(context);
 		Map<String, Object> model = null;
 		if (viewArtifact != null) {
-			viewArtifactHolder.put(viewArtifact);
 			viewId = viewArtifact.toString();
 			context.getAttributes().put(ACTION_ATTRIBUTE, viewId);
 			model = (Map<String, Object>) context.getAttributes().get(MODEL_ATTRIBUTE);

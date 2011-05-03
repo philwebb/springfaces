@@ -22,13 +22,10 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 	private String renderKitId;
 	private ResponseStateManager delegate;
 	private FacesViewStateHandler stateHandler;
-	private ViewArtifactHolder viewArtifactHolder;
 
-	public MvcResponseStateManager(ResponseStateManager delegate, FacesViewStateHandler stateHandler,
-			ViewArtifactHolder viewArtifactHolder) {
+	public MvcResponseStateManager(ResponseStateManager delegate, FacesViewStateHandler stateHandler) {
 		this.delegate = delegate;
 		this.stateHandler = stateHandler;
-		this.viewArtifactHolder = viewArtifactHolder;
 	}
 
 	public void setRenderKitId(String renderKitId) {
@@ -43,8 +40,9 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
 		if (SpringFacesContext.getCurrentInstance() != null
+				&& SpringFacesContext.getCurrentInstance().getRendering() != null
 				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
-			ViewArtifact viewArtifact = viewArtifactHolder.get();
+			ViewArtifact viewArtifact = SpringFacesContext.getCurrentInstance().getRendering().getViewArtifact();
 			if (viewArtifact != null) {
 				stateHandler.write(context, viewArtifact);
 			}

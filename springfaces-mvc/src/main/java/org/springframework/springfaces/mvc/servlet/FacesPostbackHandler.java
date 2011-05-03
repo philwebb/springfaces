@@ -2,7 +2,6 @@ package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -10,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.render.FacesViewStateHandler;
+import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerAdapter;
@@ -128,20 +127,9 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	public ModelAndView handle(final HttpServletRequest request, HttpServletResponse response, final Object handler)
 			throws Exception {
 		Assert.state(supports(handler), "The specified handler is not supported");
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
-		Assert.state(springFacesContext != null, "Unable to locate the SpringFacesContext.  Ensure that a "
-				+ FacesHandlerInterceptor.class.getSimpleName() + " is registered in the web context");
-		FacesContext facesContext = springFacesContext.getFacesContext();
-		try {
-			ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
-			// FIXME model?
-			MvcViewHandler.prepare(facesContext, viewArtifact, null);
-			springFacesContext.getLifecycle().execute(facesContext);
-			springFacesContext.getLifecycle().render(facesContext);
-		} finally {
-			facesContext.release();
-		}
-
+		ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
+		// FIXME model?
+		SpringFacesContext.getCurrentInstance(true).render(new ModelAndViewArtifact(viewArtifact, null));
 		return null;
 	}
 

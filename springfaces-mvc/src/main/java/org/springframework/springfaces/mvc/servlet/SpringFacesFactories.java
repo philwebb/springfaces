@@ -8,11 +8,9 @@ import javax.faces.render.ResponseStateManager;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.mvc.expression.el.SpringBeanMvcELResolver;
 import org.springframework.springfaces.mvc.internal.DefaultDestinationRegistry;
-import org.springframework.springfaces.mvc.internal.DefaultViewArtifactHolder;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
-import org.springframework.springfaces.mvc.internal.ViewArtifactHolder;
 import org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 import org.springframework.springfaces.render.FacesViewStateHandler;
@@ -23,7 +21,6 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 	private FacesViewStateHandler facesViewStateHandler;
 	private ViewIdResolver viewIdResolver;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
-	private ViewArtifactHolder viewArtifactHolder;
 	private DefaultDestinationRegistry destinationRegistry;
 
 	public SpringFacesFactories(FacesViewStateHandler facesViewStateHandler, ViewIdResolver viewIdResolver) {
@@ -33,17 +30,15 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 		this.viewIdResolver = viewIdResolver;
 		// FIXME
 		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
-		this.viewArtifactHolder = new DefaultViewArtifactHolder();
 		this.destinationRegistry = new DefaultDestinationRegistry();
 	}
 
 	public Object newWrapper(Class<?> typeClass, Object delegate) {
 		if (delegate instanceof ResponseStateManager) {
-			return new MvcResponseStateManager((ResponseStateManager) delegate, facesViewStateHandler,
-					viewArtifactHolder);
+			return new MvcResponseStateManager((ResponseStateManager) delegate, facesViewStateHandler);
 		}
 		if (delegate instanceof ViewHandler) {
-			return new MvcViewHandler((ViewHandler) delegate, viewIdResolver, viewArtifactHolder, destinationRegistry);
+			return new MvcViewHandler((ViewHandler) delegate, viewIdResolver, destinationRegistry);
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
 			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, navigationOutcomeResolver,

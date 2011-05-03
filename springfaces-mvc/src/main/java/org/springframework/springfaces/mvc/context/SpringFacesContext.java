@@ -1,13 +1,12 @@
 package org.springframework.springfaces.mvc.context;
 
 import javax.faces.context.FacesContext;
-import javax.faces.lifecycle.Lifecycle;
 import javax.faces.webapp.FacesServlet;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
+import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
@@ -29,13 +28,6 @@ public abstract class SpringFacesContext {
 			"Spring Faces Context");
 
 	/**
-	 * Returns a JSF {@link Lifecycle} that can be used to {@link Lifecycle#execute execute} and
-	 * {@link Lifecycle#render} a JSF response.
-	 * @return The JSF {@link Lifecycle}
-	 */
-	public abstract Lifecycle getLifecycle();
-
-	/**
 	 * Returns a JSF {@link FacesContext} for the current request. <b>NOTE:</b> Any {@link FacesContext} successfully
 	 * obtained using this method should be {@link FacesContext#release() released} after use. <code>
 	 * FacesContext context = springFacesContext.getFacesContext(true);
@@ -49,14 +41,23 @@ public abstract class SpringFacesContext {
 	 */
 	public abstract FacesContext getFacesContext();
 
-	// FIXME DOC
+	/**
+	 * Returns the {@link WebApplicationContext} associated with this context.
+	 * @return A {@link WebApplicationContext} instance
+	 */
 	public abstract WebApplicationContext getWebApplicationContext();
 
 	/**
-	 * Returns the MVC Handler chosen by the {@link DispatcherServlet}.
+	 * Returns the MVC Handler associated with this context.
 	 * @return The MVC handler
 	 */
 	public abstract Object getHandler();
+
+	// FIXME DC
+	public abstract void render(ModelAndViewArtifact modelAndViewArtifact);
+
+	// FIXME DC
+	public abstract ModelAndViewArtifact getRendering();
 
 	/**
 	 * Returns the current {@link SpringFacesContext} instance or <tt>null</tt> the context is unavailable.
@@ -92,4 +93,5 @@ public abstract class SpringFacesContext {
 			instance.set(context);
 		}
 	}
+
 }

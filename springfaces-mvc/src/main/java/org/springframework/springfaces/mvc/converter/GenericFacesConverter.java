@@ -14,10 +14,11 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
 /**
- * A Spring {@link ConditionalGenericConverter Converter} that can convert <tt>String<tt>s to <tt>Object</tt>s by
+ * A Spring {@link ConditionalGenericConverter converter} that can convert <tt>String<tt>s to <tt>Object</tt>s by
  * delegating to JSF {@link Converter converters}. This converter will only be considered when a
  * {@link SpringFacesContext} is active. The {@link FacesConverterId @FacesConverterId} annotation can be used to
- * specify a specific JSF converter should be used, otherwise the converter will be created based on the source type.
+ * indicate that a specific JSF converter should be used, otherwise the converter will be created based on the source
+ * type.
  * 
  * @see FacesConverterId
  * 
