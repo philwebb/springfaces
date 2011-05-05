@@ -26,7 +26,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
-	private ViewDestinations viewDestinations = new ViewDestinations();
+	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
 
 	public MvcNavigationHandler(ConfigurableNavigationHandler delegate,
 			NavigationOutcomeResolver navigationOutcomeResolver) {
@@ -41,33 +41,42 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	@Override
 	public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
-		NavigationOutcome navigationOutcome = getNavigationOutcome(context, fromAction, outcome, true);
-		if (navigationOutcome == null) {
-			return super.getNavigationCase(context, fromAction, outcome);
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true);
+			if (navigationOutcomeResolver.canResolve(navigationContext)) {
+				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
+				Assert.state(navigationOutcome != null, "Unable to get a NavigationCase from outcome '" + outcome
+						+ "' due to missing outcome");
+				UIViewRoot root = context.getViewRoot();
+				String fromViewId = (root != null ? root.getViewId() : null);
+				String toViewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
+				Map<String, List<String>> parameters = new HashMap<String, List<String>>();
+				if (navigationOutcome.getParameters() != null) {
+					parameters.putAll(navigationOutcome.getParameters());
+				}
+				return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, parameters, false, false);
+			}
 		}
-		Assert.state(navigationOutcome.getDestination() != null, "Unable to construct NavigationCase from outcome '"
-				+ outcome + "' due to missing destination");
-		UIViewRoot root = context.getViewRoot();
-		String fromViewId = (root != null ? root.getViewId() : null);
-		String toViewId = viewDestinations.put(context, navigationOutcome.getDestination());
-		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-		if (navigationOutcome.getParameters() != null) {
-			parameters.putAll(navigationOutcome.getParameters());
-		}
-		return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, parameters, false, false);
+		return super.getNavigationCase(context, fromAction, outcome);
 	}
 
 	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
-		NavigationOutcome navigationOutcome = getNavigationOutcome(context, fromAction, outcome, false);
-		if (navigationOutcome == null) {
-			super.handleNavigation(context, fromAction, outcome);
-			return;
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false);
+			if (navigationOutcomeResolver.canResolve(navigationContext)) {
+				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
+				if (navigationOutcome != null) {
+					String viewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
+					UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
+					// FIXME do we need this, should it be the view handler?
+					setRenderAll(context, viewId);
+					context.setViewRoot(newRoot);
+					return;
+				}
+			}
 		}
-		String viewId = viewDestinations.put(context, navigationOutcome.getDestination());
-		UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
-		setRenderAll(context, viewId);
-		context.setViewRoot(newRoot);
+		super.handleNavigation(context, fromAction, outcome);
 	}
 
 	private void setRenderAll(FacesContext facesContext, String viewId) {
@@ -79,15 +88,6 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			return;
 		}
 		partialViewContext.setRenderAll(true);
-	}
-
-	private NavigationOutcome getNavigationOutcome(FacesContext context, String fromAction, String outcome,
-			boolean preEmptive) {
-		if (SpringFacesContext.getCurrentInstance() == null) {
-			return null;
-		}
-		NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, preEmptive);
-		return navigationOutcomeResolver.getNavigationOutcome(navigationContext);
 	}
 
 	/**

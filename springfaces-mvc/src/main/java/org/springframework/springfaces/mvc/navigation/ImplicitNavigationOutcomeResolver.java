@@ -1,5 +1,6 @@
 package org.springframework.springfaces.mvc.navigation;
 
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -13,11 +14,16 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 
 	private String prefix = "mvc:";
 
-	public NavigationOutcome getNavigationOutcome(NavigationContext context) {
+	public boolean canResolve(NavigationContext context) {
 		String outcome = context.getOutcome();
-		if (StringUtils.hasLength(outcome) && outcome.startsWith(prefix)) {
-			return new NavigationOutcome(outcome.substring(prefix.length()), null);
-		}
-		return null;
+		return (StringUtils.hasLength(outcome) && outcome.startsWith(prefix));
+	}
+
+	public NavigationOutcome resolve(NavigationContext context) {
+		Assert.state(canResolve(context));
+		String destination = context.getOutcome().substring(prefix.length());
+		Assert.hasLength(destination, "The destination must be specified for implicit MVC navigation");
+		return new NavigationOutcome(destination, null);
+
 	}
 }

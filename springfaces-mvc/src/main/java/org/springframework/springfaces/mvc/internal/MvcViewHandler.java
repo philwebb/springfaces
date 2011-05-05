@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
@@ -42,7 +43,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 	private ViewIdResolver viewIdResolver;
-	private ViewDestinations viewDestinations = new ViewDestinations();
+	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
 
 	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver) {
 		this.delegate = delegate;
@@ -92,9 +93,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private View getView(FacesContext context, String viewId) {
 		viewId = getResolvableViewId(viewId);
-		Object destination = viewDestinations.get(context, viewId);
-		if (destination != null) {
-			View view = getViewForDestination(destination);
+		NavigationOutcome navigationOutcome = navigationOutcomeViewRegistry.get(context, viewId);
+		if (navigationOutcome != null) {
+			View view = getViewForDestination(navigationOutcome.getDestination());
 			return view;
 		}
 		if (viewIdResolver.isResolvable(viewId)) {
@@ -115,7 +116,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		if (viewDestinations.get(context, viewId) != null || viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+		if (navigationOutcomeViewRegistry.get(context, viewId) != null
+				|| viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.View;
 
 /**
@@ -13,6 +14,8 @@ import org.springframework.web.servlet.View;
  */
 public final class NavigationOutcome implements Serializable {
 
+	// FIXME DC
+
 	private static final long serialVersionUID = 1L;
 
 	private Object destination;
@@ -20,12 +23,13 @@ public final class NavigationOutcome implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param destination The outcome destination. The destination can be a MVC {@link View} or an object that can be
-	 * resolved to a MVC view. A <tt>null</tt> destination indicates that the outcome has been handled directly.
-	 * @param parameters Parameters that should be included when redirecting to the destination.
+	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
+	 * can be resolved to a MVC view.
+	 * @param parameters Parameters that should be included when redirecting to the destination or <tt>null</tt>.
 	 */
 	public NavigationOutcome(Object destination, Map<String, List<String>> parameters) {
 		super();
+		Assert.notNull(destination, "Destination must not be null");
 		this.destination = destination;
 		this.parameters = parameters;
 	}
@@ -34,6 +38,8 @@ public final class NavigationOutcome implements Serializable {
 		return this.destination;
 	}
 
+	// FIXME DC parameters
+	// FIXME should this me named model? Should List<String> be an object
 	public Map<String, List<String>> getParameters() {
 		return this.parameters;
 	}

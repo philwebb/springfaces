@@ -8,13 +8,21 @@ package org.springframework.springfaces.mvc.navigation;
 public interface NavigationOutcomeResolver {
 
 	/**
-	 * Attempts to resolve an outcome for the navigation. Return <tt>null</tt> if the navigation cannot be handled by
-	 * this resolver. The {@link NavigationOutcome} can be used to specify a destination or an empty destination can be
-	 * used if the navigation has handled by the resolver.
+	 * Determines if this resolver can be used for the navigation.
 	 * 
-	 * @param context
-	 * @return The navigation outcome or <tt>null</tt>.
+	 * @param context The navigation context
+	 * @return <tt>true</tt> if the resolver can be used or <tt>false</tt> if the resolve cannot handle the navigation
 	 */
-	public NavigationOutcome getNavigationOutcome(NavigationContext context);
+	public boolean canResolve(NavigationContext context);
+
+	/**
+	 * Resolve an outcome for the navigation. This method will only be called when {@link #isResolvable} returns
+	 * <tt>true</tt>. A <tt>null</tt> return from this method is an indication that the current view should be
+	 * redisplayed.
+	 * 
+	 * @param context The navigation context
+	 * @return The navigation outcome or <tt>null</tt> to redisplay the current view
+	 */
+	public NavigationOutcome resolve(NavigationContext context);
 
 }
