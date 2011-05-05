@@ -1,18 +1,20 @@
 package org.springframework.springfaces.mvc.navigation;
 
+/**
+ * Strategy interface used to resolve navigation outcomes.
+ * 
+ * @author Phillip Webb
+ */
 public interface NavigationOutcomeResolver {
 
-	// FIXME subclass for implict navigation
-	// FIXME how to indicate no outcome but handled
-	// FIXME how to indicate re-render
-
-	// FIXME what
-	/*
-	 * -View -String (resolved to view) -A XTML page?
+	/**
+	 * Attempts to resolve an outcome for the navigation. Return <tt>null</tt> if the navigation cannot be handled by
+	 * this resolver. The {@link NavigationOutcome} can be used to specify a destination or an empty destination can be
+	 * used if the navigation has handled by the resolver.
 	 * 
-	 * -ReRender -Handled
+	 * @param context
+	 * @return The navigation outcome or <tt>null</tt>.
 	 */
-
 	public NavigationOutcome getNavigationOutcome(NavigationContext context);
 
 }

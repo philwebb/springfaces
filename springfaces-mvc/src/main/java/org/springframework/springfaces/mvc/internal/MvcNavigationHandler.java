@@ -26,13 +26,12 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
-	private DestinationRegistry destinationRegistry;
+	private ViewDestinations viewDestinations = new ViewDestinations();
 
 	public MvcNavigationHandler(ConfigurableNavigationHandler delegate,
-			NavigationOutcomeResolver navigationOutcomeResolver, DestinationRegistry destinationRegistry) {
+			NavigationOutcomeResolver navigationOutcomeResolver) {
 		this.delegate = delegate;
 		this.navigationOutcomeResolver = navigationOutcomeResolver;
-		this.destinationRegistry = destinationRegistry;
 	}
 
 	@Override
@@ -48,10 +47,9 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		}
 		Assert.state(navigationOutcome.getDestination() != null, "Unable to construct NavigationCase from outcome '"
 				+ outcome + "' due to missing destination");
-		// FIXME assert not rendered directly
 		UIViewRoot root = context.getViewRoot();
 		String fromViewId = (root != null ? root.getViewId() : null);
-		String toViewId = destinationRegistry.put(navigationOutcome.getDestination());
+		String toViewId = viewDestinations.put(context, navigationOutcome.getDestination());
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		if (navigationOutcome.getParameters() != null) {
 			parameters.putAll(navigationOutcome.getParameters());
@@ -66,12 +64,10 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			super.handleNavigation(context, fromAction, outcome);
 			return;
 		}
-		String viewId = destinationRegistry.put(navigationOutcome.getDestination());
-		// FIXME stop if rendered directly
+		String viewId = viewDestinations.put(context, navigationOutcome.getDestination());
 		UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
 		setRenderAll(context, viewId);
 		context.setViewRoot(newRoot);
-		// FIXME logging
 	}
 
 	private void setRenderAll(FacesContext facesContext, String viewId) {
@@ -94,6 +90,9 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		return navigationOutcomeResolver.getNavigationOutcome(navigationContext);
 	}
 
+	/**
+	 * Implementation of the {@link NavigationContext}.
+	 */
 	private static class NavigationContextImpl implements NavigationContext {
 
 		private String fromAction;

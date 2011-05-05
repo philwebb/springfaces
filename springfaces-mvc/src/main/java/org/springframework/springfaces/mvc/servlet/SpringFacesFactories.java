@@ -7,7 +7,6 @@ import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.mvc.expression.el.SpringBeanMvcELResolver;
-import org.springframework.springfaces.mvc.internal.DefaultDestinationRegistry;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
@@ -21,7 +20,6 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 	private FacesViewStateHandler facesViewStateHandler;
 	private ViewIdResolver viewIdResolver;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
-	private DefaultDestinationRegistry destinationRegistry;
 
 	public SpringFacesFactories(FacesViewStateHandler facesViewStateHandler, ViewIdResolver viewIdResolver) {
 		Assert.notNull(facesViewStateHandler, "FacesViewStateHandler must not be null");
@@ -30,7 +28,6 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 		this.viewIdResolver = viewIdResolver;
 		// FIXME
 		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
-		this.destinationRegistry = new DefaultDestinationRegistry();
 	}
 
 	public Object newWrapper(Class<?> typeClass, Object delegate) {
@@ -38,11 +35,10 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 			return new MvcResponseStateManager((ResponseStateManager) delegate, facesViewStateHandler);
 		}
 		if (delegate instanceof ViewHandler) {
-			return new MvcViewHandler((ViewHandler) delegate, viewIdResolver, destinationRegistry);
+			return new MvcViewHandler((ViewHandler) delegate, viewIdResolver);
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
-			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, navigationOutcomeResolver,
-					destinationRegistry);
+			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, navigationOutcomeResolver);
 		}
 		if (CompositeELResolver.class.equals(typeClass)) {
 			((CompositeELResolver) delegate).add(new SpringBeanMvcELResolver());

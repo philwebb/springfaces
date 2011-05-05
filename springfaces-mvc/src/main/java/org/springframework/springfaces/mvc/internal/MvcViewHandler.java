@@ -42,12 +42,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 	private ViewIdResolver viewIdResolver;
-	private DestinationRegistry destinationRegistry;
+	private ViewDestinations viewDestinations = new ViewDestinations();
 
-	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver, DestinationRegistry destinationRegistry) {
+	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver) {
 		this.delegate = delegate;
 		this.viewIdResolver = viewIdResolver;
-		this.destinationRegistry = destinationRegistry;
 	}
 
 	@Override
@@ -60,7 +59,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (SpringFacesContext.getCurrentInstance() != null) {
 			if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
 				// Creating view in response to a navigation event
-				View view = getView(viewId);
+				View view = getView(context, viewId);
 				if (view != null) {
 					return new MvcUIViewRoot(viewId, view);
 				}
@@ -91,9 +90,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return super.restoreView(context, viewId);
 	}
 
-	private View getView(String viewId) {
+	private View getView(FacesContext context, String viewId) {
 		viewId = getResolvableViewId(viewId);
-		Object destination = destinationRegistry.get(viewId);
+		Object destination = viewDestinations.get(context, viewId);
 		if (destination != null) {
 			View view = getViewForDestination(destination);
 			return view;
@@ -116,7 +115,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		if (destinationRegistry.get(viewId) != null || viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+		if (viewDestinations.get(context, viewId) != null || viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
@@ -178,7 +177,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
 		// FIXME do we need to worry about char encoding
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			View view = getView(viewId);
+			View view = getView(context, viewId);
 			if (view == null) {
 				return null;
 			}
