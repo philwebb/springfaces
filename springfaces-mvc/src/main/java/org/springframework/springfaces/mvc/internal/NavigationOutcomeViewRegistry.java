@@ -20,12 +20,6 @@ class NavigationOutcomeViewRegistry {
 	private static final String CONTAINER_ATTRIBUTE = NavigationOutcomeViewRegistry.class.getName() + ".CONTAINER";
 	private static final String KEY_PREFIX = NavigationOutcomeViewRegistry.class.getName() + ":";
 
-	private FacesContext getContext() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Assert.state(context != null, "Unable to obtain the FacesContext");
-		return context;
-	}
-
 	@SuppressWarnings("unchecked")
 	private Map<String, NavigationOutcome> getContainer(boolean create) {
 		FacesContext context = getContext();
@@ -36,6 +30,12 @@ class NavigationOutcomeViewRegistry {
 			context.getAttributes().put(CONTAINER_ATTRIBUTE, container);
 		}
 		return container;
+	}
+
+	private FacesContext getContext() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Assert.state(context != null, "Unable to obtain the FacesContext");
+		return context;
 	}
 
 	public String put(FacesContext context, NavigationOutcome navigationOutcome) {

@@ -1,7 +1,6 @@
 package org.springframework.springfaces.mvc.navigation;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.Assert;
@@ -19,28 +18,26 @@ public final class NavigationOutcome implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Object destination;
-	private Map<String, List<String>> parameters;
+	private Map<String, Object> implicitModel;
 
 	/**
 	 * Constructor.
 	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be resolved to a MVC view.
-	 * @param parameters Parameters that should be included when redirecting to the destination or <tt>null</tt>.
+	 * @param implicitModel An implicit model to be used with destination or <tt>null</tt>.
 	 */
-	public NavigationOutcome(Object destination, Map<String, List<String>> parameters) {
+	public NavigationOutcome(Object destination, Map<String, Object> implicitModel) {
 		super();
 		Assert.notNull(destination, "Destination must not be null");
 		this.destination = destination;
-		this.parameters = parameters;
+		this.implicitModel = implicitModel;
 	}
 
 	public Object getDestination() {
 		return this.destination;
 	}
 
-	// FIXME DC parameters
-	// FIXME should this me named model? Should List<String> be an object
-	public Map<String, List<String>> getParameters() {
-		return this.parameters;
+	public Map<String, Object> getImplicitModel() {
+		return implicitModel;
 	}
 }

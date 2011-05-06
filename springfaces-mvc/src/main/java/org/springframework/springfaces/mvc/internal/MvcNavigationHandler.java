@@ -1,14 +1,11 @@
 package org.springframework.springfaces.mvc.internal;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
+import javax.faces.event.ActionEvent;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
@@ -50,11 +47,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 				UIViewRoot root = context.getViewRoot();
 				String fromViewId = (root != null ? root.getViewId() : null);
 				String toViewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
-				Map<String, List<String>> parameters = new HashMap<String, List<String>>();
-				if (navigationOutcome.getParameters() != null) {
-					parameters.putAll(navigationOutcome.getParameters());
-				}
-				return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, parameters, false, false);
+				return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
 			}
 		}
 		return super.getNavigationCase(context, fromAction, outcome);
@@ -63,6 +56,9 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
+			// FIXME
+			ActionEvent actionEvent = MvcNavigationActionListener.get(context);
+			System.out.println(actionEvent);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false);
 			if (navigationOutcomeResolver.canResolve(navigationContext)) {
 				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
@@ -119,6 +115,11 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 		public boolean isPreEmptive() {
 			return preEmptive;
+		}
+
+		public ActionEvent getActionEvent() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

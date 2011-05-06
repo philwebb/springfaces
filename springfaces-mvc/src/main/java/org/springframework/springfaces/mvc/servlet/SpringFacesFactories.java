@@ -3,10 +3,12 @@ package org.springframework.springfaces.mvc.servlet;
 import javax.el.CompositeELResolver;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
+import javax.faces.event.ActionListener;
 import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.mvc.expression.el.SpringBeanMvcELResolver;
+import org.springframework.springfaces.mvc.internal.MvcNavigationActionListener;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
@@ -39,6 +41,9 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object> {
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
 			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, navigationOutcomeResolver);
+		}
+		if (ActionListener.class.equals(typeClass)) {
+			return new MvcNavigationActionListener((ActionListener) delegate);
 		}
 		if (CompositeELResolver.class.equals(typeClass)) {
 			((CompositeELResolver) delegate).add(new SpringBeanMvcELResolver());

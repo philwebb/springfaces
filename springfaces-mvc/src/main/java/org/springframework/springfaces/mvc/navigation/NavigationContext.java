@@ -1,5 +1,6 @@
 package org.springframework.springfaces.mvc.navigation;
 
+import javax.faces.event.ActionEvent;
 
 public interface NavigationContext {
 
@@ -10,4 +11,7 @@ public interface NavigationContext {
 	String getOutcome();
 
 	boolean isPreEmptive();
+
+	// FIXME DC. Always null for pre-emptive
+	ActionEvent getActionEvent();
 }

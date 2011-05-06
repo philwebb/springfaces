@@ -5,6 +5,7 @@ import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
+import javax.faces.event.ActionListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.ResponseStateManager;
 
@@ -18,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
  * {@link WebApplicationContext context} containing the {@link SpringFacesIntegration} bean will be consulted when any
  * of the following JSF objects are created:
  * <ul>
+ * <li>{@link ActionListener}</li>
  * <li>{@link Application}</li>
  * <li>{@link ConfigurableNavigationHandler}</li>
  * <li>{@link RenderKit}</li>
