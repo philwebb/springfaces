@@ -26,6 +26,15 @@ public final class NavigationOutcome implements Serializable {
 	 * Constructor.
 	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be {@link DestinationViewResolver resolved} to a MVC view.
+	 */
+	public NavigationOutcome(Object destination) {
+		this(destination, null);
+	}
+
+	/**
+	 * Constructor.
+	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
+	 * can be {@link DestinationViewResolver resolved} to a MVC view.
 	 * @param implicitModel An implicit model to be used with destination or <tt>null</tt>.
 	 */
 	public NavigationOutcome(Object destination, Map<String, Object> implicitModel) {

@@ -5,6 +5,11 @@ import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
+/**
+ * Action listener that stores the {@link ActionEvent} so that the {@link MvcNavigationHandler} can obtain it later.
+ * 
+ * @author Phillip Webb
+ */
 public class MvcNavigationActionListener implements ActionListener {
 
 	private static final String KEY = MvcNavigationActionListener.class.getName();
@@ -21,7 +26,12 @@ public class MvcNavigationActionListener implements ActionListener {
 		delegate.processAction(event);
 	}
 
-	public static ActionEvent get(FacesContext context) {
+	/**
+	 * Returns the last {@link ActionEvent} that occured.
+	 * @param context The faces context
+	 * @return The action event or <tt>null</tt>
+	 */
+	public static ActionEvent getLastActionEvent(FacesContext context) {
 		return (ActionEvent) context.getAttributes().get(KEY);
 	}
 }

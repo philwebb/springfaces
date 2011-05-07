@@ -4,7 +4,6 @@ import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationCase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
 import javax.faces.event.ActionEvent;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
@@ -39,11 +38,11 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	@Override
 	public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true);
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, null);
 			if (navigationOutcomeResolver.canResolve(navigationContext)) {
 				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
-				Assert.state(navigationOutcome != null, "Unable to get a NavigationCase from outcome '" + outcome
-						+ "' due to missing outcome");
+				Assert.state(navigationOutcome != null, "Unable to resolve required navigation outcome '" + outcome
+						+ "'");
 				UIViewRoot root = context.getViewRoot();
 				String fromViewId = (root != null ? root.getViewId() : null);
 				String toViewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
@@ -56,17 +55,13 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	@Override
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			// FIXME
-			ActionEvent actionEvent = MvcNavigationActionListener.get(context);
-			System.out.println(actionEvent);
-			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false);
+			ActionEvent actionEvent = MvcNavigationActionListener.getLastActionEvent(context);
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false, actionEvent);
 			if (navigationOutcomeResolver.canResolve(navigationContext)) {
 				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
 				if (navigationOutcome != null) {
 					String viewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
 					UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
-					// FIXME do we need this, should it be the view handler?
-					setRenderAll(context, viewId);
 					context.setViewRoot(newRoot);
 					return;
 				}
@@ -75,15 +70,12 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		super.handleNavigation(context, fromAction, outcome);
 	}
 
-	private void setRenderAll(FacesContext facesContext, String viewId) {
-		if (facesContext.getViewRoot().getViewId().equals(viewId)) {
-			return;
-		}
-		PartialViewContext partialViewContext = facesContext.getPartialViewContext();
-		if (partialViewContext.isRenderAll()) {
-			return;
-		}
-		partialViewContext.setRenderAll(true);
+	/**
+	 * Allows the {@link NavigationOutcomeViewRegistry} to be changed for testing.
+	 * @param navigationOutcomeViewRegistry A navigation outcome view registry
+	 */
+	final void setNavigationOutcomeViewRegistry(NavigationOutcomeViewRegistry navigationOutcomeViewRegistry) {
+		this.navigationOutcomeViewRegistry = navigationOutcomeViewRegistry;
 	}
 
 	/**
@@ -94,11 +86,13 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		private String fromAction;
 		private String outcome;
 		private boolean preEmptive;
+		private ActionEvent actionEvent;
 
-		public NavigationContextImpl(String fromAction, String outcome, boolean preEmptive) {
+		public NavigationContextImpl(String fromAction, String outcome, boolean preEmptive, ActionEvent actionEvent) {
 			this.fromAction = fromAction;
 			this.outcome = outcome;
 			this.preEmptive = preEmptive;
+			this.actionEvent = actionEvent;
 		}
 
 		public Object getHandler() {
@@ -118,8 +112,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		}
 
 		public ActionEvent getActionEvent() {
-			// TODO Auto-generated method stub
-			return null;
+			return actionEvent;
 		}
 	}
 }

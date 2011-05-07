@@ -11,6 +11,7 @@ import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
@@ -247,6 +248,18 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		public View getView() {
 			return view;
 		}
+	}
+
+	// FIXME
+	private void setRenderAll(FacesContext facesContext, String viewId) {
+		if (facesContext.getViewRoot().getViewId().equals(viewId)) {
+			return;
+		}
+		PartialViewContext partialViewContext = facesContext.getPartialViewContext();
+		if (partialViewContext.isRenderAll()) {
+			return;
+		}
+		partialViewContext.setRenderAll(true);
 	}
 
 	// FIXME make not static?
