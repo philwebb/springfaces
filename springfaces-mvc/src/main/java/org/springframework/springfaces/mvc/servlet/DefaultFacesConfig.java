@@ -6,16 +6,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.View;
 
-public class DefaultFacesConfig implements FacesPostbackOrginalHandlerLocator, ViewIdResolver,
+public class DefaultFacesConfig implements FacesPostbackOrginalHandlerLocator, DestinationViewResolver,
 		ApplicationListener<ContextRefreshedEvent> {
 
 	private DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
-
-	private String viewIdPrefix = "mvc:";
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		delegate.onApplicationEvent(event);
@@ -25,20 +24,12 @@ public class DefaultFacesConfig implements FacesPostbackOrginalHandlerLocator, V
 		return delegate.getHandler(request);
 	}
 
-	public boolean isResolvable(String viewId) {
-		return (viewId != null) && (viewId.startsWith(viewIdPrefix));
-	}
-
-	public View resolveViewId(String viewId, Locale locale) {
-		if (isResolvable(viewId)) {
-			String viewName = viewId.substring(viewIdPrefix.length());
-			return delegate.resolveViewId(viewName, locale);
-		}
-		return null;
-	}
-
 	public View resolveDirectViewId(String viewId, Locale locale) {
 		return delegate.resolveViewId(viewId, locale);
+	}
+
+	public View resolveDestination(Object destination, Locale locale) throws Exception {
+		return delegate.resolveViewId(destination.toString(), locale);
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet {

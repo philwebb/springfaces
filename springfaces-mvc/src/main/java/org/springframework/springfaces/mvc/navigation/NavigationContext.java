@@ -12,7 +12,6 @@ import javax.faces.event.ActionEvent;
 public interface NavigationContext {
 
 	/**
-	 * 
 	 * Returns the current MVC handler the processing the JSF request or <tt>null</tt> if the request did not originate
 	 * from Spring MVC.
 	 * @return The spring MVC handler or <tt>null</tt>
@@ -49,4 +48,10 @@ public interface NavigationContext {
 	 * @return THe action event or <tt>null</tt>
 	 */
 	ActionEvent getActionEvent();
+
+	/**
+	 * Returns the destination view ID that JSF will use if no {@link NavigationOutcomeResolver resolvers} can be used.
+	 * @return The default destination view ID
+	 */
+	String getDefaultDestinationViewId();
 }

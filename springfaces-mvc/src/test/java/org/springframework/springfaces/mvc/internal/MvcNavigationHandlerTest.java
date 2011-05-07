@@ -8,14 +8,19 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
+import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
@@ -32,7 +37,9 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.springframework.springfaces.mvc.FacesContextSetter;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
@@ -86,6 +93,8 @@ public class MvcNavigationHandlerTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
+	private List<FacesMessage> messageList = new ArrayList<FacesMessage>();
+
 	@Before
 	public void setup() {
 		FacesContextSetter.setCurrentInstance(context);
@@ -98,6 +107,12 @@ public class MvcNavigationHandlerTest {
 		given(application.getViewHandler()).willReturn(viewHandler);
 		Map<Object, Object> attributes = new HashMap<Object, Object>();
 		given(context.getAttributes()).willReturn(attributes);
+		given(context.getMessageList()).willReturn(messageList);
+		given(context.getMessages()).willAnswer(new Answer<Iterator<FacesMessage>>() {
+			public Iterator<FacesMessage> answer(InvocationOnMock invocation) throws Throwable {
+				return messageList.iterator();
+			}
+		});
 	}
 
 	@After
@@ -122,7 +137,7 @@ public class MvcNavigationHandlerTest {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		navigationHandler.getNavigationCase(context, fromAction, outcome);
 		verify(navigationOutcomeResolver).canResolve(navigationContext.capture());
-		verify(delegate).getNavigationCase(context, fromAction, outcome);
+		verify(delegate, atLeastOnce()).getNavigationCase(context, fromAction, outcome);
 	}
 
 	@Test
@@ -194,6 +209,33 @@ public class MvcNavigationHandlerTest {
 		assertFalse(navigationContext.isPreemptive());
 		assertSame(actionEvent, navigationContext.getActionEvent());
 		assertSame(handler, navigationContext.getHandler());
+	}
+
+	@Test
+	public void shouldRemoveSlashFromDefaultDestinationViewId() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		handleOutcome();
+		NavigationCase defaultNavigationCase = mock(NavigationCase.class);
+		given(delegate.getNavigationCase(context, fromAction, outcome)).willReturn(defaultNavigationCase);
+		given(defaultNavigationCase.getToViewId(context)).willReturn("/example");
+		navigationHandler.getNavigationCase(context, fromAction, outcome);
+		assertEquals("example", navigationContext.getValue().getDefaultDestinationViewId());
+	}
+
+	@Test
+	public void shouldRemoveSuperflousWarningFacesMessages() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		handleOutcome();
+		messageList.add(new FacesMessage("existing"));
+		given(delegate.getNavigationCase(context, fromAction, outcome)).willAnswer(new Answer<NavigationCase>() {
+			public NavigationCase answer(InvocationOnMock invocation) throws Throwable {
+				messageList.add(new FacesMessage("new warning"));
+				return null;
+			}
+		});
+		navigationHandler.getNavigationCase(context, fromAction, outcome);
+		assertEquals(1, messageList.size());
+		assertEquals("existing", messageList.get(0).getSummary());
 	}
 
 }

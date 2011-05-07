@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
-import org.springframework.springfaces.mvc.servlet.ViewIdResolver;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.springfaces.render.ViewArtifact;
@@ -43,12 +43,13 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private Log logger = LogFactory.getLog(MvcNavigationHandler.class);
 
 	private ViewHandler delegate;
-	private ViewIdResolver viewIdResolver;
+	private DestinationViewResolver destinationViewResolver;
+
 	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
 
-	public MvcViewHandler(ViewHandler delegate, ViewIdResolver viewIdResolver) {
+	public MvcViewHandler(ViewHandler delegate, DestinationViewResolver destinationViewResolver) {
 		this.delegate = delegate;
-		this.viewIdResolver = viewIdResolver;
+		this.destinationViewResolver = destinationViewResolver;
 	}
 
 	@Override
@@ -70,16 +71,20 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 				ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
 				UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
 				context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
-				if (rendering.getModel() != null) {
-					// FIXME perhaps store as a single attribute and have an ELResolver to access?
-					// FIXME do we want scope support for the mode (eg request, session)
-					// FIXME is storing the model the responsibility of the ViewHandler?
-					viewRoot.getViewMap().putAll(rendering.getModel());
-				}
+				storeModel(rendering, viewRoot);
 				return viewRoot;
 			}
 		}
 		return super.createView(context, viewId);
+	}
+
+	private void storeModel(ModelAndViewArtifact modelAndViewArtifact, UIViewRoot viewRoot) {
+		if (modelAndViewArtifact.getModel() != null) {
+			// FIXME perhaps store as a single attribute and have an ELResolver to access?
+			// FIXME do we want scope support for the mode (eg request, session)
+			// FIXME is storing the model the responsibility of the ViewHandler?
+			viewRoot.getViewMap().putAll(modelAndViewArtifact.getModel());
+		}
 	}
 
 	@Override
@@ -96,29 +101,29 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		viewId = getResolvableViewId(viewId);
 		NavigationOutcome navigationOutcome = navigationOutcomeViewRegistry.get(context, viewId);
 		if (navigationOutcome != null) {
-			View view = getViewForDestination(navigationOutcome.getDestination());
+			View view = resolveDestination(navigationOutcome.getDestination());
 			return view;
-		}
-		if (viewIdResolver.isResolvable(viewId)) {
-			return viewIdResolver.resolveViewId(viewId, null); // FIXME locale
 		}
 		return null;
 	}
 
-	private View getViewForDestination(Object destination) {
+	private View resolveDestination(Object destination) {
 		if (destination instanceof View) {
 			return (View) destination;
 		}
-		if (viewIdResolver.isResolvable(destination.toString())) {
-			return viewIdResolver.resolveViewId(destination.toString(), null); // FIXME locale
+		try {
+			return destinationViewResolver.resolveDestination(destination, null); // FIXME locale
+		} catch (Exception e) {
+			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
 		}
-		return viewIdResolver.resolveDirectViewId(destination.toString(), null); // FIXME locale
 	}
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		if (navigationOutcomeViewRegistry.get(context, viewId) != null
-				|| viewIdResolver.isResolvable(getResolvableViewId(viewId))) {
+		// We need to ensure that views we resolve do not return a VDL. This prevents NoClassDefFoundError for
+		// javax.servlet.jsp.jstl.core.Config
+		String resolvableViewId = getResolvableViewId(viewId);
+		if (navigationOutcomeViewRegistry.get(context, resolvableViewId) != null) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
@@ -148,13 +153,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		} else {
 			super.renderView(context, viewToRender);
 		}
-	}
-
-	private ViewArtifact getViewArtifact(FacesContext context) {
-		if (SpringFacesContext.getCurrentInstance() != null && PhaseId.RESTORE_VIEW.equals(context.getCurrentPhaseId())) {
-			return (ViewArtifact) context.getAttributes().get(VIEW_ARTIFACT_ATTRIBUTE);
-		}
-		return null;
 	}
 
 	@Override
@@ -189,6 +187,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			Map<String, Object> model = new HashMap<String, Object>();
 			for (Map.Entry<String, List<String>> parameter : parameters.entrySet()) {
 				if (parameter.getValue().size() == 1) {
+					// FIXME rethink when to evaluate expressions. We could end up with EL injection if the parameter
+					// comes from an f:param that is already evaluated
 					model.put(parameter.getKey(), evaluateExpression(context, parameter.getValue().get(0)));
 				} else {
 					if (logger.isWarnEnabled()) {
@@ -214,7 +214,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return value;
 	}
 
-	public static boolean isExpression(String expression) {
+	private boolean isExpression(String expression) {
 		// FIXME implementation as ELUtils, can we use the RegEx
 		if (!StringUtils.hasLength(expression)) {
 			return false;

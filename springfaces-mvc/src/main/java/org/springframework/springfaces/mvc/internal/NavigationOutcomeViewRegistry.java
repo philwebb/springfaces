@@ -49,7 +49,7 @@ class NavigationOutcomeViewRegistry {
 	}
 
 	public NavigationOutcome get(FacesContext context, String key) {
-		if (key.startsWith(KEY_PREFIX)) {
+		if (key != null && key.startsWith(KEY_PREFIX)) {
 			synchronized (this) {
 				Map<String, NavigationOutcome> container = getContainer(false);
 				if (container != null) {

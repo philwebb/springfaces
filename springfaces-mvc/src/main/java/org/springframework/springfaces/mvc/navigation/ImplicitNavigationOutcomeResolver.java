@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
  * {@link NavigationOutcome#getDestination() destination}, for example the implicit view "<tt>mvc:redirect:/home</tt>"
  * will return an outcome containing the destination "<tt>redirect:/home</tt>".
  * 
- * 
  * @author Phillip Webb
  */
 public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResolver {
@@ -19,15 +18,29 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 	private String prefix = "mvc:";
 
 	public boolean canResolve(NavigationContext context) {
-		String outcome = context.getOutcome();
-		return (StringUtils.hasLength(outcome) && outcome.startsWith(prefix));
+		return canResolve(context.getDefaultDestinationViewId()) || canResolve(context.getOutcome());
+	}
+
+	private boolean canResolve(String value) {
+
+		return (StringUtils.hasLength(value) && value.startsWith(prefix));
 	}
 
 	public NavigationOutcome resolve(NavigationContext context) {
-		Assert.state(canResolve(context));
-		String destination = context.getOutcome().substring(prefix.length());
-		Assert.hasLength(destination, "The destination must be specified for implicit MVC navigation");
+		String destination = null;
+		if (canResolve(context.getDefaultDestinationViewId())) {
+			destination = resolve(context.getDefaultDestinationViewId());
+		} else if (canResolve(context.getOutcome())) {
+			destination = resolve(context.getOutcome());
+		}
+		Assert.state(destination != null);
 		return new NavigationOutcome(destination, null);
+	}
+
+	private String resolve(String value) {
+		String destination = value.substring(prefix.length());
+		Assert.hasLength(destination, "The destination must be specified for implicit MVC navigation");
+		return destination;
 	}
 
 	/**
@@ -38,5 +51,4 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 		Assert.hasLength(prefix, "Prefix must contain at least character");
 		this.prefix = prefix;
 	}
-
 }

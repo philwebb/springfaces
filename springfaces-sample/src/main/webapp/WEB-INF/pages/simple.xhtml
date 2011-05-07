@@ -10,14 +10,15 @@
 
 	<h:body>
 		<h:form>
-			<h:outputText value="#{hotel}"/>
-			<h:commandButton value="go" action="go"/>
-			<h:commandButton value="go2" action="mvc:testBeanView"/>
-			<h:commandButton value="go3" action="mvc:redirect:/spring/hello"/>
-			<h:link value="link" outcome="mvc:redirect:/spring/hello"/>
-			<h:link value="link" outcome="mvc:redirect:/spring/simple/{name}">
+			<h:outputText value="#{hotel}"/><br/>
+			<h:commandButton value="go" action="go"/><br/>
+			<h:commandButton value="go2" action="mvc:testBeanView"/><br/>
+			<h:commandButton value="go3" action="mvc:redirect:/spring/hello"/><br/>
+			<h:link value="link" outcome="go2" /><br/>
+			<h:link value="link2" outcome="mvc:redirect:/spring/hello"/><br/>
+			<h:link value="link3" outcome="mvc:redirect:/spring/simple/{name}">
 				<f:param name="name" value="phil"/>
-			</h:link>
+			</h:link><br/>
 		</h:form>
 	</h:body>
 </html>
