@@ -43,9 +43,7 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 				&& SpringFacesContext.getCurrentInstance().getRendering() != null
 				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
 			ViewArtifact viewArtifact = SpringFacesContext.getCurrentInstance().getRendering().getViewArtifact();
-			if (viewArtifact != null) {
-				stateHandler.write(context, viewArtifact);
-			}
+			stateHandler.write(context, viewArtifact);
 		}
 		super.writeState(context, state);
 	}
