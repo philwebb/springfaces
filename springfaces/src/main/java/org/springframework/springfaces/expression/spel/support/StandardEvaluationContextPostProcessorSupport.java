@@ -45,7 +45,7 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 	 * {@link StandardEvaluationContextPostProcessor} aware variant. By default only
 	 * {@link StandardBeanExpressionResolver}s can be replaced.
 	 * @param beanExpressionResolver The bean expression resolver being considered
-	 * @return <tt>true</tt> if the resolver can be replaced.
+	 * @return <tt>true</tt> if the resolver can be replaced
 	 */
 	protected boolean isReplaceable(BeanExpressionResolver beanExpressionResolver) {
 		return beanExpressionResolver.getClass().equals(StandardBeanExpressionResolver.class);

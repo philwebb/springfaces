@@ -113,7 +113,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			return outcome;
 		}
 
-		public boolean isPreEmptive() {
+		public boolean isPreemptive() {
 			return preEmptive;
 		}
 

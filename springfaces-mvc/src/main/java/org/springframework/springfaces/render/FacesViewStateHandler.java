@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Strategy interface use to read and write {@link ViewArtifact} data.
  * 
@@ -18,7 +17,7 @@ public interface FacesViewStateHandler {
 	 * @param facesContext The faces context
 	 * @param viewArtifact The view state to write
 	 */
-	public void write(FacesContext facesContext, ViewArtifact viewArtifact) throws IOException;
+	void write(FacesContext facesContext, ViewArtifact viewArtifact) throws IOException;
 
 	/**
 	 * Read previously saved view artifact. This method will be called during postback in order to restore state. NOTE:
@@ -27,5 +26,5 @@ public interface FacesViewStateHandler {
 	 * @param request The request used to retrieve view state
 	 * @return ViewArtifact or <tt>null</tt> if the postback is not relevant
 	 */
-	public ViewArtifact read(HttpServletRequest request) throws IOException;
+	ViewArtifact read(HttpServletRequest request) throws IOException;
 }

@@ -46,7 +46,7 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 	 * @param context the evaluation context in which the access is being attempted
 	 * @param target the target object upon which the property is being accessed
 	 * @param name the name of the property being accessed
-	 * @return The resolved value or <tt>null</tt> if the property cannot be resolved.
+	 * @return The resolved value or <tt>null</tt> if the property cannot be resolved
 	 * @throws AccessException
 	 */
 	protected TypedValue resolveValue(EvaluationContext context, Object target, String name) throws AccessException {

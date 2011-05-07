@@ -30,7 +30,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 
 	/**
 	 * The {@link ServletContext} attribute that will contain the date the {@link WebApplicationContext} containing
-	 * {@link SpringFacesIntegration} was last refreshed.
+	 * {@link SpringFacesIntegration} was last refreshed
 	 */
 	private static final String LAST_REFRESHED_DATE_ATTRIBUTE = SpringFacesIntegration.class.getName() + ".DATE";
 
@@ -48,7 +48,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	 * Determine if {@link SpringFacesIntegration} has been installed. This method will return <tt>true</tt> when a
 	 * {@link WebApplicationContext} containing a {@link SpringFacesIntegration} bean has been fully loaded.
 	 * @param servletContext The servlet context
-	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded.
+	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded
 	 * @see #isInstalled(ExternalContext)
 	 */
 	public static boolean isInstalled(ServletContext servletContext) {
@@ -60,7 +60,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	 * Determine if {@link SpringFacesIntegration} has been installed. This method will return <tt>true</tt> when a
 	 * {@link WebApplicationContext} containing a {@link SpringFacesIntegration} bean has been fully loaded.
 	 * @param externalContext The JSF external context
-	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded.
+	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded
 	 * @see #isInstalled(ServletContext)
 	 */
 	public static boolean isInstalled(ExternalContext externalContext) {

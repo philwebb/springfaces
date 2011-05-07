@@ -4,7 +4,7 @@ import org.springframework.springfaces.render.ViewArtifact;
 
 public class Postback {
 
-	// FIXME FC
+	// FIXME DC
 
 	private ViewArtifact viewArtifact;
 	private Object handler;

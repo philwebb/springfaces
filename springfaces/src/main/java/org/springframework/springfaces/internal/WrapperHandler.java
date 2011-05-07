@@ -192,7 +192,7 @@ class WrapperHandler<T> {
 	/**
 	 * Strategy method called after a wrapped instance has been created. Subclasses can implement custom post-processing
 	 * as required.
-	 * @param wrapped The newly created wrapped instance.
+	 * @param wrapped The newly created wrapped instance
 	 */
 	protected void postProcessWrapper(T wrapped) {
 	}

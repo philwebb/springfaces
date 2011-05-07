@@ -70,7 +70,7 @@ public abstract class SpringFacesContext {
 	/**
 	 * Returns the current {@link SpringFacesContext}.
 	 * @param required <tt>true</tt> if an {@link IllegalStateException} should be thrown when the context cannot be
-	 * obtained. <tt>false</tt> if <tt>null</tt> should be returned when the context cannot be obtained.
+	 * obtained. <tt>false</tt> if <tt>null</tt> should be returned when the context cannot be obtained
 	 * @return The {@link SpringFacesContext} (or <tt>null</tt> if <tt>required</tt> is <tt>false</tt>)
 	 */
 	public static SpringFacesContext getCurrentInstance(boolean required) {

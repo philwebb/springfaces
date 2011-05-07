@@ -50,7 +50,7 @@ public interface FacesWrapperFactory<T> {
 	 * @param typeClass The JSF Object type being wrapped
 	 * @param delegate The existing JSF object that should be used as the delegate for the wrapper
 	 * @return A {@link FacesWrapper wrapped} object that it is itself an implementation of <tt>typeClass</tt> or
-	 * <tt>null</tt> if no wrapping is required.
+	 * <tt>null</tt> if no wrapping is required
 	 */
-	public T newWrapper(Class<?> typeClass, T delegate);
+	T newWrapper(Class<?> typeClass, T delegate);
 }

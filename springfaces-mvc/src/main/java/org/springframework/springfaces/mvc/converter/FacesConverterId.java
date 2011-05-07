@@ -24,5 +24,5 @@ public @interface FacesConverterId {
 	 * The ID of the JSF converter. The converter must have been registered to the JSF {@link Application} using any of
 	 * the standard JSF mechanisms.
 	 */
-	public String value();
+	String value();
 }

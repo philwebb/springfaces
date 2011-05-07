@@ -23,8 +23,7 @@ public interface StandardEvaluationContextPostProcessor {
 	 * Post processes a {@link StandardEvaluationContext}. This method will be called after the context has been created
 	 * but before it has resolved any expressions. Generally implementations will add {@link ConstructorResolver}s,
 	 * {@link MethodResolver}s or {@link PropertyAccessor}s to the context.
-	 * 
-	 * @param evaluationContext
+	 * @param evaluationContext The evaluation context
 	 */
 	void postProcessStandardEvaluationContext(StandardEvaluationContext evaluationContext);
 
