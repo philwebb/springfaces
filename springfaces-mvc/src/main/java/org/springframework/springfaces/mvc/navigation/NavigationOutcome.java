@@ -8,7 +8,8 @@ import org.springframework.web.servlet.View;
 
 /**
  * The outcome of a resolved navigation. Outcomes are used to specify a {@link #getDestination() destination} and an
- * optional {@link #getImplicitModel() model}.
+ * optional {@link #getImplicitModel() model}. Both the {@link NavigationOutcome#getImplicitModel() model} and
+ * {@link NavigationOutcome#getDestination() destination} can be <tt>String<tt>s that contain EL expressions.
  * 
  * @see NavigationOutcomeResolver
  * 

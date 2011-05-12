@@ -44,7 +44,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 	private DestinationViewResolver destinationViewResolver;
-
 	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
 
 	public MvcViewHandler(ViewHandler delegate, DestinationViewResolver destinationViewResolver) {
@@ -59,21 +58,38 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public UIViewRoot createView(FacesContext context, String viewId) {
-		if (SpringFacesContext.getCurrentInstance() != null) {
-			if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
-				// Creating view in response to a navigation event
-				View view = getView(context, viewId);
-				if (view != null) {
-					return new MvcUIViewRoot(viewId, view);
-				}
-			} else if (SpringFacesContext.getCurrentInstance().getRendering() != null) {
-				// Creating a view that was triggered from MVC
-				ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
-				UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
-				context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
-				storeModel(rendering, viewRoot);
-				return viewRoot;
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
+		if (springFacesContext == null) {
+			return super.createView(context, viewId);
+		}
+		UIViewRoot viewRoot = createViewIfInResponseToNavigation(context, viewId);
+		if (viewRoot == null) {
+			viewRoot = createViewIfRenderingMvc(context, viewId);
+		}
+		if (viewRoot == null) {
+			viewRoot = super.createView(context, viewId);
+		}
+		return viewRoot;
+	}
+
+	private UIViewRoot createViewIfInResponseToNavigation(FacesContext context, String viewId) {
+		if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
+			// Navigation response can only occur in the invoke application phase
+			View view = getView(context, viewId);
+			if (view != null) {
+				return new MvcNavigationResponseUIViewRoot(viewId, view);
 			}
+		}
+		return null;
+	}
+
+	private UIViewRoot createViewIfRenderingMvc(FacesContext context, String viewId) {
+		ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
+		if (rendering != null) {
+			UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
+			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
+			storeModel(rendering, viewRoot);
+			return viewRoot;
 		}
 		return super.createView(context, viewId);
 	}
@@ -97,54 +113,26 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return super.restoreView(context, viewId);
 	}
 
-	private View getView(FacesContext context, String viewId) {
-		viewId = getResolvableViewId(viewId);
-		NavigationOutcome navigationOutcome = navigationOutcomeViewRegistry.get(context, viewId);
-		if (navigationOutcome != null) {
-			View view = resolveDestination(navigationOutcome.getDestination());
-			return view;
-		}
-		return null;
-	}
-
-	private View resolveDestination(Object destination) {
-		if (destination instanceof View) {
-			return (View) destination;
-		}
-		try {
-			return destinationViewResolver.resolveDestination(destination, null); // FIXME locale
-		} catch (Exception e) {
-			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
-		}
-	}
-
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
 		// We need to ensure that views we resolve do not return a VDL. This prevents NoClassDefFoundError for
 		// javax.servlet.jsp.jstl.core.Config
-		String resolvableViewId = getResolvableViewId(viewId);
-		if (navigationOutcomeViewRegistry.get(context, resolvableViewId) != null) {
+		if (getNavigationOutcomeForViewId(context, viewId) != null) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
 	}
 
-	private String getResolvableViewId(String viewId) {
-		if (viewId != null && viewId.startsWith("/")) {
-			viewId = viewId.substring(1);
-		}
-		return viewId;
-	}
-
 	@Override
 	public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
-		if (viewToRender instanceof MvcUIViewRoot) {
+		if (viewToRender instanceof MvcNavigationResponseUIViewRoot) {
 			// FIXME what if we are in AJAX here!
+			// FIXME what if in portlet environment
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 			try {
 				// FIXME model
-				((MvcUIViewRoot) viewToRender).getView().render(null, request, response);
+				((MvcNavigationResponseUIViewRoot) viewToRender).getView().render(null, request, response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -159,20 +147,20 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	public String getBookmarkableURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
 			boolean includeViewParams) {
 		String url = getBookmarkUrlIfResolvable(context, viewId, parameters);
-		if (url != null) {
-			return url;
+		if (url == null) {
+			url = super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 		}
-		return super.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		return url;
 	}
 
 	@Override
 	public String getRedirectURL(FacesContext context, String viewId, Map<String, List<String>> parameters,
 			boolean includeViewParams) {
 		String url = getBookmarkUrlIfResolvable(context, viewId, parameters);
-		if (url != null) {
-			return url;
+		if (url == null) {
+			url = super.getRedirectURL(context, viewId, parameters, includeViewParams);
 		}
-		return super.getRedirectURL(context, viewId, parameters, includeViewParams);
+		return url;
 	}
 
 	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
@@ -207,6 +195,34 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return null;
 	}
 
+	private View getView(FacesContext context, String viewId) {
+		NavigationOutcome navigationOutcome = getNavigationOutcomeForViewId(context, viewId);
+		if (navigationOutcome != null) {
+			View view = resolveDestination(navigationOutcome.getDestination());
+			return view;
+		}
+		return null;
+	}
+
+	private NavigationOutcome getNavigationOutcomeForViewId(FacesContext context, String viewId) {
+		if (viewId != null && viewId.startsWith("/")) {
+			viewId = viewId.substring(1);
+		}
+		// FIXME registry needs additional model from the action listener
+		return navigationOutcomeViewRegistry.get(context, viewId);
+	}
+
+	private View resolveDestination(Object destination) {
+		if (destination instanceof View) {
+			return (View) destination;
+		}
+		try {
+			return destinationViewResolver.resolveDestination(destination, null); // FIXME locale
+		} catch (Exception e) {
+			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
+		}
+	}
+
 	private String evaluateExpression(FacesContext context, String value) {
 		if (isExpression(value)) {
 			return context.getApplication().evaluateExpressionGet(context, value, String.class);
@@ -237,19 +253,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return super.getActionURL(context, viewId);
 	}
 
-	private static class MvcUIViewRoot extends UIViewRoot {
-		private View view;
-
-		public MvcUIViewRoot(String viewId, View view) {
-			setViewId(viewId);
-			this.view = view;
-		}
-
-		public View getView() {
-			return view;
-		}
-	}
-
 	// FIXME
 	private void setRenderAll(FacesContext facesContext, String viewId) {
 		if (facesContext.getViewRoot().getViewId().equals(viewId)) {
@@ -266,5 +269,18 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	public static void prepare(FacesContext facesContext, ViewArtifact viewArtifact, Map<String, Object> model) {
 		facesContext.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
 		facesContext.getAttributes().put(MODEL_ATTRIBUTE, model);
+	}
+
+	private static class MvcNavigationResponseUIViewRoot extends UIViewRoot {
+		private View view;
+
+		public MvcNavigationResponseUIViewRoot(String viewId, View view) {
+			setViewId(viewId);
+			this.view = view;
+		}
+
+		public View getView() {
+			return view;
+		}
 	}
 }
