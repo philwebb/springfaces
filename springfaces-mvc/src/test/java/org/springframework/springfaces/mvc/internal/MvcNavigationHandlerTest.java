@@ -8,6 +8,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -80,13 +81,16 @@ public class MvcNavigationHandlerTest {
 	private SpringFacesContext springFacesContext;
 
 	@Mock
-	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry;
+	private DestinationAndModelRegistry destinationAndModelRegistry;
 
 	@Mock
 	private Object handler;
 
 	@Captor
 	private ArgumentCaptor<NavigationContext> navigationContext;
+
+	@Captor
+	private ArgumentCaptor<DestinationAndModel> destinationAndModel;
 
 	private NavigationOutcome navigationOutcome = new NavigationOutcome("destination");
 
@@ -99,8 +103,8 @@ public class MvcNavigationHandlerTest {
 	public void setup() {
 		FacesContextSetter.setCurrentInstance(context);
 		navigationHandler = new MvcNavigationHandler(delegate, navigationOutcomeResolver);
-		navigationHandler.setNavigationOutcomeViewRegistry(navigationOutcomeViewRegistry);
-		given(navigationOutcomeViewRegistry.put(any(FacesContext.class), any(NavigationOutcome.class))).willReturn(
+		navigationHandler.setDestinationAndModelRegistry(destinationAndModelRegistry);
+		given(destinationAndModelRegistry.put(any(FacesContext.class), any(DestinationAndModel.class))).willReturn(
 				"viewId");
 		given(springFacesContext.getHandler()).willReturn(handler);
 		given(context.getApplication()).willReturn(application);
@@ -155,7 +159,9 @@ public class MvcNavigationHandlerTest {
 		handleOutcome();
 		NavigationCase navigationCase = navigationHandler.getNavigationCase(context, fromAction, outcome);
 		assertNotNull(navigationCase);
-		verify(navigationOutcomeViewRegistry).put(context, navigationOutcome);
+		verify(destinationAndModelRegistry).put(eq(context), destinationAndModel.capture());
+		assertEquals(navigationOutcome.getDestination(), destinationAndModel.getValue().getDestination());
+		// FIXME test model?
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertEquals(outcome, navigationContext.getOutcome());
 		assertEquals(fromAction, navigationContext.getFromAction());
@@ -201,7 +207,9 @@ public class MvcNavigationHandlerTest {
 
 		navigationHandler.handleNavigation(context, fromAction, outcome);
 
-		verify(navigationOutcomeViewRegistry).put(context, navigationOutcome);
+		verify(destinationAndModelRegistry).put(eq(context), destinationAndModel.capture());
+		assertEquals(navigationOutcome.getDestination(), destinationAndModel.getValue().getDestination());
+		// FIXME verify model?
 		verify(context).setViewRoot(viewRoot);
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertEquals(outcome, navigationContext.getOutcome());

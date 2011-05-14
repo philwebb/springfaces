@@ -8,6 +8,7 @@ import javax.faces.application.NavigationCase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.PreRenderComponentEvent;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
@@ -18,7 +19,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC.
+ * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC. Note: This handler depends on
+ * the {@link MvcNavigationSystemEventListener} and {@link MvcNavigationActionListener} also being registered.
  * 
  * @author Phillip Webb
  */
@@ -26,7 +28,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	private ConfigurableNavigationHandler delegate;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
-	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
+	private DestinationAndModelRegistry destinationAndModelRegistry = new DestinationAndModelRegistry();
 
 	public MvcNavigationHandler(ConfigurableNavigationHandler delegate,
 			NavigationOutcomeResolver navigationOutcomeResolver) {
@@ -42,6 +44,8 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	@Override
 	public NavigationCase getNavigationCase(FacesContext context, String fromAction, String outcome) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
+			PreRenderComponentEvent preRenderComponentEvent = MvcNavigationSystemEventListener
+					.getLastPreRenderComponentEvent(context);
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, null,
 					defaultDestinationViewId);
@@ -51,7 +55,8 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 						+ "'");
 				UIViewRoot root = context.getViewRoot();
 				String fromViewId = (root != null ? root.getViewId() : null);
-				String toViewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
+				String toViewId = destinationAndModelRegistry.put(context, new DestinationAndModel(navigationOutcome,
+						preRenderComponentEvent));
 				return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
 			}
 		}
@@ -68,7 +73,8 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			if (navigationOutcomeResolver.canResolve(navigationContext)) {
 				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
 				if (navigationOutcome != null) {
-					String viewId = navigationOutcomeViewRegistry.put(context, navigationOutcome);
+					String viewId = destinationAndModelRegistry.put(context, new DestinationAndModel(navigationOutcome,
+							actionEvent));
 					UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
 					context.setViewRoot(newRoot);
 					return;
@@ -103,11 +109,11 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	}
 
 	/**
-	 * Allows the {@link NavigationOutcomeViewRegistry} to be changed for testing.
-	 * @param navigationOutcomeViewRegistry A navigation outcome view registry
+	 * Allows the {@link DestinationAndModelRegistry} to be changed for testing.
+	 * @param destinationAndModelRegistry The replacement registry
 	 */
-	final void setNavigationOutcomeViewRegistry(NavigationOutcomeViewRegistry navigationOutcomeViewRegistry) {
-		this.navigationOutcomeViewRegistry = navigationOutcomeViewRegistry;
+	final void setDestinationAndModelRegistry(DestinationAndModelRegistry destinationAndModelRegistry) {
+		this.destinationAndModelRegistry = destinationAndModelRegistry;
 	}
 
 	/**

@@ -2,6 +2,7 @@ package org.springframework.springfaces.internal;
 
 import javax.faces.FactoryFinder;
 import javax.faces.application.ApplicationFactory;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.PostConstructApplicationEvent;
 import javax.faces.event.SystemEvent;
@@ -9,6 +10,7 @@ import javax.faces.event.SystemEventListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.springfaces.SpringFacesIntegration;
 
 /**
  * A JSF {@link SystemEventListener} that provides integration with Spring.
@@ -34,6 +36,9 @@ public class SpringSystemEventListener implements SystemEventListener {
 
 	private void processPostConstructApplicationEvent(PostConstructApplicationEvent event) {
 		ApplicationFactory factory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
-		factory.setApplication(new SpringApplication(event.getApplication()));
+		SpringApplication application = new SpringApplication(event.getApplication());
+		factory.setApplication(application);
+		SpringFacesIntegration.postConstructApplicationEvent(FacesContext.getCurrentInstance().getExternalContext(),
+				application);
 	}
 }

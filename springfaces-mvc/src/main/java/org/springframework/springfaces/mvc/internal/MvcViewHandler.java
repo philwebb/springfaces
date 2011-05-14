@@ -11,7 +11,6 @@ import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +20,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
-import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 /**
@@ -44,7 +43,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	private ViewHandler delegate;
 	private DestinationViewResolver destinationViewResolver;
-	private NavigationOutcomeViewRegistry navigationOutcomeViewRegistry = new NavigationOutcomeViewRegistry();
+	private DestinationAndModelRegistry destinationAndModelRegistry = new DestinationAndModelRegistry();
 
 	public MvcViewHandler(ViewHandler delegate, DestinationViewResolver destinationViewResolver) {
 		this.delegate = delegate;
@@ -75,9 +74,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private UIViewRoot createViewIfInResponseToNavigation(FacesContext context, String viewId) {
 		if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
 			// Navigation response can only occur in the invoke application phase
-			View view = getView(context, viewId);
-			if (view != null) {
-				return new MvcNavigationResponseUIViewRoot(viewId, view);
+			ModelAndView modelAndView = getModelAndView(context, viewId, null);
+			if (modelAndView != null) {
+				return new MvcNavigationResponseUIViewRoot(viewId, modelAndView);
 			}
 		}
 		return null;
@@ -88,19 +87,12 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (rendering != null) {
 			UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
 			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
-			storeModel(rendering, viewRoot);
+			if (rendering.getModel() != null) {
+				new UIViewRootModelStore(viewRoot).storeModel(rendering.getModel());
+			}
 			return viewRoot;
 		}
 		return super.createView(context, viewId);
-	}
-
-	private void storeModel(ModelAndViewArtifact modelAndViewArtifact, UIViewRoot viewRoot) {
-		if (modelAndViewArtifact.getModel() != null) {
-			// FIXME perhaps store as a single attribute and have an ELResolver to access?
-			// FIXME do we want scope support for the mode (eg request, session)
-			// FIXME is storing the model the responsibility of the ViewHandler?
-			viewRoot.getViewMap().putAll(modelAndViewArtifact.getModel());
-		}
 	}
 
 	@Override
@@ -117,7 +109,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
 		// We need to ensure that views we resolve do not return a VDL. This prevents NoClassDefFoundError for
 		// javax.servlet.jsp.jstl.core.Config
-		if (getNavigationOutcomeForViewId(context, viewId) != null) {
+		if (getDestinationAndModelForViewId(context, viewId) != null) {
 			return null;
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
@@ -126,18 +118,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	@Override
 	public void renderView(FacesContext context, UIViewRoot viewToRender) throws IOException, FacesException {
 		if (viewToRender instanceof MvcNavigationResponseUIViewRoot) {
-			// FIXME what if we are in AJAX here!
-			// FIXME what if in portlet environment
-			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-			try {
-				// FIXME model
-				((MvcNavigationResponseUIViewRoot) viewToRender).getView().render(null, request, response);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			viewToRender.encodeAll(context);
 		} else {
 			super.renderView(context, viewToRender);
 		}
@@ -164,15 +145,38 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
-		// FIXME do we need to worry about char encoding
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			View view = getView(context, viewId);
+			ModelAndView modelAndView = getModelAndView(context, viewId, parameters);
+			View view = modelAndView.getView();
 			if (view == null) {
 				return null;
 			}
 			Assert.isInstanceOf(Bookmarkable.class, view);
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-			Map<String, Object> model = new HashMap<String, Object>();
+			try {
+				return ((Bookmarkable) view).getBookmarkUrl(modelAndView.getModel(), request);
+			} catch (IOException e) {
+				throw new FacesException("IOException creating MVC bookmark", e);
+			}
+		}
+		return null;
+	}
+
+	private ModelAndView getModelAndView(FacesContext context, String viewId, Map<String, List<String>> parameters) {
+		DestinationAndModel destinationAndModel = getDestinationAndModelForViewId(context, viewId);
+		if (destinationAndModel != null) {
+			View view = resolveDestination(destinationAndModel.getDestination());
+			destinationAndModel.getModel();
+			Map<String, ?> model = getModel(context, null); // FIXME get model proper
+			return new ModelAndView(view, model);
+		}
+		return null;
+	}
+
+	private Map<String, Object> getModel(FacesContext context, Map<String, List<String>> parameters) {
+		// FIXME
+		Map<String, Object> model = new HashMap<String, Object>();
+		if (parameters != null) {
 			for (Map.Entry<String, List<String>> parameter : parameters.entrySet()) {
 				if (parameter.getValue().size() == 1) {
 					// FIXME rethink when to evaluate expressions. We could end up with EL injection if the parameter
@@ -186,30 +190,18 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 					}
 				}
 			}
-			try {
-				return ((Bookmarkable) view).getBookmarkUrl(model, request);
-			} catch (IOException e) {
-				throw new FacesException("IOException creating MVC bookmark", e);
-			}
 		}
-		return null;
+		return model;
+
 	}
 
-	private View getView(FacesContext context, String viewId) {
-		NavigationOutcome navigationOutcome = getNavigationOutcomeForViewId(context, viewId);
-		if (navigationOutcome != null) {
-			View view = resolveDestination(navigationOutcome.getDestination());
-			return view;
-		}
-		return null;
-	}
-
-	private NavigationOutcome getNavigationOutcomeForViewId(FacesContext context, String viewId) {
+	private DestinationAndModel getDestinationAndModelForViewId(FacesContext context, String viewId) {
 		if (viewId != null && viewId.startsWith("/")) {
 			viewId = viewId.substring(1);
 		}
 		// FIXME registry needs additional model from the action listener
-		return navigationOutcomeViewRegistry.get(context, viewId);
+		DestinationAndModel destinationAndModel = destinationAndModelRegistry.get(context, viewId);
+		return destinationAndModel;
 	}
 
 	private View resolveDestination(Object destination) {
@@ -253,18 +245,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return super.getActionURL(context, viewId);
 	}
 
-	// FIXME
-	private void setRenderAll(FacesContext facesContext, String viewId) {
-		if (facesContext.getViewRoot().getViewId().equals(viewId)) {
-			return;
-		}
-		PartialViewContext partialViewContext = facesContext.getPartialViewContext();
-		if (partialViewContext.isRenderAll()) {
-			return;
-		}
-		partialViewContext.setRenderAll(true);
-	}
-
 	// FIXME make not static?
 	public static void prepare(FacesContext facesContext, ViewArtifact viewArtifact, Map<String, Object> model) {
 		facesContext.getAttributes().put(VIEW_ARTIFACT_ATTRIBUTE, viewArtifact);
@@ -274,13 +254,24 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private static class MvcNavigationResponseUIViewRoot extends UIViewRoot {
 		private View view;
 
-		public MvcNavigationResponseUIViewRoot(String viewId, View view) {
+		public MvcNavigationResponseUIViewRoot(String viewId, ModelAndView modelAndView) {
 			setViewId(viewId);
-			this.view = view;
+			this.view = modelAndView.getView();
 		}
 
-		public View getView() {
-			return view;
+		@Override
+		public void encodeAll(FacesContext context) throws IOException {
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			try {
+				// FIXME model
+				view.render(null, request, response);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// TODO Auto-generated method stub
+			super.encodeAll(context);
 		}
 	}
 }

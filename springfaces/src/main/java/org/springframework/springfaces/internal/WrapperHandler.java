@@ -105,11 +105,17 @@ class WrapperHandler<T> {
 
 	/**
 	 * Creates a fully wrapped implementation of the delegate by consulting all {@link FacesWrapperFactory factories}
-	 * registered with {@link #getApplicationContext() Spring}.
+	 * registered with Spring.
 	 * @return A wrapped implementation
 	 */
 	public T getWrapped() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
+		if (facesContext == null) {
+			// Calls to wrapped instances can occur when there is no faces context if JSF has not yet completely
+			// intialized. We allow these early calls to proceed to the delegate.
+			wrapped = null;
+			return delegate.getDelegate(DelegateAccessType.WRAP);
+		}
 		ExternalContext externalContext = facesContext.getExternalContext();
 		if ((wrapped == null)
 				|| (SpringFacesIntegration.isInstalled(externalContext) && (!SpringFacesIntegration
@@ -128,8 +134,7 @@ class WrapperHandler<T> {
 	}
 
 	/**
-	 * Wrap the specified delegate by consulting all {@link FacesWrapperFactory factories} registered with
-	 * {@link #getApplicationContext() Spring}.
+	 * Wrap the specified delegate by consulting all {@link FacesWrapperFactory factories} registered with Spring.
 	 * @param delegate The root delegate
 	 * @return A wrapped implementation
 	 */
@@ -254,7 +259,7 @@ class WrapperHandler<T> {
 	}
 
 	/**
-	 * Implementation of {@link DelegateAccessor} that simple returns an object instance.
+	 * Implementation of {@link WrapperHandler.DelegateAccessor} that simple returns an object instance.
 	 */
 	private static class DirectDelegateAccessor<T> implements DelegateAccessor<T> {
 

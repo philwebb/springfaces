@@ -27,7 +27,7 @@ public class MvcNavigationActionListener implements ActionListener {
 	}
 
 	/**
-	 * Returns the last {@link ActionEvent} that occured.
+	 * Returns the last {@link ActionEvent} that occurred.
 	 * @param context The faces context
 	 * @return The action event or <tt>null</tt>
 	 */

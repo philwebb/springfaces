@@ -82,6 +82,7 @@ public class WrapperHandlerTest {
 		if (fc != null) {
 			fc.release();
 		}
+		FacesContextSetter.setCurrentInstance(null);
 	}
 
 	private void setupApplicationContext(WebApplicationContext webContext) {
@@ -118,6 +119,13 @@ public class WrapperHandlerTest {
 	@Test
 	public void shouldReturnDelegateWithoutApplicationContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(facesContext);
+		Object actual = wrapperHandler.getWrapped();
+		assertSame(delegate, actual);
+	}
+
+	@Test
+	public void shouldReturnDelegateWithoutFacesContext() throws Exception {
+		cleanupFacesContext();
 		Object actual = wrapperHandler.getWrapped();
 		assertSame(delegate, actual);
 	}
