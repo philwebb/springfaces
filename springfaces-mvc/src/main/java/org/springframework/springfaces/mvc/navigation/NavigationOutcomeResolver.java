@@ -15,7 +15,7 @@ public interface NavigationOutcomeResolver {
 	boolean canResolve(NavigationContext context);
 
 	/**
-	 * Resolve an outcome for the navigation. This method will only be called when {@link #isResolvable} returns
+	 * Resolve an outcome for the navigation. This method will only be called when {@link #canResolve} returns
 	 * <tt>true</tt>. A <tt>null</tt> return from this method is an indication that the current view should be
 	 * redisplayed.
 	 * @param context The navigation context

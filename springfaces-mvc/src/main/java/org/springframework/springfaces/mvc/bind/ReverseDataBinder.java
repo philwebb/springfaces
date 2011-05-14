@@ -158,12 +158,15 @@ public class ReverseDataBinder {
 	 * a {@link SimpleTypeConverter} instance will be used
 	 * @param targetObject The target object or <tt>null</tt>
 	 * @param requiredType The required type.
-	 * @param descriptor The descriptor or <tt>null</tt>
+	 * @param typeDescriptor The type descriptor
 	 * @return the corresponding editor, or <code>null</code> if none
 	 */
 	protected PropertyEditor findEditor(String propertyName,
 			PropertyEditorRegistrySupport propertyEditorRegistrySupport, Object targetObject, Class<?> requiredType,
 			TypeDescriptor typeDescriptor) {
+
+		Assert.notNull(requiredType, "RequiredType must not be null");
+		Assert.notNull(typeDescriptor, "TypeDescription must not be null");
 
 		// Use the custom editor if there is one
 		PropertyEditor editor = dataBinder.findCustomEditor(requiredType, propertyName);
@@ -200,7 +203,7 @@ public class ReverseDataBinder {
 	/**
 	 * Find a default editor for the given type. This code is based on <tt>TypeConverterDelegate.findDefaultEditor</tt>.
 	 * @param requiredType the type to find an editor for
-	 * @param descriptor the JavaBeans descriptor for the property
+	 * @param typeDescriptor The type description of the property
 	 * @return the corresponding editor, or <code>null</code> if none
 	 * 
 	 * @author Juergen Hoeller

@@ -14,9 +14,8 @@ import org.springframework.web.servlet.HandlerMapping;
  * associated with a Spring MVC request from the point that the {@link HandlerMapping#getHandler handler} is obtained.
  * The instance remains active and bound to the current thread until the MVC request has completed.
  * <p>
- * The {@link SpringFacesContext} can be used to access the JSF {@link #getLifecycle() lifecycle} and
- * {@link #getFacesContext(boolean) facesContext} regardless of the fact that the request is not being processed by the
- * {@link FacesServlet}.
+ * The {@link SpringFacesContext} can be used to access the JSF {@link #getFacesContext facesContext} regardless of the
+ * fact that the request is not being processed by the {@link FacesServlet}.
  * 
  * @see #getCurrentInstance()
  * @see FacesHandlerInterceptor
