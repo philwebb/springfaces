@@ -6,18 +6,25 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import javax.faces.application.Application;
 import javax.faces.context.ExternalContext;
 import javax.servlet.ServletContext;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,15 +34,22 @@ import org.springframework.web.context.WebApplicationContext;
  * 
  * @author Phillip Webb
  */
+@RunWith(MockitoJUnitRunner.class)
 public class SpringFacesIntegrationTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	private SpringFacesIntegration springFacesIntegration;
+
 	private WebApplicationContext applicationContext;
+
 	private ServletContext servletContext;
+
 	private ExternalContext externalContext;
+
+	@Captor
+	private ArgumentCaptor<ApplicationEvent> applicationEventCaptor;
 
 	public SpringFacesIntegrationTest() {
 		servletContext = new MockServletContext();
@@ -49,6 +63,12 @@ public class SpringFacesIntegrationTest {
 			@Override
 			public Object get(Object key) {
 				return servletContext.getAttribute((String) key);
+			}
+
+			@Override
+			public Object put(String key, Object value) {
+				servletContext.setAttribute(key, value);
+				return null;
 			}
 		};
 		given(externalContext.getApplicationMap()).willReturn(applicationMap);
@@ -121,5 +141,24 @@ public class SpringFacesIntegrationTest {
 		createSpringFacesIntegration();
 		assertSame(springFacesIntegration, SpringFacesIntegration.getCurrentInstance(servletContext));
 		assertSame(springFacesIntegration, SpringFacesIntegration.getCurrentInstance(externalContext));
+	}
+
+	@Test
+	public void shouldPublishPostConstructApplicationEventWhenSpringFirst() throws Exception {
+		createSpringFacesIntegration();
+		Application application = mock(Application.class);
+		SpringFacesIntegration.postConstructApplicationEvent(externalContext, application);
+		verify(applicationContext).publishEvent(applicationEventCaptor.capture());
+		assertSame(application, applicationEventCaptor.getValue().getSource());
+	}
+
+	@Test
+	public void shouldPublishPostConstructApplicationEventWhenJsfFirst() throws Exception {
+		Application application = mock(Application.class);
+		SpringFacesIntegration.postConstructApplicationEvent(externalContext, application);
+		createSpringFacesIntegration();
+		springFacesIntegration.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
+		verify(applicationContext).publishEvent(applicationEventCaptor.capture());
+		assertSame(application, applicationEventCaptor.getValue().getSource());
 	}
 }
