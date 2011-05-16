@@ -52,7 +52,7 @@ public class ReverseDataBinder {
 
 	/**
 	 * Default constructor.
-	 * @param dataBinder A non null dataBinder
+	 * @param dataBinder a non null dataBinder
 	 */
 	public ReverseDataBinder(DataBinder dataBinder) {
 		Assert.notNull(dataBinder, "DataBinder must not be null");
@@ -61,8 +61,8 @@ public class ReverseDataBinder {
 
 	/**
 	 * Reverse convert a simple object value.
-	 * @param value The value to convert
-	 * @return The converted value
+	 * @param value the value to convert
+	 * @return the converted value
 	 */
 	public String reverseConvert(Object value) {
 		if (value == null) {
@@ -152,13 +152,13 @@ public class ReverseDataBinder {
 
 	/**
 	 * Find a property editor by searching custom editors or falling back to default editors.
-	 * @param propertyName The property name or <tt>null</tt> if looking for an editor for all properties of the given
+	 * @param propertyName the property name or <tt>null</tt> if looking for an editor for all properties of the given
 	 * type
-	 * @param propertyEditorRegistrySupport An optional {@link PropertyEditorRegistrySupport} instance. If <tt>null</tt>
+	 * @param propertyEditorRegistrySupport an optional {@link PropertyEditorRegistrySupport} instance. If <tt>null</tt>
 	 * a {@link SimpleTypeConverter} instance will be used
-	 * @param targetObject The target object or <tt>null</tt>
-	 * @param requiredType The required type.
-	 * @param typeDescriptor The type descriptor
+	 * @param targetObject the target object or <tt>null</tt>
+	 * @param requiredType the required type.
+	 * @param typeDescriptor the type descriptor
 	 * @return the corresponding editor, or <code>null</code> if none
 	 */
 	protected PropertyEditor findEditor(String propertyName,
@@ -191,7 +191,7 @@ public class ReverseDataBinder {
 
 	/**
 	 * Gets the {@link SimpleTypeConverter} that should be used for conversion.
-	 * @return The simple type converter
+	 * @return the simple type converter
 	 */
 	protected SimpleTypeConverter getSimpleTypeConverter() {
 		if (simpleTypeConverter == null) {
@@ -203,7 +203,7 @@ public class ReverseDataBinder {
 	/**
 	 * Find a default editor for the given type. This code is based on <tt>TypeConverterDelegate.findDefaultEditor</tt>.
 	 * @param requiredType the type to find an editor for
-	 * @param typeDescriptor The type description of the property
+	 * @param typeDescriptor the type description of the property
 	 * @return the corresponding editor, or <code>null</code> if none
 	 * 
 	 * @author Juergen Hoeller
@@ -229,9 +229,9 @@ public class ReverseDataBinder {
 
 	/**
 	 * Utility method to convert a given value into a string using a property editor.
-	 * @param value The value to convert (can be <tt>null</tt>)
-	 * @param propertyEditor The property editor or <tt>null</tt> if no suitable property editor exists
-	 * @return The converted value
+	 * @param value the value to convert (can be <tt>null</tt>)
+	 * @param propertyEditor the property editor or <tt>null</tt> if no suitable property editor exists
+	 * @return the converted value
 	 */
 	private String convertToStringUsingPropertyEditor(Object value, PropertyEditor propertyEditor) {
 		if (propertyEditor != null) {
@@ -266,7 +266,7 @@ public class ReverseDataBinder {
 
 	/**
 	 * Determine if a property contains both read and write methods.
-	 * @param descriptor The property descriptor
+	 * @param descriptor the property descriptor
 	 * @return <tt>true</tt> if the property is mutable
 	 */
 	private boolean isMutableProperty(PropertyDescriptor descriptor) {

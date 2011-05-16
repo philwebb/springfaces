@@ -19,10 +19,10 @@ public interface DestinationViewResolver {
 	 * <p>
 	 * Note: To allow for DestinationViewResolver chaining, a DestinationViewResolver should return <code>null</code> if
 	 * the destination cannot be resolved .
-	 * @param destination The view destination (as obtained from a {@link NavigationOutcomeResolver})
-	 * @param locale Locale in which to resolve the view. ViewResolvers that support internationalization should respect
-	 * this
-	 * @return the View object, or <code>null</code> if not found (optional, to allow for ViewResolver chaining)
+	 * @param destination the view destination (as obtained from a {@link NavigationOutcomeResolver})
+	 * @param locale the locale in which to resolve the view. ViewResolvers that support internationalization should
+	 * respect this
+	 * @return the {@link View} object, or <code>null</code> if not found (optional, to allow for ViewResolver chaining)
 	 * @throws Exception if the view cannot be resolved (typically in case of problems creating an actual View object)
 	 */
 	View resolveDestination(Object destination, Locale locale) throws Exception;

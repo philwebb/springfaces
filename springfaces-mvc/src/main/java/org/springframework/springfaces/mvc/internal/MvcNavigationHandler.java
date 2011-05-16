@@ -110,7 +110,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	/**
 	 * Allows the {@link DestinationAndModelRegistry} to be changed for testing.
-	 * @param destinationAndModelRegistry The replacement registry
+	 * @param destinationAndModelRegistry the replacement registry
 	 */
 	final void setDestinationAndModelRegistry(DestinationAndModelRegistry destinationAndModelRegistry) {
 		this.destinationAndModelRegistry = destinationAndModelRegistry;

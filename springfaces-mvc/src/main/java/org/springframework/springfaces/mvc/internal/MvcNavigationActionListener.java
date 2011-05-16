@@ -28,8 +28,8 @@ public class MvcNavigationActionListener implements ActionListener {
 
 	/**
 	 * Returns the last {@link ActionEvent} that occurred.
-	 * @param context The faces context
-	 * @return The action event or <tt>null</tt>
+	 * @param context the faces context
+	 * @return the action event or <tt>null</tt>
 	 */
 	public static ActionEvent getLastActionEvent(FacesContext context) {
 		return (ActionEvent) context.getAttributes().get(KEY);

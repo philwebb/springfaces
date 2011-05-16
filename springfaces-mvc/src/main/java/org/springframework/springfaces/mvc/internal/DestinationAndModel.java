@@ -25,8 +25,8 @@ class DestinationAndModel {
 
 	/**
 	 * Create a new DestinationAndModel
-	 * @param navigationOutcome The navigation outcome
-	 * @param preRenderComponentEvent An optional pre-render component event
+	 * @param navigationOutcome the navigation outcome
+	 * @param preRenderComponentEvent an optional pre-render component event
 	 */
 	public DestinationAndModel(NavigationOutcome navigationOutcome, PreRenderComponentEvent preRenderComponentEvent) {
 		Assert.notNull(navigationOutcome, "NavigationOutcome must not be null");
@@ -38,8 +38,8 @@ class DestinationAndModel {
 
 	/**
 	 * Create a new DestinationAndModel
-	 * @param navigationOutcome The navigation outcome
-	 * @param actionEvent An optional navigation event
+	 * @param navigationOutcome the navigation outcome
+	 * @param actionEvent an optional navigation event
 	 */
 	public DestinationAndModel(NavigationOutcome navigationOutcome, ActionEvent actionEvent) {
 		Assert.notNull(navigationOutcome, "NavigationOutcome must not be null");
@@ -52,7 +52,7 @@ class DestinationAndModel {
 	/**
 	 * Returns the destination of the next view to render. The destination can be a MVC {@link View} or an object that
 	 * can be resolved by a {@link DestinationViewResolver}.
-	 * @return The destination
+	 * @return the destination
 	 */
 	public Object getDestination() {
 		return navigationOutcome.getDestination();
@@ -62,9 +62,9 @@ class DestinationAndModel {
 	 * Returns the model that should be passed to the destination when it is rendered. The model returned here will
 	 * include {@link NavigationOutcome#getImplicitModel() implicit} entries as well as &lt;f:param$gt;s defined in the
 	 * page mark-up.
-	 * @param context The faces context
+	 * @param context the faces context
 	 * @param parameters parameters identified by JSF that should be included in the model.
-	 * @return The model The model
+	 * @return the model The model
 	 */
 	public Map<String, Object> getModel(FacesContext context, Map<String, List<String>> parameters) {
 		ModelBuilder modelBuilder = new ModelBuilder(context);

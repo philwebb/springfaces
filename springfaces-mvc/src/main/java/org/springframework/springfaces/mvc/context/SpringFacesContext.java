@@ -36,19 +36,19 @@ public abstract class SpringFacesContext {
 	 *   context.release();
 	 * }
 	 * </code>
-	 * @return A {@link FacesContext} instance
+	 * @return a {@link FacesContext} instance
 	 */
 	public abstract FacesContext getFacesContext();
 
 	/**
 	 * Returns the {@link WebApplicationContext} associated with this context.
-	 * @return A {@link WebApplicationContext} instance
+	 * @return a {@link WebApplicationContext} instance
 	 */
 	public abstract WebApplicationContext getWebApplicationContext();
 
 	/**
 	 * Returns the MVC Handler associated with this context.
-	 * @return The MVC handler
+	 * @return the MVC handler
 	 */
 	public abstract Object getHandler();
 
@@ -60,7 +60,7 @@ public abstract class SpringFacesContext {
 
 	/**
 	 * Returns the current {@link SpringFacesContext} instance or <tt>null</tt> the context is unavailable.
-	 * @return The {@link SpringFacesContext} or <tt>null</tt>
+	 * @return the {@link SpringFacesContext} or <tt>null</tt>
 	 */
 	public static SpringFacesContext getCurrentInstance() {
 		return getCurrentInstance(false);
@@ -70,7 +70,7 @@ public abstract class SpringFacesContext {
 	 * Returns the current {@link SpringFacesContext}.
 	 * @param required <tt>true</tt> if an {@link IllegalStateException} should be thrown when the context cannot be
 	 * obtained. <tt>false</tt> if <tt>null</tt> should be returned when the context cannot be obtained
-	 * @return The {@link SpringFacesContext} (or <tt>null</tt> if <tt>required</tt> is <tt>false</tt>)
+	 * @return the {@link SpringFacesContext} (or <tt>null</tt> if <tt>required</tt> is <tt>false</tt>)
 	 */
 	public static SpringFacesContext getCurrentInstance(boolean required) {
 		SpringFacesContext context = instance.get();
@@ -83,7 +83,7 @@ public abstract class SpringFacesContext {
 
 	/**
 	 * Protected method that should be used by subclasses to set the current context instance.
-	 * @param context The context instance to set or <tt>null</tt> to remove the current instance
+	 * @param context the context instance to set or <tt>null</tt> to remove the current instance
 	 */
 	protected static void setCurrentInstance(SpringFacesContext context) {
 		if (context == null) {

@@ -15,9 +15,9 @@ public interface FacesPostbackOrginalHandlerLocator {
 
 	/**
 	 * Return the handler that would have processed the request if it were not a postback.
-	 * @param request The request that should be used to obtain the handler.
-	 * @return The handler execution chain
-	 * @throws Exception If the handler cannot be obtained
+	 * @param request the request that should be used to obtain the handler.
+	 * @return the handler execution chain
+	 * @throws Exception if the handler cannot be obtained
 	 */
 	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
 }

@@ -25,7 +25,7 @@ public final class NavigationOutcome implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
+	 * @param destination a non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be {@link DestinationViewResolver resolved} to a MVC view.
 	 */
 	public NavigationOutcome(Object destination) {
@@ -34,7 +34,7 @@ public final class NavigationOutcome implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param destination A non-null outcome destination. The destination can be a MVC {@link View} or an object that
+	 * @param destination a non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be {@link DestinationViewResolver resolved} to a MVC view.
 	 * @param implicitModel An implicit model to be used with destination or <tt>null</tt>.
 	 */
@@ -48,7 +48,7 @@ public final class NavigationOutcome implements Serializable {
 	/**
 	 * Returns the destination of the next view to render. The destination can be a MVC {@link View} or an object that
 	 * can be resolved by a {@link DestinationViewResolver}.
-	 * @return The destination
+	 * @return the destination
 	 */
 	public Object getDestination() {
 		return this.destination;
@@ -58,7 +58,7 @@ public final class NavigationOutcome implements Serializable {
 	 * Returns an implicit model that will be combined with any user specified model (ie &lt;f:param&gt;s) and provided
 	 * when the {@link #getDestination() destination} is {@link View#render rendered}. The user specified model will
 	 * take precedence in the case of duplicates keys.
-	 * @return The implicit model or <tt>null</tt>
+	 * @return the implicit model or <tt>null</tt>
 	 */
 	public Map<String, Object> getImplicitModel() {
 		return implicitModel;

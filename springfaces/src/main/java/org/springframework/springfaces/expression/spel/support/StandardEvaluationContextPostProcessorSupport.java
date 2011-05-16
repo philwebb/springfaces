@@ -44,7 +44,7 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 	 * Strategy method used to determine of a {@link BeanExpressionResolver} can be replaced with a
 	 * {@link StandardEvaluationContextPostProcessor} aware variant. By default only
 	 * {@link StandardBeanExpressionResolver}s can be replaced.
-	 * @param beanExpressionResolver The bean expression resolver being considered
+	 * @param beanExpressionResolver the bean expression resolver being considered
 	 * @return <tt>true</tt> if the resolver can be replaced
 	 */
 	protected boolean isReplaceable(BeanExpressionResolver beanExpressionResolver) {

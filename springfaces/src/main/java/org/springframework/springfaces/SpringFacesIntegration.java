@@ -62,7 +62,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	/**
 	 * Determine if {@link SpringFacesIntegration} has been installed. This method will return <tt>true</tt> when a
 	 * {@link WebApplicationContext} containing a {@link SpringFacesIntegration} bean has been fully loaded.
-	 * @param servletContext The servlet context
+	 * @param servletContext the servlet context
 	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded
 	 * @see #isInstalled(ExternalContext)
 	 */
@@ -74,7 +74,7 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	/**
 	 * Determine if {@link SpringFacesIntegration} has been installed. This method will return <tt>true</tt> when a
 	 * {@link WebApplicationContext} containing a {@link SpringFacesIntegration} bean has been fully loaded.
-	 * @param externalContext The JSF external context
+	 * @param externalContext the JSF external context
 	 * @return <tt>true</tt> if {@link SpringFacesIntegration} is installed and has loaded
 	 * @see #isInstalled(ServletContext)
 	 */
@@ -90,8 +90,8 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	/**
 	 * Determine the date that the {@link WebApplicationContext} containing the {@link SpringFacesIntegration} bean was
 	 * last refreshed.
-	 * @param servletContext The servlet context
-	 * @return The {@link Date} of that the {@link WebApplicationContext} was last refreshed
+	 * @param servletContext the servlet context
+	 * @return the {@link Date} of that the {@link WebApplicationContext} was last refreshed
 	 * @throws IllegalStateException if {@link SpringFacesIntegration} is not {@link #isInstalled(ServletContext)
 	 * installed}
 	 * @see #isInstalled(ServletContext)
@@ -105,8 +105,8 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	/**
 	 * Determine the date that the {@link WebApplicationContext} containing the {@link SpringFacesIntegration} bean was
 	 * last refreshed.
-	 * @param externalContext The JSF external context
-	 * @return The {@link Date} of that the {@link WebApplicationContext} was last refreshed
+	 * @param externalContext the JSF external context
+	 * @return the {@link Date} of that the {@link WebApplicationContext} was last refreshed
 	 * @throws IllegalStateException if {@link SpringFacesIntegration} is not {@link #isInstalled(ExternalContext)
 	 * installed}
 	 * @see #isInstalled(ExternalContext)
@@ -126,8 +126,8 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 
 	/**
 	 * Return the current {@link SpringFacesIntegration} instance registered for the give <tt>servletContext</tt>
-	 * @param servletContext The servlet context
-	 * @return The {@link SpringFacesIntegration} instance
+	 * @param servletContext the servlet context
+	 * @return the {@link SpringFacesIntegration} instance
 	 * @throws IllegalStateException if {@link SpringFacesIntegration} is not {@link #isInstalled(ServletContext)
 	 * installed}
 	 * @see #isInstalled(ServletContext)
@@ -139,8 +139,8 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 
 	/**
 	 * Return the current {@link SpringFacesIntegration} instance registered for the give <tt>externalContext</tt>
-	 * @param externalContext The JSF external context
-	 * @return The {@link SpringFacesIntegration} instance
+	 * @param externalContext the JSF external context
+	 * @return the {@link SpringFacesIntegration} instance
 	 * @throws IllegalStateException if {@link SpringFacesIntegration} is not {@link #isInstalled(ExternalContext)
 	 * installed}
 	 * @see #isInstalled(ExternalContext)
@@ -161,8 +161,8 @@ public class SpringFacesIntegration extends WebApplicationObjectSupport implemen
 	 * Indicates that an JSF {@link Application} has been created. This this an internal method and not intended to be
 	 * called by clients. Note: It is possible for the JSF {@link Application} to be created before Spring has
 	 * initialized.
-	 * @param externalContext The JSF external context
-	 * @param application The newly created application
+	 * @param externalContext the JSF external context
+	 * @param application the newly created application
 	 */
 	public static void postConstructApplicationEvent(ExternalContext externalContext, Application application) {
 		externalContext.getApplicationMap().put(APPLICATION_ATTRIBUTE, application);

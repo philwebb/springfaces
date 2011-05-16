@@ -78,7 +78,7 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 	 * @param context the evaluation context in which the access is being attempted
 	 * @param target the target object upon which the property is being accessed
 	 * @param name the name of the property being accessed
-	 * @return The base object. By default this implementation returns <tt>null</tt>
+	 * @return the base object. By default this implementation returns <tt>null</tt>
 	 */
 	protected Object getResolveBase(EvaluationContext context, Object target, String name) {
 		return null;
@@ -90,7 +90,7 @@ public abstract class ELPropertyAccessor implements PropertyAccessor {
 	 * @param context the evaluation context in which the access is being attempted
 	 * @param target the target object upon which the property is being accessed
 	 * @param name the name of the property being accessed
-	 * @return The base object. By default this implementation returns <tt>name</tt>
+	 * @return the base object. By default this implementation returns <tt>name</tt>
 	 */
 	protected Object getResolveProperty(EvaluationContext context, Object target, String name) {
 		return name;

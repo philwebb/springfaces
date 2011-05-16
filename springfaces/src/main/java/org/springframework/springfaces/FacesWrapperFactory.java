@@ -36,7 +36,7 @@ import org.springframework.web.context.WebApplicationContext;
  * When working with {@link CompositeELResolver}s the {@link CompositeELResolver#add add} method of the delegate should
  * be used and the original delegate returned.
  * 
- * @param <T> The type of class to be wrapped.
+ * @param <T> the type of class to be wrapped.
  * 
  * @see FacesWrapperFactory
  * @see RenderKitIdAware
@@ -47,9 +47,9 @@ public interface FacesWrapperFactory<T> {
 
 	/**
 	 * Factory method that can be used to wrap the specified JSF object.
-	 * @param typeClass The JSF Object type being wrapped
-	 * @param delegate The existing JSF object that should be used as the delegate for the wrapper
-	 * @return A {@link FacesWrapper wrapped} object that it is itself an implementation of <tt>typeClass</tt> or
+	 * @param typeClass the JSF Object type being wrapped
+	 * @param delegate the existing JSF object that should be used as the delegate for the wrapper
+	 * @return a {@link FacesWrapper wrapped} object that it is itself an implementation of <tt>typeClass</tt> or
 	 * <tt>null</tt> if no wrapping is required
 	 */
 	T newWrapper(Class<?> typeClass, T delegate);

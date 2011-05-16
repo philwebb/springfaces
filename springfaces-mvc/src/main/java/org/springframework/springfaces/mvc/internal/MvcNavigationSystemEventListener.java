@@ -33,8 +33,8 @@ public class MvcNavigationSystemEventListener implements SystemEventListener {
 
 	/**
 	 * Returns the last {@link PreRenderComponentEvent} that occurred.
-	 * @param context The faces context
-	 * @return The action event or <tt>null</tt>
+	 * @param context the faces context
+	 * @return the action event or <tt>null</tt>
 	 */
 	public static PreRenderComponentEvent getLastPreRenderComponentEvent(FacesContext context) {
 		return (PreRenderComponentEvent) context.getAttributes().get(KEY);

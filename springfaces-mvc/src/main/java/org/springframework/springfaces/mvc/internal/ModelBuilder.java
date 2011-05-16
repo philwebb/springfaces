@@ -46,7 +46,7 @@ public class ModelBuilder {
 	 * Add model elements by inspecting all {@link UIParameter} children of the specified component. Child parameters
 	 * that do not specify a name will have one generated using Spring {@link Conventions#getVariableName conventions}.
 	 * If a parameter references an existing MVC {@link ModelHolder model} then the complete model will be added.
-	 * @param component The component to inspect or <tt>null</tt>
+	 * @param component the component to inspect or <tt>null</tt>
 	 */
 	public void addFromComponent(UIComponent component) {
 		if (component != null) {
@@ -65,7 +65,7 @@ public class ModelBuilder {
 
 	/**
 	 * Adds a single {@link UIParameter} to the model.
-	 * @param parameter The parameter to add
+	 * @param parameter the parameter to add
 	 */
 	private void addUIParam(UIParameter parameter) {
 		String source = parameter.getClientId(context)
@@ -82,8 +82,8 @@ public class ModelBuilder {
 	/**
 	 * Add model elements from the specified map. When <tt>resolveExpressions</tt> is <tt>true</tt> the map may contain
 	 * String EL expressions that will be resolved as the model is built.
-	 * @param map A map of items to add to the model or <tt>null</tt>
-	 * @param resolveExpressions If the EL expression from <tt>String<tt> values in the map should be resolved.
+	 * @param map a map of items to add to the model or <tt>null</tt>
+	 * @param resolveExpressions if the EL expression from <tt>String<tt> values in the map should be resolved.
 	 */
 	public void add(Map<String, Object> map, boolean resolveExpressions) {
 		if (map != null) {
@@ -99,7 +99,7 @@ public class ModelBuilder {
 	 * Parameters may contain String EL expressions that will be resolved as the model is built. NOTE: JSF Parameters
 	 * are often constructed from {@link UIParameter}s. Whenever possible call {@link #addFromComponent(UIComponent)} to
 	 * add {@link UIParameter}s before calling this method.
-	 * @param parameters The parameters to add or <tt>null</tt>
+	 * @param parameters the parameters to add or <tt>null</tt>
 	 */
 	public void addFromParamterList(Map<String, List<String>> parameters) {
 		if (parameters != null) {
@@ -118,11 +118,11 @@ public class ModelBuilder {
 
 	/**
 	 * Adds the specified key/value pair to the model as long as the model does not already contain the key.
-	 * @param source A textual description of the source of the item that can be used for logging
-	 * @param key The key to add to the model or <tt>null</tt> if the key should be generated from the value
-	 * @param value The value to add to the model. If the value is not specified then the model remains unchanged
-	 * @param resolveExpressions Determines if values can contain <tt>String</tt> EL expression that should be resolved
-	 * @param expandModelHolder Determines if values containing {@link ModelHolder} objects should have each member of
+	 * @param source a textual description of the source of the item that can be used for logging
+	 * @param key the key to add to the model or <tt>null</tt> if the key should be generated from the value
+	 * @param value the value to add to the model. If the value is not specified then the model remains unchanged
+	 * @param resolveExpressions determines if values can contain <tt>String</tt> EL expression that should be resolved
+	 * @param expandModelHolder determines if values containing {@link ModelHolder} objects should have each member of
 	 * the holder added to the model as a separate item
 	 */
 	private void addIfNotInModel(String source, String key, Object value, boolean resolveExpressions,

@@ -71,7 +71,7 @@ class WrapperHandler<T> {
 	private boolean warnOnMissingSpringFaces;
 
 	/**
-	 * Constructor.
+	 * Create a mew WrapperHandler.
 	 * @param typeClass The JSF type being wrapped
 	 * @param delegate The root delegate
 	 */
@@ -83,7 +83,7 @@ class WrapperHandler<T> {
 	}
 
 	/**
-	 * Constructor.
+	 * Create a mew WrapperHandler.
 	 * @param typeClass The JSF type being wrapped
 	 * @param delegate Access to the root delegate
 	 */
@@ -106,7 +106,7 @@ class WrapperHandler<T> {
 	/**
 	 * Creates a fully wrapped implementation of the delegate by consulting all {@link FacesWrapperFactory factories}
 	 * registered with Spring.
-	 * @return A wrapped implementation
+	 * @return a wrapped implementation
 	 */
 	public T getWrapped() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -135,8 +135,8 @@ class WrapperHandler<T> {
 
 	/**
 	 * Wrap the specified delegate by consulting all {@link FacesWrapperFactory factories} registered with Spring.
-	 * @param delegate The root delegate
-	 * @return A wrapped implementation
+	 * @param delegate the root delegate
+	 * @return a wrapped implementation
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private T wrap(ExternalContext externalContext, T delegate) {
@@ -179,7 +179,7 @@ class WrapperHandler<T> {
 
 	/**
 	 * Determine if a given {@link FacesWrapperFactory} is suitable by resolving generic arguments.
-	 * @param factory The factory to test
+	 * @param factory the factory to test
 	 * @return <tt>true</tt> if the <tt>factory</tt> is supported, otherwise <tt>false</tt>
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -197,7 +197,7 @@ class WrapperHandler<T> {
 	/**
 	 * Strategy method called after a wrapped instance has been created. Subclasses can implement custom post-processing
 	 * as required.
-	 * @param wrapped The newly created wrapped instance
+	 * @param wrapped the newly created wrapped instance
 	 */
 	protected void postProcessWrapper(T wrapped) {
 	}
@@ -205,10 +205,10 @@ class WrapperHandler<T> {
 	/**
 	 * Convenience factory method to create a {@link WrapperHandler} with the generic type obtained from
 	 * <tt>typeClass</tt>
-	 * @param <T> The JSF type being managed
-	 * @param typeClass The JSF type being managed
-	 * @param delegate The delegate
-	 * @return A {@link WrapperHandler}
+	 * @param <T> the JSF type being managed
+	 * @param typeClass the JSF type being managed
+	 * @param delegate the delegate
+	 * @return a {@link WrapperHandler}
 	 */
 	public static <T> WrapperHandler<T> get(Class<T> typeClass, T delegate) {
 		return new WrapperHandler<T>(typeClass, delegate);
@@ -246,14 +246,14 @@ class WrapperHandler<T> {
 	public static interface DelegateAccessor<T> {
 		/**
 		 * Returns a description of the delegate.
-		 * @return The description
+		 * @return the description
 		 */
 		public String getDescription();
 
 		/**
 		 * Returns the actual delegate to use.
-		 * @param accessType The reason that the delegate is being accessed
-		 * @return The delegate
+		 * @param accessType the reason that the delegate is being accessed
+		 * @return the delegate
 		 */
 		public T getDelegate(DelegateAccessType accessType);
 	}

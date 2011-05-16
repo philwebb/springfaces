@@ -45,7 +45,7 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 
 	/**
 	 * Sets the prefix that will be used to distinguish a MVC implicit outcome from a regular JSF outcome.
-	 * @param prefix The prefix for implicit MVC navigation
+	 * @param prefix the prefix for implicit MVC navigation
 	 */
 	public void setPrefix(String prefix) {
 		Assert.hasLength(prefix, "Prefix must contain at least character");

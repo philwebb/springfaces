@@ -40,8 +40,8 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	private HandlerInterceptor facesHandlerInterceptor;
 
 	/**
-	 * Constructor
-	 * @param stateHandler The state handler
+	 * Create a new FacesPostbackHandler.
+	 * @param stateHandler the state handler
 	 */
 	public FacesPostbackHandler(FacesViewStateHandler stateHandler,
 			FacesPostbackOrginalHandlerLocator orginalHandlerLocator) {
@@ -78,7 +78,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 
 	/**
 	 * Return the handler interceptors that should be applied to the postback handler.
-	 * @return The interceptors to apply
+	 * @return the interceptors to apply
 	 */
 	protected HandlerInterceptor[] getHandlerInterceptors() {
 		return new HandlerInterceptor[] { facesHandlerInterceptor };
@@ -100,7 +100,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	/**
 	 * Return the handler that would have processed the request if it were not a postback.
 	 * @param request The current request
-	 * @return The original handler
+	 * @return the original handler
 	 */
 	private Object getOriginalHandler(HttpServletRequest request) {
 		request.setAttribute(DISABLE_ATTRIBUTE, Boolean.TRUE);
