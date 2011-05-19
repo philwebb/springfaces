@@ -10,7 +10,9 @@
 
 <h:body>
 	<h:form>
-		<h:outputText value="#{hotel}" />
+		<h:outputText value="#{messageTest.messages.testnoparams}" />
+		<h:outputText value="#{messageTest.messages.testparams[samplePerson.firstName][samplePerson.lastName]}" />
+
 		<br />
 		<!--
 			<h:commandButton value="go" action="go"/><br/>

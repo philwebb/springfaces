@@ -16,7 +16,7 @@
         http://www.springframework.org/schema/faces
         http://www.springframework.org/schema/faces/spring-faces-2.0.xsd">
 
-	<mvc:annotation-driven conversion-service="conversionService"/>
+	<mvc:annotation-driven conversion-service="conversionService" />
 
 	<bean id="conversionService"
 		class="org.springframework.context.support.ConversionServiceFactoryBean">
@@ -28,8 +28,13 @@
 		</property>
 	</bean>
 
+	<bean name="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="WEB-INF/messages"/>
+	</bean>
+
 	<context:component-scan
 		base-package="org.springframework.springfaces.sample.controller" />
+	<context:component-scan base-package="org.springframework.springfaces.sample.bean" />
 
 	<webflow:flow-executor id="flowExecutor">
 		<webflow:flow-execution-listeners>
@@ -53,10 +58,12 @@
 		<property name="flowExecutor" ref="flowExecutor" />
 	</bean>
 
-	<bean id="testBeanView" class="org.springframework.springfaces.sample.controller.TestBeanView"/>
+	<bean id="testBeanView"
+		class="org.springframework.springfaces.sample.controller.TestBeanView" />
 
-	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
-		<property name="order" value="50"/>
+	<bean id="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="50" />
 	</bean>
 
 	<bean id="facesViewResolver"
@@ -70,19 +77,22 @@
 
 	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
 
-	<bean name="stateHandler" class="org.springframework.springfaces.render.ClientFacesViewStateHandler" />
+	<bean name="stateHandler"
+		class="org.springframework.springfaces.render.ClientFacesViewStateHandler" />
 
-	<bean name="facesConfig" class="org.springframework.springfaces.mvc.servlet.DefaultFacesConfig"/>
+	<bean name="facesConfig"
+		class="org.springframework.springfaces.mvc.servlet.DefaultFacesConfig" />
 
-	<bean class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
-		<constructor-arg ref="stateHandler"/>
-		<constructor-arg ref="facesConfig"/>
+	<bean
+		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
+		<constructor-arg ref="stateHandler" />
+		<constructor-arg ref="facesConfig" />
 	</bean>
 
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
-		<constructor-arg ref="stateHandler"/>
-		<constructor-arg ref="facesConfig"/>
+		<constructor-arg ref="stateHandler" />
+		<constructor-arg ref="facesConfig" />
 	</bean>
 
 	<mvc:interceptors>
