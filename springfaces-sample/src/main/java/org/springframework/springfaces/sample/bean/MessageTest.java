@@ -11,7 +11,7 @@ public class MessageTest implements MessageSourceAware {
 	private MessageSource messageSource;
 
 	public MessageSourceMap getMessages() {
-		return new MessageSourceMap(messageSource);
+		return new MessageSourceMap(messageSource, null, null, null);
 	}
 
 	public void setMessageSource(MessageSource messageSource) {

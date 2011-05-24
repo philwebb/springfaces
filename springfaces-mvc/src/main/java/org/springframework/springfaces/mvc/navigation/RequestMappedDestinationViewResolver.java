@@ -12,8 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -21,31 +23,97 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
+import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.ui.Model;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.WebArgumentResolver;
+import org.springframework.web.bind.support.WebBindingInitializer;
+import org.springframework.web.bind.support.WebRequestDataBinder;
+import org.springframework.web.context.request.FacesWebRequest;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.View;
 
-public class RequestMappedDestinationViewResolver implements DestinationViewResolver {
+public class RequestMappedDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware {
+
+	private static final Set<Class<?>> IGNORED_ANNOTATIONS;
+	static {
+		IGNORED_ANNOTATIONS = new LinkedHashSet<Class<?>>();
+		IGNORED_ANNOTATIONS.add(RequestHeader.class);
+		IGNORED_ANNOTATIONS.add(RequestBody.class);
+		IGNORED_ANNOTATIONS.add(CookieValue.class);
+		IGNORED_ANNOTATIONS.add(ModelAttribute.class);
+		IGNORED_ANNOTATIONS.add(Value.class);
+	}
+
+	private static final Set<Class<?>> IGNORED_TYPES;
+	static {
+		IGNORED_TYPES = new LinkedHashSet<Class<?>>();
+		IGNORED_TYPES.add(WebRequest.class);
+		IGNORED_TYPES.add(ServletRequest.class);
+		IGNORED_TYPES.add(MultipartRequest.class);
+		IGNORED_TYPES.add(ServletResponse.class);
+		IGNORED_TYPES.add(HttpSession.class);
+		IGNORED_TYPES.add(Principal.class);
+		IGNORED_TYPES.add(Locale.class);
+		IGNORED_TYPES.add(InputStream.class);
+		IGNORED_TYPES.add(Reader.class);
+		IGNORED_TYPES.add(OutputStream.class);
+		IGNORED_TYPES.add(Writer.class);
+		IGNORED_TYPES.add(Map.class);
+		IGNORED_TYPES.add(Model.class);
+		IGNORED_TYPES.add(SessionStatus.class);
+		IGNORED_TYPES.add(HttpEntity.class);
+		IGNORED_TYPES.add(Errors.class);
+	}
+
+	private PathMatcher pathMatcher = new AntPathMatcher();
 
 	private WebArgumentResolver[] customArgumentResolvers;
 
+	private WebBindingInitializer webBindingInitializer;
+
+	private ApplicationContext applicationContext;
+
 	public View resolveDestination(Object destination, Locale locale) throws Exception {
 		if (destination instanceof String && ((String) destination).startsWith("@")) {
+
+			// FIXME
+			Object bean = applicationContext.getBean("bean");
+			Method[] methods = ReflectionUtils.getAllDeclaredMethods(bean.getClass());
+			for (Method method : methods) {
+				if (method.getName().equals("search")) {
+					return new RequestMappedView(bean.getClass(), method);
+				}
+			}
+
 			// @bean.method
 			// get bean, get method
 			// create a view
@@ -55,61 +123,59 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 		return null;
 	}
 
-	public static class RequestMappedView implements View, Bookmarkable {
+	public PathMatcher getPathMatcher() {
+		return pathMatcher;
+	}
 
-		private static final Set<Class<?>> IGNORED_ANNOTATIONS;
-		static {
-			IGNORED_ANNOTATIONS = new LinkedHashSet<Class<?>>();
-			IGNORED_ANNOTATIONS.add(RequestHeader.class);
-			IGNORED_ANNOTATIONS.add(RequestBody.class);
-			IGNORED_ANNOTATIONS.add(CookieValue.class);
-			IGNORED_ANNOTATIONS.add(ModelAttribute.class);
-			IGNORED_ANNOTATIONS.add(Value.class);
-		}
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
 
-		private static final Set<Class<?>> IGNORED_TYPES;
-		static {
-			IGNORED_TYPES = new LinkedHashSet<Class<?>>();
-			IGNORED_TYPES.add(WebRequest.class);
-			IGNORED_TYPES.add(ServletRequest.class);
-			IGNORED_TYPES.add(MultipartRequest.class);
-			IGNORED_TYPES.add(ServletResponse.class);
-			IGNORED_TYPES.add(HttpSession.class);
-			IGNORED_TYPES.add(Principal.class);
-			IGNORED_TYPES.add(Locale.class);
-			IGNORED_TYPES.add(InputStream.class);
-			IGNORED_TYPES.add(Reader.class);
-			IGNORED_TYPES.add(OutputStream.class);
-			IGNORED_TYPES.add(Writer.class);
-			IGNORED_TYPES.add(Map.class);
-			IGNORED_TYPES.add(Model.class);
-			IGNORED_TYPES.add(SessionStatus.class);
-			IGNORED_TYPES.add(HttpEntity.class);
-			IGNORED_TYPES.add(Errors.class);
-		}
+	public class RequestMappedView implements View, Bookmarkable {
 
+		private Class<?> handlerType;
 		private Method handlerMethod;
+		private WebArgumentResolver[] customArgumentResolvers;
+		private BookmarkableRedirectView redirectView;
 
-		public RequestMappedView(Method handlerMethod) {
-			this.handlerMethod = handlerMethod;
+		public RequestMappedView(Class<?> handlerType, Method handlerMethod) {
+			Assert.notNull(handlerMethod, "HandlerMethod must not be null");
+			Assert.notNull(handlerType, "HandlerType must not be null");
+			this.handlerType = handlerType;
+			this.handlerMethod = BridgeMethodResolver.findBridgedMethod(handlerMethod);
+			this.redirectView = new BookmarkableRedirectView(getUrl());
+		}
 
+		private String getUrl() {
+			RequestMapping methodRequestMapping = AnnotationUtils.findAnnotation(handlerMethod, RequestMapping.class);
+			RequestMapping typeLevelRequestMapping = AnnotationUtils.findAnnotation(handlerType.getClass(),
+					RequestMapping.class);
+			Assert.state(methodRequestMapping != null, "The handler method must declare @RequestMapping annotation");
+			Assert.state(methodRequestMapping.value().length == 1,
+					"@RequestMapping must have a single value to be mapped to a URL");
+			Assert.state(typeLevelRequestMapping == null || typeLevelRequestMapping.value().length == 1,
+					"@RequestMapping on handler class must have a single value to be mapped to a URL");
+
+			String url = typeLevelRequestMapping == null ? "" : typeLevelRequestMapping.value()[0];
+			url = getPathMatcher().combine(url, methodRequestMapping.value()[0]);
+			if (!url.startsWith("/")) {
+				url = "/" + url;
+			}
+			// FIXME what about patterns?
+			return url;
 		}
 
 		public String getContentType() {
-			// TODO Auto-generated method stub
-			return null;
+			return redirectView.getContentType();
 		}
 
 		public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 				throws Exception {
-			// TODO Auto-generated method stub
-
+			redirectView.render(getRelevantModel(model), request, response);
 		}
 
 		public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {
-
-			// TODO Auto-generated method stub
-			return null;
+			return redirectView.getBookmarkUrl(getRelevantModel(model), request);
 		}
 
 		private Map<String, Object> getRelevantModel(Map<String, ?> model) {
@@ -117,51 +183,120 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 			for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
 				MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
 				if (!isIgnored(methodParameter)) {
-					PathVariable pathVariableAnnotation = methodParameter.getParameterAnnotation(PathVariable.class);
-					RequestParam requestParamAnnotation = methodParameter.getParameterAnnotation(RequestParam.class);
-					Assert.state(pathVariableAnnotation == null || requestParamAnnotation == null);
-					if (pathVariableAnnotation != null) {
-						addPathVariableMethodParameter(relevantModel, methodParameter, pathVariableAnnotation);
+					PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
+					RequestParam requestParam = methodParameter.getParameterAnnotation(RequestParam.class);
+					if (pathVariable != null) {
+						addToRelevantModel(relevantModel, methodParameter, pathVariable, model);
 					} else {
-						addMethodParameter(relevantModel, methodParameter, requestParamAnnotation);
+						addToRelevantModel(relevantModel, methodParameter, requestParam, model);
 					}
 				}
 			}
 			return relevantModel;
 		}
 
-		private void addPathVariableMethodParameter(Map<String, Object> relevantModel, MethodParameter methodParameter,
-				PathVariable pathVariableAnnotation) {
-			// Path variable
+		private void addToRelevantModel(Map<String, Object> relevantModel, MethodParameter methodParameter,
+				PathVariable pathVariable, Map<String, ?> model) {
+			String name = pathVariable.value();
+			if (name.length() == 0) {
+				name = getRequiredParameterName(methodParameter);
+			}
+			addIfPossible(relevantModel, name, model.get(name));
 		}
 
-		private void addMethodParameter(Map<String, Object> relevantModel, MethodParameter methodParameter,
-				RequestParam requestParamAnnotation) {
-			// TODO Auto-generated method stub
-			if (requestParamAnnotation == null) {
-				if (BeanUtils.isSimpleProperty(methodParameter.getParameterType())) {
-					// Simple types, get from the model and use
-				} else {
-					// Get by name, fallback to type
-					// Reverse databind
-					// add all to map
+		private void addToRelevantModel(Map<String, Object> relevantModel, MethodParameter methodParameter,
+				RequestParam requestParam, Map<String, ?> model) {
+			String name;
+			if (requestParam != null && StringUtils.hasLength(requestParam.value())) {
+				name = requestParam.value();
+			} else {
+				name = methodParameter.getParameterName();
+			}
+
+			Object value = StringUtils.hasLength(name) ? model.get(name) : null;
+			if (value == null) {
+				Map.Entry<String, ?> entry = getMapEntryByType(model, methodParameter.getParameterType());
+				name = entry.getKey();
+				value = entry.getValue();
+			}
+			if (BeanUtils.isSimpleProperty(methodParameter.getParameterType())) {
+				addIfPossible(relevantModel, name, value);
+			} else {
+				// FIXME do we need to call @InitDataBinder methods
+				WebDataBinder binder = new WebRequestDataBinder(value);
+				WebRequest request = new FacesWebRequest(FacesContext.getCurrentInstance());
+				// FIXME webBindingInitializer.initBinder(binder, request);
+				ReverseDataBinder reverseBinder = new ReverseDataBinder(binder);
+				PropertyValues propertyValues = reverseBinder.reverseBind();
+				for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {
+					addIfPossible(relevantModel, propertyValue.getName(), propertyValue.getValue());
 				}
 			}
 		}
 
+		private Entry<String, ?> getMapEntryByType(Map<String, ?> model, Class<?> type) {
+			Map.Entry<String, ?> rtn = null;
+			for (Map.Entry<String, ?> entry : model.entrySet()) {
+				if (type.isInstance(entry.getValue())) {
+					Assert.state(rtn == null, "Unable to find single unique value in model of type " + type);
+					rtn = entry;
+				}
+			}
+			Assert.state(rtn != null, "Unable to find value in model of type " + type);
+			return rtn;
+		}
+
+		private void addIfPossible(Map<String, Object> model, String name, Object value) {
+			if (value != null) {
+				if (model.containsKey(name)) {
+					return;
+				}
+				model.put(name, value);
+			}
+		}
+
+		private String getRequiredParameterName(MethodParameter methodParam) {
+			String name = methodParam.getParameterName();
+			if (name == null) {
+				throw new IllegalStateException("No parameter name specified for argument of type ["
+						+ methodParam.getParameterType().getName()
+						+ "], and no parameter name information found in class file either.");
+			}
+			return name;
+		}
+
 		private boolean isIgnored(MethodParameter methodParameter) {
+
+			// Check for ignored annotations
 			for (Annotation annotation : methodParameter.getParameterAnnotations()) {
 				if (IGNORED_ANNOTATIONS.contains(annotation.getClass())) {
 					return true;
 				}
 			}
+
+			// Check for ignored types
 			Class<?> parameterType = methodParameter.getParameterType();
 			for (Class<?> ignoredType : IGNORED_TYPES) {
 				if (ignoredType.isAssignableFrom(parameterType)) {
 					return true;
 				}
 			}
-			// FIXME customerArgumentResolvers?
+
+			// Check if an argument resolver would deal with the parameter
+			if (customArgumentResolvers != null) {
+				NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
+				for (WebArgumentResolver resolver : customArgumentResolvers) {
+					try {
+						if (resolver.resolveArgument(methodParameter, webRequest) != WebArgumentResolver.UNRESOLVED) {
+							return true;
+						}
+					} catch (Exception e) {
+						throw new IllegalStateException(e);
+					}
+				}
+			}
+
+			// Not a parameter that we should ignore
 			return false;
 		}
 	}

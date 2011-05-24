@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface Bookmarkable {
 
-	String getBookmarkUrl(Map<String, Object> model, HttpServletRequest request) throws IOException;
+	String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException;
 
 }

@@ -1,7 +1,7 @@
 package org.springframework.springfaces.mvc.servlet.view;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,9 +60,10 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 		sendRedirect(request, response, targetUrl, this.http10Compatible);
 	}
 
-	public String getBookmarkUrl(Map<String, Object> model, HttpServletRequest request) throws IOException {
-		if (model == null) {
-			model = Collections.emptyMap();
+	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {
+		Map<String, Object> mergedModel = new HashMap<String, Object>();
+		if (model != null) {
+			mergedModel.putAll(model);
 		}
 		StringBuilder targetUrl = new StringBuilder();
 		if (this.contextRelative && getUrl().startsWith("/")) {
@@ -73,7 +74,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 		Matcher matcher = VARIABLE_PATTERN.matcher(getUrl());
 		while (matcher.find()) {
 			String variableName = matcher.group(1);
-			Object variableValue = model.remove(variableName);
+			Object variableValue = mergedModel.remove(variableName);
 			Assert.state(variableValue != null, "Unable to locate path variable '" + variableName
 					+ "' from model for URL '" + getUrl() + "'");
 			matcher.appendReplacement(variableExpandedUrl, variableValue.toString());
@@ -89,7 +90,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 			if (enc == null) {
 				enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
 			}
-			appendQueryProperties(targetUrl, model, enc);
+			appendQueryProperties(targetUrl, mergedModel, enc);
 		}
 		return targetUrl.toString();
 	}
