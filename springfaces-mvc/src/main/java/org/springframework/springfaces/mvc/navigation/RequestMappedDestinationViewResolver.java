@@ -36,6 +36,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
@@ -61,7 +62,16 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.View;
 
+/**
+ * Allows views of the form '@bean.method' to be resolved against {@link RequestMapping} annotated methods of
+ * {@link Controller} beans.
+ * 
+ * @author Phillip Webb
+ */
 public class RequestMappedDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware {
+
+	// FIXME DC
+	// FIXME needs a lot of tidy up
 
 	private static final Set<Class<?>> IGNORED_ANNOTATIONS;
 	static {
@@ -103,23 +113,21 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 	private ApplicationContext applicationContext;
 
 	public View resolveDestination(Object destination, Locale locale) throws Exception {
-		if (destination instanceof String && ((String) destination).startsWith("@")) {
-
-			// FIXME
-			Object bean = applicationContext.getBean("bean");
-			Method[] methods = ReflectionUtils.getAllDeclaredMethods(bean.getClass());
-			for (Method method : methods) {
-				if (method.getName().equals("search")) {
-					return new RequestMappedView(bean.getClass(), method);
+		if (destination instanceof String && ((String) destination).startsWith("@")
+				&& ((String) destination).contains(".")) {
+			String[] splitDestination = ((String) destination).split("\\.");
+			// FIXME do this better
+			if (splitDestination.length == 2) {
+				Object bean = applicationContext.getBean(splitDestination[0].substring(1));
+				Method[] methods = ReflectionUtils.getAllDeclaredMethods(bean.getClass());
+				for (Method method : methods) {
+					if (method.getName().equals(splitDestination[1])) {
+						// FIXME this will not work if we have overloaded methods
+						return new RequestMappedView(bean.getClass(), method);
+					}
 				}
 			}
-
-			// @bean.method
-			// get bean, get method
-			// create a view
 		}
-
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -129,6 +137,14 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public void setCustomArgumentResolvers(WebArgumentResolver[] customArgumentResolvers) {
+		this.customArgumentResolvers = customArgumentResolvers;
+	}
+
+	public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
+		this.webBindingInitializer = webBindingInitializer;
 	}
 
 	public class RequestMappedView implements View, Bookmarkable {
@@ -225,7 +241,9 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 				// FIXME do we need to call @InitDataBinder methods
 				WebDataBinder binder = new WebRequestDataBinder(value);
 				WebRequest request = new FacesWebRequest(FacesContext.getCurrentInstance());
-				// FIXME webBindingInitializer.initBinder(binder, request);
+				if (webBindingInitializer != null) {
+					webBindingInitializer.initBinder(binder, request);
+				}
 				ReverseDataBinder reverseBinder = new ReverseDataBinder(binder);
 				PropertyValues propertyValues = reverseBinder.reverseBind();
 				for (PropertyValue propertyValue : propertyValues.getPropertyValues()) {

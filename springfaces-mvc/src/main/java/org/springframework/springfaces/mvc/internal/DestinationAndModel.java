@@ -71,6 +71,7 @@ class DestinationAndModel {
 		modelBuilder.addFromComponent(component);
 		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
 		modelBuilder.addFromParamterList(parameters);
+		// FIXME it might be useful if the implicit model is added when there are no other entries
 		return modelBuilder.getModel();
 	}
 
