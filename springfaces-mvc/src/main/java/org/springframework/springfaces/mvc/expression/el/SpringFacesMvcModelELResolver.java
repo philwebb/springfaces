@@ -12,4 +12,6 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
  */
 public class SpringFacesMvcModelELResolver {
 
+	// FIXME
+
 }
