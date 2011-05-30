@@ -9,16 +9,12 @@
 	<p>
 		This page uses the PrimeFaces data table backed by a lazily loaded DataModel (see <strong>HotelLazyDataModel.java</strong>).
 		Page navigation is Ajax-based and uses JSF 2 partial rendering.
-		The name and city columns support forward and reverse sorting. 
-	</p>
-	<p>
-		The DataModel is created and stored in view scope when the view is first entered (see <strong>main-flow.xml</strong>). 
-		When the user makes a selection, the selection is stored in a flow-scoped "hotel" variable before transitioning to the detail page. 
+		The name and city columns support forward and reverse sorting.
 	</p>
 </ui:define>
 <ui:define name="content">
 <h:form>
-	<p:dataTable id="hotels" var="h" value="#{hotels}" paginator="true" dynamic="true" lazy="true" 
+	<p:dataTable id="hotels" var="h" value="#{hotels}" paginator="true" dynamic="true" lazy="true"
 			rows="#{searchCriteria.pageSize}" page="#{searchCrtieria.currentPage}">
         <f:facet name="header">
         	Hotel Search Results<br/>
@@ -35,16 +31,16 @@
 		<p:column sortBy="#{h.city}">
 			<f:facet name="header">City, State</f:facet>
 			#{h.city}, #{h.state}, #{h.country}
-		</p:column> 
+		</p:column>
 		<p:column>
 			<f:facet name="header">Zip</f:facet>
 			#{h.zip}
 		</p:column>
 		<p:column>
 			<f:facet name="header">Action</f:facet>
-			<p:commandButton id="viewHotelLink" value="View" action="select" image="ui-icon-search">
-				<f:setPropertyActionListener value="#{h}" target="#{hotels.selected}" />
-			</p:commandButton>
+			<h:link id="viewHotelLink" value="View" outcome="mvc:@hotelsController.show">
+				<f:param name="id" value="#{h.id}"/>
+			</h:link>
 		</p:column>
 	</p:dataTable>
 </h:form>

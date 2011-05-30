@@ -81,7 +81,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	 * @return the {@link SpringFacesContextImpl}
 	 */
 	private SpringFacesContextImpl getSpringFacesContext() {
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(true);
 		Assert.isInstanceOf(SpringFacesContextImpl.class, springFacesContext, "Unable to access SpringFacesContext ");
 		return (SpringFacesContextImpl) springFacesContext;
 	}

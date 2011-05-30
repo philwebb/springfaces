@@ -30,7 +30,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.BridgeMethodResolver;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
@@ -200,6 +202,9 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 			for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
 				MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
 				if (!isIgnored(methodParameter)) {
+					// FIXME inject?
+					ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+					methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
 					PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
 					RequestParam requestParam = methodParameter.getParameterAnnotation(RequestParam.class);
 					if (pathVariable != null) {

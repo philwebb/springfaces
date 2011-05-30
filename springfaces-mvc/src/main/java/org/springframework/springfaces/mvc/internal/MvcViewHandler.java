@@ -142,7 +142,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private String getBookmarkUrlIfResolvable(FacesContext context, String viewId, Map<String, List<String>> parameters) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
 			ModelAndView modelAndView = getModelAndView(context, viewId, parameters);
-			View view = modelAndView.getView();
+			View view = modelAndView == null ? null : modelAndView.getView();
 			if (view == null) {
 				return null;
 			}
