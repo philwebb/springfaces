@@ -10,7 +10,9 @@ import javax.faces.render.ResponseStateManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.event.PostConstructApplicationSpringFacesEvent;
+import org.springframework.springfaces.mvc.expression.el.ImplicitMvcFacesELResolver;
 import org.springframework.springfaces.mvc.expression.el.SpringBeanMvcELResolver;
+import org.springframework.springfaces.mvc.expression.el.SpringFacesMvcModelELResolver;
 import org.springframework.springfaces.mvc.internal.MvcNavigationActionListener;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcNavigationSystemEventListener;
@@ -34,9 +36,9 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		Assert.notNull(facesViewStateHandler, "FacesViewStateHandler must not be null");
 		Assert.notNull(destinationViewResolver, "DestinationViewResolver must not be null");
 		this.facesViewStateHandler = facesViewStateHandler;
-		this.destinationViewResolver = destinationViewResolver;
 		// FIXME
 		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
+		this.destinationViewResolver = destinationViewResolver;
 	}
 
 	// FIXME consider rename of internal package
@@ -55,7 +57,10 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 			return new MvcNavigationActionListener((ActionListener) delegate);
 		}
 		if (CompositeELResolver.class.equals(typeClass)) {
-			((CompositeELResolver) delegate).add(new SpringBeanMvcELResolver());
+			CompositeELResolver compositeELResolver = (CompositeELResolver) delegate;
+			compositeELResolver.add(new SpringBeanMvcELResolver());
+			compositeELResolver.add(new SpringFacesMvcModelELResolver());
+			compositeELResolver.add(new ImplicitMvcFacesELResolver());
 		}
 		return null;
 	}

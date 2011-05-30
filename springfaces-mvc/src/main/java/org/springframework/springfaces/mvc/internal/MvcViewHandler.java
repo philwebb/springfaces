@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.model.Model;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
@@ -82,7 +83,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
 			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
 			if (rendering.getModel() != null) {
-				ModelHolder.put(viewRoot, rendering.getModel());
+				Model.put(viewRoot, rendering.getModel());
 			}
 			return viewRoot;
 		}
@@ -206,11 +207,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	private static class MvcNavigationResponseUIViewRoot extends UIViewRoot {
-		private View view;
+		private ModelAndView modelAndView;
 
 		public MvcNavigationResponseUIViewRoot(String viewId, ModelAndView modelAndView) {
 			setViewId(viewId);
-			this.view = modelAndView.getView();
+			this.modelAndView = modelAndView;
 		}
 
 		@Override
@@ -219,7 +220,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 			try {
 				// FIXME model
-				view.render(null, request, response);
+				modelAndView.getView().render(modelAndView.getModel(), request, response);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

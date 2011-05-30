@@ -60,10 +60,22 @@
 	<bean name="facesConfig"
 		class="org.springframework.springfaces.mvc.servlet.DefaultFacesConfig" />
 
+	<bean name="requestMappedDestinationViewResolver" class="org.springframework.springfaces.mvc.navigation.RequestMappedDestinationViewResolver"/>
+
+	<bean name="destinationViewResolverChain" class="org.springframework.springfaces.mvc.navigation.DestinationViewResolverChain">
+		<property name="resolvers">
+			<list>
+				<ref bean="requestMappedDestinationViewResolver"/>
+				<ref bean="facesConfig"/>
+			</list>
+		</property>
+	</bean>
+
+
 	<bean
 		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
 		<constructor-arg ref="stateHandler" />
-		<constructor-arg ref="facesConfig" />
+		<constructor-arg ref="destinationViewResolverChain" />
 	</bean>
 
 	<bean name="postbackHandler"

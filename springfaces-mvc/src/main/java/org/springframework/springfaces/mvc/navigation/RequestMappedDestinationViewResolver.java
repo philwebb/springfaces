@@ -159,7 +159,8 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 			Assert.notNull(handlerType, "HandlerType must not be null");
 			this.handlerType = handlerType;
 			this.handlerMethod = BridgeMethodResolver.findBridgedMethod(handlerMethod);
-			this.redirectView = new BookmarkableRedirectView(getUrl());
+			// FIXME get dispather servlet URL
+			this.redirectView = new BookmarkableRedirectView("/spring" + getUrl(), true);
 		}
 
 		private String getUrl() {

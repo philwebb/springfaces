@@ -27,8 +27,9 @@
 				<h:selectOneMenu id="pageSize" value="#{searchCriteria.pageSize}">
 					<f:selectItems value="#{referenceData.pageSizeOptions}" />
 				</h:selectOneMenu>
-				<h:outputText value="#{myBean}"/>
-				<h:commandButton id="findHotels" value="Find Hotels" action="search"/>
+				<p:commandButton id="findHotels" value="Find Hotels" action="mvc:@hotelsController.list" update="@form">
+					<f:param name="searchCritera" value="#{searchCriteria}"/>
+				</p:commandButton>
 			</h:panelGrid>
 			<p:tooltip for="searchString" targetPosition="topRight" position="bottomLeft"
 				value="Search hotels by name, address, city, or zip." style="cream" />
