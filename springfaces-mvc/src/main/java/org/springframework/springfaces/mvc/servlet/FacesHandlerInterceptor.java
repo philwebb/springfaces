@@ -68,7 +68,10 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		getSpringFacesContext().release();
+		SpringFacesContextImpl context = getSpringFacesContext(false);
+		if (context != null) {
+			context.release();
+		}
 	}
 
 	// FIXME DC FacesServlet.LIFECYCLE_ID_ATTR
@@ -80,8 +83,11 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	 * Returns the {@link SpringFacesContextImpl}.
 	 * @return the {@link SpringFacesContextImpl}
 	 */
-	private SpringFacesContextImpl getSpringFacesContext() {
-		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(true);
+	private SpringFacesContextImpl getSpringFacesContext(boolean required) {
+		SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance(required);
+		if (springFacesContext == null) {
+			return null;
+		}
 		Assert.isInstanceOf(SpringFacesContextImpl.class, springFacesContext, "Unable to access SpringFacesContext ");
 		return (SpringFacesContextImpl) springFacesContext;
 	}

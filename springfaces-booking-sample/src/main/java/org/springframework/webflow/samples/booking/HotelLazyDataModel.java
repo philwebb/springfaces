@@ -25,6 +25,12 @@ public class HotelLazyDataModel extends LazyDataModel<Hotel> {
 	@Autowired
 	BookingService bookingService;
 
+	public HotelLazyDataModel() {
+		// Setting the page size here prevents divide by zero exceptions. This value
+		// is subsequently chanaged to the actual page size by PrimeFaces
+		setPageSize(1);
+	}
+
 	@Override
 	public List<Hotel> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
 		searchCriteria.setCurrentPage(first / pageSize + 1);
