@@ -25,6 +25,11 @@ import org.springframework.context.MessageSourceResolvable;
 import org.springframework.springfaces.messagesource.MessageSourceMap.LocaleProvider;
 import org.springframework.springfaces.messagesource.MessageSourceMap.Value;
 
+/**
+ * Tests for {@link MessageSourceMap}.
+ * 
+ * @author Phillip Webb
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class MessageSourceMapTest {
 

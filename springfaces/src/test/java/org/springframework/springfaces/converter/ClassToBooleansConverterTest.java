@@ -26,6 +26,7 @@ public class ClassToBooleansConverterTest {
 	private GenericConversionService conversionService;
 
 	@Before
+	@SuppressWarnings("deprecation")
 	public void setup() throws Exception {
 		conversionService = ConversionServiceFactory.createDefaultConversionService();
 		conversionService.addConverter(new ClassToBooleansConverter());
@@ -97,6 +98,6 @@ public class ClassToBooleansConverterTest {
 	}
 
 	private TypeDescriptor collectionType(Class<?> collectionType) {
-		return TypeDescriptorUtils.forCollection(collectionType, Boolean.class);
+		return TypeDescriptorTestUtils.forCollection(collectionType, Boolean.class);
 	}
 }

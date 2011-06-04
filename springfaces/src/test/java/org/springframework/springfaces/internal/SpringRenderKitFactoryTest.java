@@ -15,6 +15,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+/**
+ * Tests for {@link SpringRenderKitFactory}.
+ * 
+ * @author Phillip Webb
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class SpringRenderKitFactoryTest {
 

@@ -30,7 +30,7 @@ public class ImplicitMvcFacesELResolver extends CompositeELResolver {
 	 */
 	private static class SpringFacesContextELResolver extends BeanBackedELResolver {
 		public SpringFacesContextELResolver() {
-			map("handler", "controller");
+			map("controller", "handler");
 		}
 
 		protected Object getBean() {

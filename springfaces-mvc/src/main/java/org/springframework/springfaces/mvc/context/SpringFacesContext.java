@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerMapping;
  * 
  * @see #getCurrentInstance()
  * @see FacesHandlerInterceptor
+ * 
  * @author Phillip Webb
  */
 public abstract class SpringFacesContext {

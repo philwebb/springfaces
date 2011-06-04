@@ -7,7 +7,7 @@ import org.springframework.springfaces.expression.el.AbstractELResolver;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 
 /**
- * Unified EL {@link ELResolver} that exposes the Spring Faces MVC model.
+ * Unified EL {@link ELResolver} that exposes values from the Spring Faces MVC model.
  * 
  * @author Phillip Webb
  */
@@ -16,7 +16,7 @@ public class SpringFacesMvcModelELResolver extends AbstractELResolver {
 	@Override
 	protected Object get(String property) {
 		FacesContext context = FacesContext.getCurrentInstance();
-		SpringFacesModel model = SpringFacesModel.get(context.getViewRoot());
+		SpringFacesModel model = (context == null ? null : SpringFacesModel.get(context.getViewRoot()));
 		if (model != null) {
 			return model.get(property);
 		}

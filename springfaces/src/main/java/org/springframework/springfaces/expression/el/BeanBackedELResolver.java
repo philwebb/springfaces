@@ -21,7 +21,7 @@ import javax.el.VariableMapper;
  */
 public abstract class BeanBackedELResolver extends AbstractELResolver {
 
-	private static final BeanELResolver elPropertyResolver = new BeanELResolver();
+	private static final BeanELResolver elPropertyResolver = new BeanELResolver(true);
 
 	/**
 	 * Mapping or EL properties to java bean properties.

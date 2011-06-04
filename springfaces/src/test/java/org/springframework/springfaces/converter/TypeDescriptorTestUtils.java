@@ -5,7 +5,12 @@ import java.lang.reflect.Field;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.util.Assert;
 
-public class TypeDescriptorUtils {
+/**
+ * General {@link TypeDescriptor} test utilities.
+ * 
+ * @author Phillip Webb
+ */
+public class TypeDescriptorTestUtils {
 
 	public static <T> TypeDescriptor forCollection(Class<?> collectionClass, Class<T> elementType) {
 		Assert.notNull(collectionClass, "CollectionClass must not be null");

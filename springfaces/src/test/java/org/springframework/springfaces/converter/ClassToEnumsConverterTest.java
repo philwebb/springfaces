@@ -26,6 +26,7 @@ public class ClassToEnumsConverterTest {
 	private GenericConversionService conversionService;
 
 	@Before
+	@SuppressWarnings("deprecation")
 	public void setup() throws Exception {
 		conversionService = ConversionServiceFactory.createDefaultConversionService();
 		conversionService.addConverter(new ClassToEnumsConverter());
@@ -86,7 +87,7 @@ public class ClassToEnumsConverterTest {
 	}
 
 	private TypeDescriptor collectionType(Class<?> collectionType) {
-		return TypeDescriptorUtils.forCollection(collectionType, ExampleEnum.class);
+		return TypeDescriptorTestUtils.forCollection(collectionType, ExampleEnum.class);
 	}
 
 	private enum ExampleEnum {
