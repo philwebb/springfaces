@@ -11,7 +11,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.Conventions;
-import org.springframework.springfaces.mvc.model.Model;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.util.StringUtils;
 
 /**
@@ -46,7 +46,7 @@ public class ModelBuilder {
 	/**
 	 * Add model elements by inspecting all {@link UIParameter} children of the specified component. Child parameters
 	 * that do not specify a name will have one generated using Spring {@link Conventions#getVariableName conventions}.
-	 * If a parameter references an existing MVC {@link Model model} then the complete model will be added.
+	 * If a parameter references an existing MVC {@link SpringFacesModel model} then the complete model will be added.
 	 * @param component the component to inspect or <tt>null</tt>
 	 */
 	public void addFromComponent(UIComponent component) {
@@ -123,7 +123,7 @@ public class ModelBuilder {
 	 * @param key the key to add to the model or <tt>null</tt> if the key should be generated from the value
 	 * @param value the value to add to the model. If the value is not specified then the model remains unchanged
 	 * @param resolveExpressions determines if values can contain <tt>String</tt> EL expression that should be resolved
-	 * @param expandModelHolder determines if values containing {@link Model} objects should have each member of
+	 * @param expandModelHolder determines if values containing {@link SpringFacesModel} objects should have each member of
 	 * the holder added to the model as a separate item
 	 */
 	private void addIfNotInModel(String source, String key, Object value, boolean resolveExpressions,
@@ -146,8 +146,8 @@ public class ModelBuilder {
 		if (resolveExpressions) {
 			value = resolveExpressionIfNecessary(value);
 		}
-		if (value instanceof Model && expandModelHolder) {
-			Model modelHolder = (Model) value;
+		if (value instanceof SpringFacesModel && expandModelHolder) {
+			SpringFacesModel modelHolder = (SpringFacesModel) value;
 			for (Map.Entry<String, Object> modelEntry : modelHolder.entrySet()) {
 				addIfNotInModel(source, modelEntry.getKey(), modelEntry.getValue(), false, false);
 			}

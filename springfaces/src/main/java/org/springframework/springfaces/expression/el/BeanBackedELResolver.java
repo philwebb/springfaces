@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.expression.el;
+package org.springframework.springfaces.expression.el;
 
 import java.util.HashMap;
 import java.util.Map;

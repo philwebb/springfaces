@@ -242,6 +242,7 @@ class WrapperHandler<T> {
 	/**
 	 * Interface to provide access to the underlying delegate. Implementations can return a different delegate if
 	 * required.
+	 * @param <T> The delegate type
 	 */
 	public static interface DelegateAccessor<T> {
 		/**

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.expression.el;
+package org.springframework.springfaces.expression.el;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +18,7 @@ import javax.el.PropertyNotWritableException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.springfaces.expression.el.AbstractELResolver;
 
 /**
  * Tests for {@link AbstractELResolver}.

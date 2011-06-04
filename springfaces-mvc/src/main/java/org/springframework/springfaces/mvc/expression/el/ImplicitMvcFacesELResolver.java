@@ -3,8 +3,10 @@ package org.springframework.springfaces.mvc.expression.el;
 import javax.el.CompositeELResolver;
 import javax.faces.context.FacesContext;
 
+import org.springframework.springfaces.expression.el.AbstractELResolver;
+import org.springframework.springfaces.expression.el.BeanBackedELResolver;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.model.Model;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 
 /**
  * Resolves "implicit" or well-known variables from SpringFaces MVC. The list of implicit flow variables consists of:
@@ -40,7 +42,7 @@ public class ImplicitMvcFacesELResolver extends CompositeELResolver {
 		@Override
 		protected Object get(String property) {
 			if ("model".equals(property) && FacesContext.getCurrentInstance() != null) {
-				return Model.get(FacesContext.getCurrentInstance().getViewRoot());
+				return SpringFacesModel.get(FacesContext.getCurrentInstance().getViewRoot());
 			}
 			return null;
 		}

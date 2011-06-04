@@ -21,6 +21,7 @@ import org.springframework.web.servlet.View;
 class DestinationAndModel {
 
 	private NavigationOutcome navigationOutcome;
+
 	private UIComponent component;
 
 	/**

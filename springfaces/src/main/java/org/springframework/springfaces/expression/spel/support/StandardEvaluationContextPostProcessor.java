@@ -10,7 +10,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
  * Factory hook that allows for custom modification of {@link StandardEvaluationContext}s, e.g. to
  * {@link StandardEvaluationContext#addPropertyAccessor add} {@link PropertyAccessor}s.
  * <p>
- * In order for an {@link ApplicationContext} to autodetect StandardEvaluationContextPostProcessors the
+ * In order for an {@link ApplicationContext} to auto-detect StandardEvaluationContextPostProcessors the
  * {@link StandardEvaluationContextPostProcessorSupport} bean must also be registered.
  * 
  * @see StandardEvaluationContextPostProcessorSupport
