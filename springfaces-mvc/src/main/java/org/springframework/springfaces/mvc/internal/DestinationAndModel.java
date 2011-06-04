@@ -51,6 +51,14 @@ class DestinationAndModel {
 	}
 
 	/**
+	 * Returns the UIComponent that relates to the destination and model.
+	 * @return The component or <tt>null</tt>.
+	 */
+	protected UIComponent getComponent() {
+		return component;
+	}
+
+	/**
 	 * Returns the destination of the next view to render. The destination can be a MVC {@link View} or an object that
 	 * can be resolved by a {@link DestinationViewResolver}.
 	 * @return the destination
@@ -68,12 +76,19 @@ class DestinationAndModel {
 	 * @return the model The model
 	 */
 	public Map<String, Object> getModel(FacesContext context, Map<String, List<String>> parameters) {
-		ModelBuilder modelBuilder = new ModelBuilder(context);
-		modelBuilder.addFromComponent(component);
+		ModelBuilder modelBuilder = newModelBuilder(context);
+		modelBuilder.addFromComponent(getComponent());
 		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
 		modelBuilder.addFromParamterList(parameters);
-		// FIXME it might be useful if the implicit model is added when there are no other entries
 		return modelBuilder.getModel();
 	}
 
+	/**
+	 * Factory method used to create a {@link ModelBuilder}.
+	 * @param context The faces context
+	 * @return a model builder
+	 */
+	protected ModelBuilder newModelBuilder(FacesContext context) {
+		return new ModelBuilder(context);
+	}
 }
