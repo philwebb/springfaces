@@ -26,14 +26,14 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 
 /**
- * Tests for {@link ImplicitMvcFacesELResolver}.
+ * Tests for {@link ImplicitSpringFacesELResolver}.
  * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ImplicitMvcFacesELResolverTest {
+public class ImplicitSpringFacesELResolverTest {
 
-	private ImplicitMvcFacesELResolver resolver = new ImplicitMvcFacesELResolver();
+	private ImplicitSpringFacesELResolver resolver = new ImplicitSpringFacesELResolver();
 
 	@Mock
 	private SpringFacesContext springFacesContext;

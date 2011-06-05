@@ -5,9 +5,16 @@ import java.util.Map;
 
 import javax.faces.component.UIViewRoot;
 
+import org.springframework.springfaces.mvc.expression.el.SpringFacesModelELResolver;
 import org.springframework.util.Assert;
 
+/**
+ * @see SpringFacesModelELResolver
+ * @author Phillip Webb
+ */
 public class SpringFacesModel extends HashMap<String, Object> {
+
+	// FIXME DC
 
 	private static final long serialVersionUID = 1L;
 

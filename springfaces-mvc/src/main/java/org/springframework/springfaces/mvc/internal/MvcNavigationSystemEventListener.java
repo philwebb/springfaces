@@ -16,6 +16,10 @@ public class MvcNavigationSystemEventListener implements SystemEventListener {
 
 	private static final String KEY = MvcNavigationSystemEventListener.class.getName();
 
+	public boolean isListenerForSource(Object source) {
+		return true;
+	}
+
 	public void processEvent(SystemEvent event) throws AbortProcessingException {
 		if (event instanceof PreRenderComponentEvent) {
 			processEvent((PreRenderComponentEvent) event);
@@ -25,10 +29,6 @@ public class MvcNavigationSystemEventListener implements SystemEventListener {
 	private void processEvent(PreRenderComponentEvent event) throws AbortProcessingException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getAttributes().put(KEY, event);
-	}
-
-	public boolean isListenerForSource(Object source) {
-		return true;
 	}
 
 	/**

@@ -16,6 +16,14 @@ public final class ModelAndViewArtifact {
 		this.model = model;
 	}
 
+	public ModelAndViewArtifact(String artifact, Map<String, Object> model) {
+		this(new ViewArtifact(artifact), model);
+	}
+
+	public ModelAndViewArtifact(String artifact) {
+		this(new ViewArtifact(artifact), null);
+	}
+
 	public ViewArtifact getViewArtifact() {
 		return viewArtifact;
 	}

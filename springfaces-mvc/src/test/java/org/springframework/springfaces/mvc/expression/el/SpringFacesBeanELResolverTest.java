@@ -23,17 +23,17 @@ import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Tests for {@link SpringBeanMvcELResolver}.
+ * Tests for {@link SpringFacesBeanELResolver}.
  * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)
-public class SpringBeanMvcELResolverTest {
+public class SpringFacesBeanELResolverTest {
 
 	@Mock
 	private SpringFacesContext springFacesContext;
 
-	private SpringBeanMvcELResolver resolver = new SpringBeanMvcELResolver();
+	private SpringFacesBeanELResolver resolver = new SpringFacesBeanELResolver();
 
 	private ELContext elContext = new MockELContext();
 

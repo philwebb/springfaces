@@ -18,9 +18,9 @@ import org.springframework.springfaces.mvc.model.SpringFacesModel;
  * 
  * @author Phillip Webb
  */
-public class ImplicitMvcFacesELResolver extends CompositeELResolver {
+public class ImplicitSpringFacesELResolver extends CompositeELResolver {
 
-	public ImplicitMvcFacesELResolver() {
+	public ImplicitSpringFacesELResolver() {
 		add(new SpringFacesContextELResolver());
 		add(new ModelELResolver());
 	}

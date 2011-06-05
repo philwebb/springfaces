@@ -17,13 +17,13 @@ import org.springframework.springfaces.mvc.FacesContextSetter;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 
 /**
- * Tests for {@link SpringFacesMvcModelELResolver}.
+ * Tests for {@link SpringFacesModelELResolver}.
  * 
  * @author Phillip Webb
  */
-public class SpringFacesMvcModelELResolverTest {
+public class SpringFacesModelELResolverTest {
 
-	private SpringFacesMvcModelELResolver resolver = new SpringFacesMvcModelELResolver();
+	private SpringFacesModelELResolver resolver = new SpringFacesModelELResolver();
 
 	@After
 	public void cleanup() {

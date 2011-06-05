@@ -14,7 +14,7 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
  * 
  * @author Phillip Webb
  */
-public class SpringBeanMvcELResolver extends SpringBeanELResolver {
+public class SpringFacesBeanELResolver extends SpringBeanELResolver {
 
 	private static final BeanFactory EMPTY_BEAN_FACTORY = new StaticListableBeanFactory();
 
