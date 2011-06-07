@@ -13,8 +13,6 @@ import javax.faces.view.ViewDeclarationLanguage;
  */
 public final class ViewArtifact implements Serializable {
 
-	// FIXME possibly merge with ModelAndViewArtifact
-
 	private static final long serialVersionUID = 1L;
 
 	private String artifact;

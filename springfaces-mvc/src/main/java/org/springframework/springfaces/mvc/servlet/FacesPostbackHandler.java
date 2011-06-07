@@ -21,6 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import org.springframework.web.servlet.handler.MappedInterceptor;
 
+/**
+ * MVC {@link HandlerAdapter} used to handle JSF postbacks.
+ * 
+ * @see FacesHandlerInterceptor
+ * @see Postback
+ * @author Phillip Webb
+ */
 public class FacesPostbackHandler extends AbstractHandlerMapping implements HandlerAdapter, HandlerMapping, Ordered {
 
 	private static final String DISABLE_ATTRIBUTE = FacesPostbackHandler.class.getName() + ".DISABLE";
@@ -42,12 +49,13 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	/**
 	 * Create a new FacesPostbackHandler.
 	 * @param stateHandler the state handler
+	 * @param originalHandlerLocator used to locate the original handler.
 	 */
 	public FacesPostbackHandler(FacesViewStateHandler stateHandler,
-			FacesPostbackOrginalHandlerLocator orginalHandlerLocator) {
+			FacesPostbackOrginalHandlerLocator originalHandlerLocator) {
 		super();
 		this.stateHandler = stateHandler;
-		this.originalHandlerLocator = orginalHandlerLocator;
+		this.originalHandlerLocator = originalHandlerLocator;
 		setOrder(HIGHEST_PRECEDENCE);
 	}
 
@@ -105,7 +113,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	private Object getOriginalHandler(HttpServletRequest request) {
 		request.setAttribute(DISABLE_ATTRIBUTE, Boolean.TRUE);
 		try {
-			// Change the method to GET to mimic the orginal request
+			// Change the method to GET to mimic the original request
 			request = new HttpServletRequestWrapper(request) {
 				public String getMethod() {
 					return METHOD_GET;
@@ -128,13 +136,11 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			throws Exception {
 		Assert.state(supports(handler), "The specified handler is not supported");
 		ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
-		// FIXME model?
 		SpringFacesContext.getCurrentInstance(true).render(new ModelAndViewArtifact(viewArtifact, null));
 		return null;
 	}
 
 	public long getLastModified(HttpServletRequest request, Object handler) {
-		// FIXME
 		return -1;
 	}
 }

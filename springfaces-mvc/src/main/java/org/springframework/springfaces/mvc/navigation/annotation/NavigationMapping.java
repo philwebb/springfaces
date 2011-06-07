@@ -6,4 +6,7 @@ public @interface NavigationMapping {
 
 	String fromAction() default "";
 
+	// FIXME define this
+	// FIXME write a listener to support it
+
 }

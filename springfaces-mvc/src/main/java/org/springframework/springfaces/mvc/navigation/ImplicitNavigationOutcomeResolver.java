@@ -38,7 +38,8 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 
 	private String resolve(String value) {
 		String destination = value.substring(prefix.length());
-		Assert.hasLength(destination, "The destination must be specified for implicit MVC navigation");
+		Assert.state(StringUtils.hasLength(destination),
+				"The destination must be specified for an implicit MVC navigation prefixed '" + prefix + "'");
 		return destination;
 	}
 

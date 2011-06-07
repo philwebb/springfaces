@@ -16,6 +16,7 @@ import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * MVC {@link HandlerInterceptor} to setup and release a {@link SpringFacesContext} instance.
  * 
  * @see FacesPostbackHandler
+ * @see Postback
  * @author Phillip Webb
  */
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
@@ -46,18 +48,24 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		return true;
 	}
 
+	/**
+	 * Obtain any JSF objects that have not yet been acquired.
+	 */
 	private void obtainFacesObjects() {
 		if (facesContextFactory == null) {
 			facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
 		}
 		if (lifecycle == null) {
+			String lifecycleIdToUse = lifecycleId;
 			LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
 					.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
-			if (lifecycleId == null) {
-				servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+			if (lifecycleIdToUse == null) {
+				lifecycleIdToUse = servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
 			}
-			lifecycle = lifecycleFactory.getLifecycle(lifecycleId == null ? LifecycleFactory.DEFAULT_LIFECYCLE
-					: lifecycleId);
+			if (lifecycleIdToUse == null) {
+				lifecycleIdToUse = LifecycleFactory.DEFAULT_LIFECYCLE;
+			}
+			lifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
 		}
 	}
 
@@ -68,11 +76,6 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		if (context != null) {
 			context.release();
 		}
-	}
-
-	// FIXME DC FacesServlet.LIFECYCLE_ID_ATTR
-	public void setLifecycleId(String lifecycleId) {
-		this.lifecycleId = lifecycleId;
 	}
 
 	/**
@@ -86,6 +89,17 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 		Assert.isInstanceOf(SpringFacesContextImpl.class, springFacesContext, "Unable to access SpringFacesContext ");
 		return (SpringFacesContextImpl) springFacesContext;
+	}
+
+	/**
+	 * Set the lifecycle identifier to use when {@link LifecycleFactory#getLifecycle(String) creating} the JSF
+	 * {@link Lifecycle}. When not specified the <tt>javax.faces.LIFECYCLE_ID</tt> initiation parameter of the
+	 * {@link DispatcherServlet} will be used. If no explicit initialization parameter is set the
+	 * {@link LifecycleFactory#DEFAULT_LIFECYCLE default} lifecycle identifier will be used.
+	 * @param lifecycleId The lifecycle id or <tt>null</tt>
+	 */
+	public void setLifecycleId(String lifecycleId) {
+		this.lifecycleId = lifecycleId;
 	}
 
 	/**
