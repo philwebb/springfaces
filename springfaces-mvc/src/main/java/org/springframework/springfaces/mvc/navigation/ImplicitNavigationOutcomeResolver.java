@@ -22,7 +22,6 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 	}
 
 	private boolean canResolve(String value) {
-
 		return (StringUtils.hasLength(value) && value.startsWith(prefix));
 	}
 

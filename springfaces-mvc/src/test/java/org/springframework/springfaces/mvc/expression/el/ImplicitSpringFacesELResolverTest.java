@@ -70,9 +70,9 @@ public class ImplicitSpringFacesELResolverTest {
 
 	@Test
 	public void shouldGetModel() throws Exception {
-		Map<String, Object> model = new HashMap<String, Object>();
+		SpringFacesModel model = new SpringFacesModel();
 		model.put("key", "value");
-		SpringFacesModel.put(facesContext.getViewRoot(), model);
+		SpringFacesModel.saveInViewScope(facesContext.getViewRoot(), model);
 		Object value = resolver.getValue(context, null, "model");
 		assertTrue(context.isPropertyResolved());
 		assertEquals(model, value);

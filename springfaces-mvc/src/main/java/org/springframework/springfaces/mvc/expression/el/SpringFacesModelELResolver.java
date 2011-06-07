@@ -18,7 +18,7 @@ public class SpringFacesModelELResolver extends AbstractELResolver {
 	@Override
 	protected Object get(String property) {
 		FacesContext context = FacesContext.getCurrentInstance();
-		SpringFacesModel model = (context == null ? null : SpringFacesModel.get(context.getViewRoot()));
+		SpringFacesModel model = (context == null ? null : SpringFacesModel.loadFromViewScope(context.getViewRoot()));
 		if (model != null) {
 			return model.get(property);
 		}

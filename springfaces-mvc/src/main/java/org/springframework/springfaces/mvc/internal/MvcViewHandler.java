@@ -97,7 +97,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
 			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
 			if (rendering.getModel() != null) {
-				SpringFacesModel.put(viewRoot, rendering.getModel());
+				SpringFacesModel.saveInViewScope(viewRoot, new SpringFacesModel(rendering.getModel()));
 			}
 			return viewRoot;
 		}

@@ -26,5 +26,4 @@ public interface DestinationViewResolver {
 	 * @throws Exception if the view cannot be resolved (typically in case of problems creating an actual View object)
 	 */
 	View resolveDestination(Object destination, Locale locale) throws Exception;
-
 }

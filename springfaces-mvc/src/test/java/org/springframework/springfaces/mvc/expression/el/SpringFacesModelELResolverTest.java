@@ -53,9 +53,9 @@ public class SpringFacesModelELResolverTest {
 	@Test
 	public void shouldFindFromModel() throws Exception {
 		setupFacesContext();
-		Map<String, Object> model = new HashMap<String, Object>();
+		SpringFacesModel model = new SpringFacesModel();
 		model.put("key", "value");
-		SpringFacesModel.put(FacesContext.getCurrentInstance().getViewRoot(), model);
+		SpringFacesModel.saveInViewScope(FacesContext.getCurrentInstance().getViewRoot(), model);
 		assertEquals("value", resolver.get("key"));
 	}
 }

@@ -145,7 +145,7 @@ public class MvcViewHandlerTest {
 		UIViewRoot actual = handler.createView(context, "anything");
 		assertSame(viewRoot, actual);
 		verify(delegate).createView(context, "mvc");
-		assertEquals("v", SpringFacesModel.get(viewRoot).get("mk"));
+		assertEquals("v", SpringFacesModel.loadFromViewScope(viewRoot).get("mk"));
 	}
 
 	private UIViewRoot mockUIViewRoot() {

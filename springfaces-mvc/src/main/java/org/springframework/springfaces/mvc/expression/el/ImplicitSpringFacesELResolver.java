@@ -42,7 +42,7 @@ public class ImplicitSpringFacesELResolver extends CompositeELResolver {
 		@Override
 		protected Object get(String property) {
 			if ("model".equals(property) && FacesContext.getCurrentInstance() != null) {
-				return SpringFacesModel.get(FacesContext.getCurrentInstance().getViewRoot());
+				return SpringFacesModel.loadFromViewScope(FacesContext.getCurrentInstance().getViewRoot());
 			}
 			return null;
 		}
