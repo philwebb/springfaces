@@ -129,10 +129,12 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public ViewDeclarationLanguage getViewDeclarationLanguage(FacesContext context, String viewId) {
-		// We need to ensure that views we resolve do not return a VDL. This prevents NoClassDefFoundError for
-		// javax.servlet.jsp.jstl.core.Config
-		if (getDestinationAndModelForViewId(context, viewId) != null) {
-			return null;
+		if (SpringFacesContext.getCurrentInstance() != null) {
+			// We need to ensure that views we resolve do not return a VDL. This prevents NoClassDefFoundError for
+			// javax.servlet.jsp.jstl.core.Config
+			if (getDestinationAndModelForViewId(context, viewId) != null) {
+				return null;
+			}
 		}
 		return super.getViewDeclarationLanguage(context, viewId);
 	}
@@ -222,6 +224,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			this.modelAndView = modelAndView;
 		}
 
+		public ModelAndView getModelAndView() {
+			return modelAndView;
+		}
+
 		@Override
 		public void encodeAll(FacesContext context) throws IOException {
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -231,7 +237,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			} catch (Exception e) {
 				throw new FacesException(e);
 			}
-			super.encodeAll(context);
 		}
 	}
 }
