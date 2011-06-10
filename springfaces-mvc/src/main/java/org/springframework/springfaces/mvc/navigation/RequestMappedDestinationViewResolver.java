@@ -36,7 +36,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
-import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -149,7 +149,7 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 		this.webBindingInitializer = webBindingInitializer;
 	}
 
-	public class RequestMappedView implements View, Bookmarkable {
+	public class RequestMappedView implements View, BookmarkableView {
 
 		private Class<?> handlerType;
 		private Method handlerMethod;

@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
-import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
@@ -175,11 +175,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 			if (view == null) {
 				return null;
 			}
-			Assert.isInstanceOf(Bookmarkable.class, view);
+			Assert.isInstanceOf(BookmarkableView.class, view);
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			try {
-				return ((Bookmarkable) view).getBookmarkUrl(modelAndView.getModel(), request);
-			} catch (IOException e) {
+				return ((BookmarkableView) view).getBookmarkUrl(modelAndView.getModel(), request);
+			} catch (Exception e) {
 				throw new FacesException("IOException creating MVC bookmark", e);
 			}
 		}

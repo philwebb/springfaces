@@ -13,7 +13,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.withSettings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +41,7 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler.NavigationResponseUIViewRoot;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
-import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -268,7 +267,7 @@ public class MvcViewHandlerTest {
 	public void shouldGetResolvableBookmark() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
-		Bookmarkable destination = mock(Bookmarkable.class, withSettings().extraInterfaces(View.class));
+		BookmarkableView destination = mock(BookmarkableView.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
 		given(destination.getBookmarkUrl(anyModel(), any(HttpServletRequest.class))).willReturn("/bookmark");
 		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
@@ -288,7 +287,7 @@ public class MvcViewHandlerTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
 		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("must be an instance of interface " + Bookmarkable.class.getName());
+		thrown.expectMessage("must be an instance of interface " + BookmarkableView.class.getName());
 		handler.getBookmarkableURL(context, viewId, parameters, includeViewParams);
 	}
 
@@ -304,7 +303,7 @@ public class MvcViewHandlerTest {
 	public void shouldRedirectUsingResolvedBookmarkUrl() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
-		Bookmarkable destination = mock(Bookmarkable.class, withSettings().extraInterfaces(View.class));
+		BookmarkableView destination = mock(BookmarkableView.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
 		given(destination.getBookmarkUrl(anyModel(), any(HttpServletRequest.class))).willReturn("/bookmark");
 		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);

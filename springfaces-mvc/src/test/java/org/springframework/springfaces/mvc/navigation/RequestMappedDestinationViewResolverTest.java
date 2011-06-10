@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.springfaces.mvc.FacesContextSetter;
-import org.springframework.springfaces.mvc.servlet.view.Bookmarkable;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +56,7 @@ public class RequestMappedDestinationViewResolverTest {
 		searchCriteria.setPage(10);
 		searchCriteria.setSearchString("test");
 		model.put("searchCriteria", searchCriteria);
-		System.out.println(((Bookmarkable) destination).getBookmarkUrl(model, request));
+		System.out.println(((BookmarkableView) destination).getBookmarkUrl(model, request));
 	}
 
 	// FIXME proper tests
