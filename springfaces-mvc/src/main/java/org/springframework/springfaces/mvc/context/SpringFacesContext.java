@@ -53,10 +53,18 @@ public abstract class SpringFacesContext {
 	 */
 	public abstract Object getHandler();
 
-	// FIXME DC
+	/**
+	 * Render the specified {@link ModelAndViewArtifact} using JSF.
+	 * @param modelAndViewArtifact the artifact to render
+	 * @see #getRendering()
+	 */
 	public abstract void render(ModelAndViewArtifact modelAndViewArtifact);
 
-	// FIXME DC
+	/**
+	 * Return the {@link ModelAndViewArtifact} that is currently being {@link #render rendered} or <tt>null</tt> if no
+	 * Spring Faces MVC request is being rendered.
+	 * @return the {@link ModelAndViewArtifact} being rendered or <tt>null</tt>
+	 */
 	public abstract ModelAndViewArtifact getRendering();
 
 	/**
