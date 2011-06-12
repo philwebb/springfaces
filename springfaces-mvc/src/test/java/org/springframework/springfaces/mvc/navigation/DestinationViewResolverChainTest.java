@@ -42,10 +42,10 @@ public class DestinationViewResolverChainTest {
 		resolvers.add(r1);
 		resolvers.add(r2);
 		resolvers.add(r3);
-		given(r2.resolveDestination(r3, locale)).willReturn(view);
+		given(r2.resolveDestination(destination, locale)).willReturn(view);
 		chain.setResolvers(resolvers);
 		View resolved = chain.resolveDestination(destination, locale);
-		assertSame(resolved, resolved);
+		assertSame(view, resolved);
 		verify(r1).resolveDestination(destination, locale);
 		verify(r3, never()).resolveDestination(resolved, locale);
 	}
