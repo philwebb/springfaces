@@ -36,8 +36,8 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
-import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.AntPathMatcher;
@@ -75,35 +75,41 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 	// FIXME DC
 	// FIXME needs a lot of tidy up
 
-	private static final Set<Class<?>> IGNORED_ANNOTATIONS;
+	/**
+	 * Annotations that are implicitly supported by MVC and hence indicate that a method parameter can be ignored by us.
+	 */
+	private static final Set<Class<?>> IGNORED_METHOD_PARAM_ANNOTATIONS;
 	static {
-		IGNORED_ANNOTATIONS = new LinkedHashSet<Class<?>>();
-		IGNORED_ANNOTATIONS.add(RequestHeader.class);
-		IGNORED_ANNOTATIONS.add(RequestBody.class);
-		IGNORED_ANNOTATIONS.add(CookieValue.class);
-		IGNORED_ANNOTATIONS.add(ModelAttribute.class);
-		IGNORED_ANNOTATIONS.add(Value.class);
+		IGNORED_METHOD_PARAM_ANNOTATIONS = new LinkedHashSet<Class<?>>();
+		IGNORED_METHOD_PARAM_ANNOTATIONS.add(RequestHeader.class);
+		IGNORED_METHOD_PARAM_ANNOTATIONS.add(RequestBody.class);
+		IGNORED_METHOD_PARAM_ANNOTATIONS.add(CookieValue.class);
+		IGNORED_METHOD_PARAM_ANNOTATIONS.add(ModelAttribute.class);
+		IGNORED_METHOD_PARAM_ANNOTATIONS.add(Value.class);
 	}
 
-	private static final Set<Class<?>> IGNORED_TYPES;
+	/**
+	 * Types that are implicitly supported by MVC and hence indicate that a method parameter can be ignored by us.
+	 */
+	private static final Set<Class<?>> IGNORED_METHOD_PARAM_TYPES;
 	static {
-		IGNORED_TYPES = new LinkedHashSet<Class<?>>();
-		IGNORED_TYPES.add(WebRequest.class);
-		IGNORED_TYPES.add(ServletRequest.class);
-		IGNORED_TYPES.add(MultipartRequest.class);
-		IGNORED_TYPES.add(ServletResponse.class);
-		IGNORED_TYPES.add(HttpSession.class);
-		IGNORED_TYPES.add(Principal.class);
-		IGNORED_TYPES.add(Locale.class);
-		IGNORED_TYPES.add(InputStream.class);
-		IGNORED_TYPES.add(Reader.class);
-		IGNORED_TYPES.add(OutputStream.class);
-		IGNORED_TYPES.add(Writer.class);
-		IGNORED_TYPES.add(Map.class);
-		IGNORED_TYPES.add(Model.class);
-		IGNORED_TYPES.add(SessionStatus.class);
-		IGNORED_TYPES.add(HttpEntity.class);
-		IGNORED_TYPES.add(Errors.class);
+		IGNORED_METHOD_PARAM_TYPES = new LinkedHashSet<Class<?>>();
+		IGNORED_METHOD_PARAM_TYPES.add(WebRequest.class);
+		IGNORED_METHOD_PARAM_TYPES.add(ServletRequest.class);
+		IGNORED_METHOD_PARAM_TYPES.add(MultipartRequest.class);
+		IGNORED_METHOD_PARAM_TYPES.add(ServletResponse.class);
+		IGNORED_METHOD_PARAM_TYPES.add(HttpSession.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Principal.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Locale.class);
+		IGNORED_METHOD_PARAM_TYPES.add(InputStream.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Reader.class);
+		IGNORED_METHOD_PARAM_TYPES.add(OutputStream.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Writer.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Map.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Model.class);
+		IGNORED_METHOD_PARAM_TYPES.add(SessionStatus.class);
+		IGNORED_METHOD_PARAM_TYPES.add(HttpEntity.class);
+		IGNORED_METHOD_PARAM_TYPES.add(Errors.class);
 	}
 
 	private PathMatcher pathMatcher = new AntPathMatcher();
@@ -293,14 +299,14 @@ public class RequestMappedDestinationViewResolver implements DestinationViewReso
 
 			// Check for ignored annotations
 			for (Annotation annotation : methodParameter.getParameterAnnotations()) {
-				if (IGNORED_ANNOTATIONS.contains(annotation.getClass())) {
+				if (IGNORED_METHOD_PARAM_ANNOTATIONS.contains(annotation.getClass())) {
 					return true;
 				}
 			}
 
 			// Check for ignored types
 			Class<?> parameterType = methodParameter.getParameterType();
-			for (Class<?> ignoredType : IGNORED_TYPES) {
+			for (Class<?> ignoredType : IGNORED_METHOD_PARAM_TYPES) {
 				if (ignoredType.isAssignableFrom(parameterType)) {
 					return true;
 				}
