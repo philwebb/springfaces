@@ -56,6 +56,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.View;
 
+//FIXME DC
 public class RequestMappedRedirectView implements View, BookmarkableView {
 
 	/**
@@ -100,7 +101,8 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 	private Method handlerMethod;
 	private BookmarkableRedirectView redirectView;
 
-	public RequestMappedRedirectView(RequestMappedRedirectViewContext context, Class<?> handlerType, Method handlerMethod) {
+	public RequestMappedRedirectView(RequestMappedRedirectViewContext context, Class<?> handlerType,
+			Method handlerMethod) {
 		Assert.notNull(context, "Context must not be null");
 		Assert.notNull(handlerMethod, "HandlerMethod must not be null");
 		Assert.notNull(handlerType, "HandlerType must not be null");

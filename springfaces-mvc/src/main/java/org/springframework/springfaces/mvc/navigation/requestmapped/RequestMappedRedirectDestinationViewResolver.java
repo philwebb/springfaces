@@ -65,7 +65,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 				return resolvePrefixedDestination(((String) destination).substring(prefix.length()), locale);
 			} catch (RuntimeException e) {
 				throw new IllegalStateException("Unable to resolve @RequestMapped view from destination '"
-						+ destination + "'", e);
+						+ destination + "' : " + e.getMessage(), e);
 			}
 		}
 		return null;
@@ -137,7 +137,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 					&& (AnnotationUtils.findAnnotation(method, RequestMapping.class) != null)) {
 				Assert.state(requestMappedMethod == null,
 						"More than one @RequestMapping annotated method with the name '" + handlerMethodName
-								+ "' exist in " + handler.getClass());
+								+ "' exists in " + handler.getClass());
 				requestMappedMethod = method;
 			}
 		}
