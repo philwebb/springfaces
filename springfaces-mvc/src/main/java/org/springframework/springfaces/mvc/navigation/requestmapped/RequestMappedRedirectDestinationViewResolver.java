@@ -1,13 +1,14 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
@@ -41,14 +42,16 @@ import org.springframework.web.servlet.View;
  * Resolved destinations will expose model elements by inspecting arguments and annotations of the method in order to
  * create a complete and valid URL (see {@link RequestMappedRedirectView} for details).
  * 
+ * @see RequestMappedRedirectView
+ * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware {
 
 	/**
-	 * A cache of destination name to {@link HandlerTypeAndMethod} to save expensive reflection calls.
+	 * A cache of destination to {@link Method}s to save expensive reflection calls.
 	 */
-	private Map<String, HandlerTypeAndMethod> cachedDestinations = new HashMap<String, HandlerTypeAndMethod>();
+	private Map<String, Method> cachedDestinationMethods = new ConcurrentHashMap<String, Method>();
 
 	/**
 	 * Context details maintained and required for the {@link RequestMappedRedirectView}.
@@ -79,47 +82,55 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * @throws Exception if the view cannot be resolved
 	 */
 	private View resolvePrefixedDestination(String destination, Locale locale) throws Exception {
-		HandlerTypeAndMethod handlerTypeAndMethod = cachedDestinations.get(destination);
-		if (handlerTypeAndMethod == null) {
-			handlerTypeAndMethod = resolveClassAndMethod(destination);
-			cachedDestinations.put(destination, handlerTypeAndMethod);
+		Object handler = resolveDestinationHandler(destination);
+		Method method = cachedDestinationMethods.get(destination);
+		if (method == null) {
+			method = resolveDestinationMethod(handler, destination);
+			cachedDestinationMethods.put(destination, method);
 		}
-		return createView(context, handlerTypeAndMethod.getHandlerType(), handlerTypeAndMethod.getMethod());
+		return createView(context, handler, method);
 	}
 
 	/**
 	 * Factory method used to create the actual view once a handler and method have been resolved. The default
 	 * implementation of this method returns a {@link RequestMappedRedirectView}.
 	 * @param context the {@link RequestMappedRedirectViewContext context} for the created view
-	 * @param handlerType the handler type resolved from the destination
-	 * @param handlerMethod the handler method resolved from the destiantion
+	 * @param handler the handler resolved from the destination
+	 * @param method the handler method resolved from the destination
 	 * @return A view instance
 	 */
-	protected View createView(RequestMappedRedirectViewContext context, Class<?> handlerType, Method handlerMethod) {
-		return new RequestMappedRedirectView(context, handlerType, handlerMethod);
+	protected View createView(RequestMappedRedirectViewContext context, Object handler, Method method) {
+		return new RequestMappedRedirectView(context, handler, method);
+	}
+
+	private Object resolveDestinationHandler(String destination) {
+		int lastDot = destination.lastIndexOf(".");
+		if (lastDot == -1) {
+			Object handler = SpringFacesContext.getCurrentInstance(true).getHandler();
+			Assert.state(handler != null, "Unable to locate SpringFaces MVC handler");
+			return handler;
+		}
+		return applicationContext.getBean(destination.substring(0, lastDot));
 	}
 
 	/**
-	 * Obtain a {@link HandlerTypeAndMethod} for the specified handler.
+	 * Obtain a {@link Method} for the specified destination.
 	 * @param destination the destination (excluding any prefix)
-	 * @return a {@link HandlerTypeAndMethod} resolved from the destination
+	 * @return a {@link Method} resolved from the destination
 	 * @throws IllegalStateException if the destination cannot be resolved
 	 */
-	protected HandlerTypeAndMethod resolveClassAndMethod(String destination) {
-		Object handler;
+	private Method resolveDestinationMethod(Object handler, String destination) {
 		String handlerMethodName;
 		int lastDot = destination.lastIndexOf(".");
 		if (lastDot == -1) {
-			handler = SpringFacesContext.getCurrentInstance(true).getHandler();
 			Assert.state(handler != null, "Unable to locate SpringFaces MVC handler");
 			handlerMethodName = destination;
 		} else {
-			handler = applicationContext.getBean(destination.substring(0, lastDot));
 			handlerMethodName = destination.substring(lastDot + 1);
 		}
 		Assert.state(StringUtils.hasLength(handlerMethodName), "No method name specified as part of destination");
 		Method handlerMethod = getHandlerMethod(handler, handlerMethodName);
-		return new HandlerTypeAndMethod(handler.getClass(), handlerMethod);
+		return handlerMethod;
 	}
 
 	/**
@@ -160,40 +171,60 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 		this.prefix = prefix;
 	}
 
-	// FIXME DC
+	/**
+	 * Set the PathMatcher implementation to use for matching URL paths against registered URL patterns.
+	 * <p>
+	 * Default is {@link org.springframework.util.AntPathMatcher}.
+	 * @param pathMatcher The path matcher
+	 */
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		context.setPathMatcher(pathMatcher);
 	}
 
-	// FIXME DC
-	public void setCustomArgumentResolvers(WebArgumentResolver[] customArgumentResolvers) {
-		context.setCustomArgumentResolvers(customArgumentResolvers);
+	/**
+	 * Set a custom WebArgumentResolvers to use for special method parameter types.
+	 * <p>
+	 * Such a custom WebArgumentResolver will kick in first, having a chance to resolve an argument value before the
+	 * standard argument handling kicks in.
+	 * @param argumentResolver the argument resolver
+	 */
+	public void setCustomArgumentResolver(WebArgumentResolver argumentResolver) {
+		context.setCustomArgumentResolvers(new WebArgumentResolver[] { argumentResolver });
 	}
 
-	// FIXME DC
+	/**
+	 * Set one or more custom WebArgumentResolvers to use for special method parameter types.
+	 * <p>
+	 * Any such custom WebArgumentResolver will kick in first, having a chance to resolve an argument value before the
+	 * standard argument handling kicks in.
+	 * @param argumentResolvers the argument resolvers
+	 */
+	public void setCustomArgumentResolvers(WebArgumentResolver[] argumentResolvers) {
+		context.setCustomArgumentResolvers(argumentResolvers);
+	}
+
+	/**
+	 * Specify a WebBindingInitializer which will apply pre-configured configuration to every DataBinder that this
+	 * controller uses.
+	 * @param webBindingInitializer the web binding initializer
+	 */
 	public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
 		context.setWebBindingInitializer(webBindingInitializer);
 	}
 
 	/**
-	 * Holds a referecne to a class type and method. This object can be cached.
+	 * Set the ParameterNameDiscoverer to use for resolving method parameter names if needed (e.g. for default attribute
+	 * names).
+	 * <p>
+	 * Default is a {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer}.
+	 * @param parameterNameDiscoverer the paramter name discoverer
 	 */
-	private static class HandlerTypeAndMethod {
-		private Class<?> handlerType;
-		private Method method;
+	public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
+		context.setParameterNameDiscoverer(parameterNameDiscoverer);
+	}
 
-		public HandlerTypeAndMethod(Class<?> handlerType, Method method) {
-			super();
-			this.handlerType = handlerType;
-			this.method = method;
-		}
-
-		public Class<?> getHandlerType() {
-			return handlerType;
-		}
-
-		public Method getMethod() {
-			return method;
-		}
+	// FIXME DC + test
+	public void setDispatcherServletPath(String dispatcherServletPath) {
+		context.setDispatcherServletPath(dispatcherServletPath);
 	}
 }

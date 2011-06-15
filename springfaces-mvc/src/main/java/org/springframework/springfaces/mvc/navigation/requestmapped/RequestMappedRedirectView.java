@@ -27,20 +27,21 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.BridgeMethodResolver;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -54,10 +55,48 @@ import org.springframework.web.context.request.FacesWebRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
-import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.AbstractView;
 
-//FIXME DC
-public class RequestMappedRedirectView implements View, BookmarkableView {
+/**
+ * A {@link BookmarkableView} that redirects to a URL built dynamically from {@link RequestMapping} annotated
+ * {@link Controller} methods. URLs are built by inspecting values of the {@link RequestMapping} annotation along with
+ * any method parameters.
+ * <p>
+ * For example, given the following controller:
+ * 
+ * <pre>
+ * @RequestMapping('/hotel')
+ * public class HotelsController {
+ *   @RequestMapping('/search')
+ *   public void search(String s) {
+ *     //...
+ *   }
+ * }
+ * </pre>
+ * 
+ * A <tt>RequestMappedRedirectView</tt> for the <tt>search</tt> method would create the URL
+ * <tt>/springdispatch/hotel/search?s=spring+jsf</tt>.
+ * <p>
+ * Method parameters are resolved against the <tt>model</tt>, in the example above the model contains the entry
+ * <tt>s="spring jsf"</tt>. As well as simple data types, method parameters can also reference any object that
+ * {@link DataBinder} supports. The model will also be referenced when resolving URI path template variables (for
+ * example <tt>/show/{id}</tt>).
+ * <p>
+ * There are several limitations to the types of methods that can be used with this view, namely:
+ * <ul>
+ * <li>The {@link RequestMapping} must contain only a single <tt>value</tt></li>
+ * <li>Paths should not contain wildcards (<tt>"*"</tt>, <tt>"?"</tt>, etc)</li>
+ * <li>Custom {@link InitBinder} annotationed methods of the controller will not be called</li>
+ * </ul>
+ * 
+ * 
+ * @see RequestMappedRedirectDestinationViewResolver
+ * @see RequestMappedRedirectViewContext
+ * @see ReverseDataBinder
+ * 
+ * @author Phillip Webb
+ */
+public class RequestMappedRedirectView implements BookmarkableView {
 
 	/**
 	 * Annotations that are implicitly supported by MVC and hence indicate that a method parameter can be ignored by us.
@@ -96,52 +135,85 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 		IGNORED_METHOD_PARAM_TYPES.add(Errors.class);
 	}
 
+	/**
+	 * Context for the view
+	 */
 	private RequestMappedRedirectViewContext context;
-	private Class<?> handlerType;
-	private Method handlerMethod;
-	private BookmarkableRedirectView redirectView;
 
-	public RequestMappedRedirectView(RequestMappedRedirectViewContext context, Class<?> handlerType,
-			Method handlerMethod) {
+	/**
+	 * The MVC handler being referenced
+	 */
+	private Object handler;
+
+	/**
+	 * The MVC handler method being referenced
+	 */
+	private Method handlerMethod;
+
+	/**
+	 * Create a new {@link RequestMappedRedirectView}.
+	 * @param context the context for redirect view
+	 * @param handler the MVC handler
+	 * @param handlerMethod the MVC handler method that should be used to generate the redirect URL
+	 */
+	public RequestMappedRedirectView(RequestMappedRedirectViewContext context, Object handler, Method handlerMethod) {
 		Assert.notNull(context, "Context must not be null");
 		Assert.notNull(handlerMethod, "HandlerMethod must not be null");
-		Assert.notNull(handlerType, "HandlerType must not be null");
+		Assert.notNull(handler, "Handler must not be null");
 		this.context = context;
-		this.handlerType = handlerType;
+		this.handler = handler;
 		this.handlerMethod = BridgeMethodResolver.findBridgedMethod(handlerMethod);
-		// FIXME get dispather servlet URL
-		this.redirectView = new BookmarkableRedirectView("/spring" + getUrl(), true);
 	}
 
-	private String getUrl() {
+	public String getContentType() {
+		return AbstractView.DEFAULT_CONTENT_TYPE;
+	}
+
+	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		BookmarkableRedirectView delegate = createRedirectDelegate(request);
+		Map<String, Object> relevantModel = getRelevantModel(model);
+		delegate.render(relevantModel, request, response);
+	}
+
+	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {
+		BookmarkableRedirectView delegate = createRedirectDelegate(request);
+		Map<String, Object> relevantModel = getRelevantModel(model);
+		return delegate.getBookmarkUrl(relevantModel, request);
+	}
+
+	/**
+	 * Factory method that creates a {@link BookmarkableRedirectView} used as a delegate to perform the actual redirect.
+	 * @param request the servlet request
+	 * @return a {@link BookmarkableRedirectView}
+	 */
+	private BookmarkableRedirectView createRedirectDelegate(HttpServletRequest request) {
+		String servletPath = context.getDispatcherServletPath();
+		if (servletPath == null) {
+			servletPath = request.getServletPath();
+		}
+		String url = buildRedirectUrl();
+		return new BookmarkableRedirectView(servletPath + url, true);
+	}
+
+	/**
+	 * Builds a redirect URL based on the handler method
+	 * @return a redirect URL
+	 */
+	private String buildRedirectUrl() {
 		RequestMapping methodRequestMapping = AnnotationUtils.findAnnotation(handlerMethod, RequestMapping.class);
-		RequestMapping typeLevelRequestMapping = AnnotationUtils.findAnnotation(handlerType.getClass(),
+		RequestMapping typeLevelRequestMapping = AnnotationUtils.findAnnotation(handler.getClass(),
 				RequestMapping.class);
 		Assert.state(methodRequestMapping != null, "The handler method must declare @RequestMapping annotation");
 		Assert.state(methodRequestMapping.value().length == 1,
 				"@RequestMapping must have a single value to be mapped to a URL");
 		Assert.state(typeLevelRequestMapping == null || typeLevelRequestMapping.value().length == 1,
 				"@RequestMapping on handler class must have a single value to be mapped to a URL");
-
 		String url = typeLevelRequestMapping == null ? "" : typeLevelRequestMapping.value()[0];
 		url = context.getPathMatcher().combine(url, methodRequestMapping.value()[0]);
 		if (!url.startsWith("/")) {
 			url = "/" + url;
 		}
-		// FIXME what about patterns?
 		return url;
-	}
-
-	public String getContentType() {
-		return redirectView.getContentType();
-	}
-
-	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		redirectView.render(getRelevantModel(model), request, response);
-	}
-
-	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {
-		return redirectView.getBookmarkUrl(getRelevantModel(model), request);
 	}
 
 	private Map<String, Object> getRelevantModel(Map<String, ?> model) {
@@ -149,9 +221,7 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 		for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
 			MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
 			if (!isIgnored(methodParameter)) {
-				// FIXME inject?
-				ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
-				methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
+				methodParameter.initParameterNameDiscovery(context.getParameterNameDiscoverer());
 				PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
 				RequestParam requestParam = methodParameter.getParameterAnnotation(RequestParam.class);
 				if (pathVariable != null) {
@@ -191,7 +261,6 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 		if (BeanUtils.isSimpleProperty(methodParameter.getParameterType())) {
 			addIfPossible(relevantModel, name, value);
 		} else {
-			// FIXME do we need to call @InitDataBinder methods
 			WebDataBinder binder = new WebRequestDataBinder(value);
 			WebRequest request = new FacesWebRequest(FacesContext.getCurrentInstance());
 			if (context.getWebBindingInitializer() != null) {
@@ -237,14 +306,12 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 	}
 
 	private boolean isIgnored(MethodParameter methodParameter) {
-
 		// Check for ignored annotations
 		for (Annotation annotation : methodParameter.getParameterAnnotations()) {
 			if (IGNORED_METHOD_PARAM_ANNOTATIONS.contains(annotation.getClass())) {
 				return true;
 			}
 		}
-
 		// Check for ignored types
 		Class<?> parameterType = methodParameter.getParameterType();
 		for (Class<?> ignoredType : IGNORED_METHOD_PARAM_TYPES) {
@@ -252,7 +319,6 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 				return true;
 			}
 		}
-
 		// Check if an argument resolver would deal with the parameter
 		if (context.getCustomArgumentResolvers() != null) {
 			NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
@@ -266,7 +332,6 @@ public class RequestMappedRedirectView implements View, BookmarkableView {
 				}
 			}
 		}
-
 		// Not a parameter that we should ignore
 		return false;
 	}

@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,11 @@ import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.servlet.View;
 
+/**
+ * Tests for {@link RequestMappedRedirectDestinationViewResolver}.
+ * 
+ * @author Phillip Webb
+ */
 public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@Rule
@@ -37,9 +43,9 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@InjectMocks
 	private RequestMappedRedirectDestinationViewResolver resolver = new RequestMappedRedirectDestinationViewResolver() {
-		protected View createView(RequestMappedRedirectViewContext context, Class<?> handlerType, Method handlerMethod) {
+		protected View createView(RequestMappedRedirectViewContext context, Object handler, Method handlerMethod) {
 			createdViewContext = context;
-			createdViewHandlerType = handlerType;
+			createdViewHandler = handler;
 			createdViewHandlerMethod = handlerMethod;
 			return null;
 		};
@@ -55,7 +61,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	protected RequestMappedRedirectViewContext createdViewContext;
 
-	protected Class<?> createdViewHandlerType;
+	protected Object createdViewHandler;
 
 	protected Method createdViewHandlerMethod;
 
@@ -88,7 +94,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
 		resolver.resolveDestination("@method", Locale.UK);
-		assertEquals(ControllerBean.class, createdViewHandlerType);
+		assertEquals(controllerBean, createdViewHandler);
 		assertTrue(createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -104,7 +110,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldResolveAgainstSpecificBean() throws Exception {
 		resolver.resolveDestination("@bean.method", Locale.UK);
-		assertEquals(ControllerBean.class, createdViewHandlerType);
+		assertEquals(controllerBean, createdViewHandler);
 		assertTrue(createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -112,14 +118,14 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	public void shouldSupportCustomPrefix() throws Exception {
 		resolver.setPrefix("resove:");
 		resolver.resolveDestination("resove:bean.method", Locale.UK);
-		assertEquals(ControllerBean.class, createdViewHandlerType);
+		assertEquals(controllerBean, createdViewHandler);
 		assertTrue(createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldResolveWithExoticBeanNames() throws Exception {
 		resolver.resolveDestination("@exotic@be.an.method", Locale.UK);
-		assertEquals(ControllerBean.class, createdViewHandlerType);
+		assertEquals(controllerBean, createdViewHandler);
 		assertTrue(createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -161,13 +167,16 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		WebArgumentResolver[] customArgumentResolvers = new WebArgumentResolver[] { webArgumentResolver };
 		PathMatcher pathMatcher = mock(PathMatcher.class);
 		WebBindingInitializer webBindingInitializer = mock(WebBindingInitializer.class);
+		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
 		resolver.setCustomArgumentResolvers(customArgumentResolvers);
 		resolver.setPathMatcher(pathMatcher);
 		resolver.setWebBindingInitializer(webBindingInitializer);
+		resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
 		resolver.resolveDestination("@method", Locale.UK);
 		assertSame(customArgumentResolvers, createdViewContext.getCustomArgumentResolvers());
 		assertSame(pathMatcher, createdViewContext.getPathMatcher());
 		assertSame(webBindingInitializer, createdViewContext.getWebBindingInitializer());
+		assertSame(parameterNameDiscoverer, createdViewContext.getParameterNameDiscoverer());
 	}
 
 	@Controller
