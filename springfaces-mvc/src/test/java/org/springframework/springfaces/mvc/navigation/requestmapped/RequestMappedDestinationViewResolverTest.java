@@ -19,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.springfaces.mvc.FacesContextSetter;
-import org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedDestinationViewResolver;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +28,8 @@ import org.springframework.web.servlet.View;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RequestMappedDestinationViewResolverTest {
+
+	// FIXME merge into the other test
 
 	@Mock
 	private FacesContext facesContext;
@@ -45,7 +46,7 @@ public class RequestMappedDestinationViewResolverTest {
 
 	@Test
 	public void testname() throws Exception {
-		RequestMappedDestinationViewResolver resolver = new RequestMappedDestinationViewResolver();
+		RequestMappedRedirectDestinationViewResolver resolver = new RequestMappedRedirectDestinationViewResolver();
 		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		Object bean = new HotelsController();
 		given(applicationContext.getBean("bean")).willReturn(bean);

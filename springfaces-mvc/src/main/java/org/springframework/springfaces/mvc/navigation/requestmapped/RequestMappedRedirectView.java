@@ -37,7 +37,6 @@ import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
-import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
@@ -50,7 +49,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.WebArgumentResolver;
-import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.bind.support.WebRequestDataBinder;
 import org.springframework.web.context.request.FacesWebRequest;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -58,7 +56,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.View;
 
-public class RequestMappedView implements View, BookmarkableView {
+public class RequestMappedRedirectView implements View, BookmarkableView {
 
 	/**
 	 * Annotations that are implicitly supported by MVC and hence indicate that a method parameter can be ignored by us.
@@ -97,21 +95,18 @@ public class RequestMappedView implements View, BookmarkableView {
 		IGNORED_METHOD_PARAM_TYPES.add(Errors.class);
 	}
 
+	private RequestMappedRedirectViewContext context;
 	private Class<?> handlerType;
 	private Method handlerMethod;
-	private WebArgumentResolver[] customArgumentResolvers;
 	private BookmarkableRedirectView redirectView;
-	private PathMatcher pathMatcher;
-	private WebBindingInitializer webBindingInitializer;
 
-	public RequestMappedView(Class<?> handlerType, Method handlerMethod, PathMatcher pathMatcher,
-			WebBindingInitializer webBindingInitializer) {
+	public RequestMappedRedirectView(RequestMappedRedirectViewContext context, Class<?> handlerType, Method handlerMethod) {
+		Assert.notNull(context, "Context must not be null");
 		Assert.notNull(handlerMethod, "HandlerMethod must not be null");
 		Assert.notNull(handlerType, "HandlerType must not be null");
+		this.context = context;
 		this.handlerType = handlerType;
 		this.handlerMethod = BridgeMethodResolver.findBridgedMethod(handlerMethod);
-		this.pathMatcher = pathMatcher;
-		this.webBindingInitializer = webBindingInitializer;
 		// FIXME get dispather servlet URL
 		this.redirectView = new BookmarkableRedirectView("/spring" + getUrl(), true);
 	}
@@ -127,7 +122,7 @@ public class RequestMappedView implements View, BookmarkableView {
 				"@RequestMapping on handler class must have a single value to be mapped to a URL");
 
 		String url = typeLevelRequestMapping == null ? "" : typeLevelRequestMapping.value()[0];
-		url = pathMatcher.combine(url, methodRequestMapping.value()[0]);
+		url = context.getPathMatcher().combine(url, methodRequestMapping.value()[0]);
 		if (!url.startsWith("/")) {
 			url = "/" + url;
 		}
@@ -197,8 +192,8 @@ public class RequestMappedView implements View, BookmarkableView {
 			// FIXME do we need to call @InitDataBinder methods
 			WebDataBinder binder = new WebRequestDataBinder(value);
 			WebRequest request = new FacesWebRequest(FacesContext.getCurrentInstance());
-			if (webBindingInitializer != null) {
-				webBindingInitializer.initBinder(binder, request);
+			if (context.getWebBindingInitializer() != null) {
+				context.getWebBindingInitializer().initBinder(binder, request);
 			}
 			ReverseDataBinder reverseBinder = new ReverseDataBinder(binder);
 			PropertyValues propertyValues = reverseBinder.reverseBind();
@@ -257,9 +252,9 @@ public class RequestMappedView implements View, BookmarkableView {
 		}
 
 		// Check if an argument resolver would deal with the parameter
-		if (customArgumentResolvers != null) {
+		if (context.getCustomArgumentResolvers() != null) {
 			NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
-			for (WebArgumentResolver resolver : customArgumentResolvers) {
+			for (WebArgumentResolver resolver : context.getCustomArgumentResolvers()) {
 				try {
 					if (resolver.resolveArgument(methodParameter, webRequest) != WebArgumentResolver.UNRESOLVED) {
 						return true;
