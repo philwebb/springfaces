@@ -26,6 +26,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.navigation.requestmapped.filter.AnnotationMethodParameterFilter;
+import org.springframework.springfaces.mvc.navigation.requestmapped.filter.MethodParameterFilter;
 import org.springframework.springfaces.mvc.navigation.requestmapped.filter.MethodParameterFilterChain;
 import org.springframework.springfaces.mvc.navigation.requestmapped.filter.TypeMethodParameterFilter;
 import org.springframework.springfaces.mvc.navigation.requestmapped.filter.WebArgumentResolverMethodParameterFilter;
@@ -47,11 +48,25 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
 
+/**
+ * A builder class that can be used to create a model containing items that are relevant to the parameters of a handler
+ * method.
+ * 
+ * @see #build(NativeWebRequest, Map)
+ * 
+ * @author Phillip Webb
+ */
 public class RequestMappedRedirectViewModelBuilder {
 
+	/**
+	 * Annotations that are handled natively my MVC and hence should be filtered.
+	 */
 	public static final AnnotationMethodParameterFilter ANNOTAION_FILTER = new AnnotationMethodParameterFilter(
 			RequestHeader.class, RequestBody.class, CookieValue.class, ModelAttribute.class, Value.class);
 
+	/**
+	 * Types that are handled natively my MVC and hence should be filtered.
+	 */
 	public static final TypeMethodParameterFilter TYPE_FILTER = new TypeMethodParameterFilter(WebRequest.class,
 			ServletRequest.class, MultipartRequest.class, ServletResponse.class, HttpSession.class, Principal.class,
 			Locale.class, InputStream.class, Reader.class, OutputStream.class, Writer.class, Map.class, Model.class,
@@ -61,7 +76,10 @@ public class RequestMappedRedirectViewModelBuilder {
 
 	private Method handlerMethod;
 
-	private MethodParameterFilterChain methodParameterFilter;
+	/**
+	 * The complete set of filters that will be applied to the handler method parameters.
+	 */
+	private MethodParameterFilter methodParameterFilter;
 
 	/**
 	 * Create a new {@link RequestMappedRedirectViewModelBuilder}.
@@ -78,13 +96,19 @@ public class RequestMappedRedirectViewModelBuilder {
 	}
 
 	/**
-	 * Build a model form the specified source. The resulting model will be relevant to the parameters of the handler
-	 * method.
-	 * @param source
-	 * @return
+	 * Build a model form the specified source. The resulting model contains the elements from the source that are
+	 * relevant to the parameters of the handler method. The following methods will be used to find items from source:
+	 * <ul>
+	 * <li>The name of the parameter (specified by an annotation or generated) will be used as the key to get an element
+	 * from the source.</li>
+	 * <li>The source will be searched for any values that are an instance of the parameter types. When this method is
+	 * used the model must contain only a single entry of each type.</li>
+	 * <ul>
+	 * @param request the current native web request
+	 * @param source a map containing the source of items to add to the model
+	 * @return a model containing items relevant to the handler method parameters.
 	 */
-	// FIXME DC by name falling back to type
-	public Map<String, Object> buildModel(NativeWebRequest request, Map<String, ?> source) {
+	public Map<String, Object> build(NativeWebRequest request, Map<String, ?> source) {
 		ParameterNameDiscoverer parameterNameDiscoverer = context.getParameterNameDiscoverer();
 		if (parameterNameDiscoverer == null) {
 			parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();

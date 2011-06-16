@@ -18,10 +18,12 @@ import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.FacesWebRequest;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.view.AbstractView;
+import org.springframework.web.util.UriTemplate;
 
 /**
  * A {@link BookmarkableView} that redirects to a URL built dynamically from {@link RequestMapping} annotated
@@ -105,16 +107,16 @@ public class RequestMappedRedirectView implements BookmarkableView {
 	}
 
 	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String url = buildRedirectUrl(request);
 		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
-		Map<String, ?> relevantModel = getRelevantModel(webRequest, model);
+		String url = buildRedirectUrl(request);
+		Map<String, ?> relevantModel = getRelevantModel(webRequest, url, model);
 		createDelegateRedirector(url).render(relevantModel, request, response);
 	}
 
 	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws Exception {
-		String url = buildRedirectUrl(request);
 		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
-		Map<String, ?> relevantModel = getRelevantModel(webRequest, model);
+		String url = buildRedirectUrl(request);
+		Map<String, ?> relevantModel = getRelevantModel(webRequest, url, model);
 		return createDelegateRedirector(url).getBookmarkUrl(relevantModel, request);
 	}
 
@@ -168,7 +170,27 @@ public class RequestMappedRedirectView implements BookmarkableView {
 	 * @param sourceModel the source model
 	 * @return relevant model items
 	 */
-	protected Map<String, ?> getRelevantModel(NativeWebRequest request, Map<String, ?> sourceModel) {
-		return modelBuilder.buildModel(request, sourceModel);
+	protected Map<String, ?> getRelevantModel(NativeWebRequest request, String url, Map<String, ?> sourceModel) {
+		Map<String, Object> model = modelBuilder.build(request, sourceModel);
+		addUriTemplateParameters(model, url, sourceModel);
+		return model;
+	}
+
+	/**
+	 * Add to the model any URI template variable that have not been covered by {@link PathVariable} annotated method
+	 * parameters.
+	 * @param model the model to add item into
+	 * @param url the URL
+	 * @param sourceModel the source model
+	 */
+	private void addUriTemplateParameters(Map<String, Object> model, String url, Map<String, ?> sourceModel) {
+		UriTemplate uriTemplate = new UriTemplate(url);
+		for (String name : uriTemplate.getVariableNames()) {
+			if (!model.containsKey(name)) {
+				Assert.state(sourceModel.containsKey(name), "Unable to find URL template variable '" + name
+						+ "' in source model");
+				model.put(name, sourceModel.get(name));
+			}
+		}
 	}
 }

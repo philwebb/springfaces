@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +110,7 @@ public class RequestMappedRedirectViewTest {
 	public void shouldRenderMethodMapping() throws Exception {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
 		view.render(model, request, response);
-		assertEquals("/dispatcher/method", url);
+		assertEquals("/context/dispatcher/method", url);
 	}
 
 	@Test
@@ -118,7 +119,7 @@ public class RequestMappedRedirectViewTest {
 		handlerMethod = ReflectionUtils.findMethod(TypeMappedHandler.class, "method");
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
 		view.render(model, request, response);
-		assertEquals("/dispatcher/type/method", url);
+		assertEquals("/context/dispatcher/type/method", url);
 	}
 
 	@Test
@@ -126,7 +127,7 @@ public class RequestMappedRedirectViewTest {
 		given(context.getDispatcherServletPath()).willReturn("customdispatcher");
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
 		view.render(model, request, response);
-		assertEquals("/customdispatcher/method", url);
+		assertEquals("/context/customdispatcher/method", url);
 	}
 
 	@Test
@@ -158,11 +159,32 @@ public class RequestMappedRedirectViewTest {
 	}
 
 	@Test
+	public void shouldRespectPathVariables() throws Exception {
+		handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
+		model.put("one", 1);
+		model.put("two", 2);
+		model.put("three", 3);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
+		view.render(model, request, response);
+		assertEquals("/context/dispatcher/method/1/2/3", url);
+	}
+
+	@Test
+	public void shouldFailIfMissingPathVariable() throws Exception {
+		handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
+		model.put("one", 1);
+		model.put("three", 3);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Unable to find URL template variable 'two' in source model");
+		view.render(model, request, response);
+	}
+
+	@Test
 	public void shouldBookmarkMethodMapping() throws Exception {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
 		String url = view.getBookmarkUrl(model, request);
-		assertEquals("/dispatcher/method", url);
-		assertEquals(this.url, url);
+		assertEquals("/context/dispatcher/method", url);
 	}
 
 	@Test
@@ -181,18 +203,11 @@ public class RequestMappedRedirectViewTest {
 
 		@Override
 		protected BookmarkableView createDelegateRedirector(final String url) {
-			RequestMappedRedirectViewTest.this.url = url;
-			return new BookmarkableView() {
-				public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
-						throws Exception {
-				}
-
-				public String getContentType() {
-					return null;
-				}
-
-				public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws Exception {
-					return url;
+			return new BookmarkableRedirectView(url, true) {
+				@Override
+				protected void sendRedirect(HttpServletRequest request, HttpServletResponse response, String targetUrl,
+						boolean http10Compatible) throws IOException {
+					RequestMappedRedirectViewTest.this.url = targetUrl;
 				}
 			};
 		}
@@ -209,6 +224,10 @@ public class RequestMappedRedirectViewTest {
 
 		@RequestMapping({ "/method", "/another" })
 		public void multiple() {
+		}
+
+		@RequestMapping("/method/{one}/{two}/{three}")
+		public void withPathVariables() {
 		}
 	}
 
