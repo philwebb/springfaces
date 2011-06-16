@@ -163,6 +163,6 @@ public class RequestMappedRedirectView implements BookmarkableView {
 	 * @return relevant model items
 	 */
 	protected Map<String, ?> getRelevantModel(Map<String, ?> model) {
-		return modelBuilder.getRelevantModel(model);
+		return modelBuilder.buildModel(model);
 	}
 }
