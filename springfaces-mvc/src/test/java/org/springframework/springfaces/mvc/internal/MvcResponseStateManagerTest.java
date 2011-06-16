@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import javax.faces.context.FacesContext;
 import javax.faces.render.ResponseStateManager;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,11 @@ public class MvcResponseStateManagerTest {
 	@Before
 	public void setup() {
 		stateManager = new MvcResponseStateManager(delegate, stateHandler);
+	}
+
+	@After
+	public void cleanup() {
+		SpringFacesContextSetter.setCurrentInstance(null);
 	}
 
 	@Test

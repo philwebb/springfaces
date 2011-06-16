@@ -3,6 +3,7 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +19,8 @@ import org.springframework.util.PathMatcher;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.FacesWebRequest;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
@@ -103,13 +106,15 @@ public class RequestMappedRedirectView implements BookmarkableView {
 
 	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String url = buildRedirectUrl(request);
-		Map<String, ?> relevantModel = getRelevantModel(model);
+		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
+		Map<String, ?> relevantModel = getRelevantModel(webRequest, model);
 		createDelegateRedirector(url).render(relevantModel, request, response);
 	}
 
 	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws Exception {
 		String url = buildRedirectUrl(request);
-		Map<String, ?> relevantModel = getRelevantModel(model);
+		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
+		Map<String, ?> relevantModel = getRelevantModel(webRequest, model);
 		return createDelegateRedirector(url).getBookmarkUrl(relevantModel, request);
 	}
 
@@ -159,10 +164,11 @@ public class RequestMappedRedirectView implements BookmarkableView {
 	/**
 	 * Extract the relevant items from the source model. The default implementation delegates to
 	 * {@link RequestMappedRedirectViewModelBuilder}.
-	 * @param model the source model
+	 * @param request the current request
+	 * @param sourceModel the source model
 	 * @return relevant model items
 	 */
-	protected Map<String, ?> getRelevantModel(Map<String, ?> model) {
-		return modelBuilder.buildModel(model);
+	protected Map<String, ?> getRelevantModel(NativeWebRequest request, Map<String, ?> sourceModel) {
+		return modelBuilder.buildModel(request, sourceModel);
 	}
 }

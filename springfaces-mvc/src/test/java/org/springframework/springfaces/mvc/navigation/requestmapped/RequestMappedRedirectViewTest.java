@@ -3,14 +3,18 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,6 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.springfaces.mvc.FacesContextSetter;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.stereotype.Controller;
@@ -60,6 +65,17 @@ public class RequestMappedRedirectViewTest {
 		given(request.getContextPath()).willReturn("/context");
 		given(request.getServletPath()).willReturn("/dispatcher");
 		given(request.getPathInfo()).willReturn("/pathinfo");
+		FacesContext facesContext = mock(FacesContext.class);
+		ExternalContext externalContext = mock(ExternalContext.class);
+		given(facesContext.getExternalContext()).willReturn(externalContext);
+		given(externalContext.getRequest()).willReturn(request);
+		given(externalContext.getResponse()).willReturn(response);
+		FacesContextSetter.setCurrentInstance(facesContext);
+	}
+
+	@After
+	public void cleanup() {
+		FacesContextSetter.setCurrentInstance(null);
 	}
 
 	@Test

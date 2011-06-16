@@ -4,15 +4,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.security.Principal;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletRequest;
@@ -28,6 +25,10 @@ import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
+import org.springframework.springfaces.mvc.navigation.requestmapped.filter.AnnotationMethodParameterFilter;
+import org.springframework.springfaces.mvc.navigation.requestmapped.filter.MethodParameterFilterChain;
+import org.springframework.springfaces.mvc.navigation.requestmapped.filter.TypeMethodParameterFilter;
+import org.springframework.springfaces.mvc.navigation.requestmapped.filter.WebArgumentResolverMethodParameterFilter;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -40,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebRequestDataBinder;
 import org.springframework.web.context.request.FacesWebRequest;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -49,46 +49,19 @@ import org.springframework.web.multipart.MultipartRequest;
 
 public class RequestMappedRedirectViewModelBuilder {
 
-	/**
-	 * Annotations that are implicitly supported by MVC and hence can be ignored.
-	 */
-	private static final Set<Class<?>> IGNORED_METHOD_PARAM_ANNOTATIONS;
-	static {
-		IGNORED_METHOD_PARAM_ANNOTATIONS = new LinkedHashSet<Class<?>>();
-		IGNORED_METHOD_PARAM_ANNOTATIONS.add(RequestHeader.class);
-		IGNORED_METHOD_PARAM_ANNOTATIONS.add(RequestBody.class);
-		IGNORED_METHOD_PARAM_ANNOTATIONS.add(CookieValue.class);
-		IGNORED_METHOD_PARAM_ANNOTATIONS.add(ModelAttribute.class);
-		IGNORED_METHOD_PARAM_ANNOTATIONS.add(Value.class);
-	}
+	public static final AnnotationMethodParameterFilter ANNOTAION_FILTER = new AnnotationMethodParameterFilter(
+			RequestHeader.class, RequestBody.class, CookieValue.class, ModelAttribute.class, Value.class);
 
-	/**
-	 * Types that are implicitly supported by MVC and hence can be ignored.
-	 */
-	private static final Set<Class<?>> IGNORED_METHOD_PARAM_TYPES;
-	static {
-		IGNORED_METHOD_PARAM_TYPES = new LinkedHashSet<Class<?>>();
-		IGNORED_METHOD_PARAM_TYPES.add(WebRequest.class);
-		IGNORED_METHOD_PARAM_TYPES.add(ServletRequest.class);
-		IGNORED_METHOD_PARAM_TYPES.add(MultipartRequest.class);
-		IGNORED_METHOD_PARAM_TYPES.add(ServletResponse.class);
-		IGNORED_METHOD_PARAM_TYPES.add(HttpSession.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Principal.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Locale.class);
-		IGNORED_METHOD_PARAM_TYPES.add(InputStream.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Reader.class);
-		IGNORED_METHOD_PARAM_TYPES.add(OutputStream.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Writer.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Map.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Model.class);
-		IGNORED_METHOD_PARAM_TYPES.add(SessionStatus.class);
-		IGNORED_METHOD_PARAM_TYPES.add(HttpEntity.class);
-		IGNORED_METHOD_PARAM_TYPES.add(Errors.class);
-	}
+	public static final TypeMethodParameterFilter TYPE_FILTER = new TypeMethodParameterFilter(WebRequest.class,
+			ServletRequest.class, MultipartRequest.class, ServletResponse.class, HttpSession.class, Principal.class,
+			Locale.class, InputStream.class, Reader.class, OutputStream.class, Writer.class, Map.class, Model.class,
+			SessionStatus.class, HttpEntity.class, Errors.class);
 
 	private RequestMappedRedirectViewContext context;
 
 	private Method handlerMethod;
+
+	private MethodParameterFilterChain methodParameterFilter;
 
 	/**
 	 * Create a new {@link RequestMappedRedirectViewModelBuilder}.
@@ -100,6 +73,8 @@ public class RequestMappedRedirectViewModelBuilder {
 		Assert.notNull(handlerMethod, "HandlerMethod must not be null");
 		this.context = context;
 		this.handlerMethod = handlerMethod;
+		this.methodParameterFilter = new MethodParameterFilterChain(ANNOTAION_FILTER, TYPE_FILTER,
+				new WebArgumentResolverMethodParameterFilter(context.getCustomArgumentResolvers()));
 	}
 
 	/**
@@ -109,7 +84,7 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * @return
 	 */
 	// FIXME DC by name falling back to type
-	public Map<String, Object> buildModel(Map<String, ?> source) {
+	public Map<String, Object> buildModel(NativeWebRequest request, Map<String, ?> source) {
 		ParameterNameDiscoverer parameterNameDiscoverer = context.getParameterNameDiscoverer();
 		if (parameterNameDiscoverer == null) {
 			parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
@@ -117,7 +92,7 @@ public class RequestMappedRedirectViewModelBuilder {
 		Map<String, Object> model = new HashMap<String, Object>();
 		for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
 			MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
-			if (!isIgnored(methodParameter)) {
+			if (!isIgnored(request, methodParameter)) {
 				methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
 				PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
 				RequestParam requestParam = methodParameter.getParameterAnnotation(RequestParam.class);
@@ -131,44 +106,8 @@ public class RequestMappedRedirectViewModelBuilder {
 		return model;
 	}
 
-	private boolean isIgnored(MethodParameter methodParameter) {
-
-		return false;
-	}
-
-	private boolean isIgnoredAnnotation(MethodParameter methodParameter) {
-		for (Annotation annotation : methodParameter.getParameterAnnotations()) {
-			if (IGNORED_METHOD_PARAM_ANNOTATIONS.contains(annotation.getClass())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isIgnoredType(MethodParameter methodParameter) {
-		Class<?> parameterType = methodParameter.getParameterType();
-		for (Class<?> ignoredType : IGNORED_METHOD_PARAM_TYPES) {
-			if (ignoredType.isAssignableFrom(parameterType)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean isCustomResolved(MethodParameter methodParameter) {
-		if (context.getCustomArgumentResolvers() != null) {
-			NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
-			for (WebArgumentResolver resolver : context.getCustomArgumentResolvers()) {
-				try {
-					if (resolver.resolveArgument(methodParameter, webRequest) != WebArgumentResolver.UNRESOLVED) {
-						return true;
-					}
-				} catch (Exception e) {
-					throw new IllegalStateException(e);
-				}
-			}
-		}
-		return false;
+	protected boolean isIgnored(NativeWebRequest request, MethodParameter methodParameter) {
+		return methodParameterFilter.isFiltered(request, methodParameter);
 	}
 
 	private void addToPathVariableModel(Map<String, Object> model, MethodParameter methodParameter,
