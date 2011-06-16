@@ -36,7 +36,8 @@ public class RequestMappedRedirectViewTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private RequestMappedRedirectViewContext context = new RequestMappedRedirectViewContext();
+	@Mock
+	private RequestMappedRedirectViewContext context;
 
 	private Object handler;
 
@@ -106,7 +107,7 @@ public class RequestMappedRedirectViewTest {
 
 	@Test
 	public void shouldRenderSpecificDispatcherPath() throws Exception {
-		context.setDispatcherServletPath("customdispatcher");
+		given(context.getDispatcherServletPath()).willReturn("customdispatcher");
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
 		view.render(model, request, response);
 		assertEquals("/customdispatcher/method", url);

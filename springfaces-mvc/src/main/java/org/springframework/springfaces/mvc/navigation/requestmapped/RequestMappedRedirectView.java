@@ -12,7 +12,9 @@ import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
 import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -132,7 +134,12 @@ public class RequestMappedRedirectView implements BookmarkableView {
 		if (typeLevelRequestMapping != null) {
 			url += typeLevelRequestMapping.value()[0];
 		}
-		url = context.getPathMatcher().combine(url, methodRequestMapping.value()[0]);
+
+		PathMatcher pathMatcher = context.getPathMatcher();
+		if (pathMatcher == null) {
+			pathMatcher = new AntPathMatcher();
+		}
+		url = pathMatcher.combine(url, methodRequestMapping.value()[0]);
 		if (!url.startsWith("/")) {
 			url = "/" + url;
 		}

@@ -172,11 +172,13 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		resolver.setPathMatcher(pathMatcher);
 		resolver.setWebBindingInitializer(webBindingInitializer);
 		resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
+		resolver.setDispatcherServletPath("/cdp");
 		resolver.resolveDestination("@method", Locale.UK);
 		assertSame(customArgumentResolvers, createdViewContext.getCustomArgumentResolvers());
 		assertSame(pathMatcher, createdViewContext.getPathMatcher());
 		assertSame(webBindingInitializer, createdViewContext.getWebBindingInitializer());
 		assertSame(parameterNameDiscoverer, createdViewContext.getParameterNameDiscoverer());
+		assertEquals("/cdp", createdViewContext.getDispatcherServletPath());
 	}
 
 	@Controller

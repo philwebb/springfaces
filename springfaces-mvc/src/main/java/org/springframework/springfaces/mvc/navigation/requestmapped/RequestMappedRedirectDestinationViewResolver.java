@@ -5,6 +5,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -46,17 +48,23 @@ import org.springframework.web.servlet.View;
  * 
  * @author Phillip Webb
  */
-public class RequestMappedRedirectDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware {
+public class RequestMappedRedirectDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware,
+		RequestMappedRedirectViewContext {
 
 	/**
 	 * A cache of destination to {@link Method}s to save expensive reflection calls.
 	 */
 	private Map<String, Method> cachedDestinationMethods = new ConcurrentHashMap<String, Method>();
 
-	/**
-	 * Context details maintained and required for the {@link RequestMappedRedirectView}.
-	 */
-	private RequestMappedRedirectViewContext context = new RequestMappedRedirectViewContext();
+	private String dispatcherServletPath;
+
+	private PathMatcher pathMatcher;
+
+	private WebBindingInitializer webBindingInitializer;
+
+	private WebArgumentResolver[] customArgumentResolvers;
+
+	private ParameterNameDiscoverer parameterNameDiscoverer;
 
 	private ApplicationContext applicationContext;
 
@@ -88,7 +96,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 			method = resolveDestinationMethod(handler, destination);
 			cachedDestinationMethods.put(destination, method);
 		}
-		return createView(context, handler, method);
+		return createView(this, handler, method);
 	}
 
 	/**
@@ -171,14 +179,16 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 		this.prefix = prefix;
 	}
 
+	public PathMatcher getPathMatcher() {
+		return this.pathMatcher;
+	}
+
 	/**
-	 * Set the PathMatcher implementation to use for matching URL paths against registered URL patterns.
-	 * <p>
-	 * Default is {@link org.springframework.util.AntPathMatcher}.
+	 * Set the PathMatcher implementation to use for combining URL paths from registered URL patterns.
 	 * @param pathMatcher The path matcher
 	 */
 	public void setPathMatcher(PathMatcher pathMatcher) {
-		context.setPathMatcher(pathMatcher);
+		this.pathMatcher = pathMatcher;
 	}
 
 	/**
@@ -189,7 +199,11 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * @param argumentResolver the argument resolver
 	 */
 	public void setCustomArgumentResolver(WebArgumentResolver argumentResolver) {
-		context.setCustomArgumentResolvers(new WebArgumentResolver[] { argumentResolver });
+		this.customArgumentResolvers = (new WebArgumentResolver[] { argumentResolver });
+	}
+
+	public WebArgumentResolver[] getCustomArgumentResolvers() {
+		return this.customArgumentResolvers;
 	}
 
 	/**
@@ -200,16 +214,23 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * @param argumentResolvers the argument resolvers
 	 */
 	public void setCustomArgumentResolvers(WebArgumentResolver[] argumentResolvers) {
-		context.setCustomArgumentResolvers(argumentResolvers);
+		this.customArgumentResolvers = argumentResolvers;
+	}
+
+	public WebBindingInitializer getWebBindingInitializer() {
+		return this.webBindingInitializer;
 	}
 
 	/**
-	 * Specify a WebBindingInitializer which will apply pre-configured configuration to every DataBinder that this
-	 * controller uses.
+	 * Specify a WebBindingInitializer which will apply pre-configured configuration to every DataBinder that is used.
 	 * @param webBindingInitializer the web binding initializer
 	 */
 	public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
-		context.setWebBindingInitializer(webBindingInitializer);
+		this.webBindingInitializer = webBindingInitializer;
+	}
+
+	public ParameterNameDiscoverer getParameterNameDiscoverer() {
+		return this.parameterNameDiscoverer;
 	}
 
 	/**
@@ -220,11 +241,20 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * @param parameterNameDiscoverer the paramter name discoverer
 	 */
 	public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
-		context.setParameterNameDiscoverer(parameterNameDiscoverer);
+		this.parameterNameDiscoverer = parameterNameDiscoverer;
 	}
 
-	// FIXME DC + test
+	public String getDispatcherServletPath() {
+		return dispatcherServletPath;
+	}
+
+	/**
+	 * Set the servlet path that should be used to access the dispatcher servlet. This path should start with a "/"
+	 * character and include the path to the dipatcher servlet (but not any extra path information or a query string).
+	 * When not specified the path will taken from current HTTP {@link HttpServletRequest#getServletPath() request}.
+	 * @param dispatcherServletPath the dispatcher servlet path
+	 */
 	public void setDispatcherServletPath(String dispatcherServletPath) {
-		context.setDispatcherServletPath(dispatcherServletPath);
+		this.dispatcherServletPath = dispatcherServletPath;
 	}
 }

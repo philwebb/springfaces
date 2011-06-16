@@ -23,7 +23,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.ui.Model;
@@ -93,11 +95,15 @@ class RequestMappedRedirectViewModelBuilder {
 	}
 
 	public Map<String, Object> getRelevantModel(Map<String, ?> model) {
+		ParameterNameDiscoverer parameterNameDiscoverer = context.getParameterNameDiscoverer();
+		if (parameterNameDiscoverer == null) {
+			parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
+		}
 		Map<String, Object> relevantModel = new HashMap<String, Object>();
 		for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
 			MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
 			if (!isIgnored(methodParameter)) {
-				methodParameter.initParameterNameDiscovery(context.getParameterNameDiscoverer());
+				methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
 				PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
 				RequestParam requestParam = methodParameter.getParameterAnnotation(RequestParam.class);
 				if (pathVariable != null) {
