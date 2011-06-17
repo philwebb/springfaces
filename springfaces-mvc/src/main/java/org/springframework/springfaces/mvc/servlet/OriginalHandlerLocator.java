@@ -8,10 +8,10 @@ import org.springframework.web.servlet.HandlerExecutionChain;
  * Strategy interface used by {@link FacesPostbackHandler} to obtain the handler that would have processed the request
  * if it were not a postback.
  * 
- * @see DefaultFacesConfig
+ * @see DefaultDestinationViewResolver
  * @author Phillip Webb
  */
-public interface FacesPostbackOrginalHandlerLocator {
+public interface OriginalHandlerLocator {
 
 	/**
 	 * Return the handler that would have processed the request if it were not a postback.
@@ -19,5 +19,5 @@ public interface FacesPostbackOrginalHandlerLocator {
 	 * @return the handler execution chain
 	 * @throws Exception if the handler cannot be obtained
 	 */
-	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
+	HandlerExecutionChain getOriginalHandler(HttpServletRequest request) throws Exception;
 }

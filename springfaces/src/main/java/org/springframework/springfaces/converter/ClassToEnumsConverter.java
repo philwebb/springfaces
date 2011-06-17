@@ -31,8 +31,8 @@ public class ClassToEnumsConverter implements ConditionalGenericConverter {
 		if (targetType.isMap()) {
 			return false;
 		}
-		Class<?> elementType = targetType.getElementType();
-		return elementType != null && Enum.class.isAssignableFrom(elementType)
+		TypeDescriptor elementType = targetType.getElementTypeDescriptor();
+		return elementType != null && Enum.class.isAssignableFrom(elementType.getType())
 				&& Class.class.equals(sourceType.getType());
 	}
 
@@ -41,7 +41,7 @@ public class ClassToEnumsConverter implements ConditionalGenericConverter {
 		if (source == null) {
 			return null;
 		}
-		Class elementType = targetType.getElementType();
+		Class elementType = targetType.getElementTypeDescriptor().getType();
 		Set enumSet = EnumSet.allOf(elementType);
 		if (targetType.isArray()) {
 			Object[] target = (Object[]) Array.newInstance(elementType, enumSet.size());

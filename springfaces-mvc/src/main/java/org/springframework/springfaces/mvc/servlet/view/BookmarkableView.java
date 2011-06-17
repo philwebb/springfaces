@@ -20,7 +20,6 @@ public interface BookmarkableView extends View {
 	 * @param model Map with name Strings as keys and corresponding model objects as values (Map can also be
 	 * <code>null</code> in case of empty model)
 	 * @param request current HTTP request
-	 * @param response HTTP response we are building
 	 * @return a bookmark URL
 	 * @throws Exception if rendering failed
 	 */

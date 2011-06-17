@@ -6,16 +6,16 @@ import org.springframework.util.StringUtils;
 /**
  * A {@link NavigationOutcomeResolver} to handle implicit MVC navigation outcomes. Implicit outcomes can be embedded
  * within a JSF page (if JSF implicit navigation is enabled) or used within standard JSF navigation rules. Outcomes are
- * prefixed in order to distinguish them from regular JSF outcomes. The default prefix is <tt>mvc:</tt>, however, this
- * can be {@link #setPrefix changed} if necessary. This resolver will ultimately return a String
- * {@link NavigationOutcome#getDestination() destination}, for example the implicit view "<tt>mvc:redirect:/home</tt>"
- * will return an outcome containing the destination "<tt>redirect:/home</tt>".
+ * prefixed in order to distinguish them from regular JSF outcomes. The default prefix is <tt>spring:</tt>, however,
+ * this can be {@link #setPrefix changed} if necessary. This resolver will ultimately return a String
+ * {@link NavigationOutcome#getDestination() destination}, for example the implicit view "<tt>spring:redirect:/home</tt>
+ * " will return an outcome containing the destination "<tt>redirect:/home</tt>".
  * 
  * @author Phillip Webb
  */
 public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResolver {
 
-	private String prefix = "mvc:";
+	private String prefix = "spring:";
 
 	public boolean canResolve(NavigationContext context) {
 		return canResolve(context.getDefaultDestinationViewId()) || canResolve(context.getOutcome());

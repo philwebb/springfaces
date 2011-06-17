@@ -37,7 +37,7 @@ public class ClassToBooleansConverter implements ConditionalGenericConverter {
 		if (source == null) {
 			return null;
 		}
-		Class<?> elementType = targetType.getElementType();
+		TypeDescriptor elementType = targetType.getElementTypeDescriptor();
 		if (targetType.isArray()) {
 			return elementType.isPrimitive() ? new boolean[] { false, true } : new Boolean[] { false, true };
 		}

@@ -38,7 +38,7 @@
 		</p:column>
 		<p:column>
 			<f:facet name="header">Action</f:facet>
-			<h:link id="viewHotelLink" value="View" outcome="mvc:@hotelsController.show">
+			<h:link id="viewHotelLink" value="View" outcome="spring:@hotelsController.show">
 				<f:param name="id" value="#{h.id}"/>
 			</h:link>
 		</p:column>

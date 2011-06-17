@@ -57,16 +57,16 @@
 	<bean name="stateHandler"
 		class="org.springframework.springfaces.render.ClientFacesViewStateHandler" />
 
-	<bean name="facesConfig"
-		class="org.springframework.springfaces.mvc.servlet.DefaultFacesConfig" />
+	<bean name="defaultDestinationViewResolver"
+		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver" />
 
-	<bean name="requestMappedDestinationViewResolver" class="org.springframework.springfaces.mvc.navigation.RequestMappedDestinationViewResolver"/>
+	<bean name="requestMappedDestinationViewResolver" class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver"/>
 
 	<bean name="destinationViewResolverChain" class="org.springframework.springfaces.mvc.navigation.DestinationViewResolverChain">
 		<property name="resolvers">
 			<list>
 				<ref bean="requestMappedDestinationViewResolver"/>
-				<ref bean="facesConfig"/>
+				<ref bean="defaultDestinationViewResolver"/>
 			</list>
 		</property>
 	</bean>
@@ -78,10 +78,12 @@
 		<constructor-arg ref="destinationViewResolverChain" />
 	</bean>
 
+	<bean name="originalHandlerLocator" class="org.springframework.springfaces.mvc.servlet.DefaultOriginalHandlerLocator"/>
+
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<constructor-arg ref="stateHandler" />
-		<constructor-arg ref="facesConfig" />
+		<constructor-arg ref="originalHandlerLocator" />
 	</bean>
 
 	<mvc:interceptors>

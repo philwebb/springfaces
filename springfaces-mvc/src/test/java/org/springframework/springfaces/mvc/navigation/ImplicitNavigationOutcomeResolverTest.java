@@ -31,7 +31,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 
 	@Test
 	public void shouldResolvePrefixedDefaultDestinationViewId() throws Exception {
-		given(context.getDefaultDestinationViewId()).willReturn("mvc:view");
+		given(context.getDefaultDestinationViewId()).willReturn("spring:view");
 		assertTrue(resolver.canResolve(context));
 		NavigationOutcome outcome = resolver.resolve(context);
 		assertEquals("view", outcome.getDestination());
@@ -40,7 +40,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 
 	@Test
 	public void shouldResolvePrefixedOutcome() throws Exception {
-		given(context.getOutcome()).willReturn("mvc:view");
+		given(context.getOutcome()).willReturn("spring:view");
 		assertTrue(resolver.canResolve(context));
 		NavigationOutcome outcome = resolver.resolve(context);
 		assertEquals("view", outcome.getDestination());
@@ -59,16 +59,16 @@ public class ImplicitNavigationOutcomeResolverTest {
 
 	@Test
 	public void shouldNotResolvedNonPrefixed() throws Exception {
-		given(context.getOutcome()).willReturn("xmvc:view");
+		given(context.getOutcome()).willReturn("xspring:view");
 		assertFalse(resolver.canResolve(context));
 	}
 
 	@Test
 	public void shouldRequireDestinationText() throws Exception {
-		given(context.getOutcome()).willReturn("mvc:");
+		given(context.getOutcome()).willReturn("spring:");
 		assertTrue(resolver.canResolve(context));
 		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("The destination must be specified for an implicit MVC navigation prefixed 'mvc:'");
+		thrown.expectMessage("The destination must be specified for an implicit MVC navigation prefixed 'spring:'");
 		resolver.resolve(context);
 	}
 }
