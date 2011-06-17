@@ -1,6 +1,6 @@
 package org.springframework.springfaces.mvc.servlet;
 
-import org.springframework.springfaces.render.ViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
 
 /**
  * Used to pass JSF postback data from the {@link FacesHandlerInterceptor} to the {@link FacesPostbackHandler}.

@@ -18,8 +18,8 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.springfaces.mvc.MockELContext;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.render.ModelAndViewArtifact;
-import org.springframework.springfaces.render.ViewArtifact;
+import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.web.context.WebApplicationContext;
 
 /**

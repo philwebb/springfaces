@@ -7,9 +7,9 @@ import javax.faces.render.RenderKitFactory;
 import javax.faces.render.ResponseStateManager;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.render.FacesViewStateHandler;
+import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.springfaces.render.RenderKitIdAware;
-import org.springframework.springfaces.render.ViewArtifact;
 import org.springframework.springfaces.util.ResponseStateManagerWrapper;
 
 /**

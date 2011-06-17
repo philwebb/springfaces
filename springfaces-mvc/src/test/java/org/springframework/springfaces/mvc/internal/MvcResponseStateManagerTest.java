@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.render.FacesViewStateHandler;
-import org.springframework.springfaces.render.ModelAndViewArtifact;
-import org.springframework.springfaces.render.ViewArtifact;
+import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
+import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
 
 /**
  * Tests for {@link MvcResponseStateManager}.

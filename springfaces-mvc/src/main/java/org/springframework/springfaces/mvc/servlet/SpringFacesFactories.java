@@ -20,7 +20,7 @@ import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver;
-import org.springframework.springfaces.render.FacesViewStateHandler;
+import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
 import org.springframework.util.Assert;
 
 public class SpringFacesFactories implements FacesWrapperFactory<Object>,

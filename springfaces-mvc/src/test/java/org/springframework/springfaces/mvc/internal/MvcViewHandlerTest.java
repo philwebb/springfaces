@@ -41,8 +41,8 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler.NavigationResponseUIViewRoot;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
+import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
-import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 

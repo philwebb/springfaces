@@ -55,7 +55,7 @@
 	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
 
 	<bean name="stateHandler"
-		class="org.springframework.springfaces.render.ClientFacesViewStateHandler" />
+		class="org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler" />
 
 	<bean name="defaultDestinationViewResolver"
 		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver" />

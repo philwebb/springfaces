@@ -4,8 +4,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
 
 import org.springframework.core.NamedThreadLocal;
+import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
-import org.springframework.springfaces.render.ModelAndViewArtifact;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.HandlerMapping;
 

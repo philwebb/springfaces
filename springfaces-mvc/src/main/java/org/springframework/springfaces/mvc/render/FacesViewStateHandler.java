@@ -1,4 +1,4 @@
-package org.springframework.springfaces.render;
+package org.springframework.springfaces.mvc.render;
 
 import java.io.IOException;
 

@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.render.ModelAndViewArtifact;
-import org.springframework.springfaces.render.ViewArtifact;
+import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
 public class FacesView extends AbstractUrlBasedView {
