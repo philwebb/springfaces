@@ -3,7 +3,9 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,23 +29,31 @@ import javax.servlet.http.HttpSession;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.http.HttpEntity;
 import org.springframework.springfaces.mvc.FacesContextSetter;
 import org.springframework.springfaces.mvc.converter.FacesConverterId;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.bind.support.WebArgumentResolver;
+import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartRequest;
@@ -54,6 +64,9 @@ import org.springframework.web.multipart.MultipartRequest;
  * @author Phillip Webb
  */
 public class RequestMappedRedirectViewModelBuilderTest {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Mock
 	private RequestMappedRedirectViewContext context;
@@ -91,8 +104,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 	private void setHandlerMethod(String methodName) {
 		for (Method method : Methods.class.getMethods()) {
 			if (method.getName().equals(methodName)) {
-				handlerMethod = ReflectionUtils.findMethod(Methods.class, "ignore", Object.class, Locale.class,
-						Resolvable.class);
+				handlerMethod = method;
 				builder = new RequestMappedRedirectViewModelBuilder(context, handlerMethod);
 				return;
 			}
@@ -151,7 +163,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 	}
 
 	@Test
-	public void shouldIgnoreCertainParamters() throws Exception {
+	public void shouldIgnoreParamters() throws Exception {
 		Map<String, Object> source = new HashMap<String, Object>();
 		source.put("p1", new Object());
 		source.put("p2", Locale.UK);
@@ -172,6 +184,144 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		assertTrue(model.isEmpty());
 	}
 
+	@Test
+	public void shouldAddPathVariables() throws Exception {
+		Map<String, String> source = new HashMap<String, String>();
+		source.put("pv1", "1");
+		source.put("p2", "2");
+		setHandlerMethod("pathVariable");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(2, model.size());
+		assertEquals("1", model.get("pv1"));
+		assertEquals("2", model.get("p2"));
+	}
+
+	@Test
+	public void shouldAddPathVariablesByType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("xa", new Long(1));
+		source.put("xb", new Integer(2));
+		setHandlerMethod("pathVariableByType");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(2, model.size());
+		assertEquals(new Long(1), model.get("p1"));
+		assertEquals(new Integer(2), model.get("p2"));
+	}
+
+	@Test
+	public void shouldNeedAtLeastOneEntryAddingVariablesByType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("xa", new Long(1));
+		setHandlerMethod("pathVariableByType");
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Unable to find value in model of type java.lang.Integer");
+		builder.build(nativeRequest, source);
+	}
+
+	@Test
+	public void shouldNeedOnlyOneEntryAddingVariablesByType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("xa", new Long(1));
+		source.put("xb", new Integer(2));
+		source.put("xc", new Long(3));
+		setHandlerMethod("pathVariableByType");
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Unable to find single unique value in model of type java.lang.Long");
+		builder.build(nativeRequest, source);
+	}
+
+	@Test
+	public void shouldNeedPathVaraibleName() throws Exception {
+		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
+		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
+		Map<String, String> source = new HashMap<String, String>();
+		source.put("pv1", "1");
+		setHandlerMethod("pathVariable");
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
+				+ "no parameter name information found in class file either.");
+		builder.build(nativeRequest, source);
+	}
+
+	@Test
+	public void shouldAddRequestParams() throws Exception {
+		Map<String, String> source = new HashMap<String, String>();
+		source.put("pv1", "1");
+		source.put("p2", "2");
+		source.put("p3", "3");
+		setHandlerMethod("requestParam");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(3, model.size());
+		assertEquals("1", model.get("pv1"));
+		assertEquals("2", model.get("p2"));
+		assertEquals("3", model.get("p3"));
+	}
+
+	@Test
+	public void shouldAddRequestParamsByType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("xa", new Long(1));
+		source.put("xb", new Integer(2));
+		source.put("xc", new Byte((byte) 3));
+		setHandlerMethod("requestParamByType");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(3, model.size());
+		assertEquals(new Long(1), model.get("p1"));
+		assertEquals(new Integer(2), model.get("p2"));
+		assertEquals(new Byte((byte) 3), model.get("p3"));
+	}
+
+	@Test
+	public void shouldMapComplexType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("x", new ComplexType(1, 2L));
+		setHandlerMethod("requestParamComplexType");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(2, model.size());
+		assertEquals("1", model.get("a"));
+		assertEquals("2", model.get("b"));
+	}
+
+	@Test
+	public void shouldInitBinderForComplexType() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("x", new ComplexType(1, 2L));
+		setHandlerMethod("requestParamComplexType");
+		WebBindingInitializer webBindingInitializer = mock(WebBindingInitializer.class);
+		given(context.getWebBindingInitializer()).willReturn(webBindingInitializer);
+		builder.build(nativeRequest, source);
+		verify(webBindingInitializer).initBinder(any(WebDataBinder.class), any(WebRequest.class));
+	}
+
+	@Test
+	public void shouldNeedNameForSimpleRequestParamType() throws Exception {
+		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
+		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
+		Map<String, String> source = new HashMap<String, String>();
+		source.put("xa", "1");
+		setHandlerMethod("requestParamNotNamed");
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
+				+ "no parameter name information found in class file either.");
+		builder.build(nativeRequest, source);
+	}
+
+	@Test
+	public void shouldResolveByTypeWhenComplexTypeNotNamed() throws Exception {
+		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
+		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
+		Map<String, Object> source = new HashMap<String, Object>();
+		source.put("xa", new ComplexType(1, 2L));
+		setHandlerMethod("requestParamComplexType");
+		Map<String, Object> model = builder.build(nativeRequest, source);
+		assertEquals(2, model.size());
+		assertEquals("1", model.get("a"));
+		assertEquals("2", model.get("b"));
+	}
+
 	// FIXME remaining test
 
 	public static class Resolvable extends BigDecimal {
@@ -182,12 +332,64 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		}
 	}
 
+	@Controller
 	public static class Methods {
 		public void method() {
-
 		}
 
+		@RequestMapping("/ignore")
 		public void ignore(@CookieValue Object p1, Locale p2, Resolvable p3) {
+		}
+
+		@RequestMapping("/pathvariable")
+		public void pathVariable(@PathVariable("pv1") String p1, @PathVariable String p2) {
+		}
+
+		@RequestMapping("/pathvariablebytype")
+		public void pathVariableByType(@PathVariable Long p1, @PathVariable Integer p2) {
+		}
+
+		@RequestMapping("/requestparam")
+		public void requestParam(@RequestParam("pv1") String p1, @RequestParam String p2, String p3) {
+		}
+
+		@RequestMapping("/requestparambytype")
+		public void requestParamByType(@RequestParam Long p1, @RequestParam Integer p2, Byte p3) {
+		}
+
+		@RequestMapping("/requestparamcomplextype")
+		public void requestParamComplexType(ComplexType p1) {
+		}
+
+		@RequestMapping("/requestparamnotnamed")
+		public void requestParamNotNamed(String p1) {
+		}
+	}
+
+	public static class ComplexType {
+		private Integer a;
+		private Long b;
+
+		public ComplexType(Integer a, Long b) {
+			super();
+			this.a = a;
+			this.b = b;
+		}
+
+		public Integer getA() {
+			return a;
+		}
+
+		public void setA(Integer a) {
+			this.a = a;
+		}
+
+		public Long getB() {
+			return b;
+		}
+
+		public void setB(Long b) {
+			this.b = b;
 		}
 	}
 

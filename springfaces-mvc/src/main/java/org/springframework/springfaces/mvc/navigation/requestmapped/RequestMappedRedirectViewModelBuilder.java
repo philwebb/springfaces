@@ -147,19 +147,15 @@ public class RequestMappedRedirectViewModelBuilder {
 			PathVariable pathVariable, Map<String, ?> source) {
 		String name = pathVariable.value();
 		if (name.length() == 0) {
-			name = getMethodParameterName(methodParameter);
+			name = methodParameter.getParameterName();
+			assertHasName(name, methodParameter);
 		}
-		addIfNotContainsKey(model, name, source.get(name));
-	}
-
-	private String getMethodParameterName(MethodParameter methodParam) {
-		String name = methodParam.getParameterName();
-		if (name == null) {
-			throw new IllegalStateException("No parameter name specified for argument of type ["
-					+ methodParam.getParameterType().getName()
-					+ "], and no parameter name information found in class file either.");
+		Object value = source.get(name);
+		if (value == null) {
+			Map.Entry<String, ?> entry = getMapEntryByType(source, methodParameter.getParameterType());
+			value = entry.getValue();
 		}
-		return name;
+		addIfNotContainsKey(model, name, value);
 	}
 
 	private void addRequestParamterToModel(Map<String, Object> model, MethodParameter methodParameter,
@@ -170,13 +166,13 @@ public class RequestMappedRedirectViewModelBuilder {
 		} else {
 			name = methodParameter.getParameterName();
 		}
-
 		Object value = StringUtils.hasLength(name) ? source.get(name) : null;
 		if (value == null) {
 			Map.Entry<String, ?> entry = getMapEntryByType(source, methodParameter.getParameterType());
 			value = entry.getValue();
 		}
 		if (BeanUtils.isSimpleProperty(methodParameter.getParameterType())) {
+			assertHasName(name, methodParameter);
 			addIfNotContainsKey(model, name, value);
 		} else {
 			WebDataBinder binder = new WebRequestDataBinder(value);
@@ -192,15 +188,21 @@ public class RequestMappedRedirectViewModelBuilder {
 		}
 	}
 
+	private void assertHasName(String name, MethodParameter methodParameter) {
+		Assert.state(StringUtils.hasLength(name), "No parameter name specified for argument of type ["
+				+ methodParameter.getParameterType().getName()
+				+ "], and no parameter name information found in class file either.");
+	}
+
 	private Entry<String, ?> getMapEntryByType(Map<String, ?> source, Class<?> type) {
 		Map.Entry<String, ?> rtn = null;
 		for (Map.Entry<String, ?> entry : source.entrySet()) {
 			if (type.isInstance(entry.getValue())) {
-				Assert.state(rtn == null, "Unable to find single unique value in model of type " + type);
+				Assert.state(rtn == null, "Unable to find single unique value in model of type " + type.getName());
 				rtn = entry;
 			}
 		}
-		Assert.state(rtn != null, "Unable to find value in model of type " + type);
+		Assert.state(rtn != null, "Unable to find value in model of type " + type.getName());
 		return rtn;
 	}
 
