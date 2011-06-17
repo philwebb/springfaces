@@ -18,7 +18,6 @@ import org.springframework.beans.SimpleTypeConverter;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.support.ConvertingPropertyEditorAdapter;
-import org.springframework.core.convert.support.PropertyTypeDescriptor;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
@@ -212,10 +211,11 @@ public class ReverseDataBinder {
 	protected PropertyEditor findDefaultEditor(PropertyEditorRegistrySupport propertyEditorRegistry,
 			Object targetObject, Class<?> requiredType, TypeDescriptor typeDescriptor) {
 		PropertyEditor editor = null;
-		if (typeDescriptor instanceof PropertyTypeDescriptor) {
-			PropertyDescriptor pd = ((PropertyTypeDescriptor) typeDescriptor).getPropertyDescriptor();
-			editor = pd.createPropertyEditor(targetObject);
-		}
+		// FIXME check 3.1 final to see if this is still commented
+		// if (typeDescriptor instanceof PropertyTypeDescriptor) {
+		// PropertyDescriptor pd = ((PropertyTypeDescriptor) typeDescriptor).getPropertyDescriptor();
+		// editor = pd.createPropertyEditor(targetObject);
+		// }
 		if (editor == null && requiredType != null) {
 			// No custom editor -> check BeanWrapperImpl's default editors.
 			editor = propertyEditorRegistry.getDefaultEditor(requiredType);

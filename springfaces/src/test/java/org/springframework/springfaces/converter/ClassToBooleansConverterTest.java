@@ -98,6 +98,11 @@ public class ClassToBooleansConverterTest {
 	}
 
 	private TypeDescriptor collectionType(Class<?> collectionType) {
-		return TypeDescriptorTestUtils.forCollection(collectionType, Boolean.class);
+		if (Map.class.isAssignableFrom(collectionType)) {
+			return TypeDescriptor.map(collectionType, TypeDescriptor.valueOf(Boolean.class),
+					TypeDescriptor.valueOf(Boolean.class));
+		}
+		return TypeDescriptor.collection(collectionType, TypeDescriptor.valueOf(Boolean.class));
 	}
+
 }

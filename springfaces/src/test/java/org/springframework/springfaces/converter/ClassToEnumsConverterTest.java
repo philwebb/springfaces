@@ -87,7 +87,11 @@ public class ClassToEnumsConverterTest {
 	}
 
 	private TypeDescriptor collectionType(Class<?> collectionType) {
-		return TypeDescriptorTestUtils.forCollection(collectionType, ExampleEnum.class);
+		if (Map.class.isAssignableFrom(collectionType)) {
+			return TypeDescriptor.map(collectionType, TypeDescriptor.valueOf(ExampleEnum.class),
+					TypeDescriptor.valueOf(ExampleEnum.class));
+		}
+		return TypeDescriptor.collection(collectionType, TypeDescriptor.valueOf(ExampleEnum.class));
 	}
 
 	private enum ExampleEnum {

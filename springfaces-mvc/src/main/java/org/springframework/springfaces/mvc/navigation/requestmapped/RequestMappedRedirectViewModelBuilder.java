@@ -61,13 +61,13 @@ public class RequestMappedRedirectViewModelBuilder {
 	/**
 	 * Annotations that are handled natively my MVC and hence should be filtered.
 	 */
-	public static final AnnotationMethodParameterFilter ANNOTAION_FILTER = new AnnotationMethodParameterFilter(
+	private static final AnnotationMethodParameterFilter ANNOTAION_FILTER = new AnnotationMethodParameterFilter(
 			RequestHeader.class, RequestBody.class, CookieValue.class, ModelAttribute.class, Value.class);
 
 	/**
 	 * Types that are handled natively my MVC and hence should be filtered.
 	 */
-	public static final TypeMethodParameterFilter TYPE_FILTER = new TypeMethodParameterFilter(WebRequest.class,
+	private static final TypeMethodParameterFilter TYPE_FILTER = new TypeMethodParameterFilter(WebRequest.class,
 			ServletRequest.class, MultipartRequest.class, ServletResponse.class, HttpSession.class, Principal.class,
 			Locale.class, InputStream.class, Reader.class, OutputStream.class, Writer.class, Map.class, Model.class,
 			SessionStatus.class, HttpEntity.class, Errors.class);
@@ -104,6 +104,9 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * <li>The source will be searched for any values that are an instance of the parameter types. When this method is
 	 * used the model must contain only a single entry of each type.</li>
 	 * <ul>
+	 * NOTE: When the method parameter is not a simple type it will be expanded into multiple model entries using a
+	 * {@link ReverseDataBinder}.
+	 * 
 	 * @param request the current native web request
 	 * @param source a map containing the source of items to add to the model
 	 * @return a model containing items relevant to the handler method parameters.
@@ -130,6 +133,12 @@ public class RequestMappedRedirectViewModelBuilder {
 		return model;
 	}
 
+	/**
+	 * Determines if the specified method parameter should be ignored.
+	 * @param request the current web request
+	 * @param methodParameter the method parameter
+	 * @return <tt>true</tt> if the parameter should be ignored.
+	 */
 	protected boolean isIgnored(NativeWebRequest request, MethodParameter methodParameter) {
 		return methodParameterFilter.isFiltered(request, methodParameter);
 	}
@@ -138,12 +147,12 @@ public class RequestMappedRedirectViewModelBuilder {
 			PathVariable pathVariable, Map<String, ?> source) {
 		String name = pathVariable.value();
 		if (name.length() == 0) {
-			name = getRequiredParameterName(methodParameter);
+			name = getMethodParameterName(methodParameter);
 		}
 		addIfNotContainsKey(model, name, source.get(name));
 	}
 
-	private String getRequiredParameterName(MethodParameter methodParam) {
+	private String getMethodParameterName(MethodParameter methodParam) {
 		String name = methodParam.getParameterName();
 		if (name == null) {
 			throw new IllegalStateException("No parameter name specified for argument of type ["
