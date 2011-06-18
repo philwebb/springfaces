@@ -9,6 +9,7 @@
 		<converter-for-class>org.springframework.springfaces.sample.controller.Name</converter-for-class>
 		<converter-class>org.springframework.springfaces.sample.controller.NameConverter</converter-class>
 	</converter>
+
 	<navigation-rule>
 		<display-name>test.xhtml</display-name>
 		<from-view-id>/test.xhtml</from-view-id>
@@ -29,4 +30,26 @@
 			<to-view-id>mvc:redirect:/spring/hello</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+
+
+	<navigation-rule>
+		<from-view-id>/WEB-INF/pages/navigation/type.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>rulelink</from-outcome>
+			<to-view-id>/spring:@destination</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>rulebutton</from-outcome>
+			<to-view-id>/spring:@destination</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>rulecommandbutton</from-outcome>
+			<to-view-id>/spring:@destination</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>rulecommandlink</from-outcome>
+			<to-view-id>/spring:@destination</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
 </faces-config>

@@ -29,6 +29,7 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.View;
 
 /**
@@ -93,6 +94,17 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@Test
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
+		resolver.resolveDestination("@method", Locale.UK);
+		assertEquals(controllerBean, createdViewHandler);
+		assertTrue(createdViewHandlerMethod.getName().equals("method"));
+	}
+
+	@Test
+	public void shouldResolveAgainstCurrentHandlerMethod() throws Exception {
+		HandlerMethod handlerMethod = mock(HandlerMethod.class);
+		reset(springFacesContext);
+		given(springFacesContext.getHandler()).willReturn(handlerMethod);
+		given(handlerMethod.getBean()).willReturn(controllerBean);
 		resolver.resolveDestination("@method", Locale.UK);
 		assertEquals(controllerBean, createdViewHandler);
 		assertTrue(createdViewHandlerMethod.getName().equals("method"));

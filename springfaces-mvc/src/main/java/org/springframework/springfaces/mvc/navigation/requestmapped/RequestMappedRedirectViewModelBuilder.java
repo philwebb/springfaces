@@ -160,6 +160,7 @@ public class RequestMappedRedirectViewModelBuilder {
 
 	private void addRequestParamterToModel(Map<String, Object> model, MethodParameter methodParameter,
 			RequestParam requestParam, Map<String, ?> source) {
+		// FIXME will throw even if not required
 		String name;
 		if (requestParam != null && StringUtils.hasLength(requestParam.value())) {
 			name = requestParam.value();

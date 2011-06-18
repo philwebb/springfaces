@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.View;
 
 /**
@@ -116,6 +117,10 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 		if (lastDot == -1) {
 			Object handler = SpringFacesContext.getCurrentInstance(true).getHandler();
 			Assert.state(handler != null, "Unable to locate SpringFaces MVC handler");
+			if (handler instanceof HandlerMethod) {
+				handler = ((HandlerMethod) handler).getBean();
+				Assert.state(handler != null, "Unable to locate SpringFaces MVC handler from HandlerMethod.getBean()");
+			}
 			return handler;
 		}
 		return applicationContext.getBean(destination.substring(0, lastDot));

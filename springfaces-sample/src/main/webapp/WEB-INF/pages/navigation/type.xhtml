@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+	<title>Navigation Types</title>
+</h:head>
+
+<h:body>
+	<h:form>
+		<p>Examples of the various types of navigation</p>
+		<fieldset>
+			<legend>Implicit</legend>
+			<ul>
+				<li>
+					<h:link value="implicit link" outcome="spring:@destination">
+						<f:param name="s" value="from the implicit link"/>
+					</h:link>
+				</li>
+
+				<li>
+					<h:button value="implicit button" outcome="spring:@destination">
+						<f:param name="s" value="from the implicit button"/>
+					</h:button>
+				</li>
+
+				<li>
+					<h:commandButton value="implicit command button" action="spring:@destination">
+						<f:param name="s" value="from the implicit command button"/>
+					</h:commandButton>
+				</li>
+
+				<li>
+					<h:commandLink value="implicit command link" action="spring:@destination">
+						<f:param name="s" value="from the implicit command link"/>
+					</h:commandLink>
+				</li>
+
+				<li>
+					<h:link value="implicit MVC redirect" outcome="spring:redirect:/spring/navigation/destination">
+						<f:param name="s" value="from implicit MVC redirect"/>
+					</h:link>
+				</li>
+			</ul>
+		</fieldset>
+
+		<fieldset>
+			<legend>Navigation Rules</legend>
+			<ul>
+				<li>
+					<h:link value="rule link" outcome="rulelink">
+						<f:param name="s" value="from the rule link"/>
+					</h:link>
+				</li>
+
+				<li>
+					<h:button value="rule button" outcome="rulebutton">
+						<f:param name="s" value="from the rule button"/>
+					</h:button>
+				</li>
+
+				<li>
+					<h:commandButton value="rule command button" action="rulecommandbutton">
+						<f:param name="s" value="from the rule command button"/>
+					</h:commandButton>
+				</li>
+
+				<li>
+					<h:commandLink value="rule command link" action="rulecommandlink">
+						<f:param name="s" value="from the rule command link"/>
+					</h:commandLink>
+				</li>
+			</ul>
+		</fieldset>
+
+		<fieldset>
+			<legend>@NavigationMapping Annotations</legend>
+		</fieldset>
+
+	</h:form>
+</h:body>
+</html>

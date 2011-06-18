@@ -49,6 +49,8 @@ public interface NavigationContext {
 	 */
 	ActionEvent getActionEvent();
 
+	// FIXME perhaps drop this and replace with getComponent();
+
 	/**
 	 * Returns the destination view ID that JSF will use if no {@link NavigationOutcomeResolver resolvers} can be used.
 	 * @return the default destination view ID
