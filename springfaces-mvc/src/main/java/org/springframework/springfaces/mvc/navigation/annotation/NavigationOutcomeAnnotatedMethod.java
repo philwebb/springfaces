@@ -13,6 +13,13 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+/**
+ * Encapsulates information about a {@link NavigationMapping} annotated bean method. Values from the
+ * {@link NavigationMapping} annotation will be used to determine if this method can {@link #canResolve resolve} a given
+ * {@link NavigationContext}.
+ * 
+ * @author Phillip Webb
+ */
 public class NavigationOutcomeAnnotatedMethod {
 
 	private static final String[] IGNORED_METHOD_PREFIXES = { "on" };
@@ -42,6 +49,11 @@ public class NavigationOutcomeAnnotatedMethod {
 	 */
 	private Set<Class<?>> handlerClasses;
 
+	/**
+	 * Create a new {@link NavigationOutcomeAnnotatedMethod}.
+	 * @param bean the bean
+	 * @param method the method (this must be annotated with {@link NavigationMapping})
+	 */
 	public NavigationOutcomeAnnotatedMethod(Object bean, Method method) {
 		Assert.notNull(bean, "Bean must not be null");
 		Assert.notNull(method, "Method must not be null");
@@ -91,6 +103,11 @@ public class NavigationOutcomeAnnotatedMethod {
 		return new HashSet<Class<?>>(Arrays.asList(annotation.handlers()));
 	}
 
+	/**
+	 * Determines if this method can be used for the given navigation context.
+	 * @param context the navigation context
+	 * @return <tt>true</tt> if this method can be used to handle navigation
+	 */
 	public boolean canResolve(NavigationContext context) {
 		return fromActionMatches(context) && outcomeMatches(context) && handlerMatches(context);
 	}
@@ -116,10 +133,16 @@ public class NavigationOutcomeAnnotatedMethod {
 		return false;
 	}
 
+	/**
+	 * @return the bean
+	 */
 	public Object getBean() {
 		return bean;
 	}
 
+	/**
+	 * @return the method
+	 */
 	public Method getMethod() {
 		return method;
 	}
