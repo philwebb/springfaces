@@ -20,6 +20,7 @@ import org.springframework.springfaces.mvc.internal.MvcResponseStateManager;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver;
+import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
 import org.springframework.util.Assert;
 
@@ -28,7 +29,7 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 
 	private FacesViewStateHandler facesViewStateHandler;
 	private DestinationViewResolver destinationViewResolver;
-	private ImplicitNavigationOutcomeResolver navigationOutcomeResolver;
+	private NavigationOutcomeResolver navigationOutcomeResolver;
 	private MvcNavigationSystemEventListener navigationSystemEventListener = new MvcNavigationSystemEventListener();
 
 	public SpringFacesFactories(FacesViewStateHandler facesViewStateHandler,
@@ -67,5 +68,9 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 
 	public void onApplicationEvent(PostConstructApplicationSpringFacesEvent event) {
 		event.getSource().subscribeToEvent(PreRenderComponentEvent.class, navigationSystemEventListener);
+	}
+
+	public void setNavigationOutcomeResolver(NavigationOutcomeResolver navigationOutcomeResolver) {
+		this.navigationOutcomeResolver = navigationOutcomeResolver;
 	}
 }

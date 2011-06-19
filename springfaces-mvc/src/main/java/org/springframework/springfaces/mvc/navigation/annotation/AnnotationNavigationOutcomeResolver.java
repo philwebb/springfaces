@@ -1,7 +1,10 @@
 package org.springframework.springfaces.mvc.navigation.annotation;
 
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Set;
+
+import javax.faces.context.FacesContext;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.ApplicationObjectSupport;
@@ -11,8 +14,12 @@ import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils.MethodFilter;
+import org.springframework.web.context.request.FacesWebRequest;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.HandlerMethodSelector;
 import org.springframework.web.method.support.HandlerMethodArgumentResolverComposite;
+import org.springframework.web.method.support.InvocableHandlerMethod;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver {
 
@@ -23,6 +30,8 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	// : write out a PDF document
 	// : change something in the model and re-render
 
+	private Set<NavigationOutcomeAnnotatedMethod> navigationMethods = new HashSet<NavigationOutcomeAnnotatedMethod>();
+
 	private HandlerMethodArgumentResolverComposite argumentResolvers;
 
 	@Override
@@ -30,60 +39,68 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking for navigation mappings in application context: " + getApplicationContext());
 		}
+		navigationMethods = new HashSet<NavigationOutcomeAnnotatedMethod>();
 		for (String beanName : getApplicationContext().getBeanNamesForType(Object.class)) {
-			if (isHandler(getApplicationContext().getType(beanName))) {
+			if (isNavigationBean(getApplicationContext().getType(beanName))) {
 				detectNavigationMethods(beanName);
 			}
 		}
 	}
 
-	protected boolean isHandler(Class<?> beanType) {
+	public void afterPropertiesSet() {
+		initArgumentResolvers();
+	}
+
+	protected boolean isNavigationBean(Class<?> beanType) {
 		return AnnotationUtils.findAnnotation(beanType, Controller.class) != null;
 	}
 
-	/**
-	 * Detect and register handler methods for the specified handler.
-	 * @param handler the bean name of a handler or a handler instance
-	 */
-	protected void detectNavigationMethods(final Object handler) {
-		final Class<?> handlerType = ((handler instanceof String) ? getApplicationContext().getType((String) handler)
-				: handler.getClass());
-
-		Set<Method> methods = HandlerMethodSelector.selectMethods(handlerType, new MethodFilter() {
+	private void detectNavigationMethods(final String beanName) {
+		final Class<?> beanType = getApplicationContext().getType(beanName);
+		Set<Method> methods = HandlerMethodSelector.selectMethods(beanType, new MethodFilter() {
 			public boolean matches(Method method) {
-				return getNavigationInfoForMethod(method, handlerType) != null;
+				return AnnotationUtils.findAnnotation(method, NavigationMapping.class) != null;
 			}
 		});
 		for (Method method : methods) {
-			NavigationOutcomeAnnotatedMethod info = getNavigationInfoForMethod(method, handlerType);
-			registerNavigationMethod(handler, method, info);
+			navigationMethods.add(new NavigationOutcomeAnnotatedMethod(beanName, beanType, method));
 		}
 	}
 
-	protected NavigationOutcomeAnnotatedMethod getNavigationInfoForMethod(Method method, Class<?> handlerType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private void registerNavigationMethod(Object handler, Method method, NavigationOutcomeAnnotatedMethod info) {
-		// TODO Auto-generated method stub
-		// HandlerMethod handlerMethod = new HandlerMethod(handler, method);
-		// InvocableHandlerMethod
-	}
-
-	public boolean canResolve(NavigationContext context) {
-		context.getOutcome();
-		context.getFromAction();
-		NavigationMapping n = null;
-		n.value();
-		n.fromAction();
-		// TODO Auto-generated method stub
+	public boolean canResolve(FacesContext facesContext, NavigationContext context) {
+		for (NavigationOutcomeAnnotatedMethod navigationMethod : navigationMethods) {
+			if (navigationMethod.canResolve(context)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
-	public NavigationOutcome resolve(NavigationContext context) {
-		// TODO Auto-generated method stub
-		return null;
+	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext context) throws Exception {
+		for (NavigationOutcomeAnnotatedMethod navigationMethod : navigationMethods) {
+			if (navigationMethod.canResolve(context)) {
+				return resolve(facesContext, navigationMethod, context);
+			}
+		}
+		throw new IllegalStateException("Unable to find annotated method to resolve navigation");
+	}
+
+	private NavigationOutcome resolve(FacesContext facesContext, NavigationOutcomeAnnotatedMethod navigationMethod,
+			NavigationContext context) throws Exception {
+		Object bean = getApplicationContext().getBean(navigationMethod.getBeanName());
+		InvocableHandlerMethod invocable = new InvocableHandlerMethod(bean, navigationMethod.getMethod());
+		// FIXME
+		// invocable.setDataBinderFactory(dataBinderFactory);
+		invocable.setHandlerMethodArgumentResolvers(argumentResolvers);
+		// invocable.setParameterNameDiscoverer(parameterNameDiscoverer);
+
+		NativeWebRequest request = new FacesWebRequest(facesContext);
+		ModelAndViewContainer mav = null;
+		Object result = invocable.invokeForRequest(request, mav);
+		if (result instanceof NavigationOutcome) {
+			return (NavigationOutcome) result;
+		}
+		return new NavigationOutcome(result);
 	}
 
 	private void initArgumentResolvers() {

@@ -2,6 +2,7 @@ package org.springframework.springfaces.mvc.internal;
 
 import java.util.Iterator;
 
+import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
@@ -49,15 +50,20 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, null,
 					defaultDestinationViewId);
-			if (navigationOutcomeResolver.canResolve(navigationContext)) {
-				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
-				Assert.state(navigationOutcome != null, "Unable to resolve required navigation outcome '" + outcome
-						+ "'");
-				UIViewRoot root = context.getViewRoot();
-				String fromViewId = (root != null ? root.getViewId() : null);
-				String toViewId = destinationAndModelRegistry.put(context, new DestinationAndModel(navigationOutcome,
-						preRenderComponentEvent));
-				return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
+			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
+				try {
+					NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(context, navigationContext);
+					Assert.state(navigationOutcome != null, "Unable to resolve required navigation outcome '" + outcome
+							+ "'");
+					UIViewRoot root = context.getViewRoot();
+					String fromViewId = (root != null ? root.getViewId() : null);
+					String toViewId = destinationAndModelRegistry.put(context, new DestinationAndModel(
+							navigationOutcome, preRenderComponentEvent));
+					return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
+				} catch (Exception e) {
+					// FIXME
+					throw new FacesException(e);
+				}
 			}
 		}
 		return super.getNavigationCase(context, fromAction, outcome);
@@ -70,14 +76,19 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false, actionEvent,
 					defaultDestinationViewId);
-			if (navigationOutcomeResolver.canResolve(navigationContext)) {
-				NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(navigationContext);
-				if (navigationOutcome != null) {
-					String viewId = destinationAndModelRegistry.put(context, new DestinationAndModel(navigationOutcome,
-							actionEvent));
-					UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
-					context.setViewRoot(newRoot);
-					return;
+			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
+				try {
+					NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(context, navigationContext);
+					if (navigationOutcome != null) {
+						String viewId = destinationAndModelRegistry.put(context, new DestinationAndModel(
+								navigationOutcome, actionEvent));
+						UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
+						context.setViewRoot(newRoot);
+						return;
+					}
+				} catch (Exception e) {
+					// FIXME
+					throw new FacesException(e);
 				}
 			}
 		}

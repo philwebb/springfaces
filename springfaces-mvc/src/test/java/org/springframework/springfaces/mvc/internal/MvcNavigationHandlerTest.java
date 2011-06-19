@@ -125,9 +125,11 @@ public class MvcNavigationHandlerTest {
 		FacesContextSetter.setCurrentInstance(null);
 	}
 
-	private void handleOutcome() {
-		given(navigationOutcomeResolver.canResolve(navigationContext.capture())).willReturn(true);
-		given(navigationOutcomeResolver.resolve(any(NavigationContext.class))).willReturn(navigationOutcome);
+	private void handleOutcome() throws Exception {
+		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
+				true);
+		given(navigationOutcomeResolver.resolve(any(FacesContext.class), any(NavigationContext.class))).willReturn(
+				navigationOutcome);
 	}
 
 	@Test
@@ -140,14 +142,15 @@ public class MvcNavigationHandlerTest {
 	public void shouldDelegateGetNavigationCaseWhenNoResolve() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		navigationHandler.getNavigationCase(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(navigationContext.capture());
+		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
 		verify(delegate, atLeastOnce()).getNavigationCase(context, fromAction, outcome);
 	}
 
 	@Test
 	public void shouldNeedNavigationOutcomeForGetNavigationCase() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(navigationOutcomeResolver.canResolve(navigationContext.capture())).willReturn(true);
+		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
+				true);
 		thrown.equals(IllegalStateException.class);
 		thrown.expectMessage("Unable to resolve required navigation outcome 'outcome'");
 		navigationHandler.getNavigationCase(context, fromAction, outcome);
@@ -180,16 +183,17 @@ public class MvcNavigationHandlerTest {
 	public void shouldDelegateHandleNavigationWhenCantResolve() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		navigationHandler.handleNavigation(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(navigationContext.capture());
+		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
 		verify(delegate).handleNavigation(context, fromAction, outcome);
 	}
 
 	@Test
 	public void shouldDelegateHandleNavigationWhenResolvesNull() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(navigationOutcomeResolver.canResolve(navigationContext.capture())).willReturn(true);
+		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
+				true);
 		navigationHandler.handleNavigation(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(navigationContext.capture());
+		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
 		verify(delegate).handleNavigation(context, fromAction, outcome);
 	}
 

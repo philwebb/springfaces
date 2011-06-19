@@ -1,5 +1,7 @@
 package org.springframework.springfaces.mvc.navigation;
 
+import javax.faces.context.FacesContext;
+
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -17,20 +19,21 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 
 	private String prefix = "spring:";
 
-	public boolean canResolve(NavigationContext context) {
-		return canResolve(context.getDefaultDestinationViewId()) || canResolve(context.getOutcome());
+	public boolean canResolve(FacesContext facesContext, NavigationContext navigationContext) {
+		return canResolve(navigationContext.getDefaultDestinationViewId())
+				|| canResolve(navigationContext.getOutcome());
 	}
 
 	private boolean canResolve(String value) {
 		return (StringUtils.hasLength(value) && value.startsWith(prefix));
 	}
 
-	public NavigationOutcome resolve(NavigationContext context) {
+	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext navigationContext) throws Exception {
 		String destination = null;
-		if (canResolve(context.getDefaultDestinationViewId())) {
-			destination = resolve(context.getDefaultDestinationViewId());
-		} else if (canResolve(context.getOutcome())) {
-			destination = resolve(context.getOutcome());
+		if (canResolve(navigationContext.getDefaultDestinationViewId())) {
+			destination = resolve(navigationContext.getDefaultDestinationViewId());
+		} else if (canResolve(navigationContext.getOutcome())) {
+			destination = resolve(navigationContext.getOutcome());
 		}
 		Assert.state(destination != null);
 		return new NavigationOutcome(destination, null);

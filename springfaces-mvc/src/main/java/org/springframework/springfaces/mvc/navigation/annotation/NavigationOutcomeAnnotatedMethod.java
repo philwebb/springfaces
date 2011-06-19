@@ -25,9 +25,14 @@ public class NavigationOutcomeAnnotatedMethod {
 	private static final String[] IGNORED_METHOD_PREFIXES = { "on" };
 
 	/**
-	 * The bean that contains the method.
+	 * The name bean name .
 	 */
-	private Object bean;
+	private String beanName;
+
+	/**
+	 * The bean type.
+	 */
+	private Class<?> beanType;
 
 	/**
 	 * The NavigationMapping annotated method.
@@ -51,20 +56,25 @@ public class NavigationOutcomeAnnotatedMethod {
 
 	/**
 	 * Create a new {@link NavigationOutcomeAnnotatedMethod}.
-	 * @param bean the bean
+	 * @param beanName the bean name
+	 * @param beanType the bean type
 	 * @param method the method (this must be annotated with {@link NavigationMapping})
 	 */
-	public NavigationOutcomeAnnotatedMethod(Object bean, Method method) {
-		Assert.notNull(bean, "Bean must not be null");
+	public NavigationOutcomeAnnotatedMethod(String beanName, Class<?> beanType, Method method) {
+		Assert.notNull(beanName, "BeanName must not be null");
+		Assert.notNull(beanType, "BeanType must not be null");
 		Assert.notNull(method, "Method must not be null");
-		this.bean = bean;
+		this.beanName = beanName;
+		this.beanType = beanType;
 		this.method = method;
 		NavigationMapping annotation = AnnotationUtils.findAnnotation(method, NavigationMapping.class);
-		Assert.state(annotation != null, "Unable to find @NavigationMapping annotation on method "
-				+ bean.getClass().getSimpleName() + "." + method.getName());
+		Assert.state(
+				annotation != null,
+				"Unable to find @NavigationMapping annotation on method " + beanType.getSimpleName() + "."
+						+ method.getName());
 		this.outcomes = buildOutcomes(method, annotation);
 		this.fromAction = buildFromAction(annotation);
-		this.handlerClasses = buildHandlerClasses(annotation, bean);
+		this.handlerClasses = buildHandlerClasses(annotation, beanType);
 	}
 
 	private Set<String> buildOutcomes(Method method, NavigationMapping annotation) {
@@ -93,12 +103,12 @@ public class NavigationOutcomeAnnotatedMethod {
 		return null;
 	}
 
-	private Set<Class<?>> buildHandlerClasses(NavigationMapping annotation, Object bean) {
+	private Set<Class<?>> buildHandlerClasses(NavigationMapping annotation, Class<?> beanType) {
 		if (annotation.handlers().length == 0) {
 			return null;
 		}
 		if (annotation.handlers().length == 1 && void.class.equals(annotation.handlers()[0])) {
-			return Collections.<Class<?>> singleton(bean.getClass());
+			return Collections.<Class<?>> singleton(beanType);
 		}
 		return new HashSet<Class<?>>(Arrays.asList(annotation.handlers()));
 	}
@@ -133,11 +143,15 @@ public class NavigationOutcomeAnnotatedMethod {
 		return false;
 	}
 
+	public String getBeanName() {
+		return beanName;
+	}
+
 	/**
-	 * @return the bean
+	 * @return the bean type
 	 */
-	public Object getBean() {
-		return bean;
+	public Class<?> getBeanType() {
+		return beanType;
 	}
 
 	/**
