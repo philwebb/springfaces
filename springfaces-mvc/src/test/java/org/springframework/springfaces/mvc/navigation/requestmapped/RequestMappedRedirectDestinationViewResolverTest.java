@@ -104,6 +104,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		HandlerMethod handlerMethod = mock(HandlerMethod.class);
 		reset(springFacesContext);
 		given(springFacesContext.getHandler()).willReturn(handlerMethod);
+		given(handlerMethod.createWithResolvedBean()).willReturn(handlerMethod);
 		given(handlerMethod.getBean()).willReturn(controllerBean);
 		resolver.resolveDestination("@method", Locale.UK);
 		assertEquals(controllerBean, createdViewHandler);

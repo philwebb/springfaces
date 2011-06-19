@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.springfaces.mvc.HandlerUtils;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.stereotype.Controller;
@@ -22,7 +23,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.View;
 
 /**
@@ -115,12 +115,8 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	private Object resolveDestinationHandler(String destination) {
 		int lastDot = destination.lastIndexOf(".");
 		if (lastDot == -1) {
-			Object handler = SpringFacesContext.getCurrentInstance(true).getHandler();
+			Object handler = HandlerUtils.getHandlerBean(SpringFacesContext.getCurrentInstance(true).getHandler());
 			Assert.state(handler != null, "Unable to locate SpringFaces MVC handler");
-			if (handler instanceof HandlerMethod) {
-				handler = ((HandlerMethod) handler).getBean();
-				Assert.state(handler != null, "Unable to locate SpringFaces MVC handler from HandlerMethod.getBean()");
-			}
 			return handler;
 		}
 		return applicationContext.getBean(destination.substring(0, lastDot));

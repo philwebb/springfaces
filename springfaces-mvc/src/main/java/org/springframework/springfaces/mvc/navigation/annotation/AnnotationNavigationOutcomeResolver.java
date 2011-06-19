@@ -16,6 +16,8 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolverCompo
 
 public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver {
 
+	// Based on AbstractHandlerMethodMapping
+
 	// SOME use cases
 	// : pick a destination based on @Value()
 	// : write out a PDF document
@@ -26,11 +28,11 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	@Override
 	protected void initApplicationContext() throws BeansException {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Looking for request mappings in application context: " + getApplicationContext());
+			logger.debug("Looking for navigation mappings in application context: " + getApplicationContext());
 		}
 		for (String beanName : getApplicationContext().getBeanNamesForType(Object.class)) {
 			if (isHandler(getApplicationContext().getType(beanName))) {
-				detectHandlerMethods(beanName);
+				detectNavigationMethods(beanName);
 			}
 		}
 	}
@@ -43,16 +45,30 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	 * Detect and register handler methods for the specified handler.
 	 * @param handler the bean name of a handler or a handler instance
 	 */
-	protected void detectHandlerMethods(final Object handler) {
-		final Class<?> handlerType = (handler instanceof String) ? getApplicationContext().getType((String) handler)
-				: handler.getClass();
+	protected void detectNavigationMethods(final Object handler) {
+		final Class<?> handlerType = ((handler instanceof String) ? getApplicationContext().getType((String) handler)
+				: handler.getClass());
 
 		Set<Method> methods = HandlerMethodSelector.selectMethods(handlerType, new MethodFilter() {
 			public boolean matches(Method method) {
-				return false;
-				// return getMappingForMethod(method, handlerType) != null;
+				return getNavigationInfoForMethod(method, handlerType) != null;
 			}
 		});
+		for (Method method : methods) {
+			NavigationOutcomeAnnotatedMethod info = getNavigationInfoForMethod(method, handlerType);
+			registerNavigationMethod(handler, method, info);
+		}
+	}
+
+	protected NavigationOutcomeAnnotatedMethod getNavigationInfoForMethod(Method method, Class<?> handlerType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private void registerNavigationMethod(Object handler, Method method, NavigationOutcomeAnnotatedMethod info) {
+		// TODO Auto-generated method stub
+		// HandlerMethod handlerMethod = new HandlerMethod(handler, method);
+		// InvocableHandlerMethod
 	}
 
 	public boolean canResolve(NavigationContext context) {
