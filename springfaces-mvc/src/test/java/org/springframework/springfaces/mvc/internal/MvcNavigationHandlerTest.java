@@ -3,7 +3,6 @@ package org.springframework.springfaces.mvc.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -24,10 +23,12 @@ import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
 import javax.faces.application.ViewHandler;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
+import javax.faces.event.PreRenderComponentEvent;
 
 import org.junit.After;
 import org.junit.Before;
@@ -163,6 +164,8 @@ public class MvcNavigationHandlerTest {
 	@Test
 	public void shouldGetNavigationCase() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		UIComponent component = mock(UIComponent.class);
+		new MvcNavigationSystemEventListener().processEvent(new PreRenderComponentEvent(component));
 		handleOutcome();
 		NavigationCase navigationCase = navigationHandler.getNavigationCase(context, fromAction, outcome);
 		assertNotNull(navigationCase);
@@ -173,7 +176,7 @@ public class MvcNavigationHandlerTest {
 		assertEquals(outcome, navigationContext.getOutcome());
 		assertEquals(fromAction, navigationContext.getFromAction());
 		assertTrue(navigationContext.isPreemptive());
-		assertNull(navigationContext.getActionEvent());
+		assertSame(component, navigationContext.getComponent());
 		assertSame(handler, navigationContext.getHandler());
 		assertSame(controller, navigationContext.getController());
 	}
@@ -207,8 +210,10 @@ public class MvcNavigationHandlerTest {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
 		ActionEvent actionEvent = mock(ActionEvent.class);
+		UIComponent component = mock(UIComponent.class);
 		handleOutcome();
 		given(viewHandler.createView(context, "viewId")).willReturn(viewRoot);
+		given(actionEvent.getComponent()).willReturn(component);
 
 		// Simulate the action event listener
 		MvcNavigationActionListener actionLister = new MvcNavigationActionListener(mock(ActionListener.class));
@@ -224,7 +229,7 @@ public class MvcNavigationHandlerTest {
 		assertEquals(outcome, navigationContext.getOutcome());
 		assertEquals(fromAction, navigationContext.getFromAction());
 		assertFalse(navigationContext.isPreemptive());
-		assertSame(actionEvent, navigationContext.getActionEvent());
+		assertSame(component, navigationContext.getComponent());
 		assertSame(handler, navigationContext.getHandler());
 		assertSame(controller, navigationContext.getController());
 	}

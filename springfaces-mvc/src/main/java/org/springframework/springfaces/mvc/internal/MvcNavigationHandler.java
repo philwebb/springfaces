@@ -6,6 +6,7 @@ import javax.faces.FacesException;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationCase;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -47,8 +48,9 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		if (SpringFacesContext.getCurrentInstance() != null) {
 			PreRenderComponentEvent preRenderComponentEvent = MvcNavigationSystemEventListener
 					.getLastPreRenderComponentEvent(context);
+			UIComponent component = (preRenderComponentEvent == null ? null : preRenderComponentEvent.getComponent());
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
-			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, null,
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, component,
 					defaultDestinationViewId);
 			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
 				try {
@@ -73,8 +75,9 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 	public void handleNavigation(FacesContext context, String fromAction, String outcome) {
 		if (SpringFacesContext.getCurrentInstance() != null) {
 			ActionEvent actionEvent = MvcNavigationActionListener.getLastActionEvent(context);
+			UIComponent component = (actionEvent == null ? null : actionEvent.getComponent());
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
-			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false, actionEvent,
+			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false, component,
 					defaultDestinationViewId);
 			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
 				try {
@@ -135,15 +138,15 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		private String fromAction;
 		private String outcome;
 		private boolean preEmptive;
-		private ActionEvent actionEvent;
+		private UIComponent component;
 		private String defaultDestinationViewId;
 
-		public NavigationContextImpl(String fromAction, String outcome, boolean preEmptive, ActionEvent actionEvent,
+		public NavigationContextImpl(String fromAction, String outcome, boolean preEmptive, UIComponent component,
 				String defaultDestinationViewId) {
 			this.fromAction = fromAction;
 			this.outcome = outcome;
 			this.preEmptive = preEmptive;
-			this.actionEvent = actionEvent;
+			this.component = component;
 			this.defaultDestinationViewId = defaultDestinationViewId;
 		}
 
@@ -167,8 +170,8 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			return preEmptive;
 		}
 
-		public ActionEvent getActionEvent() {
-			return actionEvent;
+		public UIComponent getComponent() {
+			return component;
 		}
 
 		public String getDefaultDestinationViewId() {

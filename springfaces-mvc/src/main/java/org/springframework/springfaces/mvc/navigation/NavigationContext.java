@@ -2,7 +2,7 @@ package org.springframework.springfaces.mvc.navigation;
 
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
-import javax.faces.event.ActionEvent;
+import javax.faces.component.UIComponent;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 
@@ -54,13 +54,11 @@ public interface NavigationContext {
 	boolean isPreemptive();
 
 	/**
-	 * Returns the {@link ActionEvent} that triggered the navigation of <tt>null</tt> if the navigation was triggered by
-	 * some other means. This method will always return <tt>null</tt> for {@link #isPreemptive() preemptive} navigation.
-	 * @return the action event or <tt>null</tt>
+	 * Returns the {@link UIComponent} that triggered the navigation or <tt>null</tt> if the navigation was triggered by
+	 * some other means.
+	 * @return a component or <tt>null</tt>
 	 */
-	ActionEvent getActionEvent();
-
-	// FIXME perhaps drop this and replace with getComponent();
+	UIComponent getComponent();
 
 	/**
 	 * Returns the destination view ID that JSF will use if no {@link NavigationOutcomeResolver resolvers} can be used.
