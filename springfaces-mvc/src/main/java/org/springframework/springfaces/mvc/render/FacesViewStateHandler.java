@@ -16,6 +16,7 @@ public interface FacesViewStateHandler {
 	 * Write the specified view artifact.
 	 * @param facesContext the faces context
 	 * @param viewArtifact the view state to write
+	 * @throws IOException on write error
 	 */
 	void write(FacesContext facesContext, ViewArtifact viewArtifact) throws IOException;
 
@@ -25,6 +26,7 @@ public interface FacesViewStateHandler {
 	 * that were previously {@link #write written}.
 	 * @param request the request used to retrieve view state
 	 * @return a ViewArtifact or <tt>null</tt> if the postback is not relevant
+	 * @throws IOException on read error
 	 */
 	ViewArtifact read(HttpServletRequest request) throws IOException;
 }

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.model.SpringFacesModel;
+import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
@@ -96,9 +96,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (rendering != null) {
 			UIViewRoot viewRoot = super.createView(context, rendering.getViewArtifact().toString());
 			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
-			if (rendering.getModel() != null) {
-				SpringFacesModel.saveInViewScope(viewRoot, new SpringFacesModel(rendering.getModel()));
-			}
+			SpringFacesModelHolder.attach(context, viewRoot, rendering.getModel());
 			return viewRoot;
 		}
 		return null;

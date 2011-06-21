@@ -5,16 +5,15 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.springfaces.mvc.FacesContextSetter;
+import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
+import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * Tests for {@link SpringFacesModelELResolver}.
@@ -32,10 +31,8 @@ public class SpringFacesModelELResolverTest {
 
 	private void setupFacesContext() {
 		FacesContext facesContext = mock(FacesContext.class);
-		UIViewRoot viewRoot = mock(UIViewRoot.class);
-		Map<String, Object> viewMap = new HashMap<String, Object>();
+		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
 		given(facesContext.getViewRoot()).willReturn(viewRoot);
-		given(viewRoot.getViewMap()).willReturn(viewMap);
 		FacesContextSetter.setCurrentInstance(facesContext);
 	}
 
@@ -55,7 +52,8 @@ public class SpringFacesModelELResolverTest {
 		setupFacesContext();
 		SpringFacesModel model = new SpringFacesModel();
 		model.put("key", "value");
-		SpringFacesModel.saveInViewScope(FacesContext.getCurrentInstance().getViewRoot(), model);
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		SpringFacesModelHolder.attach(facesContext, facesContext.getViewRoot(), model);
 		assertEquals("value", resolver.get("key"));
 	}
 }

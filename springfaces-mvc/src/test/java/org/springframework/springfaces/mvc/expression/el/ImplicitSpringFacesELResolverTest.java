@@ -4,10 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.el.ELContext;
 import javax.faces.component.UIViewRoot;
@@ -20,10 +16,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.springfaces.mvc.FacesContextSetter;
+import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.MockELContext;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
+import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * Tests for {@link ImplicitSpringFacesELResolver}.
@@ -47,10 +45,8 @@ public class ImplicitSpringFacesELResolverTest {
 	public void setup() {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		FacesContextSetter.setCurrentInstance(facesContext);
-		UIViewRoot viewRoot = mock(UIViewRoot.class);
+		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
 		given(facesContext.getViewRoot()).willReturn(viewRoot);
-		Map<String, Object> viewMap = new HashMap<String, Object>();
-		given(viewRoot.getViewMap()).willReturn(viewMap);
 	}
 
 	@After
@@ -81,7 +77,7 @@ public class ImplicitSpringFacesELResolverTest {
 	public void shouldGetModel() throws Exception {
 		SpringFacesModel model = new SpringFacesModel();
 		model.put("key", "value");
-		SpringFacesModel.saveInViewScope(facesContext.getViewRoot(), model);
+		SpringFacesModelHolder.attach(facesContext, facesContext.getViewRoot(), model);
 		Object value = resolver.getValue(context, null, "model");
 		assertTrue(context.isPropertyResolved());
 		assertEquals(model, value);

@@ -36,10 +36,11 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.springfaces.mvc.FacesContextSetter;
+import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler.NavigationResponseUIViewRoot;
-import org.springframework.springfaces.mvc.model.SpringFacesModel;
+import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
@@ -108,13 +109,6 @@ public class MvcViewHandlerTest {
 		SpringFacesContextSetter.setCurrentInstance(null);
 	}
 
-	private UIViewRoot mockUIViewRoot() {
-		UIViewRoot uiViewRoot = mock(UIViewRoot.class);
-		Map<String, Object> viewMap = new HashMap<String, Object>();
-		given(uiViewRoot.getViewMap()).willReturn(viewMap);
-		return uiViewRoot;
-	}
-
 	private ModelAndViewArtifact mockModelAndViewArtifact() {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("mk", "v");
@@ -181,14 +175,14 @@ public class MvcViewHandlerTest {
 	@Test
 	public void shouldCreateViewForMVCRender() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		UIViewRoot viewRoot = mockUIViewRoot();
+		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
 		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
 		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
 		UIViewRoot actual = handler.createView(context, "anything");
 		assertSame(viewRoot, actual);
 		verify(delegate).createView(context, "mvc");
-		assertEquals("v", SpringFacesModel.loadFromViewScope(viewRoot).get("mk"));
+		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("mk"));
 	}
 
 	@Test
@@ -215,7 +209,7 @@ public class MvcViewHandlerTest {
 	@Test
 	public void shouldUseSelfPostbackForActionURLFromMVCRender() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		UIViewRoot viewRoot = mockUIViewRoot();
+		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
 		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
 		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
@@ -242,7 +236,7 @@ public class MvcViewHandlerTest {
 
 	@Test
 	public void shouldDelegateRenderView() throws Exception {
-		UIViewRoot viewToRender = mockUIViewRoot();
+		UIViewRoot viewToRender = FacesMocks.createModelSupportingUIViewRoot();
 		handler.renderView(context, viewToRender);
 		verify(delegate).renderView(context, viewToRender);
 	}
