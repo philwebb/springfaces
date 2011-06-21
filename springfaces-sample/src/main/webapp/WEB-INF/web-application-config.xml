@@ -48,6 +48,10 @@
 
 	<faces:flow-builder-services id="flowBuilderServices" />
 
+	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport"/>
+	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor"/>
+
+
 	<bean id="facesContextListener"
 		class="org.springframework.faces.webflow.FlowFacesContextLifecycleListener" />
 

@@ -86,6 +86,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 						String viewId = destinationAndModelRegistry.put(context, new DestinationAndModel(
 								navigationOutcome, actionEvent));
 						UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
+						// FIXME this will clear the previous viewScope, meaning this view can never be restored.
 						context.setViewRoot(newRoot);
 						return;
 					}

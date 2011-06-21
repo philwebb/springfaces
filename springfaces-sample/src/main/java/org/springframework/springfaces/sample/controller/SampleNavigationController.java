@@ -1,5 +1,6 @@
 package org.springframework.springfaces.sample.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SampleNavigationController {
 
 	@RequestMapping("/type")
-	public void navigationTypes() {
+	public void navigationTypes(ModelMap model) {
+		model.put("navigationBean", new NavigationBean());
 	}
 
 	@RequestMapping("/destination")
@@ -19,8 +21,8 @@ public class SampleNavigationController {
 		model.put("s", s);
 	}
 
-	@NavigationMapping("annotationtest")
-	public String navigationAnnotation() {
-		return "redirect:http://http://www.springsource.org/";
+	@NavigationMapping("annotationwithvalue")
+	public String navigationAnnotation(@Value("#{navigationBean}") NavigationBean navigationBean) {
+		return "redirect:" + navigationBean.getDestination();
 	}
 }
