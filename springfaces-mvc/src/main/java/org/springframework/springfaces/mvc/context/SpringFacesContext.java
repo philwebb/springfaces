@@ -7,6 +7,7 @@ import org.springframework.core.NamedThreadLocal;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
@@ -52,6 +53,14 @@ public abstract class SpringFacesContext {
 	 * @return the MVC handler
 	 */
 	public abstract Object getHandler();
+
+	/**
+	 * Returns the MVC controller associated with this context. If the {@link #getHandler() handler} is a Spring 3.1
+	 * {@link HandlerMethod} this method will return the underling {@link HandlerMethod#getBean()}, in all other cases
+	 * this method is identical to {@link #getHandler()}.
+	 * @return the MVC controller
+	 */
+	public abstract Object getController();
 
 	/**
 	 * Render the specified {@link ModelAndViewArtifact} using JSF.

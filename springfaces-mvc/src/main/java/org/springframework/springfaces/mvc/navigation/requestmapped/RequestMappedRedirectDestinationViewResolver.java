@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.springfaces.mvc.HandlerUtils;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.stereotype.Controller;
@@ -115,8 +114,8 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	private Object resolveDestinationHandler(String destination) {
 		int lastDot = destination.lastIndexOf(".");
 		if (lastDot == -1) {
-			Object handler = HandlerUtils.getHandlerBean(SpringFacesContext.getCurrentInstance(true).getHandler());
-			Assert.state(handler != null, "Unable to locate SpringFaces MVC handler");
+			Object handler = SpringFacesContext.getCurrentInstance(true).getController();
+			Assert.state(handler != null, "Unable to locate SpringFaces MVC Controller");
 			return handler;
 		}
 		return applicationContext.getBean(destination.substring(0, lastDot));

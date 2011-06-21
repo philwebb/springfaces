@@ -60,12 +60,21 @@ public class ImplicitSpringFacesELResolverTest {
 	}
 
 	@Test
-	public void shouldGetController() throws Exception {
+	public void shouldGetHandler() throws Exception {
 		Object handler = new Object();
 		given(springFacesContext.getHandler()).willReturn(handler);
-		Object value = resolver.getValue(context, null, "controller");
+		Object value = resolver.getValue(context, null, "handler");
 		assertTrue(context.isPropertyResolved());
 		assertSame(handler, value);
+	}
+
+	@Test
+	public void shouldGetController() throws Exception {
+		Object controller = new Object();
+		given(springFacesContext.getController()).willReturn(controller);
+		Object value = resolver.getValue(context, null, "controller");
+		assertTrue(context.isPropertyResolved());
+		assertSame(controller, value);
 	}
 
 	@Test

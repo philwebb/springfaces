@@ -151,6 +151,10 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			return SpringFacesContext.getCurrentInstance().getHandler();
 		}
 
+		public Object getController() {
+			return SpringFacesContext.getCurrentInstance().getController();
+		}
+
 		public String getFromAction() {
 			return fromAction;
 		}

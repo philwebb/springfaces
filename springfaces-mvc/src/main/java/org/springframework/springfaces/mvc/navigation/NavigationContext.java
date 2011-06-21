@@ -4,6 +4,8 @@ import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.NavigationHandler;
 import javax.faces.event.ActionEvent;
 
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+
 /**
  * Provides context information relating to the current navigation.
  * 
@@ -12,11 +14,20 @@ import javax.faces.event.ActionEvent;
 public interface NavigationContext {
 
 	/**
-	 * Returns the current MVC handler the processing the JSF request or <tt>null</tt> if the request did not originate
-	 * from Spring MVC.
+	 * Returns the current MVC handler processing the JSF request or <tt>null</tt> if the request did not originate from
+	 * Spring MVC.
 	 * @return the spring MVC handler or <tt>null</tt>
+	 * @see SpringFacesContext#getHandler()
 	 */
 	Object getHandler();
+
+	/**
+	 * Returns the current MVC controller bean processing the JSF request of <tt>null</tt> if the request did not
+	 * originate from Spring MVC.
+	 * @return the spring MVC controller or <tt>null</tt>
+	 * @see SpringFacesContext#getController()
+	 */
+	Object getController();
 
 	/**
 	 * Returns the action binding expression that was evaluated to retrieve the specified outcome, or <tt>null</tt> if

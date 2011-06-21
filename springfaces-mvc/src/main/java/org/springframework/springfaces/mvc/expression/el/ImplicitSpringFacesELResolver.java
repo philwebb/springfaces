@@ -12,6 +12,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModel;
  * Resolves "implicit" or well-known variables from SpringFaces MVC. The list of implicit flow variables consists of:
  * 
  * <pre>
+ * handler
  * controller
  * model
  * </pre>
@@ -30,7 +31,8 @@ public class ImplicitSpringFacesELResolver extends CompositeELResolver {
 	 */
 	private static class SpringFacesContextELResolver extends BeanBackedELResolver {
 		public SpringFacesContextELResolver() {
-			map("controller", "handler");
+			map("handler");
+			map("controller");
 		}
 
 		protected Object getBean() {

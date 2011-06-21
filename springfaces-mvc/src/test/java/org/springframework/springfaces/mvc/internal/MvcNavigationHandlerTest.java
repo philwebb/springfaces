@@ -86,6 +86,9 @@ public class MvcNavigationHandlerTest {
 	@Mock
 	private Object handler;
 
+	@Mock
+	private Object controller;
+
 	@Captor
 	private ArgumentCaptor<NavigationContext> navigationContext;
 
@@ -107,6 +110,7 @@ public class MvcNavigationHandlerTest {
 		given(destinationAndModelRegistry.put(any(FacesContext.class), any(DestinationAndModel.class))).willReturn(
 				"viewId");
 		given(springFacesContext.getHandler()).willReturn(handler);
+		given(springFacesContext.getController()).willReturn(controller);
 		given(context.getApplication()).willReturn(application);
 		given(application.getViewHandler()).willReturn(viewHandler);
 		Map<Object, Object> attributes = new HashMap<Object, Object>();
@@ -171,6 +175,7 @@ public class MvcNavigationHandlerTest {
 		assertTrue(navigationContext.isPreemptive());
 		assertNull(navigationContext.getActionEvent());
 		assertSame(handler, navigationContext.getHandler());
+		assertSame(controller, navigationContext.getController());
 	}
 
 	@Test
@@ -221,6 +226,7 @@ public class MvcNavigationHandlerTest {
 		assertFalse(navigationContext.isPreemptive());
 		assertSame(actionEvent, navigationContext.getActionEvent());
 		assertSame(handler, navigationContext.getHandler());
+		assertSame(controller, navigationContext.getController());
 	}
 
 	@Test

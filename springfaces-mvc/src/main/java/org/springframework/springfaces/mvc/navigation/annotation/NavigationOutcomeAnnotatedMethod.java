@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.springfaces.mvc.HandlerUtils;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -134,9 +133,10 @@ public class NavigationOutcomeAnnotatedMethod {
 		if (handlerClasses == null) {
 			return true;
 		}
-		Object handler = HandlerUtils.getHandlerBean(context.getHandler());
+		Object handler = context.getHandler();
+		Object controller = context.getController();
 		for (Class<?> handlerClass : handlerClasses) {
-			if (handlerClass.isInstance(handler)) {
+			if (handlerClass.isInstance(controller) || handlerClass.isInstance(handler)) {
 				return true;
 			}
 		}

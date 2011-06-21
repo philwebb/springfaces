@@ -29,7 +29,6 @@ import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.View;
 
 /**
@@ -69,7 +68,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		given(springFacesContext.getHandler()).willReturn(controllerBean);
+		given(springFacesContext.getController()).willReturn(controllerBean);
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		given(applicationContext.getBean("bean")).willReturn(controllerBean);
 		given(applicationContext.getBean("exotic@be.an")).willReturn(controllerBean);
@@ -100,23 +99,11 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	}
 
 	@Test
-	public void shouldResolveAgainstCurrentHandlerMethod() throws Exception {
-		HandlerMethod handlerMethod = mock(HandlerMethod.class);
-		reset(springFacesContext);
-		given(springFacesContext.getHandler()).willReturn(handlerMethod);
-		given(handlerMethod.createWithResolvedBean()).willReturn(handlerMethod);
-		given(handlerMethod.getBean()).willReturn(controllerBean);
-		resolver.resolveDestination("@method", Locale.UK);
-		assertEquals(controllerBean, createdViewHandler);
-		assertTrue(createdViewHandlerMethod.getName().equals("method"));
-	}
-
-	@Test
 	public void shouldFailIfCurrentHandlerIsNull() throws Exception {
 		reset(springFacesContext);
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@method' : "
-				+ "Unable to locate SpringFaces MVC handler");
+				+ "Unable to locate SpringFaces MVC Controller");
 		resolver.resolveDestination("@method", Locale.UK);
 	}
 

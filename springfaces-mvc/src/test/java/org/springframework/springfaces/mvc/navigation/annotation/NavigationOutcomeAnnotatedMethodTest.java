@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Method;
 
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.method.HandlerMethod;
 
 /**
  * Tests for {@link NavigationOutcomeAnnotatedMethod}.
@@ -167,18 +165,6 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		assertFalse(o.canResolve(context));
 		assertTrue(o.canResolve(context));
 		assertFalse(o.canResolve(context));
-	}
-
-	@Test
-	public void shouldSupportSpecifiedHandlerWhenHandlerMethod() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class,
-				Bean.specificHandler);
-		HandlerMethod h1 = mock(HandlerMethod.class);
-		given(h1.createWithResolvedBean()).willReturn(h1);
-		given(h1.getBean()).willReturn(new CustomHandler());
-		given(context.getHandler()).willReturn(h1);
-		given(context.getOutcome()).willReturn("specificHandler");
-		assertTrue(o.canResolve(context));
 	}
 
 	public static class CustomHandler {

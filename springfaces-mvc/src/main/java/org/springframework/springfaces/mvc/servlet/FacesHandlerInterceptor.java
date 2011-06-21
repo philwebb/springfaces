@@ -16,6 +16,7 @@ import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -133,6 +134,15 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		public Object getHandler() {
 			checkNotRelased();
 			return handler;
+		}
+
+		@Override
+		public Object getController() {
+			Object controller = getHandler();
+			if ((controller != null) && (controller instanceof HandlerMethod)) {
+				controller = ((HandlerMethod) controller).createWithResolvedBean().getBean();
+			}
+			return controller;
 		}
 
 		@Override
