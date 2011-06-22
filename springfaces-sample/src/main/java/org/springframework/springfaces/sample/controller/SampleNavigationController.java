@@ -1,5 +1,11 @@
 package org.springframework.springfaces.sample.controller;
 
+import java.io.IOException;
+import java.util.Date;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.stereotype.Controller;
@@ -21,8 +27,31 @@ public class SampleNavigationController {
 		model.put("s", s);
 	}
 
+	public String directNavigation() {
+		return "spring:redirect:http://www.springsource.org";
+	}
+
 	@NavigationMapping("annotationwithvalue")
 	public String navigationAnnotation(@Value("#{navigationBean}") NavigationBean navigationBean) {
 		return "redirect:" + navigationBean.getDestination();
+	}
+
+	// FIXME change to inject model. Can we detect model items by type
+	@NavigationMapping("annotationrerender")
+	public void navigationReRender(@Value("#{navigationBean}") NavigationBean navigationBean) {
+		navigationBean.setDate(new Date());
+	}
+
+	// FIXME we should support injection of Writer and OutputStream, and HttpServletResponse
+	@NavigationMapping
+	public void onAnnotationStream() throws IOException {
+		// FIXME might be nice to have a util
+		FacesContext context = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+		response.setContentType("binary/octet-stream");
+		response.setContentLength(5);
+		response.setHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
+		response.getWriter().write("hello");
+		context.responseComplete();
 	}
 }
