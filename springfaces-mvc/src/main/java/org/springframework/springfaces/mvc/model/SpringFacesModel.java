@@ -1,9 +1,9 @@
 package org.springframework.springfaces.mvc.model;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.springfaces.mvc.expression.el.SpringFacesModelELResolver;
+import org.springframework.ui.ExtendedModelMap;
 import org.springframework.util.Assert;
 
 /**
@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
  * @see SpringFacesModelELResolver
  * @author Phillip Webb
  */
-public class SpringFacesModel extends HashMap<String, Object> {
+public class SpringFacesModel extends ExtendedModelMap {
 
 	private static final long serialVersionUID = 1L;
 

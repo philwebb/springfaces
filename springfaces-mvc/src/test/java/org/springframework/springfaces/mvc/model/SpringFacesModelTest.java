@@ -1,6 +1,7 @@
 package org.springframework.springfaces.mvc.model;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,9 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 
 /**
  * Tests for {@link SpringFacesModel}.
@@ -32,5 +36,14 @@ public class SpringFacesModelTest {
 		source.put("k", "v");
 		SpringFacesModel model = new SpringFacesModel(source);
 		assertEquals("v", model.get("k"));
+	}
+
+	@Test
+	public void shouldSupportSpringTypes() throws Exception {
+		SpringFacesModel model = new SpringFacesModel();
+		assertTrue(model instanceof ExtendedModelMap);
+		assertTrue(model instanceof ModelMap);
+		assertTrue(model instanceof Model);
+		assertTrue(model instanceof Map);
 	}
 }

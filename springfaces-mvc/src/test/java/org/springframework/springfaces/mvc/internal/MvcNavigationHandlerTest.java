@@ -10,6 +10,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -196,13 +197,14 @@ public class MvcNavigationHandlerTest {
 	}
 
 	@Test
-	public void shouldDelegateHandleNavigationWhenResolvesNull() throws Exception {
+	public void shouldReRenderCurrentScreenWhenCanResolveAndNullOutcome() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
 				true);
 		navigationHandler.handleNavigation(context, fromAction, outcome);
 		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
-		verify(delegate).handleNavigation(context, fromAction, outcome);
+		verify(delegate, never()).handleNavigation(context, fromAction, outcome);
+		// FIXME double check this
 	}
 
 	@Test

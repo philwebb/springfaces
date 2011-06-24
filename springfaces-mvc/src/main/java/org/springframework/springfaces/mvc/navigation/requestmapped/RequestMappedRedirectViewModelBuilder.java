@@ -143,6 +143,13 @@ public class RequestMappedRedirectViewModelBuilder {
 		return methodParameterFilter.isFiltered(request, methodParameter);
 	}
 
+	/**
+	 * Add a path variable to the mode.
+	 * @param model the model being built
+	 * @param methodParameter the method parameter
+	 * @param pathVariable the path variable (never null)
+	 * @param source the source data map
+	 */
 	private void addToPathVariableModel(Map<String, Object> model, MethodParameter methodParameter,
 			PathVariable pathVariable, Map<String, ?> source) {
 		String name = pathVariable.value();
@@ -158,9 +165,15 @@ public class RequestMappedRedirectViewModelBuilder {
 		addIfNotContainsKey(model, name, value);
 	}
 
+	/**
+	 * @param model the model being built
+	 * @param methodParameter the method parameter
+	 * @param requestParam The {@link RequestParam} annotation or null;
+	 * @param source the source data map
+	 */
 	private void addRequestParamterToModel(Map<String, Object> model, MethodParameter methodParameter,
 			RequestParam requestParam, Map<String, ?> source) {
-		//FIXME will throw even if not required
+		// FIXME will throw even if not required
 		String name;
 		if (requestParam != null && StringUtils.hasLength(requestParam.value())) {
 			name = requestParam.value();
