@@ -79,8 +79,18 @@
 			<legend>@NavigationMapping Annotations</legend>
 			<ul>
 				<li>
+					<h:commandButton value="direct to controller" action="#{controller.directNavigation}"/>
+				</li>
+				<li>
 					<h:inputText value="#{navigationBean.destination}"/>
 					<h:commandButton value="annotation with value" action="annotationwithvalue"/>
+				</li>
+				<li>
+					<h:commandButton value="annotation re-render" action="annotationrerender"/>
+					<h:outputText value="#{navigationBean.date}"/>
+				</li>
+				<li>
+					<h:commandButton value="annotation streaming" action="annotationStream"/>
 				</li>
 			</ul>
 		</fieldset>
