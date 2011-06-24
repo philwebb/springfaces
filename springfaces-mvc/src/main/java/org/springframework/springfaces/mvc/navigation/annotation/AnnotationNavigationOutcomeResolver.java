@@ -152,7 +152,8 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		// FIXME not sure argumentResolvers.addResolver(new ServletResponseMethodArgumentResolver());
 		// FIXME need out own version argumentResolvers.addResolver(new ModelMethodProcessor());
 
-		// FIXME ResponseBody support?
+		// FIXME ResponseBody support? RequestResponseBodyMethodProcessor
+		// FIXME Support Resource returns
 
 	}
 

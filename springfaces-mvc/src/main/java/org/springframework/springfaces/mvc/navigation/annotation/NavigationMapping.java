@@ -24,6 +24,8 @@ public @interface NavigationMapping {
 	// additional restriction used to limit based on actions
 	String fromAction() default "";
 
+	// FIXME support responseComplete = AUTO, NEVER, ALWAYS or @ResponseComplete
+
 	// FIXME define this
 	// FIXME write a listener to support it
 
