@@ -97,7 +97,7 @@
 		<property name="resolvers">
 			<list>
 				<bean class="org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver"/>
-				<bean class="org.springframework.springfaces.mvc.navigation.annotation.AnnotationNavigationOutcomeResolver"/>
+				<bean class="org.springframework.springfaces.mvc.navigation.annotation.AnnotationMethodNavigationOutcomeResolver"/>
 			</list>
 		</property>
 	</bean>

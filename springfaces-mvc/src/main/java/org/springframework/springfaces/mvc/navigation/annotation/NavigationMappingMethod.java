@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Phillip Webb
  */
-public class NavigationOutcomeAnnotatedMethod {
+class NavigationMappingMethod {
 
 	private static final String[] IGNORED_METHOD_PREFIXES = { "on" };
 
@@ -54,12 +54,12 @@ public class NavigationOutcomeAnnotatedMethod {
 	private Set<Class<?>> handlerClasses;
 
 	/**
-	 * Create a new {@link NavigationOutcomeAnnotatedMethod}.
+	 * Create a new {@link NavigationMappingMethod}.
 	 * @param beanName the bean name
 	 * @param beanType the bean type
 	 * @param method the method (this must be annotated with {@link NavigationMapping})
 	 */
-	public NavigationOutcomeAnnotatedMethod(String beanName, Class<?> beanType, Method method) {
+	public NavigationMappingMethod(String beanName, Class<?> beanType, Method method) {
 		Assert.notNull(beanName, "BeanName must not be null");
 		Assert.notNull(beanType, "BeanType must not be null");
 		Assert.notNull(method, "Method must not be null");

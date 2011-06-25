@@ -59,25 +59,24 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
+import org.springframework.web.servlet.mvc.method.annotation.support.HttpEntityMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.support.PathVariableMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.method.annotation.support.RequestResponseBodyMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletCookieValueMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletModelAttributeMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletRequestMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletResponseMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletWebArgumentResolverAdapter;
 
-// Based on AbstractHandlerMethodMapping RequestMappingHandlerAdapter
-
-// SOME use cases
-// : pick a destination based on @Value()
-// : write out a PDF document
-// : change something in the model and re-render
-
 /**
  * @author Phillip Webb
  */
-public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver,
-		BeanFactoryAware, InitializingBean {
+public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements
+		NavigationOutcomeResolver, BeanFactoryAware, InitializingBean {
+
+	// Must of this class is based on the AbstractHandlerMethodMapping and RequestMappingHandlerAdapter classes
+
+	// FIXME track SPR-8488 & SPR-8487
 
 	private List<HandlerMethodArgumentResolver> customArgumentResolvers;
 
@@ -99,12 +98,12 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 
 	private HandlerMethodArgumentResolverComposite initBinderArgumentResolvers;
 
-	private Set<NavigationOutcomeAnnotatedMethod> navigationMethods = new HashSet<NavigationOutcomeAnnotatedMethod>();
+	private Set<NavigationMappingMethod> navigationMethods = new HashSet<NavigationMappingMethod>();
 
 	/**
-	 * Create a {@link AnnotationNavigationOutcomeResolver} instance.
+	 * Create a {@link NavigationMethodOutcomeResolver} instance.
 	 */
-	public AnnotationNavigationOutcomeResolver() {
+	public NavigationMethodOutcomeResolver() {
 		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
 		stringHttpMessageConverter.setWriteAcceptCharset(false); // See SPR-7316
 
@@ -116,24 +115,24 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	}
 
 	/**
-	 * Set one or more custom argument resolvers to use with {@link RequestMapping}, {@link ModelAttribute}, and
-	 * {@link InitBinder} methods.
+	 * Set one or more custom argument resolvers to use with {@link NavigationMapping} and {@link InitBinder} methods.
 	 * <p>
 	 * Generally custom argument resolvers are invoked first. However this excludes default argument resolvers that rely
-	 * on the presence of annotations (e.g. {@code @RequestParameter}, {@code @PathVariable}, etc.) Those resolvers can
-	 * only be customized via {@link #setArgumentResolvers(List)}
+	 * on the presence of annotations (e.g. {@code @Value} etc.) Those resolvers can only be customized via
+	 * {@link #setArgumentResolvers(List)}
 	 * <p>
 	 * An existing {@link WebArgumentResolver} can either adapted with {@link ServletWebArgumentResolverAdapter} or
 	 * preferably converted to a {@link HandlerMethodArgumentResolver} instead.
+	 * @param argumentResolvers the argument resolvers for {@link NavigationMapping} and {@link InitBinder} method.
 	 */
 	public void setCustomArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		this.customArgumentResolvers = argumentResolvers;
 	}
 
 	/**
-	 * Set the argument resolvers to use with {@link RequestMapping} and {@link ModelAttribute} methods. This is an
-	 * optional property providing full control over all argument resolvers in contrast to
-	 * {@link #setCustomArgumentResolvers(List)}, which does not override default registrations.
+	 * Set the argument resolvers to use with {@link NavigationMapping} and methods. This is an optional property
+	 * providing full control over all argument resolvers in contrast to {@link #setCustomArgumentResolvers(List)},
+	 * which does not override default registrations.
 	 * @param argumentResolvers argument resolvers for {@link RequestMapping} and {@link ModelAttribute} methods
 	 */
 	public void setArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -157,22 +156,22 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	}
 
 	/**
-	 * Set custom return value handlers to use to handle the return values of {@link RequestMapping} methods.
+	 * Set custom return value handlers to use to handle the return values of {@link NavigationMapping} methods.
 	 * <p>
 	 * Generally custom return value handlers are invoked first. However this excludes default return value handlers
-	 * that rely on the presence of annotations like {@code @ResponseBody}, {@code @ModelAttribute}, and others. Those
-	 * handlers can only be customized via {@link #setReturnValueHandlers(List)}.
-	 * @param returnValueHandlers custom return value handlers for {@link RequestMapping} methods
+	 * that rely on the presence of annotations like {@code @Value}, and others. Those handlers can only be customized
+	 * via {@link #setReturnValueHandlers(List)}.
+	 * @param returnValueHandlers custom return value handlers for {@link NavigationMapping} methods
 	 */
 	public void setCustomReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
 		this.customReturnValueHandlers = returnValueHandlers;
 	}
 
 	/**
-	 * Set the {@link HandlerMethodReturnValueHandler}s to use to use with {@link RequestMapping} methods. This is an
+	 * Set the {@link HandlerMethodReturnValueHandler}s to use to use with {@link NavigationMapping} methods. This is an
 	 * optional property providing full control over all return value handlers in contrast to
 	 * {@link #setCustomReturnValueHandlers(List)}, which does not override default registrations.
-	 * @param returnValueHandlers the return value handlers for {@link RequestMapping} methods
+	 * @param returnValueHandlers the return value handlers for {@link NavigationMapping} methods
 	 */
 	public void setReturnValueHandlers(List<HandlerMethodReturnValueHandler> returnValueHandlers) {
 		if (returnValueHandlers != null) {
@@ -184,7 +183,8 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	/**
 	 * Set the message body converters to use.
 	 * <p>
-	 * These converters are used to convert from and to HTTP requests and responses.
+	 * These converters are used to convert from and to HTTP responses.
+	 * @param messageConverters the message converters
 	 */
 	public void setMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
 		this.messageConverters = messageConverters;
@@ -192,6 +192,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 
 	/**
 	 * Return the message body converters that this adapter has been configured with.
+	 * @return the message converters
 	 */
 	public List<HttpMessageConverter<?>> getMessageConverters() {
 		return messageConverters;
@@ -199,6 +200,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 
 	/**
 	 * Set a WebBindingInitializer to apply configure every DataBinder instance this controller uses.
+	 * @param webBindingInitializer the web binding initializer
 	 */
 	public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
 		this.webBindingInitializer = webBindingInitializer;
@@ -206,6 +208,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 
 	/**
 	 * Return the WebBindingInitializer which applies pre-configured configuration to {@link DataBinder} instances.
+	 * @return the web binder initializer
 	 */
 	public WebBindingInitializer getWebBindingInitializer() {
 		return webBindingInitializer;
@@ -216,6 +219,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	 * names).
 	 * <p>
 	 * Default is a {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer}.
+	 * @param parameterNameDiscoverer The parameter name discoverer
 	 */
 	public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
 		this.parameterNameDiscoverer = parameterNameDiscoverer;
@@ -226,27 +230,32 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking for navigation mappings in application context: " + getApplicationContext());
 		}
-		navigationMethods = new HashSet<NavigationOutcomeAnnotatedMethod>();
+		navigationMethods = new HashSet<NavigationMappingMethod>();
 		for (String beanName : getApplicationContext().getBeanNamesForType(Object.class)) {
-			if (isNavigationBean(getApplicationContext().getType(beanName))) {
-				detectNavigationMethods(beanName);
+			Class<?> beanType = getApplicationContext().getType(beanName);
+			if (isNavigationBean(beanType)) {
+				detectNavigationMethods(beanName, beanType);
 			}
 		}
 	}
 
+	/**
+	 * Determine if the specified bean type should be scanned for {@link NavigationMapping} methods.
+	 * @param beanType the bean type
+	 * @return <tt>true</tt> if the bean type should be scanned
+	 */
 	protected boolean isNavigationBean(Class<?> beanType) {
 		return AnnotationUtils.findAnnotation(beanType, Controller.class) != null;
 	}
 
-	private void detectNavigationMethods(final String beanName) {
-		final Class<?> beanType = getApplicationContext().getType(beanName);
+	private void detectNavigationMethods(final String beanName, final Class<?> beanType) {
 		Set<Method> methods = HandlerMethodSelector.selectMethods(beanType, new MethodFilter() {
 			public boolean matches(Method method) {
 				return AnnotationUtils.findAnnotation(method, NavigationMapping.class) != null;
 			}
 		});
 		for (Method method : methods) {
-			navigationMethods.add(new NavigationOutcomeAnnotatedMethod(beanName, beanType, method));
+			navigationMethods.add(new NavigationMappingMethod(beanName, beanType, method));
 		}
 	}
 
@@ -281,10 +290,6 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		argumentResolvers.addResolver(new ServletRequestMethodArgumentResolver());
 		argumentResolvers.addResolver(new ServletResponseMethodArgumentResolver());
 		argumentResolvers.addResolver(new SpringFacesModelMethodArgumentResolver());
-
-		// FIXME ResponseBody support? RequestResponseBodyMethodProcessor
-		// FIXME Support Resource returns
-
 	}
 
 	private void initInitBinderArgumentResolvers() {
@@ -315,24 +320,22 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		}
 
 		// Annotation-based handlers
-		returnValueHandlers.addHandler(new NavigationResponseBodyMethodProcessor(messageConverters));
-		// returnValueHandlers.addHandler(new ModelAttributeMethodProcessor(false));
+		returnValueHandlers.addHandler(new FacesResponseReturnValueHandler(new RequestResponseBodyMethodProcessor(
+				messageConverters)));
 
 		// Custom return value handlers
 		returnValueHandlers.addHandlers(customReturnValueHandlers);
 
 		// Type-based handlers
-		// returnValueHandlers.addHandler(new ModelAndViewMethodReturnValueHandler());
-		// returnValueHandlers.addHandler(new ModelMethodProcessor());
-		// returnValueHandlers.addHandler(new ViewMethodReturnValueHandler());
-		// returnValueHandlers.addHandler(new HttpEntityMethodProcessor(messageConverters));
+		returnValueHandlers.addHandler(new FacesResponseReturnValueHandler(new HttpEntityMethodProcessor(
+				messageConverters)));
 
 		// Default handler
-		returnValueHandlers.addHandler(new AnnotationNavigationDefaultMethodReturnValueHandler());
+		returnValueHandlers.addHandler(new NavigationMethodReturnValueHandler());
 	}
 
 	public boolean canResolve(FacesContext facesContext, NavigationContext context) {
-		for (NavigationOutcomeAnnotatedMethod navigationMethod : navigationMethods) {
+		for (NavigationMappingMethod navigationMethod : navigationMethods) {
 			if (navigationMethod.canResolve(context)) {
 				return true;
 			}
@@ -341,7 +344,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 	}
 
 	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext context) throws Exception {
-		for (NavigationOutcomeAnnotatedMethod navigationMethod : navigationMethods) {
+		for (NavigationMappingMethod navigationMethod : navigationMethods) {
 			if (navigationMethod.canResolve(context)) {
 				return resolve(facesContext, navigationMethod, context);
 			}
@@ -349,7 +352,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		throw new IllegalStateException("Unable to find annotated method to resolve navigation");
 	}
 
-	private NavigationOutcome resolve(FacesContext facesContext, NavigationOutcomeAnnotatedMethod navigationMethod,
+	private NavigationOutcome resolve(FacesContext facesContext, NavigationMappingMethod navigationMethod,
 			NavigationContext context) throws Exception {
 
 		Object bean = getApplicationContext().getBean(navigationMethod.getBeanName());
@@ -375,8 +378,7 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 		if (result instanceof NavigationOutcome) {
 			return (NavigationOutcome) result;
 		}
-		// FIXME add model to implicit?
-		return new NavigationOutcome(result);
+		return new NavigationOutcome(result, modelAndViewContainer.getModel());
 	}
 
 	private WebDataBinderFactory createDataBinderFactory(Object bean, Class<?> handlerType) {
@@ -400,4 +402,5 @@ public class AnnotationNavigationOutcomeResolver extends ApplicationObjectSuppor
 
 		return new ServletRequestDataBinderFactory(initBinderMethods, this.webBindingInitializer);
 	}
+
 }

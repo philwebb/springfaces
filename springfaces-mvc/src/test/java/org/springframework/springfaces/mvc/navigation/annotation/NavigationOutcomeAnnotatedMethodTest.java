@@ -18,7 +18,7 @@ import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Tests for {@link NavigationOutcomeAnnotatedMethod}.
+ * Tests for {@link NavigationMappingMethod}.
  * 
  * @author Phillip Webb
  */
@@ -39,33 +39,33 @@ public class NavigationOutcomeAnnotatedMethodTest {
 	public void shouldNeedBeanName() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("BeanName must not be null");
-		new NavigationOutcomeAnnotatedMethod(null, Bean.class, Bean.defaults);
+		new NavigationMappingMethod(null, Bean.class, Bean.defaults);
 	}
 
 	@Test
 	public void shouldNeedBeanType() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("BeanType must not be null");
-		new NavigationOutcomeAnnotatedMethod(beanName, null, Bean.defaults);
+		new NavigationMappingMethod(beanName, null, Bean.defaults);
 	}
 
 	@Test
 	public void shouldNeedMethod() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Method must not be null");
-		new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, null);
+		new NavigationMappingMethod(beanName, Bean.class, null);
 	}
 
 	@Test
 	public void shouldNeedAnnotationOnMethod() throws Exception {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Unable to find @NavigationMapping annotation on method Bean.noAnnotation");
-		new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.noAnnotation);
+		new NavigationMappingMethod(beanName, Bean.class, Bean.noAnnotation);
 	}
 
 	@Test
 	public void shouldGetDetails() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.defaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
 		assertEquals(beanName, o.getBeanName());
 		assertEquals(Bean.class, o.getBeanType());
 		assertSame(Bean.defaults, o.getMethod());
@@ -73,7 +73,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldMatchMethodWhenNoOutcome() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.defaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "defaults");
 		assertFalse(o.canResolve(context));
@@ -82,7 +82,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreMethodPrefixes() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.onDefaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "defaults");
 		assertFalse(o.canResolve(context));
@@ -91,7 +91,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreMethodPrefixOnOwn() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.on);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.on);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "on");
 		assertFalse(o.canResolve(context));
@@ -100,7 +100,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportSpecifiedOutcomes() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.specified);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.specified);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("zero", "one", "two", "three", "four");
 		assertFalse(o.canResolve(context));
@@ -112,7 +112,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreFromActionWhenNotSpecified() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.onDefaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("defaults");
 		given(context.getFromAction()).willReturn("doesnotmatter");
@@ -121,7 +121,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportFromAction() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.fromAction);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.fromAction);
 		given(context.getHandler()).willReturn(bean);
 		given(context.getOutcome()).willReturn("fromAction");
 		given(context.getFromAction()).willReturn("noMatch", "#{action}");
@@ -131,7 +131,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportAllHandlers() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class,
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class,
 				Bean.allHandlers);
 		Object h1 = new Object();
 		Object h2 = new Object();
@@ -144,7 +144,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportThisHandler() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class, Bean.defaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
 		Object h1 = new Object();
 		Object h2 = new Object();
 		given(context.getHandler()).willReturn(bean, h1, h2);
@@ -156,7 +156,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportSpecifiedHandlers() throws Exception {
-		NavigationOutcomeAnnotatedMethod o = new NavigationOutcomeAnnotatedMethod(beanName, Bean.class,
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class,
 				Bean.specificHandler);
 		Object h1 = new CustomHandler();
 		Object h2 = new Object();

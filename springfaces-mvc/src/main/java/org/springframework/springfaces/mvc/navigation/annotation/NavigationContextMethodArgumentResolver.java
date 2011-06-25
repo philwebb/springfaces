@@ -18,7 +18,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * </ul>
  * @author Phillip Webb
  */
-class NavigationContextMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public class NavigationContextMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	private NavigationContext navigationContext;
 

@@ -31,6 +31,7 @@ public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgu
 				return FacesContext.getCurrentInstance();
 			}
 		});
+
 		add(ExternalContext.class, HAS_FACES_CONTEXT, new Callable<ExternalContext>() {
 			public ExternalContext call() throws Exception {
 				return FacesContext.getCurrentInstance().getExternalContext();
@@ -42,6 +43,7 @@ public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgu
 				return FacesContext.getCurrentInstance().getPartialViewContext();
 			}
 		});
+
 		add(Application.class, HAS_FACES_CONTEXT, new Callable<Application>() {
 			public Application call() throws Exception {
 				return FacesContext.getCurrentInstance().getApplication();
@@ -52,16 +54,19 @@ public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgu
 				return FacesContext.getCurrentInstance().getApplication().getResourceHandler();
 			}
 		});
+
 		add(ExceptionHandler.class, HAS_FACES_CONTEXT, new Callable<ExceptionHandler>() {
 			public ExceptionHandler call() throws Exception {
 				return FacesContext.getCurrentInstance().getExceptionHandler();
 			}
 		});
+
 		add(UIViewRoot.class, HAS_VIEW_ROOT, new Callable<UIViewRoot>() {
 			public UIViewRoot call() throws Exception {
 				return FacesContext.getCurrentInstance().getViewRoot();
 			}
 		});
+
 		add(Locale.class, HAS_VIEW_ROOT, new Callable<Locale>() {
 			public Locale call() throws Exception {
 				return FacesContext.getCurrentInstance().getViewRoot().getLocale();
