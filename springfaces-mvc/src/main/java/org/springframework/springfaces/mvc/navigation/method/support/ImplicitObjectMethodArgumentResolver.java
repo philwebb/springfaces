@@ -12,8 +12,19 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+/**
+ * Convenient base class for any {@link HandlerMethodArgumentResolver}s that resolve objects against some implicit
+ * context.
+ * 
+ * @see #add(Class, Callable, Callable)
+ * 
+ * @author Phillip Webb
+ */
 public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
+	/**
+	 * {@link Callable} that always returns true.
+	 */
 	protected static final Callable<Boolean> ALWAYS = new Callable<Boolean>() {
 		public Boolean call() throws Exception {
 			return Boolean.TRUE;
@@ -22,10 +33,37 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 
 	private List<ImplicitObject<?>> implicitObjects = new ArrayList<ImplicitObject<?>>();
 
+	/**
+	 * Creates a new {@link ImplicitObjectMethodArgumentResolver}. Subclasses are expected to implement a constructor
+	 * that calls the {@link #add(Class, Callable, Callable) add} method in order to register the implicit objects that
+	 * are supported.
+	 */
+	public ImplicitObjectMethodArgumentResolver() {
+		super();
+	}
+
+	/**
+	 * Add support for the specified type. See {@link #add(Class, Callable, Callable)} for details.
+	 * @param <T> the type being added
+	 * @param type the class type to add
+	 * @param call A {@link Callable} that will be used to obtain the object instance
+	 * @see #add(Class, Callable, Callable)
+	 */
 	protected final <T> void add(Class<T> type, Callable<T> call) {
 		add(type, ALWAYS, call);
 	}
 
+	/**
+	 * Add support for the specified type when a condition matches. This method is expected to be called from subclass
+	 * constructors in order to register supported types.
+	 * 
+	 * @param <T> the type being added
+	 * @param type the class type to add
+	 * @param condition A {@link Callable} that will be used to determine if the object is available.
+	 * @param call A {@link Callable} that will be used to obtain the object instance
+	 * @see #ALWAYS
+	 * @see #add(Class, Callable)
+	 */
 	protected final <T> void add(Class<T> type, Callable<Boolean> condition, Callable<T> call) {
 		Assert.notNull(type, "Type must not be null");
 		Assert.notNull(condition, "Condition must not be null");
@@ -36,7 +74,7 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 	public boolean supportsParameter(MethodParameter parameter) {
 		try {
 			for (ImplicitObject<?> implicitObject : implicitObjects) {
-				if (implicitObject.getType().isAssignableFrom(parameter.getParameterType())
+				if (parameter.getParameterType().isAssignableFrom(implicitObject.getType())
 						&& Boolean.TRUE.equals(implicitObject.getCondition().call())) {
 					return true;
 				}
@@ -81,5 +119,4 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 			return call;
 		}
 	}
-
 }

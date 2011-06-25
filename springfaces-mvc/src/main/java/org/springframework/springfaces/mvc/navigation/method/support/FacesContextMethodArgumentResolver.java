@@ -11,6 +11,26 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
+import org.springframework.springfaces.messagesource.MessageArgumentResolver;
+
+/**
+ * {@link MessageArgumentResolver} that can resolve parameters using the current {@link FacesContext} instance. This
+ * resolver supports the following parameter types:
+ * <ul>
+ * <li>{@link FacesContext}</li>
+ * <li>{@link ExternalContext}</li>
+ * <li>{@link PartialViewContext}</li>
+ * <li>{@link Application}</li>
+ * <li>{@link ResourceHandler}</li>
+ * <li>{@link ExceptionHandler}</li>
+ * <li>{@link UIViewRoot}</li>
+ * <li>{@link Locale}</li>
+ * </ul>
+ * Parameters are only resolve when the {@link FacesContext#getCurrentInstance() current} {@link FacesContext} is not
+ * <tt>null</tt>.
+ * 
+ * @author Phillip Webb
+ */
 public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgumentResolver {
 
 	private static final Callable<Boolean> HAS_FACES_CONTEXT = new Callable<Boolean>() {
@@ -25,6 +45,9 @@ public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgu
 		}
 	};
 
+	/**
+	 * Create a new {@link FacesContextMethodArgumentResolver}.
+	 */
 	public FacesContextMethodArgumentResolver() {
 		add(FacesContext.class, HAS_FACES_CONTEXT, new Callable<FacesContext>() {
 			public FacesContext call() throws Exception {
