@@ -76,11 +76,16 @@
 		</fieldset>
 
 		<fieldset>
-			<legend>@NavigationMapping Annotations</legend>
+			<legend>Direct</legend>
 			<ul>
 				<li>
 					<h:commandButton value="direct to controller" action="#{controller.directNavigation}"/>
 				</li>
+			</ul>
+		</fieldset>
+		<fieldset>
+			<legend>@NavigationMapping Annotations</legend>
+			<ul>
 				<li>
 					<h:inputText value="#{navigationBean.destination}"/>
 					<h:commandButton value="annotation with value" action="annotationwithvalue"/>
@@ -91,6 +96,9 @@
 				</li>
 				<li>
 					<h:commandButton value="annotation streaming" action="annotationStream"/>
+				</li>
+				<li>
+					<h:commandButton value="annotation responseBody" action="annotationResponseBody"/>
 				</li>
 			</ul>
 		</fieldset>

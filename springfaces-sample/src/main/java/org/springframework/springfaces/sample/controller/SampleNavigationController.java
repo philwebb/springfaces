@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/navigation")
@@ -44,14 +45,18 @@ public class SampleNavigationController {
 
 	// FIXME we should support injection of Writer and OutputStream, and HttpServletResponse
 	@NavigationMapping
-	public void onAnnotationStream() throws IOException {
-		// FIXME might be nice to have a util
-		FacesContext context = FacesContext.getCurrentInstance();
-		HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+	public void onAnnotationStream(FacesContext context, HttpServletResponse response) throws IOException {
 		response.setContentType("binary/octet-stream");
 		response.setContentLength(5);
 		response.setHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
 		response.getWriter().write("hello");
+		response.flushBuffer();
 		context.responseComplete();
+	}
+
+	@NavigationMapping
+	@ResponseBody
+	public String onAnnotationResponseBody() {
+		return "hello";
 	}
 }
