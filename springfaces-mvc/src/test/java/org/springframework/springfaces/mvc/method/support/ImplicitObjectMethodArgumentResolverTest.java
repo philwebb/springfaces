@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.navigation.method.support;
+package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.MethodParameter;
+import org.springframework.springfaces.mvc.method.support.ImplicitObjectMethodArgumentResolver;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.navigation.method.support;
+package org.springframework.springfaces.mvc.method.support;
 
 import java.util.Map;
 
