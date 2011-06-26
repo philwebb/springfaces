@@ -36,6 +36,9 @@ public class FacesResponseReturnValueHandler implements HandlerMethodReturnValue
 	public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest) throws Exception {
 		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
-		FacesContext.getCurrentInstance().responseComplete();
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context != null) {
+			context.responseComplete();
+		}
 	}
 }

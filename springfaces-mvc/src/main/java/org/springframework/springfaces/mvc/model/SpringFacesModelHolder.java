@@ -87,11 +87,14 @@ public class SpringFacesModelHolder extends UIComponentBase {
 	 * @param context the faces context
 	 * @param viewRoot the view root
 	 * @param model an optional model
+	 * @return the attached model
 	 */
-	public static void attach(FacesContext context, UIViewRoot viewRoot, Map<String, ?> model) {
+	public static SpringFacesModel attach(FacesContext context, UIViewRoot viewRoot, Map<String, ?> model) {
 		Assert.notNull(context, "FacesContext must not be null");
 		Assert.notNull(viewRoot, "ViewRoot must not be null");
-		viewRoot.getChildren().add(new SpringFacesModelHolder(model));
+		SpringFacesModelHolder holder = new SpringFacesModelHolder(model);
+		viewRoot.getChildren().add(holder);
+		return holder.getModel();
 	}
 
 	/**
