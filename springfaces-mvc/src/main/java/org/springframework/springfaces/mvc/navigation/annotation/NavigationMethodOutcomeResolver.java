@@ -72,10 +72,12 @@ import org.springframework.web.servlet.mvc.method.annotation.support.ServletResp
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletWebArgumentResolverAdapter;
 
 /**
+ * @author Arjen Poutsma
+ * @author Rossen Stoyanchev
  * @author Phillip Webb
  */
-public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements
-		NavigationOutcomeResolver, BeanFactoryAware, InitializingBean {
+public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver,
+		BeanFactoryAware, InitializingBean {
 
 	// Must of this class is based on the AbstractHandlerMethodMapping and RequestMappingHandlerAdapter classes
 
