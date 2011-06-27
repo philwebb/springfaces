@@ -66,7 +66,6 @@ import org.springframework.web.servlet.mvc.method.annotation.support.HttpEntityM
 import org.springframework.web.servlet.mvc.method.annotation.support.PathVariableMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.RequestResponseBodyMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletCookieValueMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.method.annotation.support.ServletModelAttributeMethodProcessor;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletRequestMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletResponseMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletWebArgumentResolverAdapter;
@@ -281,7 +280,6 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 			argumentResolvers = new HandlerMethodArgumentResolverComposite();
 		}
 		// Annotation-based resolvers
-		argumentResolvers.addResolver(new ServletModelAttributeMethodProcessor(false));
 		argumentResolvers.addResolver(new RequestHeaderMethodArgumentResolver(beanFactory));
 		argumentResolvers.addResolver(new RequestHeaderMapMethodArgumentResolver());
 		argumentResolvers.addResolver(new ServletCookieValueMethodArgumentResolver(beanFactory));
@@ -380,6 +378,9 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		if (result == null) {
 			return null;
 		}
+		// FIXME push this into the default handler?
+		// FIXME support ModelAndView types
+
 		if (result instanceof NavigationOutcome) {
 			return (NavigationOutcome) result;
 		}
