@@ -82,7 +82,6 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	// Must of this class is based on the AbstractHandlerMethodMapping and RequestMappingHandlerAdapter classes
 
 	// FIXME DC
-	// FIXME track SPR-8488 & SPR-8487
 
 	private List<HandlerMethodArgumentResolver> customArgumentResolvers;
 
@@ -282,9 +281,12 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	private void initArgumentResolvers() {
-		if (argumentResolvers == null) {
-			argumentResolvers = new HandlerMethodArgumentResolverComposite();
+		if (argumentResolvers != null) {
+			return;
 		}
+
+		initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite();
+
 		// Annotation-based resolvers
 		argumentResolvers.addResolver(new RequestHeaderMethodArgumentResolver(beanFactory));
 		argumentResolvers.addResolver(new RequestHeaderMapMethodArgumentResolver());
@@ -302,9 +304,11 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	private void initInitBinderArgumentResolvers() {
-		if (initBinderArgumentResolvers == null) {
-			initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite();
+		if (initBinderArgumentResolvers != null) {
+			return;
 		}
+
+		initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite();
 
 		// Annotation-based resolvers
 		initBinderArgumentResolvers.addResolver(new RequestParamMethodArgumentResolver(beanFactory, false));
@@ -313,7 +317,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		initBinderArgumentResolvers.addResolver(new ExpressionValueMethodArgumentResolver(beanFactory));
 
 		// Custom resolvers
-		argumentResolvers.addResolvers(customArgumentResolvers);
+		initBinderArgumentResolvers.addResolvers(customArgumentResolvers);
 
 		// Type-based resolvers
 		initBinderArgumentResolvers.addResolver(new ServletRequestMethodArgumentResolver());
@@ -324,9 +328,11 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	private void initReturnValueHandlers() {
-		if (returnValueHandlers == null) {
-			returnValueHandlers = new HandlerMethodReturnValueHandlerComposite();
+		if (returnValueHandlers != null) {
+			return;
 		}
+
+		returnValueHandlers = new HandlerMethodReturnValueHandlerComposite();
 
 		// Annotation-based handlers
 		returnValueHandlers.addHandler(new FacesResponseReturnValueHandler(new RequestResponseBodyMethodProcessor(
