@@ -71,10 +71,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * <li><code>void</code> if the current JSF view should be re-rendered or if the method handles the response and has
  * called {@link FacesContext#responseComplete()}.
  * </ul>
- * <p>
- * <b>NOTE:</b> By default {@link NavigationMapping}s are restricted such that they are only considered when they are
- * contained on the {@code @Controller} that handled the initial request. If you need to define global mappings see the
- * documentation for the {@link #handlers()} method.
  * 
  * @see NavigationMethodOutcomeResolver
  * @author Phillip Webb
@@ -85,11 +81,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Mapping
 public @interface NavigationMapping {
 
+	// FIXME DC
+	/*
+	 * <b>NOTE:</b> {@link NavigationMapping}s only considered when they are contained on the {@code @Controller} that
+	 * handled the initial request. If you need to define global mappings see the documentation for the {@link
+	 * #forController()} method.
+	 */
+
 	/**
 	 * The JSF outcomes that this mapping will handle. When not specified the outcome will be derived from the method
 	 * name. The prefix <tt>'on'</tt> from method names will not be be used when deriving the outcome name (for example
 	 * <tt>onClick()</tt> will map to the outcome <tt>'click'</tt>).
+	 * 
 	 * @return the mapped JSF outcomes or an empty array to derive the outcome from the method name.
+	 * 
 	 * @see NavigationContext#getOutcome()
 	 */
 	String[] value() default {};
@@ -103,7 +108,6 @@ public @interface NavigationMapping {
 	 */
 	String fromAction() default "";
 
-	Class<?>[] handlers() default { void.class };
 	// FIXME DC
-	// FIXME rename this to controllers
+	Class<? extends NavigationFilter> filter() default NavigationFilter.class;
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -19,7 +20,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Phillip Webb
  */
-class NavigationMappingMethod {
+class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
 
 	private static final String[] IGNORED_METHOD_PREFIXES = { "on" };
 
@@ -49,9 +50,9 @@ class NavigationMappingMethod {
 	private String fromAction;
 
 	/**
-	 * A set of handler classes that this method supports or <tt>null</tt> if all handlers are considered.
+	 * If the method is on a {@link Controller} bean.
 	 */
-	private Set<Class<?>> handlerClasses;
+	private boolean controllerBeanMethod;
 
 	/**
 	 * Create a new {@link NavigationMappingMethod}.
@@ -59,7 +60,7 @@ class NavigationMappingMethod {
 	 * @param beanType the bean type
 	 * @param method the method (this must be annotated with {@link NavigationMapping})
 	 */
-	public NavigationMappingMethod(String beanName, Class<?> beanType, Method method) {
+	public NavigationMappingMethod(String beanName, Class<?> beanType, Method method, boolean controllerBeanMethod) {
 		Assert.notNull(beanName, "BeanName must not be null");
 		Assert.notNull(beanType, "BeanType must not be null");
 		Assert.notNull(method, "Method must not be null");
@@ -73,7 +74,8 @@ class NavigationMappingMethod {
 						+ method.getName());
 		this.outcomes = buildOutcomes(method, annotation);
 		this.fromAction = buildFromAction(annotation);
-		this.handlerClasses = buildHandlerClasses(annotation, beanType);
+		this.controllerBeanMethod = controllerBeanMethod;
+		// FIXME filter
 	}
 
 	private Set<String> buildOutcomes(Method method, NavigationMapping annotation) {
@@ -102,23 +104,13 @@ class NavigationMappingMethod {
 		return null;
 	}
 
-	private Set<Class<?>> buildHandlerClasses(NavigationMapping annotation, Class<?> beanType) {
-		if (annotation.handlers().length == 0) {
-			return null;
-		}
-		if (annotation.handlers().length == 1 && void.class.equals(annotation.handlers()[0])) {
-			return Collections.<Class<?>> singleton(beanType);
-		}
-		return new HashSet<Class<?>>(Arrays.asList(annotation.handlers()));
-	}
-
 	/**
 	 * Determines if this method can be used for the given navigation context.
 	 * @param context the navigation context
 	 * @return <tt>true</tt> if this method can be used to handle navigation
 	 */
 	public boolean canResolve(NavigationContext context) {
-		return fromActionMatches(context) && outcomeMatches(context) && handlerMatches(context);
+		return fromActionMatches(context) && outcomeMatches(context) && controllerMatches(context);
 	}
 
 	private boolean fromActionMatches(NavigationContext context) {
@@ -129,18 +121,11 @@ class NavigationMappingMethod {
 		return outcomes.contains(context.getOutcome());
 	}
 
-	private boolean handlerMatches(NavigationContext context) {
-		if (handlerClasses == null) {
+	private boolean controllerMatches(NavigationContext context) {
+		if (!controllerBeanMethod) {
 			return true;
 		}
-		Object handler = context.getHandler();
-		Object controller = context.getController();
-		for (Class<?> handlerClass : handlerClasses) {
-			if (handlerClass.isInstance(controller) || handlerClass.isInstance(handler)) {
-				return true;
-			}
-		}
-		return false;
+		return beanType.isInstance(context.getController());
 	}
 
 	public String getBeanName() {
@@ -159,5 +144,10 @@ class NavigationMappingMethod {
 	 */
 	public Method getMethod() {
 		return method;
+	}
+
+	public int compareTo(NavigationMappingMethod o) {
+		// FIXME make this support @Ordered on the method
+		return 0;
 	}
 }

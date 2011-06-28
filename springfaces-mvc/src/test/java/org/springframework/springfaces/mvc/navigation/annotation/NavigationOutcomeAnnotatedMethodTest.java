@@ -39,33 +39,33 @@ public class NavigationOutcomeAnnotatedMethodTest {
 	public void shouldNeedBeanName() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("BeanName must not be null");
-		new NavigationMappingMethod(null, Bean.class, Bean.defaults);
+		new NavigationMappingMethod(null, Bean.class, Bean.defaults, true);
 	}
 
 	@Test
 	public void shouldNeedBeanType() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("BeanType must not be null");
-		new NavigationMappingMethod(beanName, null, Bean.defaults);
+		new NavigationMappingMethod(beanName, null, Bean.defaults, true);
 	}
 
 	@Test
 	public void shouldNeedMethod() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Method must not be null");
-		new NavigationMappingMethod(beanName, Bean.class, null);
+		new NavigationMappingMethod(beanName, Bean.class, null, true);
 	}
 
 	@Test
 	public void shouldNeedAnnotationOnMethod() throws Exception {
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Unable to find @NavigationMapping annotation on method Bean.noAnnotation");
-		new NavigationMappingMethod(beanName, Bean.class, Bean.noAnnotation);
+		new NavigationMappingMethod(beanName, Bean.class, Bean.noAnnotation, true);
 	}
 
 	@Test
 	public void shouldGetDetails() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
 		assertEquals(beanName, o.getBeanName());
 		assertEquals(Bean.class, o.getBeanType());
 		assertSame(Bean.defaults, o.getMethod());
@@ -73,8 +73,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldMatchMethodWhenNoOutcome() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "defaults");
 		assertFalse(o.canResolve(context));
 		assertTrue(o.canResolve(context));
@@ -82,8 +82,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreMethodPrefixes() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "defaults");
 		assertFalse(o.canResolve(context));
 		assertTrue(o.canResolve(context));
@@ -91,8 +91,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreMethodPrefixOnOwn() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.on);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.on, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("noMatch", "on");
 		assertFalse(o.canResolve(context));
 		assertTrue(o.canResolve(context));
@@ -100,8 +100,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportSpecifiedOutcomes() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.specified);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.specified, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("zero", "one", "two", "three", "four");
 		assertFalse(o.canResolve(context));
 		assertTrue(o.canResolve(context));
@@ -112,8 +112,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldIgnoreFromActionWhenNotSpecified() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("defaults");
 		given(context.getFromAction()).willReturn("doesnotmatter");
 		assertTrue(o.canResolve(context));
@@ -121,8 +121,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 
 	@Test
 	public void shouldSupportFromAction() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.fromAction);
-		given(context.getHandler()).willReturn(bean);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.fromAction, true);
+		given(context.getController()).willReturn(bean);
 		given(context.getOutcome()).willReturn("fromAction");
 		given(context.getFromAction()).willReturn("noMatch", "#{action}");
 		assertFalse(o.canResolve(context));
@@ -130,42 +130,19 @@ public class NavigationOutcomeAnnotatedMethodTest {
 	}
 
 	@Test
-	public void shouldSupportAllHandlers() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class,
-				Bean.allHandlers);
-		Object h1 = new Object();
-		Object h2 = new Object();
-		given(context.getHandler()).willReturn(bean, h1, h2);
-		given(context.getOutcome()).willReturn("allHandlers");
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-	}
-
-	@Test
 	public void shouldSupportThisHandler() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults);
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
 		Object h1 = new Object();
 		Object h2 = new Object();
-		given(context.getHandler()).willReturn(bean, h1, h2);
+		given(context.getController()).willReturn(bean, h1, h2);
 		given(context.getOutcome()).willReturn("defaults");
 		assertTrue(o.canResolve(context));
 		assertFalse(o.canResolve(context));
 		assertFalse(o.canResolve(context));
 	}
 
-	@Test
-	public void shouldSupportSpecifiedHandlers() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class,
-				Bean.specificHandler);
-		Object h1 = new CustomHandler();
-		Object h2 = new Object();
-		given(context.getHandler()).willReturn(bean, h1, h2);
-		given(context.getOutcome()).willReturn("specificHandler");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertFalse(o.canResolve(context));
-	}
+	// FIXME test not on controllerBeanMethod
+	// FIXME test filters
 
 	public static class CustomHandler {
 	}
@@ -178,8 +155,6 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		public static Method on;
 		public static Method specified;
 		public static Method fromAction;
-		public static Method allHandlers;
-		public static Method specificHandler;
 
 		static {
 			noAnnotation = ReflectionUtils.findMethod(Bean.class, "noAnnotation");
@@ -188,8 +163,6 @@ public class NavigationOutcomeAnnotatedMethodTest {
 			on = ReflectionUtils.findMethod(Bean.class, "on");
 			specified = ReflectionUtils.findMethod(Bean.class, "specified");
 			fromAction = ReflectionUtils.findMethod(Bean.class, "fromAction");
-			allHandlers = ReflectionUtils.findMethod(Bean.class, "allHandlers");
-			specificHandler = ReflectionUtils.findMethod(Bean.class, "specificHandler");
 		}
 
 		public void noAnnotation() {
@@ -214,14 +187,5 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		@NavigationMapping(fromAction = "#{action}")
 		public void fromAction() {
 		}
-
-		@NavigationMapping(handlers = {})
-		public void allHandlers() {
-		}
-
-		@NavigationMapping(handlers = { CustomHandler.class })
-		public void specificHandler() {
-		}
 	}
-
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.context.ExternalContext;
@@ -80,6 +81,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 
 	// Must of this class is based on the AbstractHandlerMethodMapping and RequestMappingHandlerAdapter classes
 
+	// FIXME DC
 	// FIXME track SPR-8488 & SPR-8487
 
 	private List<HandlerMethodArgumentResolver> customArgumentResolvers;
@@ -102,7 +104,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 
 	private HandlerMethodArgumentResolverComposite initBinderArgumentResolvers;
 
-	private Set<NavigationMappingMethod> navigationMethods = new HashSet<NavigationMappingMethod>();
+	private Set<NavigationMappingMethod> navigationMethods = new TreeSet<NavigationMappingMethod>();
 
 	/**
 	 * Create a {@link NavigationMethodOutcomeResolver} instance.
@@ -110,7 +112,6 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	public NavigationMethodOutcomeResolver() {
 		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
 		stringHttpMessageConverter.setWriteAcceptCharset(false); // See SPR-7316
-
 		messageConverters = new ArrayList<HttpMessageConverter<?>>();
 		messageConverters.add(new ByteArrayHttpMessageConverter());
 		messageConverters.add(stringHttpMessageConverter);
@@ -243,24 +244,29 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		}
 	}
 
-	/**
-	 * Determine if the specified bean type should be scanned for {@link NavigationMapping} methods.
-	 * @param beanType the bean type
-	 * @return <tt>true</tt> if the bean type should be scanned
-	 */
-	protected boolean isNavigationBean(Class<?> beanType) {
-		return AnnotationUtils.findAnnotation(beanType, Controller.class) != null;
-	}
-
 	private void detectNavigationMethods(final String beanName, final Class<?> beanType) {
 		Set<Method> methods = HandlerMethodSelector.selectMethods(beanType, new MethodFilter() {
 			public boolean matches(Method method) {
 				return AnnotationUtils.findAnnotation(method, NavigationMapping.class) != null;
 			}
 		});
+		boolean controllerBeanMethod = isControllerBean(beanType);
 		for (Method method : methods) {
-			navigationMethods.add(new NavigationMappingMethod(beanName, beanType, method));
+			navigationMethods.add(new NavigationMappingMethod(beanName, beanType, method, controllerBeanMethod));
 		}
+	}
+
+	/**
+	 * Determine if the specified bean type should be scanned for {@link NavigationMapping} methods.
+	 * @param beanType the bean type
+	 * @return <tt>true</tt> if the bean type should be scanned
+	 */
+	protected boolean isNavigationBean(Class<?> beanType) {
+		return (isControllerBean(beanType) || (AnnotationUtils.findAnnotation(beanType, NavigationController.class) != null));
+	}
+
+	protected boolean isControllerBean(Class<?> beanType) {
+		return (AnnotationUtils.findAnnotation(beanType, Controller.class) != null);
 	}
 
 	public void setBeanFactory(BeanFactory beanFactory) {
