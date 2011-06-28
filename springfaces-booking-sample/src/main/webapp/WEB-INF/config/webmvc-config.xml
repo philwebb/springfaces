@@ -71,11 +71,20 @@
 		</property>
 	</bean>
 
+	<bean name="navigationOutcomeResolver" class="org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolverChain">
+		<property name="resolvers">
+			<list>
+				<bean class="org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver"/>
+				<bean class="org.springframework.springfaces.mvc.navigation.annotation.NavigationMethodOutcomeResolver"/>
+			</list>
+		</property>
+	</bean>
 
 	<bean
 		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
 		<constructor-arg ref="stateHandler" />
 		<constructor-arg ref="destinationViewResolverChain" />
+		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver"/>
 	</bean>
 
 	<bean name="originalHandlerLocator" class="org.springframework.springfaces.mvc.servlet.DefaultOriginalHandlerLocator"/>
