@@ -15,16 +15,16 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * 
  * @author Phillip Webb
  */
-public class FacesResponseReturnValueHandler implements HandlerMethodReturnValueHandler {
+public class FacesResponseCompleteReturnValueHandler implements HandlerMethodReturnValueHandler {
 
 	private HandlerMethodReturnValueHandler handler;
 
 	/**
-	 * Creates a new {@link FacesResponseReturnValueHandler} what wraps the specified handler to ensure that the
+	 * Creates a new {@link FacesResponseCompleteReturnValueHandler} what wraps the specified handler to ensure that the
 	 * {@link FacesContext#responseComplete()} is called after the return value has been handled.
 	 * @param handler the delegate handler
 	 */
-	public FacesResponseReturnValueHandler(HandlerMethodReturnValueHandler handler) {
+	public FacesResponseCompleteReturnValueHandler(HandlerMethodReturnValueHandler handler) {
 		Assert.notNull(handler, "Handler must not be null");
 		this.handler = handler;
 	}

@@ -21,16 +21,16 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Tests for {@link FacesResponseReturnValueHandler}.
+ * Tests for {@link FacesResponseCompleteReturnValueHandler}.
  * 
  * @author Phillip Webb
  */
-public class FacesResponseReturnValueHandlerTest {
+public class FacesResponseCompleteReturnValueHandlerTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private FacesResponseReturnValueHandler handler;
+	private FacesResponseCompleteReturnValueHandler handler;
 
 	@Mock
 	private FacesContext facesContext;
@@ -54,7 +54,7 @@ public class FacesResponseReturnValueHandlerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		FacesContextSetter.setCurrentInstance(facesContext);
-		handler = new FacesResponseReturnValueHandler(delegate);
+		handler = new FacesResponseCompleteReturnValueHandler(delegate);
 		given(handler.supportsReturnType(any(MethodParameter.class))).willReturn(true);
 	}
 
@@ -67,7 +67,7 @@ public class FacesResponseReturnValueHandlerTest {
 	public void shouldNeedDelegateHandler() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("Handler must not be null");
-		new FacesResponseReturnValueHandler(null);
+		new FacesResponseCompleteReturnValueHandler(null);
 	}
 
 	@Test
