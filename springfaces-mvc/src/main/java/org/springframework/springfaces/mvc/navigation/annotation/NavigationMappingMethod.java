@@ -1,14 +1,15 @@
 package org.springframework.springfaces.mvc.navigation.annotation;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -40,21 +41,6 @@ class NavigationMappingMethod {
 	private Method method;
 
 	/**
-	 * A list of outcomes that this method supports (never empty).
-	 */
-	private Set<String> outcomes;
-
-	/**
-	 * The fromAction constraint or <tt>null</tt> if all actions are considered.
-	 */
-	private String fromAction;
-
-	/**
-	 * If the method is on a {@link Controller} bean.
-	 */
-	private boolean controllerBeanMethod;
-
-	/**
 	 * The mapping filter.
 	 */
 	private NavigationMappingFilter filter;
@@ -78,47 +64,24 @@ class NavigationMappingMethod {
 				annotation != null,
 				"Unable to find @NavigationMapping annotation on method " + beanType.getSimpleName() + "."
 						+ method.getName());
-		this.outcomes = buildOutcomes(method, annotation);
-		this.fromAction = buildFromAction(annotation);
-		this.filter = buildFilter(annotation);
-		this.controllerBeanMethod = controllerBeanMethod;
+
+		List<NavigationMappingFilter> filters = new ArrayList<NavigationMappingFilter>();
+		filters.add(new OutcomesFilter(method, annotation));
+		filters.add(new FromActionFilter(annotation));
+		if (controllerBeanMethod) {
+			filters.add(new ControllerFilter());
+		}
+		if (!NavigationMappingFilter.class.equals(annotation.filter())) {
+			filters.add(createSpecifiedFilter(annotation));
+		}
+		this.filter = new CompositeNavigationMappingFilter(filters.toArray(new NavigationMappingFilter[] {}));
 	}
 
-	private Set<String> buildOutcomes(Method method, NavigationMapping annotation) {
-		if (ObjectUtils.isEmpty(annotation.value())) {
-			return Collections.singleton(buildOutcomeFromMethodName(method));
-		}
-		return new HashSet<String>(Arrays.asList(annotation.value()));
-	}
-
-	private String buildOutcomeFromMethodName(Method method) {
-		String outcome = method.getName();
-		for (String ignoredPrefix : IGNORED_METHOD_PREFIXES) {
-			if (outcome.length() > ignoredPrefix.length() && outcome.startsWith(ignoredPrefix)) {
-				StringBuffer outcomeBuffer = new StringBuffer(outcome.substring(ignoredPrefix.length()));
-				outcomeBuffer.setCharAt(0, Character.toLowerCase(outcomeBuffer.charAt(0)));
-				return outcomeBuffer.toString();
-			}
-		}
-		return outcome;
-	}
-
-	private String buildFromAction(NavigationMapping annotation) {
-		if (StringUtils.hasText(annotation.fromAction())) {
-			return annotation.fromAction();
-		}
-		return null;
-	}
-
-	private NavigationMappingFilter buildFilter(NavigationMapping annotation) {
-		Class<? extends NavigationMappingFilter> filterClass = annotation.filter();
-		if (NavigationMappingFilter.class.equals(filterClass)) {
-			return NavigationMappingFilter.NONE;
-		}
+	private NavigationMappingFilter createSpecifiedFilter(NavigationMapping annotation) {
 		try {
-			return filterClass.newInstance();
+			return annotation.filter().newInstance();
 		} catch (Exception e) {
-			throw new IllegalStateException("Unable to create filter from class " + filterClass, e);
+			throw new IllegalStateException("Unable to create filter from class " + annotation.filter(), e);
 		}
 	}
 
@@ -128,23 +91,7 @@ class NavigationMappingMethod {
 	 * @return <tt>true</tt> if this method can be used to handle navigation
 	 */
 	public boolean canResolve(NavigationContext context) {
-		return fromActionMatches(context) && outcomeMatches(context) && controllerMatches(context)
-				&& filter.matches(context);
-	}
-
-	private boolean fromActionMatches(NavigationContext context) {
-		return fromAction == null || fromAction.equals(context.getFromAction());
-	}
-
-	private boolean outcomeMatches(NavigationContext context) {
-		return outcomes.contains(context.getOutcome());
-	}
-
-	private boolean controllerMatches(NavigationContext context) {
-		if (!controllerBeanMethod) {
-			return true;
-		}
-		return beanType.isInstance(context.getController());
+		return filter.matches(context);
 	}
 
 	public String getBeanName() {
@@ -164,4 +111,53 @@ class NavigationMappingMethod {
 	public Method getMethod() {
 		return method;
 	}
+
+	private class OutcomesFilter implements NavigationMappingFilter {
+		private Set<String> outcomes;
+
+		public OutcomesFilter(Method method, NavigationMapping annotation) {
+			if (ObjectUtils.isEmpty(annotation.value())) {
+				this.outcomes = Collections.singleton(buildOutcomeFromMethodName(method));
+			} else {
+				this.outcomes = new HashSet<String>(Arrays.asList(annotation.value()));
+			}
+		}
+
+		private String buildOutcomeFromMethodName(Method method) {
+			String outcome = method.getName();
+			for (String ignoredPrefix : IGNORED_METHOD_PREFIXES) {
+				if (outcome.length() > ignoredPrefix.length() && outcome.startsWith(ignoredPrefix)) {
+					StringBuffer outcomeBuffer = new StringBuffer(outcome.substring(ignoredPrefix.length()));
+					outcomeBuffer.setCharAt(0, Character.toLowerCase(outcomeBuffer.charAt(0)));
+					return outcomeBuffer.toString();
+				}
+			}
+			return outcome;
+		}
+
+		public boolean matches(NavigationContext context) {
+			return outcomes.contains(context.getOutcome());
+		}
+	}
+
+	private class FromActionFilter implements NavigationMappingFilter {
+		private String fromAction;
+
+		public FromActionFilter(NavigationMapping annotation) {
+			if (StringUtils.hasText(annotation.fromAction())) {
+				this.fromAction = annotation.fromAction();
+			}
+		}
+
+		public boolean matches(NavigationContext context) {
+			return fromAction == null || fromAction.equals(context.getFromAction());
+		}
+	}
+
+	private class ControllerFilter implements NavigationMappingFilter {
+		public boolean matches(NavigationContext context) {
+			return beanType.isInstance(context.getController());
+		}
+	}
+
 }
