@@ -1,4 +1,4 @@
-package org.springframework.springfaces.mvc.navigation.annotation;
+package org.springframework.springfaces.mvc.navigation.annotation.support;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.context.request.NativeWebRequest;

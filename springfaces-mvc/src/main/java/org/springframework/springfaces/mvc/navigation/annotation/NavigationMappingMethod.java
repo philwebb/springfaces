@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Phillip Webb
  */
-class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
+class NavigationMappingMethod {
 
 	private static final String[] IGNORED_METHOD_PREFIXES = { "on" };
 
@@ -55,10 +55,16 @@ class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
 	private boolean controllerBeanMethod;
 
 	/**
+	 * The mapping filter.
+	 */
+	private NavigationMappingFilter filter;
+
+	/**
 	 * Create a new {@link NavigationMappingMethod}.
 	 * @param beanName the bean name
 	 * @param beanType the bean type
 	 * @param method the method (this must be annotated with {@link NavigationMapping})
+	 * @param controllerBeanMethod if the method is on a controller bean
 	 */
 	public NavigationMappingMethod(String beanName, Class<?> beanType, Method method, boolean controllerBeanMethod) {
 		Assert.notNull(beanName, "BeanName must not be null");
@@ -74,8 +80,8 @@ class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
 						+ method.getName());
 		this.outcomes = buildOutcomes(method, annotation);
 		this.fromAction = buildFromAction(annotation);
+		this.filter = buildFilter(annotation);
 		this.controllerBeanMethod = controllerBeanMethod;
-		// FIXME filter
 	}
 
 	private Set<String> buildOutcomes(Method method, NavigationMapping annotation) {
@@ -104,13 +110,26 @@ class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
 		return null;
 	}
 
+	private NavigationMappingFilter buildFilter(NavigationMapping annotation) {
+		Class<? extends NavigationMappingFilter> filterClass = annotation.filter();
+		if (NavigationMappingFilter.class.equals(filterClass)) {
+			return NavigationMappingFilter.NONE;
+		}
+		try {
+			return filterClass.newInstance();
+		} catch (Exception e) {
+			throw new IllegalStateException("Unable to create filter from class " + filterClass, e);
+		}
+	}
+
 	/**
 	 * Determines if this method can be used for the given navigation context.
 	 * @param context the navigation context
 	 * @return <tt>true</tt> if this method can be used to handle navigation
 	 */
 	public boolean canResolve(NavigationContext context) {
-		return fromActionMatches(context) && outcomeMatches(context) && controllerMatches(context);
+		return fromActionMatches(context) && outcomeMatches(context) && controllerMatches(context)
+				&& filter.matches(context);
 	}
 
 	private boolean fromActionMatches(NavigationContext context) {
@@ -144,10 +163,5 @@ class NavigationMappingMethod implements Comparable<NavigationMappingMethod> {
 	 */
 	public Method getMethod() {
 		return method;
-	}
-
-	public int compareTo(NavigationMappingMethod o) {
-		// FIXME make this support @Ordered on the method
-		return 0;
 	}
 }

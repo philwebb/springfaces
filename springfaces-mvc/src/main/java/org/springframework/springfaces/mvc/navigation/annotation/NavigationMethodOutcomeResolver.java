@@ -35,6 +35,7 @@ import org.springframework.springfaces.mvc.method.support.SpringFacesModelMethod
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
+import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationMethodReturnValueHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils.MethodFilter;
@@ -60,6 +61,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite;
 import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
@@ -72,14 +74,15 @@ import org.springframework.web.servlet.mvc.method.annotation.support.ServletResp
 import org.springframework.web.servlet.mvc.method.annotation.support.ServletWebArgumentResolverAdapter;
 
 /**
+ * @see AbstractHandlerMethodMapping
+ * @see RequestMappingHandlerAdapter
+ * 
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @author Phillip Webb
  */
 public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver,
 		BeanFactoryAware, InitializingBean {
-
-	// Must of this class is based on the AbstractHandlerMethodMapping and RequestMappingHandlerAdapter classes
 
 	// FIXME DC
 

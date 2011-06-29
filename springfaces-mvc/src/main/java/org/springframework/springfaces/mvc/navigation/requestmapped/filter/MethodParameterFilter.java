@@ -17,5 +17,5 @@ public interface MethodParameterFilter {
 	 * @return if the parameter should be filtered
 	 */
 	boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter);
-
+	// FIXME rename to matches for consistency with spring
 }

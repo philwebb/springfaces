@@ -8,8 +8,19 @@ import java.lang.annotation.Target;
 
 import org.springframework.stereotype.Component;
 
-//FIXME DC
-
+/**
+ * Indicates that an annotated class contains JSF navigation mappings.
+ * <p>
+ * This annotation serves as a specialization of {@link Component @Component}, allowing for implementation classes to be
+ * autodetected through classpath scanning. It is typically used in combination with annotated navigation methods based
+ * on the {@link org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping} annotation.
+ * 
+ * @see Component
+ * @see NavigationMapping
+ * @see NavigationMethodOutcomeResolver
+ * 
+ * @author Phillip Webb
+ */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

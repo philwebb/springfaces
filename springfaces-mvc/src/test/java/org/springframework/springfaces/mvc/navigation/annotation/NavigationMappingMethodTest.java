@@ -23,7 +23,7 @@ import org.springframework.util.ReflectionUtils;
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)
-public class NavigationOutcomeAnnotatedMethodTest {
+public class NavigationMappingMethodTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -130,7 +130,7 @@ public class NavigationOutcomeAnnotatedMethodTest {
 	}
 
 	@Test
-	public void shouldSupportThisHandler() throws Exception {
+	public void shouldOnlyMatchControllerBean() throws Exception {
 		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
 		Object h1 = new Object();
 		Object h2 = new Object();
@@ -141,10 +141,45 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		assertFalse(o.canResolve(context));
 	}
 
-	// FIXME test not on controllerBeanMethod
-	// FIXME test filters
+	@Test
+	public void shouldMatchAllBeans() throws Exception {
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, false);
+		Object h1 = new Object();
+		Object h2 = new Object();
+		given(context.getController()).willReturn(bean, h1, h2);
+		given(context.getOutcome()).willReturn("defaults");
+		assertTrue(o.canResolve(context));
+		assertTrue(o.canResolve(context));
+		assertTrue(o.canResolve(context));
+	}
 
-	public static class CustomHandler {
+	@Test
+	public void shouldFailFastOnFilterCreateErrors() throws Exception {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Unable to create filter from class");
+		new NavigationMappingMethod(beanName, Bean.class, Bean.malformedFilter, true);
+	}
+
+	@Test
+	public void shouldFilterContext() throws Exception {
+		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.filter, true);
+		given(context.getController()).willReturn(bean);
+		given(context.getOutcome()).willReturn("filter");
+		assertTrue(o.canResolve(context));
+		assertFalse(o.canResolve(context));
+	}
+
+	public static abstract class AbstractFilter implements NavigationMappingFilter {
+	}
+
+	public static class Filter implements NavigationMappingFilter {
+		public boolean filtered = true;
+
+		public boolean matches(NavigationContext context) {
+			boolean rtn = filtered;
+			filtered = !filtered;
+			return rtn;
+		}
 	}
 
 	public static class Bean {
@@ -155,6 +190,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		public static Method on;
 		public static Method specified;
 		public static Method fromAction;
+		public static Method malformedFilter;
+		public static Method filter;
 
 		static {
 			noAnnotation = ReflectionUtils.findMethod(Bean.class, "noAnnotation");
@@ -163,6 +200,8 @@ public class NavigationOutcomeAnnotatedMethodTest {
 			on = ReflectionUtils.findMethod(Bean.class, "on");
 			specified = ReflectionUtils.findMethod(Bean.class, "specified");
 			fromAction = ReflectionUtils.findMethod(Bean.class, "fromAction");
+			malformedFilter = ReflectionUtils.findMethod(Bean.class, "malformedFilter");
+			filter = ReflectionUtils.findMethod(Bean.class, "filter");
 		}
 
 		public void noAnnotation() {
@@ -187,5 +226,14 @@ public class NavigationOutcomeAnnotatedMethodTest {
 		@NavigationMapping(fromAction = "#{action}")
 		public void fromAction() {
 		}
+
+		@NavigationMapping(filter = AbstractFilter.class)
+		public void malformedFilter() {
+		}
+
+		@NavigationMapping(filter = Filter.class)
+		public void filter() {
+		}
+
 	}
 }
