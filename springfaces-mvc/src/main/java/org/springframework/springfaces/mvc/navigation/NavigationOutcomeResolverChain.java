@@ -6,14 +6,14 @@ import javax.faces.context.FacesContext;
 
 import org.springframework.util.Assert;
 
+/**
+ * {@link NavigationOutcomeResolver} that allows several resolvers to be chained together.
+ * 
+ * @author Phillip Webb
+ */
 public class NavigationOutcomeResolverChain implements NavigationOutcomeResolver {
 
-	// FIXME DC + test
-
 	private List<NavigationOutcomeResolver> resolvers;
-
-	public NavigationOutcomeResolverChain() {
-	}
 
 	public boolean canResolve(FacesContext facesContext, NavigationContext navigationContext) {
 		return findResolver(facesContext, navigationContext) != null;
@@ -21,25 +21,30 @@ public class NavigationOutcomeResolverChain implements NavigationOutcomeResolver
 
 	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext navigationContext) throws Exception {
 		NavigationOutcomeResolver resolver = findResolver(facesContext, navigationContext);
-		// FIXME better error
-		Assert.state(resolver != null, "Unable to find resolver for navigation");
+		Assert.state(resolver != null,
+				"Unable to find resolver for navigation outcome '" + navigationContext.getOutcome() + "'");
 		return resolver.resolve(facesContext, navigationContext);
 	}
 
 	private NavigationOutcomeResolver findResolver(FacesContext facesContext, NavigationContext navigationContext) {
 		NavigationOutcomeResolver found = null;
-		for (NavigationOutcomeResolver resolver : resolvers) {
-			if (resolver.canResolve(facesContext, navigationContext)) {
-				// FIXME better error
-				Assert.state(found == null, "Duplicate resolvers found for navigation");
-				found = resolver;
+		if (resolvers != null) {
+			for (NavigationOutcomeResolver resolver : resolvers) {
+				if (resolver.canResolve(facesContext, navigationContext)) {
+					Assert.state(found == null, "Duplicate resolvers found for navigation outcome '"
+							+ navigationContext.getOutcome() + "'");
+					found = resolver;
+				}
 			}
 		}
 		return found;
 	}
 
+	/**
+	 * Set the list of resolvers that will be used when resolving a destination.
+	 * @param resolvers the list of resolvers
+	 */
 	public void setResolvers(List<NavigationOutcomeResolver> resolvers) {
 		this.resolvers = resolvers;
 	}
-
 }
