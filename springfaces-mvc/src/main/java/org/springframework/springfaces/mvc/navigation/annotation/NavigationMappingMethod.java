@@ -41,6 +41,11 @@ class NavigationMappingMethod {
 	private Method method;
 
 	/**
+	 * Is the method is on a controller bean.
+	 */
+	private boolean controllerBeanMethod;
+
+	/**
 	 * The mapping filter.
 	 */
 	private NavigationMappingFilter filter;
@@ -59,6 +64,7 @@ class NavigationMappingMethod {
 		this.beanName = beanName;
 		this.beanType = beanType;
 		this.method = method;
+		this.controllerBeanMethod = controllerBeanMethod;
 		NavigationMapping annotation = AnnotationUtils.findAnnotation(method, NavigationMapping.class);
 		Assert.state(
 				annotation != null,
@@ -110,6 +116,13 @@ class NavigationMappingMethod {
 	 */
 	public Method getMethod() {
 		return method;
+	}
+
+	/**
+	 * @return <tt>true</tt> if the method is on a controller bean
+	 */
+	public boolean isControllerBeanMethod() {
+		return controllerBeanMethod;
 	}
 
 	private class OutcomesFilter implements NavigationMappingFilter {
