@@ -4,6 +4,7 @@ import javax.faces.component.UIComponent;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -23,16 +24,17 @@ public class NavigationContextMethodArgumentResolver implements HandlerMethodArg
 	private NavigationContext navigationContext;
 
 	public NavigationContextMethodArgumentResolver(NavigationContext navigationContext) {
+		Assert.notNull(navigationContext, "NavigationContext must not be null");
 		this.navigationContext = navigationContext;
 	}
 
 	public boolean supportsParameter(MethodParameter parameter) {
-		return supportNavigationContext(parameter) || supportsComponent(parameter) || supportsOutcome(parameter);
+		return supportsNavigationContext(parameter) || supportsComponent(parameter) || supportsOutcome(parameter);
 	}
 
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		if (supportNavigationContext(parameter)) {
+		if (supportsNavigationContext(parameter)) {
 			return navigationContext;
 		}
 		if (supportsComponent(parameter)) {
@@ -44,8 +46,8 @@ public class NavigationContextMethodArgumentResolver implements HandlerMethodArg
 		return null;
 	}
 
-	private boolean supportNavigationContext(MethodParameter parameter) {
-		return parameter.getParameterType().isInstance(navigationContext);
+	private boolean supportsNavigationContext(MethodParameter parameter) {
+		return parameter.getParameterType().equals(NavigationContext.class);
 	}
 
 	private boolean supportsComponent(MethodParameter parameter) {

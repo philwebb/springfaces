@@ -13,6 +13,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,6 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.springfaces.mvc.FacesContextSetter;
-import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler.NavigationResponseUIViewRoot;
@@ -175,7 +175,7 @@ public class MvcViewHandlerTest {
 	@Test
 	public void shouldCreateViewForMVCRender() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
 		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
 		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
@@ -209,7 +209,7 @@ public class MvcViewHandlerTest {
 	@Test
 	public void shouldUseSelfPostbackForActionURLFromMVCRender() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
 		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
 		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
@@ -236,7 +236,7 @@ public class MvcViewHandlerTest {
 
 	@Test
 	public void shouldDelegateRenderView() throws Exception {
-		UIViewRoot viewToRender = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewToRender = mockUIViewRootWithModelSupport();
 		handler.renderView(context, viewToRender);
 		verify(delegate).renderView(context, viewToRender);
 	}

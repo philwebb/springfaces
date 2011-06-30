@@ -35,6 +35,7 @@ import org.springframework.springfaces.mvc.method.support.SpringFacesModelMethod
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
+import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationContextMethodArgumentResolver;
 import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationMethodReturnValueHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
@@ -105,7 +106,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 
 	private HandlerMethodReturnValueHandlerComposite returnValueHandlers;
 
-	private HandlerMethodArgumentResolverComposite argumentResolvers;
+	private List<HandlerMethodArgumentResolver> argumentResolvers;
 
 	private HandlerMethodArgumentResolverComposite initBinderArgumentResolvers;
 
@@ -147,8 +148,8 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	 */
 	public void setArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
 		if (argumentResolvers != null) {
-			this.argumentResolvers = new HandlerMethodArgumentResolverComposite();
-			this.argumentResolvers.addResolvers(argumentResolvers);
+			this.argumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
+			this.argumentResolvers.addAll(argumentResolvers);
 		}
 	}
 
@@ -295,22 +296,24 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		if (argumentResolvers != null) {
 			return;
 		}
-		argumentResolvers = new HandlerMethodArgumentResolverComposite();
+		argumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
 
 		// Annotation-based resolvers
-		argumentResolvers.addResolver(new RequestHeaderMethodArgumentResolver(beanFactory));
-		argumentResolvers.addResolver(new RequestHeaderMapMethodArgumentResolver());
-		argumentResolvers.addResolver(new ServletCookieValueMethodArgumentResolver(beanFactory));
-		argumentResolvers.addResolver(new ExpressionValueMethodArgumentResolver(beanFactory));
+		argumentResolvers.add(new RequestHeaderMethodArgumentResolver(beanFactory));
+		argumentResolvers.add(new RequestHeaderMapMethodArgumentResolver());
+		argumentResolvers.add(new ServletCookieValueMethodArgumentResolver(beanFactory));
+		argumentResolvers.add(new ExpressionValueMethodArgumentResolver(beanFactory));
 
 		// Custom resolvers
-		argumentResolvers.addResolvers(customArgumentResolvers);
+		if (customArgumentResolvers != null) {
+			argumentResolvers.addAll(customArgumentResolvers);
+		}
 
 		// Type-based resolvers
-		argumentResolvers.addResolver(new FacesContextMethodArgumentResolver());
-		argumentResolvers.addResolver(new ServletRequestMethodArgumentResolver());
-		argumentResolvers.addResolver(new ServletResponseMethodArgumentResolver());
-		argumentResolvers.addResolver(new SpringFacesModelMethodArgumentResolver());
+		argumentResolvers.add(new FacesContextMethodArgumentResolver());
+		argumentResolvers.add(new ServletRequestMethodArgumentResolver());
+		argumentResolvers.add(new ServletResponseMethodArgumentResolver());
+		argumentResolvers.add(new SpringFacesModelMethodArgumentResolver());
 	}
 
 	private void initInitBinderArgumentResolvers() {
@@ -384,6 +387,9 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 
 		WebDataBinderFactory binderFactory = createDataBinderFactory(bean, beanType);
 
+		HandlerMethodArgumentResolverComposite argumentResolvers = new HandlerMethodArgumentResolverComposite();
+		argumentResolvers.addResolvers(this.argumentResolvers);
+		argumentResolvers.addResolver(new NavigationContextMethodArgumentResolver(context));
 		ServletInvocableHandlerMethod invocable = createInvocableNavigationMethod(bean, navigationMethod.getMethod());
 		invocable.setDataBinderFactory(binderFactory);
 		invocable.setHandlerMethodArgumentResolvers(argumentResolvers);

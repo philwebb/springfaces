@@ -46,6 +46,7 @@ import org.springframework.springfaces.mvc.method.support.FacesResponseCompleteR
 import org.springframework.springfaces.mvc.method.support.SpringFacesModelMethodArgumentResolver;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
+import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationContextMethodArgumentResolver;
 import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationMethodReturnValueHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
@@ -188,7 +189,7 @@ public class NavigationMethodOutcomeResolverTest {
 		resolver.resolve(facesContext, context);
 		verify(invocableNavigationMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
 		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
-		assertTrue(actual.size() == 1);
+		assertTrue(actual.size() == 2);
 		assertTrue(actual.contains(customArgumentResolver));
 	}
 
@@ -327,7 +328,7 @@ public class NavigationMethodOutcomeResolverTest {
 				RequestHeaderMapMethodArgumentResolver.class, ServletCookieValueMethodArgumentResolver.class,
 				ExpressionValueMethodArgumentResolver.class, FacesContextMethodArgumentResolver.class,
 				ServletRequestMethodArgumentResolver.class, ServletResponseMethodArgumentResolver.class,
-				SpringFacesModelMethodArgumentResolver.class);
+				SpringFacesModelMethodArgumentResolver.class, NavigationContextMethodArgumentResolver.class);
 		assertClasses(expected, actual);
 	}
 

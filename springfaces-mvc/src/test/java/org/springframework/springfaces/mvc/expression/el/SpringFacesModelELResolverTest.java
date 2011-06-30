@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
@@ -11,7 +12,6 @@ import javax.faces.context.FacesContext;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.springfaces.mvc.FacesContextSetter;
-import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
@@ -31,7 +31,7 @@ public class SpringFacesModelELResolverTest {
 
 	private void setupFacesContext() {
 		FacesContext facesContext = mock(FacesContext.class);
-		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		given(facesContext.getViewRoot()).willReturn(viewRoot);
 		FacesContextSetter.setCurrentInstance(facesContext);
 	}

@@ -12,19 +12,21 @@ import javax.faces.component.UIViewRoot;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.core.MethodParameter;
 import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
- * General mocks for use with JSF.
+ * General mocks.
  * 
  * @author Phillip Webb
  */
-public class FacesMocks {
+public class SpringFacesMocks {
 
 	/**
-	 * @return a {@link UIViewRoot} that can work with {@link SpringFacesModelHolder}s.
+	 * Mock a {@link UIViewRoot} that can work with {@link SpringFacesModelHolder}s.
+	 * @return a {@link UIViewRoot} mock
 	 */
-	public static UIViewRoot createModelSupportingUIViewRoot() {
+	public static UIViewRoot mockUIViewRootWithModelSupport() {
 		UIViewRoot uiViewRoot = mock(UIViewRoot.class);
 		final List<UIComponent> children = new ArrayList<UIComponent>();
 		given(uiViewRoot.getChildren()).willAnswer(new Answer<List<UIComponent>>() {
@@ -38,6 +40,18 @@ public class FacesMocks {
 			}
 		});
 		return uiViewRoot;
+	}
+
+	/**
+	 * Mock a {@link MethodParameter}.
+	 * @param parameterType the parameter type
+	 * @return a {@link MethodParameter} mock
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static MethodParameter mockMethodParameter(Class parameterType) {
+		MethodParameter parameter = mock(MethodParameter.class);
+		given(parameter.getParameterType()).willReturn(parameterType);
+		return parameter;
 	}
 
 }

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.MethodParameter;
 import org.springframework.springfaces.mvc.FacesContextSetter;
-import org.springframework.springfaces.mvc.FacesMocks;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.ui.ExtendedModelMap;
@@ -43,7 +43,7 @@ public class SpringFacesModelMethodArgumentResolverTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		given(facesContext.getViewRoot()).willReturn(viewRoot);
 		model = SpringFacesModelHolder.attach(facesContext, viewRoot, new HashMap<String, Object>());
 		FacesContextSetter.setCurrentInstance(facesContext);

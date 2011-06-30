@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.springfaces.mvc.FacesMocks;
 
 /**
  * Tests for {@link SpringFacesModelHolder}.
@@ -107,7 +107,7 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldGetModelWhenAttached() throws Exception {
-		UIViewRoot viewRoot = FacesMocks.createModelSupportingUIViewRoot();
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		Map<String, String> m = Collections.singletonMap("k", "v");
 		SpringFacesModelHolder.attach(context, viewRoot, m);
 		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("k"));

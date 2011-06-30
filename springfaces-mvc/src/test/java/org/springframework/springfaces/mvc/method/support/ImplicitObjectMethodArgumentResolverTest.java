@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.springframework.springfaces.mvc.SpringFacesMocks.mockMethodParameter;
 
 import java.util.concurrent.Callable;
 
@@ -17,8 +18,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.core.MethodParameter;
-import org.springframework.springfaces.mvc.method.support.ImplicitObjectMethodArgumentResolver;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -55,24 +54,24 @@ public class ImplicitObjectMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportOnType() throws Exception {
 		resolver.add(Type.class, call);
-		assertTrue(resolver.supportsParameter(mockParameterType(SuperType.class)));
-		assertTrue(resolver.supportsParameter(mockParameterType(Type.class)));
-		assertTrue(resolver.supportsParameter(mockParameterType(TypeInterface.class)));
-		assertFalse(resolver.supportsParameter(mockParameterType(SubType.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		assertFalse(resolver.supportsParameter(mockMethodParameter(SubType.class)));
 	}
 
 	@Test
 	public void shouldSupportOnTypeMatchAndCondition() throws Exception {
 		given(condition.call()).willReturn(true);
 		resolver.add(Type.class, condition, call);
-		assertTrue(resolver.supportsParameter(mockParameterType(SuperType.class)));
-		assertTrue(resolver.supportsParameter(mockParameterType(Type.class)));
-		assertTrue(resolver.supportsParameter(mockParameterType(TypeInterface.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertTrue(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
 		reset(condition);
 		given(condition.call()).willReturn(false);
-		assertFalse(resolver.supportsParameter(mockParameterType(SuperType.class)));
-		assertFalse(resolver.supportsParameter(mockParameterType(Type.class)));
-		assertFalse(resolver.supportsParameter(mockParameterType(TypeInterface.class)));
+		assertFalse(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertFalse(resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertFalse(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
 	}
 
 	@Test
@@ -81,7 +80,7 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		given(condition.call()).willThrow(ex);
 		resolver.add(Type.class, condition, call);
 		try {
-			resolver.supportsParameter(mockParameterType(Type.class));
+			resolver.supportsParameter(mockMethodParameter(Type.class));
 			fail("did not throw");
 		} catch (RuntimeException e) {
 			assertSame(ex, e.getCause());
@@ -94,7 +93,7 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		given(call.call()).willReturn(resolved);
 		resolver.add(Type.class, call);
 		assertSame(resolved,
-				resolver.resolveArgument(mockParameterType(Type.class), mavContainer, webRequest, binderFactory));
+				resolver.resolveArgument(mockMethodParameter(Type.class), mavContainer, webRequest, binderFactory));
 	}
 
 	@Test
@@ -103,14 +102,7 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		given(call.call()).willThrow(ex);
 		resolver.add(Type.class, call);
 		thrown.expect(equalTo(ex));
-		resolver.resolveArgument(mockParameterType(Type.class), mavContainer, webRequest, binderFactory);
-	}
-
-	@SuppressWarnings("rawtypes")
-	private MethodParameter mockParameterType(Class parameterType) {
-		MethodParameter methodParameter = mock(MethodParameter.class);
-		given(methodParameter.getParameterType()).willReturn(parameterType);
-		return methodParameter;
+		resolver.resolveArgument(mockMethodParameter(Type.class), mavContainer, webRequest, binderFactory);
 	}
 
 	private static class MockImplicitObjectMethodArgumentResolver extends ImplicitObjectMethodArgumentResolver {
