@@ -1,12 +1,16 @@
 package org.springframework.springfaces.sample.controller;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -30,6 +34,11 @@ public class SampleNavigationController {
 
 	public String directNavigation() {
 		return "spring:redirect:http://www.springsource.org";
+	}
+
+	@NavigationMapping
+	public NavigationOutcome onAnnotationLink() {
+		return new NavigationOutcome("@destination", Collections.<String, Object> singletonMap("s", "from annotation"));
 	}
 
 	@NavigationMapping("annotationwithvalue")
@@ -58,5 +67,12 @@ public class SampleNavigationController {
 	@ResponseBody
 	public String onAnnotationResponseBody() {
 		return "hello";
+	}
+
+	@NavigationMapping
+	public HttpEntity<String> onAnnotationHttpEntity() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Disposition", "attachment; filename=\"test.txt\"");
+		return new HttpEntity<String>("test", headers);
 	}
 }

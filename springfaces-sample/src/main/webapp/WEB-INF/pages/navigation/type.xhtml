@@ -87,6 +87,9 @@
 			<legend>@NavigationMapping Annotations</legend>
 			<ul>
 				<li>
+					<h:link value="annotation link" outcome="annotationLink"/>
+				</li>
+				<li>
 					<h:inputText value="#{navigationBean.destination}"/>
 					<h:commandButton value="annotation with value" action="annotationwithvalue"/>
 				</li>
@@ -99,6 +102,9 @@
 				</li>
 				<li>
 					<h:commandButton value="annotation responseBody" action="annotationResponseBody"/>
+				</li>
+				<li>
+					<h:commandButton value="annotation HttpEntity" action="annotationHttpEntity"/>
 				</li>
 			</ul>
 		</fieldset>

@@ -123,6 +123,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		messageConverters.add(stringHttpMessageConverter);
 		messageConverters.add(new SourceHttpMessageConverter<Source>());
 		messageConverters.add(new XmlAwareFormHttpMessageConverter());
+		// FIXME we need to somehow hook into the converters registered as part of mvc:annotation-driven
 	}
 
 	/**
