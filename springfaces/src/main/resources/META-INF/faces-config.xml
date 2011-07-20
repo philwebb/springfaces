@@ -17,4 +17,12 @@
 	<factory>
 		<render-kit-factory>org.springframework.springfaces.internal.SpringRenderKitFactory</render-kit-factory>
 	</factory>
+	<component>
+		<component-type>spring.faces.AspectGroup</component-type>
+		<component-class>org.springframework.springfaces.ui.UIAspectGroup</component-class>
+	</component>
+	<component>
+		<component-type>spring.faces.Aspect</component-type>
+		<component-class>org.springframework.springfaces.ui.UIAspect</component-class>
+	</component>
 </faces-config>
