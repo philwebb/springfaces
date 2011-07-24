@@ -1,6 +1,7 @@
 package org.springframework.springfaces.ui;
 
 import javax.faces.component.UINamingContainer;
+import javax.faces.context.FacesContext;
 
 public class UIAspect extends UINamingContainer {
 
@@ -18,6 +19,11 @@ public class UIAspect extends UINamingContainer {
 		return true;
 	}
 
-	// FIXME make sure inside a UIAspectGroup
+	@Override
+	public String getClientId(FacesContext context) {
+		// FIXME include the active component ID
+		return super.getClientId(context);
+	}
 
+	// FIXME make sure inside a UIAspectGroup
 }
