@@ -1,5 +1,8 @@
 package org.springframework.springfaces.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.faces.component.UIComponentBase;
 
 //FIXME look into generating meta-data like myfaces
@@ -10,7 +13,7 @@ import javax.faces.component.UIComponentBase;
 
 //
 //Plan:
-// 1) UIAspects attach to group
+// 1) UIAspects attach to group             DONE
 // 2) Render each aspect before child
 // 3) Support NamingContainer
 // 4) Support for proceed
@@ -25,6 +28,8 @@ public class UIAspectGroup extends UIComponentBase {
 
 	public static final String COMPONENT_FAMILY = "spring.faces.Aspect";
 
+	private List<UIAspect> aspects = new ArrayList<UIAspect>();
+
 	@Override
 	public String getFamily() {
 		return COMPONENT_FAMILY;
@@ -33,5 +38,13 @@ public class UIAspectGroup extends UIComponentBase {
 	@Override
 	public boolean getRendersChildren() {
 		return true;
+	}
+
+	public void addUIAspect(UIAspect uiAspect) {
+		aspects.add(uiAspect);
+	}
+
+	public void removeUIAspect(UIAspect uiAspect) {
+		aspects.remove(uiAspect);
 	}
 }
