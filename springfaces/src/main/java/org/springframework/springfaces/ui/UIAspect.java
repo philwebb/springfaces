@@ -1,5 +1,7 @@
 package org.springframework.springfaces.ui;
 
+import java.io.IOException;
+
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
@@ -26,6 +28,11 @@ public class UIAspect extends UINamingContainer {
 	@Override
 	public boolean getRendersChildren() {
 		return true;
+	}
+
+	@Override
+	public void encodeChildren(FacesContext context) throws IOException {
+		// Children are not directly rendered
 	}
 
 	@Override

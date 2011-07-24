@@ -1,9 +1,12 @@
 package org.springframework.springfaces.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
+import javax.faces.context.FacesContext;
 
 //FIXME look into generating meta-data like myfaces
 //Use cases:
@@ -13,14 +16,15 @@ import javax.faces.component.UIComponentBase;
 
 //
 //Plan:
-// 1) UIAspects attach to group             DONE
-// 2) Render each aspect before child
-// 3) Support NamingContainer
-// 4) Support for proceed
-// 5) Support for filtering
-// 6) Support for state saving
-// 7) Support for visitTree
-// 8) Create FacesAdvice interface
+// - UIAspects attach to group             DONE
+// - Encode children                       DONE
+// - Render each aspect before child
+// - Support NamingContainer
+// - Support for proceed
+// - Support for filtering
+// - Support for state saving
+// - Support for visitTree
+// - Create FacesAdvice interface
 
 public class UIAspectGroup extends UIComponentBase {
 
@@ -38,6 +42,30 @@ public class UIAspectGroup extends UIComponentBase {
 	@Override
 	public boolean getRendersChildren() {
 		return true;
+	}
+
+	@Override
+	public void encodeChildren(FacesContext context) throws IOException {
+		if (isRendered() && (getChildCount() > 0)) {
+			for (UIComponent child : getChildren()) {
+				encodeWithAspects(context, child);
+			}
+		}
+	}
+
+	private static void encodeWithAspects(FacesContext context, UIComponent component) throws IOException {
+		if (!component.isRendered()) {
+			return;
+		}
+		component.encodeBegin(context);
+		if (component.getRendersChildren()) {
+			component.encodeChildren(context);
+		} else if (component.getChildCount() > 0) {
+			for (UIComponent child : component.getChildren()) {
+				encodeWithAspects(context, child);
+			}
+		}
+		component.encodeEnd(context);
 	}
 
 	public void addUIAspect(UIAspect uiAspect) {
