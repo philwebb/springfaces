@@ -21,11 +21,17 @@ form:lastname
 <h:body>
 	<h:form id="form">
 		<s:aspectGroup>
+
 			<s:aspect>
-				<h:outputText id="text" value="text"/>
+				<h:outputText id="a" value="a:"/>
 			</s:aspect>
 
-			<h:inputText id="firstname" />
+			<s:aspect>
+				<h:outputText id="b" value="b:"/>
+			</s:aspect>
+
+
+			<h:inputText id="firstname"/>
 			<h:panelGroup>
 				<h:inputText id="lastname" />
 			</h:panelGroup>
