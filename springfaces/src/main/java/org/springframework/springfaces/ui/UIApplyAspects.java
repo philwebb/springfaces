@@ -31,9 +31,15 @@ public class UIApplyAspects extends UIComponentBase {
 
 	@Override
 	public void encodeChildren(final FacesContext context) throws IOException {
+		Assert.state(getChildCount() == 1, "Aspects can only be applied to a single child");
+		final UIComponent child = getChildren().get(0);
 		AspectInvocation invocation = new AspectInvocation() {
 			public void proceed() throws IOException {
 				UIApplyAspects.super.encodeChildren(context);
+			}
+
+			public UIComponent getComponent() {
+				return child;
 			}
 		};
 		getUIAspectGroup(getParent()).applyAspects(context, invocation);
