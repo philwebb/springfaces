@@ -3,7 +3,7 @@ package org.springframework.springfaces.ui;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -17,6 +17,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -54,14 +55,9 @@ public class UIApplyAspectsTest {
 		applyAspects.getChildren().add(child);
 		aspectGroup.getChildren().add(applyAspects);
 		applyAspects.encodeChildren(context);
-
-		// We should use the group to apply the aspect
-		verify(aspectGroup).applyAspects(eq(context), invocation.capture());
-		verify(child, never()).encodeAll(context);
-
-		// On proceed the child should be encoded
-		invocation.getValue().proceed();
-		verify(child).encodeAll(context);
+		InOrder ordered = inOrder(aspectGroup, child);
+		ordered.verify(aspectGroup).applyAspects(eq(context), invocation.capture());
+		ordered.verify(child).encodeAll(context);
 	}
 
 	@Test

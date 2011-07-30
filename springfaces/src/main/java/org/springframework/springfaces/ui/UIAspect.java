@@ -1,8 +1,11 @@
 package org.springframework.springfaces.ui;
 
+import java.io.IOException;
+
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
 import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
 
 import org.springframework.util.Assert;
 
@@ -22,10 +25,22 @@ public class UIAspect extends UINamingContainer {
 	}
 
 	@Override
+	public boolean getRendersChildren() {
+		return true;
+	}
+
+	@Override
+	public void encodeChildren(FacesContext context) throws IOException {
+		// Never directly rendered
+	}
+
+	@Override
 	public void setParent(UIComponent parent) {
 		removeFromParentAspectGroup();
 		super.setParent(parent);
-		addToParentAspectGroup();
+		if (parent != null) {
+			addToParentAspectGroup();
+		}
 	}
 
 	private void removeFromParentAspectGroup() {
@@ -52,6 +67,17 @@ public class UIAspect extends UINamingContainer {
 	public String getClientId(FacesContext context) {
 		// FIXME include the active component ID
 		return super.getClientId(context);
+	}
+
+	public void apply(FacesContext context, AspectInvocation invocation) throws IOException {
+		// FIXME watch for proceed
+		// FIXME stash the invocation
+		// FIXME render the children
+		// FIXME if we did not call proceed then proceed
+		ResponseWriter writer = context.getResponseWriter();
+		writer.write("(");
+		invocation.proceed();
+		writer.write(")");
 	}
 
 }

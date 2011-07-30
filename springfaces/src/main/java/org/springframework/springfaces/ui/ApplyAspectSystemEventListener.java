@@ -39,10 +39,11 @@ public class ApplyAspectSystemEventListener implements SystemEventListener {
 	}
 
 	private void wrapComponentWithUIApplyAspects(UIComponent component) {
-		if (component.getParent() instanceof UIApplyAspects || component instanceof UIAspect) {
+		if (component.getParent() == null || component.getParent() instanceof UIApplyAspects
+				|| component instanceof UIAspectGroup || component instanceof UIApplyAspects) {
 			return;
 		}
-		UIAspectGroup aspectGroup = getParentAspectGroup(component);
+		UIAspectGroup aspectGroup = getParentAspectGroupIfNotInAspect(component);
 		if (aspectGroup != null) {
 			int index = component.getParent().getChildren().indexOf(component);
 			UIApplyAspects wrapper = new UIApplyAspects();
@@ -51,13 +52,13 @@ public class ApplyAspectSystemEventListener implements SystemEventListener {
 		}
 	}
 
-	private UIAspectGroup getParentAspectGroup(UIComponent component) {
-		if (component == null) {
+	private UIAspectGroup getParentAspectGroupIfNotInAspect(UIComponent component) {
+		if (component == null || component instanceof UIAspect) {
 			return null;
 		}
 		if (component instanceof UIAspectGroup) {
 			return (UIAspectGroup) component;
 		}
-		return getParentAspectGroup(component.getParent());
+		return getParentAspectGroupIfNotInAspect(component.getParent());
 	}
 }

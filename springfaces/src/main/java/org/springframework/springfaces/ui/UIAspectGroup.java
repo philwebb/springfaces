@@ -1,7 +1,9 @@
 package org.springframework.springfaces.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
@@ -56,8 +58,21 @@ public class UIAspectGroup extends UIComponentBase implements ComponentSystemEve
 		return getParentAspectGroup(component.getParent());
 	}
 
-	public void applyAspects(FacesContext context, AspectInvocation invocation) {
-		// FIXME
-	}
+	public void applyAspects(final FacesContext context, final AspectInvocation invocation) throws IOException {
+		final Iterator<UIAspect> iterator = getAllAspects().iterator();
+		new AspectInvocation() {
+			public UIComponent getComponent() {
+				return invocation.getComponent();
+			};
 
+			public void proceed() throws IOException {
+				if (iterator.hasNext()) {
+					UIAspect aspect = iterator.next();
+					aspect.apply(context, this);
+				} else {
+					invocation.proceed();
+				}
+			}
+		}.proceed();
+	}
 }
