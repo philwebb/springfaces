@@ -2,18 +2,28 @@ package org.springframework.springfaces.ui;
 
 import java.io.IOException;
 
+import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UINamingContainer;
+import javax.faces.component.UniqueIdVendor;
 import javax.faces.context.FacesContext;
-import javax.faces.context.ResponseWriter;
 
+import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
+
+//FIXME filter
+//FIXME visitChildren
+//FIXME save state
 
 public class UIAspect extends UINamingContainer {
 
-	public static final String COMPONENT_TYPE = "spring.faces.Aspect";
-
 	public static final String COMPONENT_FAMILY = "spring.faces.Aspect";
+
+	private AspectInvocation invocation;
+
+	private boolean proceedCalled;
+
+	private String clientId = null;
 
 	public UIAspect() {
 		super();
@@ -31,7 +41,7 @@ public class UIAspect extends UINamingContainer {
 
 	@Override
 	public void encodeChildren(FacesContext context) throws IOException {
-		// Never directly rendered
+		// Aspects are not directly rendered
 	}
 
 	@Override
@@ -65,19 +75,50 @@ public class UIAspect extends UINamingContainer {
 
 	@Override
 	public String getClientId(FacesContext context) {
-		// FIXME include the active component ID
+		if (invocation != null) {
+			this.clientId = getId();
+			if (this.clientId == null) {
+				setId(generateCliendId(context));
+				this.clientId = getId();
+			}
+			return new StringBuilder(invocation.getComponent().getClientId(context))
+					.append(UINamingContainer.getSeparatorChar(context)).append(clientId).toString();
+
+		}
 		return super.getClientId(context);
 	}
 
-	public void apply(FacesContext context, AspectInvocation invocation) throws IOException {
-		// FIXME watch for proceed
-		// FIXME stash the invocation
-		// FIXME render the children
-		// FIXME if we did not call proceed then proceed
-		ResponseWriter writer = context.getResponseWriter();
-		writer.write("(");
-		invocation.proceed();
-		writer.write(")");
+	private String generateCliendId(FacesContext context) {
+		NamingContainer namingContainer = FacesUtils.findParentOfType(this, NamingContainer.class);
+		if (namingContainer != null && namingContainer instanceof UniqueIdVendor) {
+			return ((UniqueIdVendor) namingContainer).createUniqueId(context, null);
+		}
+		return context.getViewRoot().createUniqueId();
 	}
 
+	public void apply(FacesContext context, AspectInvocation invocation) throws IOException {
+		setInvocation(invocation);
+		try {
+			this.proceedCalled = false;
+			super.encodeChildren(context);
+			if (!proceedCalled) {
+				invocation.proceed();
+			}
+		} finally {
+			clearInvocation();
+		}
+	}
+
+	private void setInvocation(AspectInvocation invocation) {
+		this.invocation = invocation;
+	}
+
+	private void clearInvocation() {
+		this.invocation = null;
+	}
+
+	void encodeUIProceed() throws IOException {
+		this.invocation.proceed();
+		this.proceedCalled = true;
+	}
 }

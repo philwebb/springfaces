@@ -6,6 +6,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 
+import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -42,15 +43,8 @@ public class UIApplyAspects extends UIComponentBase {
 				return child;
 			}
 		};
-		getUIAspectGroup(getParent()).applyAspects(context, invocation);
+		UIAspectGroup aspectGroup = FacesUtils.findParentOfType(this, UIAspectGroup.class);
+		Assert.state(aspectGroup != null, "Unable to locate parent UIAspectGroup");
+		aspectGroup.applyAspects(context, invocation);
 	}
-
-	private UIAspectGroup getUIAspectGroup(UIComponent component) {
-		Assert.state(component != null, "Unable to locate parent UIAspectGroup");
-		if (component instanceof UIAspectGroup) {
-			return (UIAspectGroup) component;
-		}
-		return getUIAspectGroup(component.getParent());
-	}
-
 }

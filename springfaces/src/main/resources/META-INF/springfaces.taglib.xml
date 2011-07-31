@@ -6,13 +6,18 @@
 		<tag-name>aspectGroup</tag-name>
 		<component>
 			<component-type>spring.faces.AspectGroup</component-type>
-			<renderer-type>org.springframework.springfaces.AspectGroup</renderer-type>
 		</component>
 	</tag>
 	<tag>
 		<tag-name>aspect</tag-name>
 		<component>
 			<component-type>spring.faces.Aspect</component-type>
+		</component>
+	</tag>
+	<tag>
+		<tag-name>proceed</tag-name>
+		<component>
+			<component-type>spring.faces.Proceed</component-type>
 		</component>
 	</tag>
 </facelet-taglib>

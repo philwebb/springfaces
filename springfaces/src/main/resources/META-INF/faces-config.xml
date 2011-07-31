@@ -29,4 +29,8 @@
 		<component-type>spring.faces.Aspect</component-type>
 		<component-class>org.springframework.springfaces.ui.UIAspect</component-class>
 	</component>
+	<component>
+		<component-type>spring.faces.Proceed</component-type>
+		<component-class>org.springframework.springfaces.ui.UIProceed</component-class>
+	</component>
 </faces-config>

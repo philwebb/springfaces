@@ -22,12 +22,14 @@ form:lastname
 	<h:form id="form">
 		<s:aspectGroup>
 
-			<s:aspect>
-				<h:outputText id="a" value="a:"/>
+			<s:aspect id="a1">
+				<h:outputText value="("/>
+				<s:proceed/>
+				<h:outputText value=")"/>
 			</s:aspect>
 
-			<s:aspect>
-				<h:outputText id="b" value="b:"/>
+			<s:aspect id="a2">
+				<h:inputSecret id="secret"/>
 			</s:aspect>
 
 

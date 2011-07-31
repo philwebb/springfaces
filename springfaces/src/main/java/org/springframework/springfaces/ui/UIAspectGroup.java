@@ -16,6 +16,7 @@ import javax.faces.event.ComponentSystemEventListener;
 // Decorate components to include label
 // Set value of outputText based on ID
 // Change UIInput to UIOutput
+// Highlight any field that contains an error
 public class UIAspectGroup extends UIComponentBase implements ComponentSystemEventListener {
 
 	public static final String COMPONENT_TYPE = "spring.faces.AspectGroup";

@@ -9,6 +9,8 @@ import javax.faces.component.UIComponent;
  */
 public interface AspectInvocation {
 
+	// FIXME DC
+
 	UIComponent getComponent();
 
 	void proceed() throws IOException;

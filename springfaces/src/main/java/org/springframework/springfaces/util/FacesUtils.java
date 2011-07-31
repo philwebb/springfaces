@@ -2,6 +2,7 @@ package org.springframework.springfaces.util;
 
 import java.util.Locale;
 
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import org.springframework.util.Assert;
@@ -20,4 +21,18 @@ public abstract class FacesUtils {
 		}
 		return context.getExternalContext().getRequestLocale();
 	}
+
+	// FIXME test
+	@SuppressWarnings("unchecked")
+	public static <T> T findParentOfType(UIComponent component, Class<T> parentType) {
+		UIComponent current = component.getParent();
+		while (current != null) {
+			if (parentType.isInstance(current)) {
+				return (T) current;
+			}
+			current = current.getParent();
+		}
+		return null;
+	}
+
 }
