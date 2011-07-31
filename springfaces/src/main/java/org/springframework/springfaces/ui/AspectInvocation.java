@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import javax.faces.component.UIComponent;
 
+/**
+ * @author Phillip Webb
+ */
 public interface AspectInvocation {
 
 	UIComponent getComponent();

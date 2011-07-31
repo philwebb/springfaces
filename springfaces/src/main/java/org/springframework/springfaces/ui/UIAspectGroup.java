@@ -58,19 +58,15 @@ public class UIAspectGroup extends UIComponentBase implements ComponentSystemEve
 		return getParentAspectGroup(component.getParent());
 	}
 
-	public void applyAspects(final FacesContext context, final AspectInvocation invocation) throws IOException {
+	public void applyAspects(final FacesContext context, AspectInvocation invocation) throws IOException {
 		final Iterator<UIAspect> iterator = getAllAspects().iterator();
-		new AspectInvocation() {
-			public UIComponent getComponent() {
-				return invocation.getComponent();
-			};
-
+		new AspectInvocationWrapper(invocation) {
 			public void proceed() throws IOException {
 				if (iterator.hasNext()) {
 					UIAspect aspect = iterator.next();
 					aspect.apply(context, this);
 				} else {
-					invocation.proceed();
+					super.proceed();
 				}
 			}
 		}.proceed();
