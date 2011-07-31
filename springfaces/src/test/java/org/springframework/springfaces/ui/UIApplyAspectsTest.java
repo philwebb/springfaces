@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -41,6 +42,10 @@ public class UIApplyAspectsTest {
 	@Mock
 	private UIComponent child;
 
+	private UIAspectGroup aspectGroup = spy(new UIAspectGroup());
+
+	private UIApplyAspects applyAspects = new UIApplyAspects();
+
 	@Test
 	public void shouldRenderChildren() throws Exception {
 		UIApplyAspects applyAspects = new UIApplyAspects();
@@ -50,8 +55,6 @@ public class UIApplyAspectsTest {
 
 	@Test
 	public void shouldApplyUsingAspectGroup() throws Exception {
-		UIAspectGroup aspectGroup = spy(new UIAspectGroup());
-		UIApplyAspects applyAspects = new UIApplyAspects();
 		applyAspects.getChildren().add(child);
 		aspectGroup.getChildren().add(applyAspects);
 		applyAspects.encodeChildren(context);
@@ -62,7 +65,6 @@ public class UIApplyAspectsTest {
 
 	@Test
 	public void shouldNeedAspectGroupParent() throws Exception {
-		UIApplyAspects applyAspects = new UIApplyAspects();
 		applyAspects.getChildren().add(child);
 		thrown.expect(IllegalStateException.class);
 		thrown.expectMessage("Unable to locate parent UIAspectGroup");
@@ -71,9 +73,7 @@ public class UIApplyAspectsTest {
 
 	@Test
 	public void shouldFindAspectGroupGrandParent() throws Exception {
-		UIAspectGroup aspectGroup = spy(new UIAspectGroup());
 		UIPanel parent = new UIPanel();
-		UIApplyAspects applyAspects = new UIApplyAspects();
 		applyAspects.getChildren().add(child);
 		aspectGroup.getChildren().add(parent);
 		parent.getChildren().add(applyAspects);
@@ -83,12 +83,33 @@ public class UIApplyAspectsTest {
 
 	@Test
 	public void shouldAllowAccessToChildComponent() throws Exception {
-		UIAspectGroup aspectGroup = spy(new UIAspectGroup());
-		UIApplyAspects applyAspects = new UIApplyAspects();
 		applyAspects.getChildren().add(child);
 		aspectGroup.getChildren().add(applyAspects);
 		applyAspects.encodeChildren(context);
 		verify(aspectGroup).applyAspects(eq(context), invocation.capture());
 		assertThat(invocation.getValue().getComponent(), is(child));
+	}
+
+	@Test
+	public void shouldThrowWithTwoOrMoreChildren() throws Exception {
+		UIComponent secondChild = mock(UIComponent.class);
+		applyAspects.getChildren().add(child);
+		applyAspects.getChildren().add(secondChild);
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Aspects can only be applied to a single child");
+		applyAspects.encodeChildren(context);
+	}
+
+	@Test
+	public void shouldThrowWithZeroChildren() throws Exception {
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("Aspects can only be applied to a single child");
+		applyAspects.encodeChildren(context);
+	}
+
+	@Test
+	public void shouldBeInAspectFamily() throws Exception {
+		String family = applyAspects.getFamily();
+		assertThat(family, is("spring.faces.Aspect"));
 	}
 }

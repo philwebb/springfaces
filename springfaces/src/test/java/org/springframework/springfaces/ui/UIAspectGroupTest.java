@@ -10,6 +10,11 @@ import javax.faces.component.UIPanel;
 
 import org.junit.Test;
 
+/**
+ * Tests for {@link UIAspectGroup}.
+ * 
+ * @author Phillip Webb
+ */
 public class UIAspectGroupTest {
 
 	private UIAspectGroup aspectGroup = new UIAspectGroup();

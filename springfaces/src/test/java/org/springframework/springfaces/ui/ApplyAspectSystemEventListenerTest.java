@@ -20,6 +20,8 @@ public class ApplyAspectSystemEventListenerTest {
 
 	private ApplyAspectSystemEventListener listener = new ApplyAspectSystemEventListener();
 
+	private UIAspectGroup parent = new UIAspectGroup();
+
 	@Test
 	public void shouldListenForAllSource() throws Exception {
 		Object source = new Object();
@@ -29,9 +31,7 @@ public class ApplyAspectSystemEventListenerTest {
 
 	@Test
 	public void shouldWrapComponent() throws Exception {
-		UIAspectGroup parent = new UIAspectGroup();
-		UIComponent component = new UIInput();
-		parent.getChildren().add(component);
+		UIComponent component = addToParent(UIInput.class);
 		SystemEvent event = new PostAddToViewEvent(component);
 		listener.processEvent(event);
 		assertThat(component.getParent(), is(UIApplyAspects.class));
@@ -41,9 +41,7 @@ public class ApplyAspectSystemEventListenerTest {
 
 	@Test
 	public void shouldNotDoubleWrap() throws Exception {
-		UIAspectGroup parent = new UIAspectGroup();
-		UIComponent component = new UIInput();
-		parent.getChildren().add(component);
+		UIComponent component = addToParent(UIInput.class);
 		SystemEvent event = new PostAddToViewEvent(component);
 		listener.processEvent(event);
 		listener.processEvent(event);
@@ -62,7 +60,6 @@ public class ApplyAspectSystemEventListenerTest {
 
 	@Test
 	public void shouldWrapChildren() throws Exception {
-		UIAspectGroup parent = new UIAspectGroup();
 		UIComponent component = new UIPanel();
 		UIInput child = new UIInput();
 		parent.getChildren().add(component);
@@ -75,12 +72,25 @@ public class ApplyAspectSystemEventListenerTest {
 
 	@Test
 	public void shouldNotWrapUIAspects() throws Exception {
-		UIAspectGroup parent = new UIAspectGroup();
-		UIComponent component = new UIAspect();
-		parent.getChildren().add(component);
+		shouldNotWrap(UIAspect.class);
+	}
+
+	@Test
+	public void shouldNotWrapUIAspectGroup() throws Exception {
+		shouldNotWrap(UIAspectGroup.class);
+	}
+
+	private <T extends UIComponent> void shouldNotWrap(Class<T> componentClass) throws Exception {
+		T component = addToParent(componentClass);
 		SystemEvent event = new PostAddToViewEvent(component);
 		listener.processEvent(event);
 		assertThat(component.getParent(), is((UIComponent) parent));
+	}
+
+	private <T extends UIComponent> T addToParent(Class<T> componentClass) throws Exception {
+		T component = componentClass.newInstance();
+		parent.getChildren().add(component);
+		return component;
 	}
 
 }
