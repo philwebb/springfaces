@@ -25,6 +25,8 @@ public abstract class FacesUtils {
 	// FIXME test
 	@SuppressWarnings("unchecked")
 	public static <T> T findParentOfType(UIComponent component, Class<T> parentType) {
+		Assert.notNull(component, "Component must not be null");
+		Assert.notNull(parentType, "ParentType must not be null");
 		UIComponent current = component.getParent();
 		while (current != null) {
 			if (parentType.isInstance(current)) {

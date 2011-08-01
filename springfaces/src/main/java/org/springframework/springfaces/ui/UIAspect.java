@@ -1,6 +1,7 @@
 package org.springframework.springfaces.ui;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
@@ -14,8 +15,11 @@ import org.springframework.util.Assert;
 //FIXME filter
 //FIXME visitChildren
 //FIXME save state
+//FIXME advice interface
 
 public class UIAspect extends UINamingContainer {
+
+	public static final String COMPONENT_TYPE = "spring.faces.Aspect";
 
 	public static final String COMPONENT_FAMILY = "spring.faces.Aspect";
 
@@ -27,6 +31,7 @@ public class UIAspect extends UINamingContainer {
 
 	public UIAspect() {
 		super();
+		setVar("advised");
 	}
 
 	@Override
@@ -111,14 +116,41 @@ public class UIAspect extends UINamingContainer {
 
 	private void setInvocation(AspectInvocation invocation) {
 		this.invocation = invocation;
+		setAdvised(invocation.getComponent());
+
 	}
 
 	private void clearInvocation() {
 		this.invocation = null;
+		setAdvised(null);
+	}
+
+	private void setAdvised(UIComponent component) {
+		String var = getVar();
+		if (var != null) {
+			Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+			if (component == null) {
+				requestMap.remove(var);
+			} else {
+				requestMap.put(var, component);
+			}
+		}
 	}
 
 	void encodeUIProceed() throws IOException {
 		this.invocation.proceed();
 		this.proceedCalled = true;
+	}
+
+	public String getVar() {
+		return (String) getStateHelper().get(PropertyKeys.var);
+	}
+
+	public void setVar(String var) {
+		getStateHelper().put(PropertyKeys.var, var);
+	}
+
+	enum PropertyKeys {
+		var
 	}
 }

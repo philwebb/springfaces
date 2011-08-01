@@ -10,6 +10,8 @@ import org.springframework.util.Assert;
 
 public class UIProceed extends UIComponentBase {
 
+	public static final String COMPONENT_TYPE = "spring.faces.Proceed";
+
 	public static final String COMPONENT_FAMILY = "spring.faces.Aspect";
 
 	@Override

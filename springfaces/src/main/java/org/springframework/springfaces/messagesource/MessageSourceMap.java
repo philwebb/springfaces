@@ -19,7 +19,7 @@ import org.springframework.util.Assert;
  * <p>
  * Messages parameters can also be resolved by chaining arguments. For example a welcome message
  * <tt>'welcome=Welcome {0} {1}'</tt> can be resolved using a <tt>person</tt> bean with the expression
- * <tt>#{messages.welcome[person.firstName][person.secondName]</tt>.
+ * <tt>#{messages.welcome[person.firstName][person.secondName]}</tt>.
  * <p>
  * Objects returned from the map can be displayed using <tt>toString()</tt> they can also be cast to
  * {@link MessageSourceResolvable} if necessary.
