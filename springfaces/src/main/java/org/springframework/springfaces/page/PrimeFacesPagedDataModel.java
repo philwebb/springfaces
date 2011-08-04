@@ -9,9 +9,13 @@ import javax.faces.model.DataModelListener;
 import javax.swing.SortOrder;
 
 //FIXME change to extend PF
-public class PrimeFacesLazyPagedDataModel<E> extends DataModel<E> implements MutablePageContext {
+public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements Pageable {
 
 	private PagedDataModel<E> delegate;
+
+	public PrimeFacesPagedDataModel(PagedDataModel.PageableState state, PagedDataModel.PageProvider<E> pageProvider) {
+		delegate = new PagedDataModel<E>(state, pageProvider);
+	}
 
 	public boolean isRowAvailable() {
 		return delegate.isRowAvailable();

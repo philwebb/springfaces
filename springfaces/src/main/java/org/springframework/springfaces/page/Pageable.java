@@ -1,9 +1,17 @@
 package org.springframework.springfaces.page;
 
-public interface Pageable extends PageContext {
+import java.util.Map;
 
-	int getPageNumber();
+public interface Pageable {
 
-	int getOffset();
+	int getRowIndex();
+
+	int getPageSize();
+
+	Boolean getSortAscending();
+
+	String getSortColumn();
+
+	Map<String, String> getFilters();
 
 }
