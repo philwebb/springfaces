@@ -1,4 +1,4 @@
-package org.springframework.springfaces.page;
+package org.springframework.springfaces.page.ui;
 
 import java.io.IOException;
 
@@ -6,7 +6,13 @@ import javax.el.Expression;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 
-public class UIPagedDataModel extends UIComponentBase {
+import org.springframework.springfaces.model.PagedDataRows;
+
+/**
+ * @see PagedDataRows
+ * @author Phillip Webb
+ */
+public class UIPagedData extends UIComponentBase {
 
 	/*
 	 * Expression called to provide a single page of data. This expression will be called multiple times.
@@ -22,7 +28,7 @@ public class UIPagedDataModel extends UIComponentBase {
 	private Expression rowCount;
 
 	/*
-	 * The total number of rows contained in the model at any one time. Same as UIData.rows Optional defaults to 10
+	 * The total number of rows contained in the model at any one time. Optional defaults to 10.
 	 */
 	private int pageSize;
 

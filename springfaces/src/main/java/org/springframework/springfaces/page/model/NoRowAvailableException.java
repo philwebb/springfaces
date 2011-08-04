@@ -1,4 +1,4 @@
-package org.springframework.springfaces.page;
+package org.springframework.springfaces.page.model;
 
 public class NoRowAvailableException extends IllegalArgumentException {
 

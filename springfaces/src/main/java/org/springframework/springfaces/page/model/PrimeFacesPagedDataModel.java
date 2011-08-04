@@ -1,4 +1,4 @@
-package org.springframework.springfaces.page;
+package org.springframework.springfaces.page.model;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,12 +8,14 @@ import javax.faces.model.DataModel;
 import javax.faces.model.DataModelListener;
 import javax.swing.SortOrder;
 
+import org.springframework.springfaces.model.PagedDataRows;
+
 //FIXME change to extend PF
-public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements Pageable {
+public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> {
 
 	private PagedDataModel<E> delegate;
 
-	public PrimeFacesPagedDataModel(PagedDataModel.PageableState state, PagedDataModel.PageProvider<E> pageProvider) {
+	public PrimeFacesPagedDataModel(PagedDataModelState<E> state, PagedDataModelPageProvider<E> pageProvider) {
 		delegate = new PagedDataModel<E>(state, pageProvider);
 	}
 

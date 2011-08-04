@@ -1,4 +1,4 @@
-package org.springframework.springfaces.page;
+package org.springframework.springfaces.page.model;
 
 import java.util.Map;
 
@@ -6,39 +6,40 @@ import javax.faces.model.DataModel;
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 
+import org.springframework.springfaces.model.PagedDataRows;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
-public class PagedDataModel<E> extends DataModel<E> implements Pageable {
+public class PagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> {
 
-	private PageableState state;
+	private PagedDataModelState<E> state;
 
-	private PageProvider<E> pageProvider;
+	private PagedDataModelPageProvider<E> provider;
 
-	private Page<E> cachedPage;
+	private PagedDataModelPage<E> cachedPage;
 
-	public PagedDataModel(PageableState state, PageProvider<E> pageProvider) {
+	public PagedDataModel(PagedDataModelState<E> state, PagedDataModelPageProvider<E> pageProvider) {
 		Assert.notNull(state, "state must not be null");
 		Assert.notNull(pageProvider, "PageProvider must not be null");
 		this.state = state;
-		this.pageProvider = pageProvider;
+		this.provider = pageProvider;
 	}
 
 	@Override
 	public boolean isRowAvailable() {
-		return getPage().contains(getRowIndex());
+		return getPage().containsRowIndex(getRowIndex());
 	}
 
 	@Override
 	public int getRowCount() {
-		long rowCount = getAnyNonEmptyPage().totalSize();
+		long rowCount = getAnyNonEmptyPage().getRowCount();
 		// FIXME check bounds
 		return (int) rowCount;
 	}
 
 	@Override
 	public E getRowData() {
-		return getPage().get(getRowIndex());
+		return getPage().getRowData(getRowIndex());
 	}
 
 	@Override
@@ -123,56 +124,26 @@ public class PagedDataModel<E> extends DataModel<E> implements Pageable {
 		}
 	}
 
-	private Page<E> getPage() {
+	private PagedDataModelPage<E> getPage() {
 		return getPage(getRowIndex());
 	}
 
-	private Page<E> getAnyNonEmptyPage() {
+	private PagedDataModelPage<E> getAnyNonEmptyPage() {
 		return getPage(getRowIndex() == -1 ? 0 : getRowIndex());
 	}
 
-	private Page<E> getPage(int rowIndex) {
+	private PagedDataModelPage<E> getPage(int rowIndex) {
 		if (rowIndex == -1) {
 			return emptyDataPage();
 		}
-		if (cachedPage == null || !cachedPage.contains(rowIndex)) {
-			cachedPage = pageProvider.getPage(this);
+		if (cachedPage == null || !cachedPage.containsRowIndex(rowIndex)) {
+			cachedPage = provider.getPage(state);
 		}
 		return cachedPage;
 	}
 
-	private static final Page<?> EMPTY_PAGE = new Page<Object>() {
-		public long totalSize() {
-			return -1;
-		}
-
-		public Object get(int rowIndex) {
-			throw new NoRowAvailableException();
-		}
-
-		public boolean contains(int rowIndex) {
-			return false;
-		}
-	};
-
 	@SuppressWarnings("unchecked")
-	private static <E> Page<E> emptyDataPage() {
-		return (Page<E>) EMPTY_PAGE;
-	}
-
-	public interface PageableState extends Pageable {
-		void setRowIndex(int rowIndex);
-
-		void setPageSize(int pageSize);
-
-		void setSortAscending(Boolean sortAscending);
-
-		void setSortColumn(String sortColumn);
-
-		void setFilters(Map<String, String> filters);
-	}
-
-	public interface PageProvider<E> {
-		Page<E> getPage(Pageable pageable);
+	private static <E> PagedDataModelPage<E> emptyDataPage() {
+		return (PagedDataModelPage<E>) PagedDataModelPage.EMPTY;
 	}
 }

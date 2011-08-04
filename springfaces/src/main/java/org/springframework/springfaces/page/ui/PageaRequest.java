@@ -1,12 +1,16 @@
-package org.springframework.springfaces.page;
+package org.springframework.springfaces.page.ui;
 
 import java.util.Map;
 
-public interface Pageable {
+public interface PageaRequest {
 
 	int getRowIndex();
 
+	int getPageNumber();
+
 	int getPageSize();
+
+	int getOffset();
 
 	Boolean getSortAscending();
 
