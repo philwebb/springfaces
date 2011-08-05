@@ -20,4 +20,10 @@
 			<component-type>spring.faces.Proceed</component-type>
 		</component>
 	</tag>
+	<tag>
+		<tag-name>pagedData</tag-name>
+		<component>
+			<component-type>spring.faces.PagedData</component-type>
+		</component>
+	</tag>
 </facelet-taglib>

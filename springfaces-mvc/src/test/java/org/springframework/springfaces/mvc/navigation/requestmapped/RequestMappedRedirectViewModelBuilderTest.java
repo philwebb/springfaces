@@ -1,6 +1,6 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;

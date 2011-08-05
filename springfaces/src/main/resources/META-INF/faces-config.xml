@@ -33,4 +33,8 @@
 		<component-type>spring.faces.Proceed</component-type>
 		<component-class>org.springframework.springfaces.ui.UIProceed</component-class>
 	</component>
+	<component>
+		<component-type>spring.faces.PagedData</component-type>
+		<component-class>org.springframework.springfaces.page.ui.UIPagedData</component-class>
+	</component>
 </faces-config>

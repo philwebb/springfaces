@@ -6,17 +6,28 @@ import java.util.Map;
 
 import javax.faces.model.DataModel;
 import javax.faces.model.DataModelListener;
-import javax.swing.SortOrder;
 
+import org.primefaces.model.LazyDataModel;
 import org.springframework.springfaces.model.PagedDataRows;
+import org.springframework.util.Assert;
 
-//FIXME change to extend PF
-public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> {
+/**
+ * Adapts a {@link PagedDataModel} to a Primefaces {@link LazyDataModel}. NOTE: This implementation is unable to support
+ * generic type arguments due to the fact that {@link LazyDataModel} does not pass generic types to the inherited
+ * {@link DataModel}.
+ * 
+ * @author Phillip Webb
+ */
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedDataRows {
 
-	private PagedDataModel<E> delegate;
+	private static final long serialVersionUID = 1L;
 
-	public PrimeFacesPagedDataModel(PagedDataModelState<E> state, PagedDataModelPageProvider<E> pageProvider) {
-		delegate = new PagedDataModel<E>(state, pageProvider);
+	private PagedDataModel delegate;
+
+	public PrimeFacesPagedDataModel(PagedDataModel delegate) {
+		Assert.notNull(delegate, "Delegate must not be null");
+		this.delegate = delegate;
 	}
 
 	public boolean isRowAvailable() {
@@ -27,7 +38,7 @@ public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDa
 		return delegate.getRowCount();
 	}
 
-	public E getRowData() {
+	public Object getRowData() {
 		return delegate.getRowData();
 	}
 
@@ -55,11 +66,11 @@ public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDa
 		delegate.setPageSize(pageSize);
 	}
 
-	public Boolean getSortAscending() {
+	public boolean getSortAscending() {
 		return delegate.getSortAscending();
 	}
 
-	public void setSortAscending(Boolean sortAscending) {
+	public void setSortAscending(boolean sortAscending) {
 		delegate.setSortAscending(sortAscending);
 	}
 
@@ -76,7 +87,7 @@ public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDa
 		return delegate.getFilters();
 	}
 
-	public void setFilters(Map<String, String> filters) {
+	public void setFilters(Map filters) {
 		delegate.setFilters(filters);
 	}
 
@@ -99,10 +110,11 @@ public class PrimeFacesPagedDataModel<E> extends DataModel<E> implements PagedDa
 		throw new UnsupportedOperationException("Unable to set the row count for a PagedDataModel");
 	}
 
-	public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+	@Override
+	public List load(int first, int pageSize, String sortField, boolean sortOrder, Map filters) {
 		setPageSize(pageSize);
 		setSortColumn(sortField);
-		setSortAscending(true);
+		setSortAscending(sortOrder);
 		setFilters(filters);
 		return Collections.singletonList(getRowData());
 	}

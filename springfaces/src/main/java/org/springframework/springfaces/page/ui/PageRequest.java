@@ -2,9 +2,7 @@ package org.springframework.springfaces.page.ui;
 
 import java.util.Map;
 
-public interface PageaRequest {
-
-	int getRowIndex();
+public interface PageRequest {
 
 	int getPageNumber();
 
@@ -12,9 +10,9 @@ public interface PageaRequest {
 
 	int getOffset();
 
-	Boolean getSortAscending();
-
 	String getSortColumn();
+
+	boolean isSortAscending();
 
 	Map<String, String> getFilters();
 

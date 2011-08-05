@@ -1,29 +1,37 @@
 package org.springframework.springfaces.page.model;
 
-
+/**
+ * Interface that represents a page of row data.
+ * 
+ * @param <T>
+ * @see PagedDataModelPageProvider
+ * 
+ * @author Phillip Webb
+ */
 public interface PagedDataModelPage<T> {
 
 	/**
-	 * @return the total size of the page or -1
+	 * Returns the total number of rows contained in the underlying dataset. NOTE: this value is the <b>TOTAL</b> number
+	 * of rows, not the number of rows represented by this page.
+	 * @return the total row count
 	 */
-	long getRowCount();
+	long getTotalRowCount();
 
+	/**
+	 * Determines if the page contains data for the specified row index.
+	 * @param rowIndex the row index. NOTE: this is the index as applied to the complete data set, not the page
+	 * @return <tt>true</tt> if this page contains data at the specified row index
+	 */
 	boolean containsRowIndex(int rowIndex);
 
-	T getRowData(int rowIndex);
+	// FIXME DC
+	boolean isRowAvailable(int rowIndex);
 
-	public static final PagedDataModelPage<?> EMPTY = new PagedDataModelPage<Object>() {
-		public long getRowCount() {
-			return -1;
-		}
-
-		public Object getRowData(int rowIndex) {
-			throw new NoRowAvailableException();
-		}
-
-		public boolean containsRowIndex(int rowIndex) {
-			return false;
-		}
-	};
-
+	/**
+	 * Returns the row data at the specified index.
+	 * @param rowIndex the row index. NOTE: this is the index as applied to the complete data set, not the page
+	 * @return the row data
+	 * @throws NoRowAvailableException if the page does {@link #containsRowIndex contain} the specified row
+	 */
+	T getRowData(int rowIndex) throws NoRowAvailableException;
 }
