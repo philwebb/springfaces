@@ -91,17 +91,14 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		delegate.setFilters(filters);
 	}
 
-	@Override
 	public void addDataModelListener(DataModelListener listener) {
 		delegate.addDataModelListener(listener);
 	}
 
-	@Override
 	public void removeDataModelListener(DataModelListener listener) {
 		delegate.removeDataModelListener(listener);
 	}
 
-	@Override
 	public DataModelListener[] getDataModelListeners() {
 		return delegate.getDataModelListeners();
 	}
@@ -110,7 +107,6 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		throw new UnsupportedOperationException("Unable to set the row count for a PagedDataModel");
 	}
 
-	@Override
 	public List load(int first, int pageSize, String sortField, boolean sortOrder, Map filters) {
 		setPageSize(pageSize);
 		setSortColumn(sortField);

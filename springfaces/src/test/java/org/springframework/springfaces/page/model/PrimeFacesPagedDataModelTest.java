@@ -168,7 +168,7 @@ public class PrimeFacesPagedDataModelTest {
 		Object rowData = new Object();
 		given(delegate.getRowData()).willReturn(rowData);
 		List loaded = dataModel.load(first, pageSize, sortField, sortOrder, filters);
-		assertThat(loaded, is(Collections.singletonList(rowData)));
+		assertThat(loaded, is((List) Collections.singletonList(rowData)));
 		verify(delegate).setPageSize(pageSize);
 		verify(delegate).setSortColumn(sortField);
 		verify(delegate).setSortAscending(sortOrder);
