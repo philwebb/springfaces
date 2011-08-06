@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.springfaces.model.NoRowAvailableException;
 
 /**
  * Tests for {@link EmptyPagedDataModelPage}.
@@ -17,7 +18,7 @@ public class EmptyPagedDataModelPageTest {
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private PagedDataModelPage<String> empty = new EmptyPagedDataModelPage<String>(-1);
+	private PagedDataModelContent<String> empty = new EmptyPagedDataModelPage<String>(-1);
 
 	@Test
 	public void shouldNotHaveRowCount() throws Exception {
@@ -32,6 +33,6 @@ public class EmptyPagedDataModelPageTest {
 
 	@Test
 	public void shouldNotContainRows() throws Exception {
-		assertThat(empty.containsRowIndex(0), is(false));
+		assertThat(empty.contains(0), is(false));
 	}
 }

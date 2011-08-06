@@ -13,28 +13,31 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * A {@link DataModel} that supports {@link PagedDataRows paged rows}. Users of this class must provide a
- * {@link PagedDataModelPageProvider} that load data one page at a time. This {@link DataModel} is not
+ * {@link DataModelPageProvider} that load data one page at a time. This {@link DataModel} is not
  * {@link Serializable} as it is expected to be recreated on each JSF request. A {@link PagedDataModelStateHolder}
  * implementation must be provided to handle state saving.
  * 
- * @author Phillip Webb
+ * @param <E> The element type
  * 
- * @param <E>
+ * @see DataModelPageProvider
+ * @see PagedDataModelStateHolder
+ * 
+ * @author Phillip Webb
  */
 public class PagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> {
 
-	private PagedDataModelPageProvider<E> provider;
+	private DataModelPageProvider<E> provider;
 
 	private PagedDataModelStateHolder stateHolder;
 
-	private PagedDataModelPage<E> cachedPage;
+	private PagedDataModelContent<E> cachedPage;
 
 	/**
 	 * Create a new {@link PagedDataModel} instance.
 	 * @param pageProvider a page provider that will allow row data to be access one page at a time
 	 * @param stateHolder allows access to state information associated with the data model
 	 */
-	public PagedDataModel(PagedDataModelPageProvider<E> pageProvider, PagedDataModelStateHolder stateHolder) {
+	public PagedDataModel(DataModelPageProvider<E> pageProvider, PagedDataModelStateHolder stateHolder) {
 		Assert.notNull(pageProvider, "PageProvider must not be null");
 		Assert.notNull(stateHolder, "StateHolder must not be null");
 		this.provider = pageProvider;
@@ -145,10 +148,10 @@ public class PagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> 
 
 	/**
 	 * Returns a page that contains data for the current {@link #getRowIndex() row index}. If the current row is -1 then
-	 * an {@link EmptyPagedDataModelPage#getInstance() empty} page is returned.
+	 * an {@link EmptyPagedDataModelPage empty} page is returned.
 	 * @return the page for the current row or an empty page
 	 */
-	private PagedDataModelPage<E> getPage() {
+	private PagedDataModelContent<E> getPage() {
 		return getPage(getRowIndex());
 	}
 
@@ -157,21 +160,21 @@ public class PagedDataModel<E> extends DataModel<E> implements PagedDataRows<E> 
 	 * no current {@link #getRowIndex() row} is selected.
 	 * @return a non-empty page
 	 */
-	private PagedDataModelPage<E> getAnyNonEmptyPage() {
+	private PagedDataModelContent<E> getAnyNonEmptyPage() {
 		return getPage(getRowIndex() == -1 ? 0 : getRowIndex());
 	}
 
 	/**
 	 * Returns the a page containing the row data at the specified index. If the row index is -1 then an
-	 * {@link EmptyPagedDataModelPage#getInstance() empty} page is returned.
+	 * {@link EmptyPagedDataModelPage empty} page is returned.
 	 * @param rowIndex the row index
 	 * @return the page for the specified row or an empty page
 	 */
-	private PagedDataModelPage<E> getPage(int rowIndex) {
-		if (cachedPage == null || !cachedPage.containsRowIndex(rowIndex)) {
+	private PagedDataModelContent<E> getPage(int rowIndex) {
+		if (cachedPage == null || !cachedPage.contains(rowIndex)) {
 			cachedPage = (rowIndex == -1 ? new EmptyPagedDataModelPage<E>(-1) : provider.getPage(stateHolder));
 			Assert.state(cachedPage != null, "No page returned from provider for row index " + rowIndex);
-			if (!cachedPage.containsRowIndex(rowIndex)) {
+			if (!cachedPage.contains(rowIndex)) {
 				// The returned page does not contain the requested row, cache an empty page to save retries
 				cachedPage = new EmptyPagedDataModelPage<E>(rowIndex);
 			}

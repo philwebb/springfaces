@@ -20,6 +20,10 @@ public class DefaultPagedDataModelStateHolder implements PagedDataModelStateHold
 	private String sortColumn;
 	private Map<String, String> filters;
 
+	/**
+	 * Create a new {@link DefaultPagedDataModelStateHolder} instance.
+	 * @param pageSize the initial page size
+	 */
 	public DefaultPagedDataModelStateHolder(int pageSize) {
 		Assert.isTrue(pageSize >= 1, "PageSize must be a positive number");
 		this.rowIndex = -1;

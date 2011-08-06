@@ -2,15 +2,32 @@ package org.springframework.springfaces.page.model;
 
 import java.util.List;
 
+import org.springframework.springfaces.model.NoRowAvailableException;
 import org.springframework.springfaces.page.ui.PageRequest;
 
-public class DefaultPagedDataModelPage<E> implements PagedDataModelPage<E> {
+/**
+ * Default implementation of {@link PagedDataModelContent}.
+ * 
+ * @author Phillip Webb
+ * 
+ * @param <E>
+ */
+public class DefaultPagedDataModelPage<E> implements PagedDataModelContent<E> {
 
 	private int offset;
 	private int pageSize;
 	private List<E> contents;
 	private long totalRowCount;
 
+	// FIXME additional constructor
+	// FIXME deal with contents bigger than page size
+
+	/**
+	 * Create a new {@link DefaultPagedDataModelPage} instance.
+	 * @param request the page request
+	 * @param contents the contents of the data page
+	 * @param totalRowCount the total row count or <tt>-1</tt> if unknown
+	 */
 	public DefaultPagedDataModelPage(PageRequest request, List<E> contents, long totalRowCount) {
 		this.offset = request.getOffset();
 		this.pageSize = request.getPageSize();
@@ -22,7 +39,7 @@ public class DefaultPagedDataModelPage<E> implements PagedDataModelPage<E> {
 		return totalRowCount;
 	}
 
-	public boolean containsRowIndex(int rowIndex) {
+	public boolean contains(int rowIndex) {
 		return getContentsIndex(rowIndex) < pageSize;
 	}
 
@@ -31,7 +48,7 @@ public class DefaultPagedDataModelPage<E> implements PagedDataModelPage<E> {
 	}
 
 	public E getRowData(int rowIndex) throws NoRowAvailableException {
-		if (!containsRowIndex(rowIndex)) {
+		if (!contains(rowIndex)) {
 			throw new NoRowAvailableException();
 		}
 		return contents.get(getContentsIndex(rowIndex));

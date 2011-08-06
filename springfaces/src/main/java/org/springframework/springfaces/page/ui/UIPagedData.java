@@ -14,8 +14,8 @@ import org.springframework.springfaces.model.PagedDataRows;
 import org.springframework.springfaces.page.model.DefaultPagedDataModelPage;
 import org.springframework.springfaces.page.model.DefaultPagedDataModelStateHolder;
 import org.springframework.springfaces.page.model.PagedDataModel;
-import org.springframework.springfaces.page.model.PagedDataModelPage;
-import org.springframework.springfaces.page.model.PagedDataModelPageProvider;
+import org.springframework.springfaces.page.model.PagedDataModelContent;
+import org.springframework.springfaces.page.model.DataModelPageProvider;
 import org.springframework.springfaces.page.model.PagedDataModelStateHolder;
 import org.springframework.util.Assert;
 
@@ -43,6 +43,7 @@ public class UIPagedData extends UIComponentBase {
 	/**
 	 * Return the request-scope attribute under which the {@link PagedDataModel} will be exposed. This property is
 	 * <b>not</b> enabled for value binding expressions.
+	 * @return The variable name
 	 */
 	public String getVar() {
 		String var = (String) getStateHelper().get(PropertyKeys.var);
@@ -97,8 +98,8 @@ public class UIPagedData extends UIComponentBase {
 
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
-		PagedDataModelPageProvider<Object> pageProvider = new PagedDataModelPageProvider<Object>() {
-			public PagedDataModelPage<Object> getPage(PagedDataModelStateHolder stateHolder) {
+		DataModelPageProvider<Object> pageProvider = new DataModelPageProvider<Object>() {
+			public PagedDataModelContent<Object> getPage(PagedDataModelStateHolder stateHolder) {
 				return UIPagedData.this.setupPageRequestAndGetPage(stateHolder);
 			}
 		};
@@ -114,7 +115,7 @@ public class UIPagedData extends UIComponentBase {
 		requestMap.put(getVar(), dataModel);
 	}
 
-	protected PagedDataModelPage<Object> setupPageRequestAndGetPage(PagedDataModelStateHolder stateHolder) {
+	protected PagedDataModelContent<Object> setupPageRequestAndGetPage(PagedDataModelStateHolder stateHolder) {
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
 		// Setup the page request so that EL expression can access it
 		PageRequest pageRequest = new StateHolderPageRequestAdapter(stateHolder);
@@ -131,7 +132,7 @@ public class UIPagedData extends UIComponentBase {
 		}
 	}
 
-	private PagedDataModelPage<Object> getPage(PageRequest pageRequest) {
+	private PagedDataModelContent<Object> getPage(PageRequest pageRequest) {
 		ELContext context = getFacesContext().getELContext();
 		ValueExpression valueExpression = getValue();
 		ValueExpression rowCountExpression = getRowCount();
@@ -141,7 +142,7 @@ public class UIPagedData extends UIComponentBase {
 	}
 
 	@SuppressWarnings("unchecked")
-	private PagedDataModelPage<Object> newPage(PageRequest pageRequest, Object value, Object rowCount) {
+	private PagedDataModelContent<Object> newPage(PageRequest pageRequest, Object value, Object rowCount) {
 		if (rowCount == null) {
 			rowCount = springDataSupport.getRowCountFromPage(value);
 		}

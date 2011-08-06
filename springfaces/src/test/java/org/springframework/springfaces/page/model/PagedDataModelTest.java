@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.springfaces.model.NoRowAvailableException;
 
 /**
  * Tests for {@link PagedDataModel}.
@@ -38,7 +39,7 @@ public class PagedDataModelTest {
 
 	private PagedDataModel<String> dataModel;
 
-	private PagedDataModelPageProvider<String> pageProvider = spy(new MockPageProvider());
+	private DataModelPageProvider<String> pageProvider = spy(new MockPageProvider());
 
 	private PagedDataModelStateHolder stateHolder = new DefaultPagedDataModelStateHolder(10);
 
@@ -236,13 +237,13 @@ public class PagedDataModelTest {
 		verify(pageProvider, times(2)).getPage(stateHolder);
 	}
 
-	private class MockPageProvider implements PagedDataModelPageProvider<String> {
-		public PagedDataModelPage<String> getPage(PagedDataModelStateHolder stateHolder) {
+	private class MockPageProvider implements DataModelPageProvider<String> {
+		public PagedDataModelContent<String> getPage(PagedDataModelStateHolder stateHolder) {
 			return new MockPage(stateHolder.getRowIndex(), stateHolder.getPageSize());
 		}
 	}
 
-	private class MockPage implements PagedDataModelPage<String> {
+	private class MockPage implements PagedDataModelContent<String> {
 
 		private int start;
 		private int end;
@@ -256,16 +257,16 @@ public class PagedDataModelTest {
 			return totalNumberOfRows;
 		}
 
-		public boolean containsRowIndex(int rowIndex) {
+		public boolean contains(int rowIndex) {
 			return rowIndex < getTotalRowCount() && rowIndex >= start && rowIndex < end;
 		}
 
 		public boolean isRowAvailable(int rowIndex) {
-			return containsRowIndex(rowIndex);
+			return contains(rowIndex);
 		}
 
 		public String getRowData(int rowIndex) throws NoRowAvailableException {
-			if (!containsRowIndex(rowIndex)) {
+			if (!contains(rowIndex)) {
 				throw new NoRowAvailableException();
 			}
 			return "Data " + String.valueOf(rowIndex);

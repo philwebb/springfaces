@@ -1,11 +1,14 @@
 package org.springframework.springfaces.page.model;
 
+import org.springframework.springfaces.model.NoRowAvailableException;
+
 /**
- * Provides access to an empty {@link PagedDataModelPage} implementation.
+ * Provides an empty {@link PagedDataModelContent} implementation.
  * 
+ * @param <T> The data type
  * @author Phillip Webb
  */
-class EmptyPagedDataModelPage<T> implements PagedDataModelPage<T> {
+public class EmptyPagedDataModelPage<T> implements PagedDataModelContent<T> {
 
 	private int rowIndex;
 
@@ -25,7 +28,7 @@ class EmptyPagedDataModelPage<T> implements PagedDataModelPage<T> {
 		throw new NoRowAvailableException();
 	}
 
-	public boolean containsRowIndex(int rowIndex) {
+	public boolean contains(int rowIndex) {
 		return this.rowIndex == rowIndex;
 	}
 }

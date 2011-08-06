@@ -2,29 +2,14 @@ package org.springframework.springfaces.page.model;
 
 import java.util.Map;
 
-import org.springframework.springfaces.model.DataRows;
 import org.springframework.springfaces.model.PagedDataRows;
 
 /**
- * Strategy interface used by {@link PagedDataModelPage} to get and set state information.
+ * Strategy interface used by {@link PagedDataModelContent} to get and set state information.
  * 
  * @author Phillip Webb
  */
 public interface PagedDataModelStateHolder {
-
-	/**
-	 * Returns the row index.
-	 * @return the row index
-	 * @see DataRows#getRowIndex()
-	 */
-	int getRowIndex();
-
-	/**
-	 * Set the row index.
-	 * @param rowIndex the row index
-	 * @see DataRows#setRowIndex(int)
-	 */
-	void setRowIndex(int rowIndex);
 
 	/**
 	 * Returns the page size.
@@ -50,7 +35,7 @@ public interface PagedDataModelStateHolder {
 	/**
 	 * Set if the sort ascending value.
 	 * @param sortAscending the sort ascending value
-	 * @see PagedDataRows#setSortAscending(Boolean)
+	 * @see PagedDataRows#setSortAscending
 	 */
 	void setSortAscending(boolean sortAscending);
 
@@ -81,4 +66,8 @@ public interface PagedDataModelStateHolder {
 	 * @see PagedDataRows#setFilters(Map)
 	 */
 	void setFilters(Map<String, String> filters);
+
+	int getRowIndex();
+
+	void setRowIndex(int rowIndex);
 }
