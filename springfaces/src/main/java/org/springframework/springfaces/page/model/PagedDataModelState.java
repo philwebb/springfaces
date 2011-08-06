@@ -1,6 +1,5 @@
 package org.springframework.springfaces.page.model;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.springframework.springfaces.model.LazyDataModelState;
@@ -11,11 +10,9 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class PagedDataModelState implements LazyDataModelState, Serializable {
+public class PagedDataModelState extends LazyDataModelState {
 
 	private static final long serialVersionUID = 1L;
-
-	private int rowIndex;
 
 	private int pageSize;
 
@@ -31,17 +28,9 @@ public class PagedDataModelState implements LazyDataModelState, Serializable {
 	 */
 	public PagedDataModelState(int pageSize) {
 		Assert.isTrue(pageSize >= 1, "PageSize must be a positive number");
-		this.rowIndex = -1;
+		setRowIndex(-1);
 		this.pageSize = pageSize;
 		this.sortAscending = true;
-	}
-
-	public int getRowIndex() {
-		return rowIndex;
-	}
-
-	public void setRowIndex(int rowIndex) {
-		this.rowIndex = rowIndex;
 	}
 
 	public int getPageSize() {

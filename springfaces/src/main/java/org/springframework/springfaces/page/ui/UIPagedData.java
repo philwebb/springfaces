@@ -163,8 +163,8 @@ public class UIPagedData extends UIComponentBase {
 			Assert.isInstanceOf(Number.class, rowCount);
 			totalRowCount = ((Number) rowCount).longValue();
 		}
-		return new DefaultDataModelRowSet<Object>(pageRequest.getOffset(), pageRequest.getPageSize(),
-				(List<Object>) value, totalRowCount);
+		return new DefaultDataModelRowSet<Object>(pageRequest.getOffset(), (List<Object>) value,
+				pageRequest.getPageSize(), totalRowCount);
 	}
 
 	protected Object getRowCountFromValue(Object value) {

@@ -72,14 +72,14 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	@Override
 	public int getRowIndex() {
-		return this.state.getRowIndex();
+		return this.getState().getRowIndex();
 	}
 
 	@Override
 	public void setRowIndex(int rowIndex) {
 		if (getRowIndex() != rowIndex) {
 			Assert.isTrue(rowIndex >= -1, "RowIndex must not be less than -1");
-			this.state.setRowIndex(rowIndex);
+			getState().setRowIndex(rowIndex);
 			fireDataModelListeners();
 		}
 	}
@@ -110,7 +110,7 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	/**
 	 * Returns a {@link DataModelRowSet} that contains data for the current {@link #getRowIndex() row index}. If the
-	 * current row is -1 then an {@link EmptyDataModelRowSet empty} set is returned.
+	 * current row is -1 then an {@link DefaultDataModelRowSet#emptySet} set is returned.
 	 * @return the row set for the current row or an empty row set
 	 */
 	private DataModelRowSet<E> getRowSet() {
@@ -128,15 +128,15 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	/**
 	 * Returns the a {@link DataModelRowSet} containing the row data at the specified index. If the row index is -1 then
-	 * an {@link EmptyDataModelRowSet empty} row set is returned.
+	 * an {@link DefaultDataModelRowSet#emptySet empty} row set is returned.
 	 * @param rowIndex the row index
 	 * @return the page for the specified row or an empty page
 	 */
 	private DataModelRowSet<E> getRowSet(int rowIndex) {
 		if (rowSet == null || !rowSet.contains(rowIndex)) {
-			rowSet = (rowIndex == -1 ? new EmptyDataModelRowSet<E>(-1) : loader.getRows(state));
+			rowSet = (rowIndex == -1 ? DefaultDataModelRowSet.<E> emptySet(-1) : loader.getRows(getState()));
 			if (rowSet == null || !rowSet.contains(rowIndex)) {
-				rowSet = EmptyDataModelRowSet.forRow(rowIndex);
+				rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
 			}
 		}
 		return rowSet;

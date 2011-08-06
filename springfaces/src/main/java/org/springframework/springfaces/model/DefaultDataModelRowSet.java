@@ -1,5 +1,6 @@
 package org.springframework.springfaces.model;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -11,20 +12,27 @@ import java.util.List;
  */
 public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 
-	// FIXME more constructor
-	// FIXME rename if possible
-
 	private int offset;
-	private int pageSize;
+	private int size;
 	private List<E> contents;
 	private long totalRowCount;
 
-	// FIXME deal with contents bigger than page size
+	public DefaultDataModelRowSet(List<E> contents) {
+		this(0, contents);
+	}
 
-	public DefaultDataModelRowSet(int offset, int pageSize, List<E> contents, long totalRowCount) {
+	public DefaultDataModelRowSet(int offset, List<E> contents) {
+		this(offset, contents, UNKNOWN_TOTAL_ROW_COUNT);
+	}
+
+	public DefaultDataModelRowSet(int offset, List<E> contents, long totalRowCount) {
+		this(offset, contents, contents.size(), totalRowCount);
+	}
+
+	public DefaultDataModelRowSet(int offset, List<E> contents, int size, long totalRowCount) {
 		this.offset = offset;
-		this.pageSize = pageSize;
 		this.contents = contents;
+		this.size = size;
 		this.totalRowCount = totalRowCount;
 	}
 
@@ -33,15 +41,17 @@ public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 	}
 
 	public boolean contains(int rowIndex) {
-		return getContentsIndex(rowIndex) < pageSize;
+		int ci = getContentsIndex(rowIndex);
+		return (ci >= 0) && (ci < size);
 	}
 
 	public boolean isRowAvailable(int rowIndex) {
-		return getContentsIndex(rowIndex) < contents.size();
+		int ci = getContentsIndex(rowIndex);
+		return contains(rowIndex) && (ci >= 0) && (ci < contents.size());
 	}
 
 	public E getRowData(int rowIndex) throws NoRowAvailableException {
-		if (!contains(rowIndex)) {
+		if (!isRowAvailable(rowIndex)) {
 			throw new NoRowAvailableException();
 		}
 		return contents.get(getContentsIndex(rowIndex));
@@ -49,5 +59,9 @@ public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 
 	private int getContentsIndex(int rowIndex) {
 		return rowIndex - offset;
+	}
+
+	public static <E> DataModelRowSet<E> emptySet(int rowIndex) {
+		return new DefaultDataModelRowSet<E>(0, Collections.<E> emptyList(), 1, UNKNOWN_TOTAL_ROW_COUNT);
 	}
 }

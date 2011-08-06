@@ -1,23 +1,33 @@
 package org.springframework.springfaces.model;
 
+import java.io.Serializable;
+
 /**
  * State associated with a {@link LazyDataModel}.
  * 
  * @author Phillip Webb
  */
-public interface LazyDataModelState {
+public class LazyDataModelState implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	private int rowIndex = -1;
 
 	/**
 	 * Returns the row index.
 	 * @return the row index
 	 * @see DataRows#getRowIndex()
 	 */
-	int getRowIndex();
+	public int getRowIndex() {
+		return rowIndex;
+	}
 
 	/**
 	 * Set the row index.
 	 * @param rowIndex the row index
 	 * @see DataRows#setRowIndex(int)
 	 */
-	void setRowIndex(int rowIndex);
+	public void setRowIndex(int rowIndex) {
+		this.rowIndex = rowIndex;
+	}
 }

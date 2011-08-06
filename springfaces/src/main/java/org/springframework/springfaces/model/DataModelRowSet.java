@@ -12,10 +12,12 @@ import javax.faces.model.DataModel;
  */
 public interface DataModelRowSet<E> {
 
+	public static final long UNKNOWN_TOTAL_ROW_COUNT = -1;
+
 	/**
-	 * Returns the total number of rows contained in the underlying source or <tt>-1</tt> if the total row count is
-	 * unknown.
-	 * @return the total row count or <tt>-1</tt>
+	 * Returns the total number of rows contained in the underlying source or <tt>UNKNOWN_TOTAL_ROW_COUNT</tt> if the
+	 * total row count is unknown.
+	 * @return the total row count or <tt>UNKNOWN_TOTAL_ROW_COUNT</tt>
 	 */
 	long getTotalRowCount();
 

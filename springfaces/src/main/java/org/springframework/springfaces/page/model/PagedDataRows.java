@@ -3,12 +3,14 @@ package org.springframework.springfaces.page.model;
 import java.util.Map;
 
 import javax.faces.component.UIData;
+import javax.faces.model.DataModel;
 
 import org.springframework.springfaces.model.DataRows;
 import org.springframework.springfaces.page.ui.PageRequest;
 
 /**
- * Extension of {@link DataRows} that provides additional sorting, filtering and paging capabilities.
+ * Extension of {@link DataRows} that provides additional sorting, filtering and paging capabilities. This interface is
+ * mainly provided to allow consistent access to paging functionality across different {@link DataModel} subclasses.
  * 
  * @author Phillip Webb
  * 
