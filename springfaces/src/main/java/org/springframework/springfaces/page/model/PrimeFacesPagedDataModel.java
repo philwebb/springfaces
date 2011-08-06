@@ -11,9 +11,9 @@ import org.primefaces.model.LazyDataModel;
 import org.springframework.util.Assert;
 
 /**
- * Adapts a {@link PagedDataModel} to a Primefaces {@link LazyDataModel}. NOTE: This implementation is unable to support
- * generic type arguments due to the fact that {@link LazyDataModel} does not pass generic types to the inherited
- * {@link DataModel}.
+ * Adapts a {@link PagedDataModel} to a PrimeFaces {@link LazyDataModel}. NOTE: This implementation is unable to support
+ * generic type arguments due to the fact that the PrimeFaces {@link LazyDataModel} does not pass generic types to the
+ * inherited {@link DataModel}.
  * 
  * @author Phillip Webb
  */
@@ -65,8 +65,8 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		delegate.setPageSize(pageSize);
 	}
 
-	public boolean getSortAscending() {
-		return delegate.getSortAscending();
+	public boolean isSortAscending() {
+		return delegate.isSortAscending();
 	}
 
 	public void setSortAscending(boolean sortAscending) {
@@ -111,6 +111,6 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		setSortColumn(sortField);
 		setSortAscending(sortOrder);
 		setFilters(filters);
-		return Collections.singletonList(getRowData());
+		return Collections.emptyList();
 	}
 }

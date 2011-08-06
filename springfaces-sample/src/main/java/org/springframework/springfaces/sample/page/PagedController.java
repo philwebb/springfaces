@@ -1,4 +1,4 @@
-package org.springframework.springfaces.sample.controller;
+package org.springframework.springfaces.sample.page;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/paged")
 public class PagedController {
 
-	@RequestMapping("/pagedexample")
-	public void pagedexample() {
+	@RequestMapping("/pagedmyfaces")
+	public void pagedmyfaces() {
 	}
 
+	@RequestMapping("/pagedprimefaces")
+	public void pagedprimefaces() {
+	}
 }

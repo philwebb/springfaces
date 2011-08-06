@@ -3,12 +3,35 @@ package org.springframework.springfaces.page.ui;
 import org.springframework.data.domain.Page;
 import org.springframework.util.ClassUtils;
 
+/**
+ * Support class that is used to dynamically enhance functionality when Spring Data is available.
+ * 
+ * @author Phillip Webb
+ */
 abstract class SpringDataSupport {
 
+	/**
+	 * Extend the specified {@link PageRequest} with the Spring Data <tt>Pageable</tt> interface.
+	 * @param pageRequest the page request
+	 * @return a new page request that also support <tt>Pageable</tt> or the original request if Spring Data is not
+	 * available.
+	 */
 	public abstract PageRequest makePageable(PageRequest pageRequest);
 
+	/**
+	 * Extract the row count from the specified value. If the value is a Spring Data <tt>Page</tt> the row count will be
+	 * extracted, otherwise the null is returned.
+	 * @param value the value
+	 * @return the row count or <tt>null</tt>
+	 */
 	public abstract Object getRowCountFromPage(Object value);
 
+	/**
+	 * Extract the content from the specified value. If the value is a Spring Data <tt>Page</tt> the contexts will be
+	 * extracted, otherwise the original value is returned.
+	 * @param value
+	 * @return the contents or the original value
+	 */
 	public abstract Object getContentFromPage(Object value);
 
 	private static final boolean hasSpringData = ClassUtils.isPresent("org.springframework.data.domain.Page",
@@ -35,7 +58,7 @@ abstract class SpringDataSupport {
 			if (value instanceof Page) {
 				return ((Page) value).getTotalElements();
 			}
-			return value;
+			return null;
 		}
 
 		@Override
@@ -55,7 +78,7 @@ abstract class SpringDataSupport {
 
 		@Override
 		public Object getRowCountFromPage(Object value) {
-			return value;
+			return null;
 		}
 
 		@Override
@@ -63,5 +86,4 @@ abstract class SpringDataSupport {
 			return value;
 		}
 	}
-
 }

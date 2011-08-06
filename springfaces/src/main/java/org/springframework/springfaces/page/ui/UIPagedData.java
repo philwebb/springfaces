@@ -9,6 +9,7 @@ import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
+import javax.faces.model.DataModel;
 
 import org.springframework.springfaces.model.DataModelRowSet;
 import org.springframework.springfaces.model.DefaultDataModelRowSet;
@@ -19,12 +20,43 @@ import org.springframework.springfaces.page.model.PagedDataRows;
 import org.springframework.util.Assert;
 
 /**
+ * Component that can be used to create a paged {@link DataModel} that lazily fetches data from an underling source. The
+ * <tt>value</tt> expression will be called each time new data needs to be fetched and the optional <tt>rowCount</tt>
+ * expression will be used to determine the total number of rows. The expression should use the <tt>pageRequest</tt>
+ * variable to access {@link PageRequest context} information about the specific data that needs to be returned.
+ * <p>
+ * For example:
+ * 
+ * <pre>
+ * &lt;s:pagedData value="#{userRepository.findByLastName(backingBean.lastName, pageRequest.offset, pageRequest.pageSize)}"
+ *    rowCount="#{userRepository.countByLastName(backingBean.lastName)}"/&gt;
+ * 
+ * &lt;!-- use the variable pagedData with a scrolled data table --&gt;
+ * </pre>
+ * <p>
+ * The resulting data model is made available as a request scoped variable named '<tt>pagedData</tt>'. You can set a
+ * different name using the <tt>var</tt> attribute. The data model will extend the JSF {@link DataModel} class and also
+ * implement the {@link PagedDataRows} interface. By default the data model will fetch 10 rows at a time, this can be
+ * configured using the <tt>pageSize</tt> attribute.
+ * <p>
+ * If Spring Data is present on the classpath then <tt>pageRequest</tt> will also implement the
+ * <tt>org.springframework.data.domain.Pageable</tt> interface. The <tt>value</tt> expression can also return a
+ * <tt>org.springframework.data.domain.Page</tt> removing the need to use <tt>rowCount</tt>.
+ * 
+ * <pre>
+ * &lt;s:pagedData value="#{userRepository.findByLastName(backingBean.lastName, pageRequest)}"/&gt;
+ * </pre>
+ * <p>
+ * 
+ * 
  * @see PageRequest
  * @see PagedDataRows
  * 
  * @author Phillip Webb
  */
 public class UIPagedData extends UIComponentBase {
+
+	// FIXME document how to use with MyFaces and PrimeFaces
 
 	public static final String COMPONENT_FAMILY = "spring.faces.PagedData";
 
@@ -97,7 +129,18 @@ public class UIPagedData extends UIComponentBase {
 	}
 
 	@Override
+	public void restoreState(FacesContext context, Object state) {
+		super.restoreState(context, state);
+		// Components may need to refer to previous data during decode
+		createPagedDataInRequestMap();
+	}
+
+	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
+		createPagedDataInRequestMap();
+	}
+
+	private void createPagedDataInRequestMap() {
 		Object pagedData = createPagedData();
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
 		requestMap.put(getVar(), pagedData);

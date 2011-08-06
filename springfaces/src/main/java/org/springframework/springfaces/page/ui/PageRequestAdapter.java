@@ -5,6 +5,11 @@ import java.util.Map;
 
 import org.springframework.springfaces.page.model.PagedDataModelState;
 
+/**
+ * Adapter class that converts {@link PagedDataModelState} to a {@link PageRequest}.
+ * 
+ * @author Phillip Webb
+ */
 class PageRequestAdapter implements PageRequest {
 
 	private PagedDataModelState stateHolder;

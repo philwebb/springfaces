@@ -53,7 +53,7 @@ public interface PagedDataRows<E> extends DataRows<E> {
 	 * @return if the sort is in ascending order
 	 * @see PageRequest#isSortAscending()
 	 */
-	boolean getSortAscending();
+	boolean isSortAscending();
 
 	/**
 	 * Set if sorting is in ascending order.
@@ -62,9 +62,17 @@ public interface PagedDataRows<E> extends DataRows<E> {
 	 */
 	void setSortAscending(boolean sortAscending);
 
-	// FIXME DC this is a map of field -> filter value
-
+	/**
+	 * Returns the filters that should be applied to the data. The key of the filter map is the column that should be
+	 * filtered and the value is the filter that should be applied.
+	 * @return the filters.
+	 */
 	Map<String, String> getFilters();
 
+	/**
+	 * Sets filters that should be applied to the data. The key of the filter map is the column that should be filtered
+	 * and the value is the filter that should be applied.
+	 * @param filters the filter to apply
+	 */
 	void setFilters(Map<String, String> filters);
 }

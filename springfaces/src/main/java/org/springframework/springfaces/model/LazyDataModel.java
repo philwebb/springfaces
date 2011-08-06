@@ -50,6 +50,14 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		return state;
 	}
 
+	/**
+	 * Reset the row index and require that data is reloaded when next accessed
+	 */
+	protected void reset() {
+		setRowIndex(-1);
+		this.rowSet = null;
+	}
+
 	@Override
 	public boolean isRowAvailable() {
 		return getRowSet().isRowAvailable(getRowIndex());

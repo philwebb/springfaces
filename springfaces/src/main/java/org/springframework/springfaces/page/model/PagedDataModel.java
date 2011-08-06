@@ -4,6 +4,7 @@ import java.util.Map;
 
 import javax.faces.model.DataModel;
 
+import org.springframework.springfaces.model.DataModelRowSet;
 import org.springframework.springfaces.model.LazyDataLoader;
 import org.springframework.springfaces.model.LazyDataModel;
 import org.springframework.util.ObjectUtils;
@@ -17,6 +18,11 @@ import org.springframework.util.ObjectUtils;
  */
 public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> implements PagedDataRows<E> {
 
+	/**
+	 * Create a new {@link PagedDataModel} instance.
+	 * @param loader the loader used to access {@link DataModelRowSet row data}
+	 * @param state the state information associated with the data model
+	 */
 	public PagedDataModel(LazyDataLoader<E, PagedDataModelState> loader, PagedDataModelState state) {
 		super(loader, state);
 	}
@@ -27,18 +33,18 @@ public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> imp
 
 	public void setPageSize(int pageSize) {
 		if (getPageSize() != pageSize) {
-			setRowIndex(-1);
+			reset();
 			getState().setPageSize(pageSize);
 		}
 	}
 
-	public boolean getSortAscending() {
+	public boolean isSortAscending() {
 		return getState().isSortAscending();
 	}
 
 	public void setSortAscending(boolean sortAscending) {
-		if (!ObjectUtils.nullSafeEquals(getSortAscending(), sortAscending)) {
-			setRowIndex(-1);
+		if (!ObjectUtils.nullSafeEquals(isSortAscending(), sortAscending)) {
+			reset();
 			getState().setSortAscending(sortAscending);
 		}
 	}
@@ -48,8 +54,8 @@ public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> imp
 	}
 
 	public void setSortColumn(String sortColumn) {
-		if (!ObjectUtils.nullSafeEquals(getSortAscending(), sortColumn)) {
-			setRowIndex(-1);
+		if (!ObjectUtils.nullSafeEquals(getSortColumn(), sortColumn)) {
+			reset();
 			getState().setSortColumn(sortColumn);
 		}
 	}
@@ -59,8 +65,8 @@ public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> imp
 	}
 
 	public void setFilters(Map<String, String> filters) {
-		if (!ObjectUtils.nullSafeEquals(getSortAscending(), filters)) {
-			setRowIndex(-1);
+		if (!ObjectUtils.nullSafeEquals(getFilters(), filters)) {
+			reset();
 			getState().setFilters(filters);
 		}
 	}

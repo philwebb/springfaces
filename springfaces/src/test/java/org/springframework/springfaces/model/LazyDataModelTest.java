@@ -203,6 +203,8 @@ public class LazyDataModelTest {
 		verify(emptyLoader, times(1)).getRows(state);
 	}
 
+	// FIXME test reset
+
 	private class MockLoader implements LazyDataLoader<String, LazyDataModelState> {
 		public DataModelRowSet<String> getRows(LazyDataModelState state) {
 			List<String> contents = new ArrayList<String>();

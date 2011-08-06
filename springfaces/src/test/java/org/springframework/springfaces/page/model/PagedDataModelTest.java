@@ -52,7 +52,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 	@Test
 	public void shouldGetAndSetSortAscending() throws Exception {
 		getDataModel().setSortAscending(true);
-		assertThat(getDataModel().getSortAscending(), is(true));
+		assertThat(getDataModel().isSortAscending(), is(true));
 	}
 
 	@Test
@@ -88,5 +88,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		getDataModel().setFilters(Collections.singletonMap("a", "b"));
 		assertThat(getDataModel().getRowIndex(), is(-1));
 	}
+
+	// FIXME test that resets also trigger fresh data load
 
 }

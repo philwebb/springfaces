@@ -101,8 +101,8 @@ public class PrimeFacesPagedDataModelTest {
 
 	@Test
 	public void shouldDelegateGetSortAscending() throws Exception {
-		dataModel.getSortAscending();
-		verify(delegate).getSortAscending();
+		dataModel.isSortAscending();
+		verify(delegate).isSortAscending();
 	}
 
 	@Test
