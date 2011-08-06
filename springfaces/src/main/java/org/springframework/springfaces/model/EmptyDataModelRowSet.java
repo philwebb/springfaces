@@ -1,6 +1,5 @@
 package org.springframework.springfaces.model;
 
-
 /**
  * Provides an empty {@link DataModelRowSet} implementation for a single row index.
  * 
@@ -8,6 +7,9 @@ package org.springframework.springfaces.model;
  * @author Phillip Webb
  */
 public class EmptyDataModelRowSet<E> implements DataModelRowSet<E> {
+
+	// FIXME can we use DefaultImplementation.
+	// FIXME possibly hide behind utils
 
 	private int rowIndex;
 

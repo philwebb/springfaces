@@ -1,7 +1,7 @@
 package org.springframework.springfaces.page.ui;
 
-import org.springframework.springfaces.model.PagedDataRows;
 import org.springframework.springfaces.page.model.PagedDataModel;
+import org.springframework.springfaces.page.model.PagedDataRows;
 import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
 import org.springframework.util.ClassUtils;
 

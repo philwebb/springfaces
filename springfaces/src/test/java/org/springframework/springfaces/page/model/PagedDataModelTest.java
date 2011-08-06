@@ -41,7 +41,7 @@ public class PagedDataModelTest {
 
 	private DataModelPageProvider<String> pageProvider = spy(new MockPageProvider());
 
-	private PagedDataModelStateHolder stateHolder = new DefaultPagedDataModelStateHolder(10);
+	private PagedDataModelStateHolder stateHolder = new PagedDataModelState(10);
 
 	private long totalNumberOfRows = 1000;
 

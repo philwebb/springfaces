@@ -2,16 +2,11 @@ package org.springframework.springfaces.model;
 
 import javax.faces.model.DataModel;
 
-import org.springframework.springfaces.page.model.DataModelPageProvider;
-
 /**
  * A set of {@link DataModel} rows. This interface is used to provide access to a subset of data from any underlying
  * source.
  * 
  * @param <E> The element type
- * 
- * @See PagedDataModel
- * @see DataModelPageProvider
  * 
  * @author Phillip Webb
  */

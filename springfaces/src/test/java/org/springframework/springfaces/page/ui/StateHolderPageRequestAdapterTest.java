@@ -4,13 +4,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.springframework.springfaces.page.model.DefaultPagedDataModelStateHolder;
+import org.springframework.springfaces.page.model.PagedDataModelState;
 import org.springframework.springfaces.page.model.PagedDataModelStateHolder;
 
 public class StateHolderPageRequestAdapterTest {
 
-	private PagedDataModelStateHolder stateHolder = new DefaultPagedDataModelStateHolder(3);
-	private StateHolderPageRequestAdapter adapter = new StateHolderPageRequestAdapter(stateHolder);
+	private PagedDataModelStateHolder stateHolder = new PagedDataModelState(3);
+	private PageRequestAdapter adapter = new PageRequestAdapter(stateHolder);
 
 	@Test
 	public void shouldCalculatePageNumber() throws Exception {

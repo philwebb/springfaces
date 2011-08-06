@@ -10,18 +10,18 @@ import javax.el.ValueExpression;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 
-import org.springframework.springfaces.model.PagedDataRows;
-import org.springframework.springfaces.page.model.DefaultPagedDataModelPage;
-import org.springframework.springfaces.page.model.DefaultPagedDataModelStateHolder;
+import org.springframework.springfaces.model.DataModelRowSet;
+import org.springframework.springfaces.model.DefaultDataModelRowSet;
+import org.springframework.springfaces.model.LazyDataLoader;
 import org.springframework.springfaces.page.model.PagedDataModel;
-import org.springframework.springfaces.page.model.PagedDataModelContent;
-import org.springframework.springfaces.page.model.DataModelPageProvider;
-import org.springframework.springfaces.page.model.PagedDataModelStateHolder;
+import org.springframework.springfaces.page.model.PagedDataModelState;
+import org.springframework.springfaces.page.model.PagedDataRows;
 import org.springframework.util.Assert;
 
 /**
  * @see PageRequest
  * @see PagedDataRows
+ * 
  * @author Phillip Webb
  */
 public class UIPagedData extends UIComponentBase {
@@ -98,31 +98,35 @@ public class UIPagedData extends UIComponentBase {
 
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
-		DataModelPageProvider<Object> pageProvider = new DataModelPageProvider<Object>() {
-			public PagedDataModelContent<Object> getPage(PagedDataModelStateHolder stateHolder) {
-				return UIPagedData.this.setupPageRequestAndGetPage(stateHolder);
-			}
-		};
-		PagedDataModelStateHolder stateHolder = (PagedDataModelStateHolder) getStateHelper().get(
-				PropertyKeys.stateHolder);
-		if (stateHolder == null) {
-			stateHolder = new DefaultPagedDataModelStateHolder(getPageSize());
-			getStateHelper().put(PropertyKeys.stateHolder, stateHolder);
-		}
-		PagedDataRows<Object> dataModel = primeFacesSupport.wrapPagedDataRows(new PagedDataModel<Object>(pageProvider,
-				stateHolder));
+		Object pagedData = createPagedData();
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
-		requestMap.put(getVar(), dataModel);
+		requestMap.put(getVar(), pagedData);
 	}
 
-	protected PagedDataModelContent<Object> setupPageRequestAndGetPage(PagedDataModelStateHolder stateHolder) {
+	protected Object createPagedData() {
+		LazyDataLoader<Object, PagedDataModelState> lazyDataLoader = new LazyDataLoader<Object, PagedDataModelState>() {
+			public DataModelRowSet<Object> getRows(PagedDataModelState state) {
+				return UIPagedData.this.getRows(state);
+			}
+		};
+		PagedDataModelState state = (PagedDataModelState) getStateHelper().get(PropertyKeys.dataModelstate);
+		if (state == null) {
+			state = new PagedDataModelState(getPageSize());
+			getStateHelper().put(PropertyKeys.dataModelstate, state);
+		}
+		return adaptPagedDataModel(new PagedDataModel<Object>(lazyDataLoader, state));
+	}
+
+	protected Object adaptPagedDataModel(PagedDataModel<Object> pagedDataModel) {
+		return primeFacesSupport.wrapPagedDataRows(pagedDataModel);
+	}
+
+	protected DataModelRowSet<Object> getRows(PagedDataModelState stateHolder) {
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
-		// Setup the page request so that EL expression can access it
-		PageRequest pageRequest = new StateHolderPageRequestAdapter(stateHolder);
-		pageRequest = springDataSupport.makePageable(pageRequest);
+		PageRequest pageRequest = createPageRequest(stateHolder);
 		Object previousPageRequest = requestMap.put(PAGE_REQUEST_VARIABLE, pageRequest);
 		try {
-			return getPage(pageRequest);
+			return executeExpressionsToGetRows(pageRequest);
 		} finally {
 			// Cleanup the page request
 			requestMap.remove(PAGE_REQUEST_VARIABLE);
@@ -132,21 +136,26 @@ public class UIPagedData extends UIComponentBase {
 		}
 	}
 
-	private PagedDataModelContent<Object> getPage(PageRequest pageRequest) {
+	private PageRequest createPageRequest(PagedDataModelState stateHolder) {
+		PageRequest pageRequest = new PageRequestAdapter(stateHolder);
+		return springDataSupport.makePageable(pageRequest);
+	}
+
+	private DataModelRowSet<Object> executeExpressionsToGetRows(PageRequest pageRequest) {
 		ELContext context = getFacesContext().getELContext();
 		ValueExpression valueExpression = getValue();
 		ValueExpression rowCountExpression = getRowCount();
 		Object value = valueExpression.getValue(context);
 		Object rowCount = (rowCountExpression == null ? null : rowCountExpression.getValue(context));
-		return newPage(pageRequest, value, rowCount);
+		return getRowsFromExpressionResults(pageRequest, value, rowCount);
 	}
 
 	@SuppressWarnings("unchecked")
-	private PagedDataModelContent<Object> newPage(PageRequest pageRequest, Object value, Object rowCount) {
+	private DataModelRowSet<Object> getRowsFromExpressionResults(PageRequest pageRequest, Object value, Object rowCount) {
 		if (rowCount == null) {
-			rowCount = springDataSupport.getRowCountFromPage(value);
+			rowCount = getRowCountFromValue(value);
 		}
-		value = springDataSupport.getContentFromPage(value);
+		value = getContentFromValue(value);
 		value = value == null ? Collections.emptyList() : value;
 		long totalRowCount = -1;
 		Assert.isInstanceOf(List.class, value);
@@ -154,10 +163,19 @@ public class UIPagedData extends UIComponentBase {
 			Assert.isInstanceOf(Number.class, rowCount);
 			totalRowCount = ((Number) rowCount).longValue();
 		}
-		return new DefaultPagedDataModelPage<Object>(pageRequest, (List<Object>) value, totalRowCount);
+		return new DefaultDataModelRowSet<Object>(pageRequest.getOffset(), pageRequest.getPageSize(),
+				(List<Object>) value, totalRowCount);
+	}
+
+	protected Object getRowCountFromValue(Object value) {
+		return springDataSupport.getRowCountFromPage(value);
+	}
+
+	protected Object getContentFromValue(Object value) {
+		return springDataSupport.getContentFromPage(value);
 	}
 
 	private enum PropertyKeys {
-		value, rowCount, var, pageSize, stateHolder
+		value, rowCount, var, pageSize, dataModelstate
 	}
 }

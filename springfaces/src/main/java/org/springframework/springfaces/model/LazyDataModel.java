@@ -6,8 +6,6 @@ import javax.faces.model.DataModel;
 import javax.faces.model.DataModelEvent;
 import javax.faces.model.DataModelListener;
 
-import org.springframework.springfaces.page.model.DataModelPageProvider;
-import org.springframework.springfaces.page.model.PagedDataModelStateHolder;
 import org.springframework.util.Assert;
 
 /**
@@ -18,9 +16,6 @@ import org.springframework.util.Assert;
  * 
  * @param <E> The element type
  * @param <S> The data model state state
- * 
- * @see DataModelPageProvider
- * @see PagedDataModelStateHolder
  * 
  * @author Phillip Webb
  */
@@ -45,6 +40,14 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		Assert.notNull(state, "State must not be null");
 		this.loader = loader;
 		this.state = state;
+	}
+
+	/**
+	 * Returns the state for the data model.
+	 * @return the data model state
+	 */
+	protected final S getState() {
+		return state;
 	}
 
 	@Override

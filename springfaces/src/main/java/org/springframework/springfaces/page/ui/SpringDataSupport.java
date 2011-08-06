@@ -27,7 +27,7 @@ abstract class SpringDataSupport {
 	private static class HasSpringData extends SpringDataSupport {
 		@Override
 		public PageRequest makePageable(PageRequest pageRequest) {
-			return new PageablePageRequest(pageRequest);
+			return new SpringDataPageRequest(pageRequest);
 		}
 
 		@Override

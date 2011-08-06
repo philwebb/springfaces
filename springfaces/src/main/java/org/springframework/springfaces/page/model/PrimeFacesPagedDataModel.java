@@ -8,7 +8,6 @@ import javax.faces.model.DataModel;
 import javax.faces.model.DataModelListener;
 
 import org.primefaces.model.LazyDataModel;
-import org.springframework.springfaces.model.PagedDataRows;
 import org.springframework.util.Assert;
 
 /**
