@@ -20,17 +20,6 @@ public class SpringDataPageRequest implements PageRequest, Pageable {
 		this.pageRequest = pageRequest;
 	}
 
-	public Sort getSort() {
-		if (StringUtils.hasLength(getSortColumn())) {
-			return new Sort(getSortDirection(), getSortColumn());
-		}
-		return null;
-	}
-
-	private Direction getSortDirection() {
-		return (isSortAscending() ? Direction.ASC : Direction.DESC);
-	}
-
 	public int getPageNumber() {
 		return pageRequest.getPageNumber();
 	}
@@ -54,4 +43,16 @@ public class SpringDataPageRequest implements PageRequest, Pageable {
 	public Map<String, String> getFilters() {
 		return pageRequest.getFilters();
 	}
+
+	public Sort getSort() {
+		if (StringUtils.hasLength(getSortColumn())) {
+			return new Sort(getSortDirection(), getSortColumn());
+		}
+		return null;
+	}
+
+	private Direction getSortDirection() {
+		return (isSortAscending() ? Direction.ASC : Direction.DESC);
+	}
+
 }

@@ -133,17 +133,17 @@ public class UIPagedData extends UIComponentBase {
 	public void restoreState(FacesContext context, Object state) {
 		super.restoreState(context, state);
 		// Components may need to refer to previous data during decode
-		createPagedDataInRequestMap();
+		createPagedDataInRequestMap(context);
 	}
 
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
-		createPagedDataInRequestMap();
+		createPagedDataInRequestMap(context);
 	}
 
-	private void createPagedDataInRequestMap() {
+	private void createPagedDataInRequestMap(FacesContext context) {
 		Object pagedData = createPagedData();
-		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
+		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
 		requestMap.put(getVar(), pagedData);
 	}
 
