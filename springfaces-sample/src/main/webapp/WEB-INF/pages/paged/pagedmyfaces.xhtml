@@ -7,7 +7,7 @@
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 
 <h:head>
-	<title>Destination</title>
+	<title>Paged MyFaces</title>
 </h:head>
 
 <h:body>
@@ -46,6 +46,8 @@
 					<t:commandSortHeader columnName="postcode">
 						<h:outputText value="postcode" />
 					</t:commandSortHeader>
+					<h:inputText value="#{pagedData.filters.postcode}" />
+					<h:commandButton value="go" />
 				</f:facet>
 				<h:outputText value="#{address.postcode}" />
 			</t:column>

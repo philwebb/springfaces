@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -25,6 +26,11 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.runners.MockitoJUnitRunner;
 
+/**
+ * Tests for {@link LazyDataModel}.
+ * 
+ * @author Phillip Webb
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class LazyDataModelTest {
 
@@ -203,7 +209,17 @@ public class LazyDataModelTest {
 		verify(emptyLoader, times(1)).getRows(state);
 	}
 
-	// FIXME test reset
+	@Test
+	public void resetShouldSetRowIndexAndRequireAFreshDataFetch() throws Exception {
+		dataModel.setRowIndex(0);
+		dataModel.getRowData();
+		reset(loader);
+		dataModel.reset();
+		assertThat(dataModel.getRowIndex(), is(-1));
+		dataModel.setRowIndex(0);
+		dataModel.getRowData();
+		verify(loader).getRows(state);
+	}
 
 	private class MockLoader implements LazyDataLoader<String, LazyDataModelState> {
 		public DataModelRowSet<String> getRows(LazyDataModelState state) {

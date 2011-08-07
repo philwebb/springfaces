@@ -20,7 +20,7 @@ abstract class PrimeFacesSupport {
 	 */
 	public abstract <E> PagedDataRows<E> wrapPagedDataRows(PagedDataModel<E> pagedDataRows);
 
-	private static final boolean hasPrimeFaces = ClassUtils.isPresent("org.primefaces.model.LazyDataModel",
+	private static boolean hasPrimeFaces = ClassUtils.isPresent("org.primefaces.model.LazyDataModel",
 			PrimeFacesSupport.class.getClassLoader());
 
 	private static PrimeFacesSupport instance;
@@ -30,6 +30,15 @@ abstract class PrimeFacesSupport {
 			instance = (hasPrimeFaces ? new HasPrimeFaces() : new NoPrimeFaces());
 		}
 		return instance;
+	}
+
+	/**
+	 * Override if primefaces is available. This is primarily to aid testing.
+	 * @param hasPrimeFaces if spring data is available.
+	 */
+	static void setHasPrimeFaces(boolean hasPrimeFaces) {
+		PrimeFacesSupport.hasPrimeFaces = hasPrimeFaces;
+		instance = null;
 	}
 
 	private static class HasPrimeFaces extends PrimeFacesSupport {

@@ -34,7 +34,7 @@ abstract class SpringDataSupport {
 	 */
 	public abstract Object getContentFromPage(Object value);
 
-	private static final boolean hasSpringData = ClassUtils.isPresent("org.springframework.data.domain.Page",
+	private static boolean hasSpringData = ClassUtils.isPresent("org.springframework.data.domain.Page",
 			SpringDataSupport.class.getClassLoader());
 
 	private static SpringDataSupport instance;
@@ -44,6 +44,15 @@ abstract class SpringDataSupport {
 			instance = (hasSpringData ? new HasSpringData() : new NoSpringData());
 		}
 		return instance;
+	}
+
+	/**
+	 * Override if spring data is available. This is primarily to aid testing.
+	 * @param hasSpringData if spring data is available.
+	 */
+	static void setHasSpringData(boolean hasSpringData) {
+		SpringDataSupport.hasSpringData = hasSpringData;
+		instance = null;
 	}
 
 	@SuppressWarnings("rawtypes")

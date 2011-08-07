@@ -17,6 +17,7 @@ import org.springframework.springfaces.model.LazyDataLoader;
 import org.springframework.springfaces.page.model.PagedDataModel;
 import org.springframework.springfaces.page.model.PagedDataModelState;
 import org.springframework.springfaces.page.model.PagedDataRows;
+import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
 import org.springframework.util.Assert;
 
 /**
@@ -47,7 +48,9 @@ import org.springframework.util.Assert;
  * &lt;s:pagedData value="#{userRepository.findByLastName(backingBean.lastName, pageRequest)}"/&gt;
  * </pre>
  * <p>
- * 
+ * If PrimeFaces is present on the classpath then the resulting model will extend
+ * <tt>org.primefaces.model.LazyDataModel</tt> rather than <tt>javax.faces.model.DataModel</tt>. Use the
+ * {@link PagedDataRows} interface if you need a consistent way of dealing with PrimeFaces and Standard DataModels.
  * 
  * @see PageRequest
  * @see PagedDataRows
@@ -55,8 +58,6 @@ import org.springframework.util.Assert;
  * @author Phillip Webb
  */
 public class UIPagedData extends UIComponentBase {
-
-	// FIXME document how to use with MyFaces and PrimeFaces
 
 	public static final String COMPONENT_FAMILY = "spring.faces.PagedData";
 
@@ -146,6 +147,11 @@ public class UIPagedData extends UIComponentBase {
 		requestMap.put(getVar(), pagedData);
 	}
 
+	/**
+	 * Factory method used to create the paged data object to be exposed. By default this method will return a
+	 * {@link DataModel} subclass (either {@link PagedDataModel} or {@link PrimeFacesPagedDataModel}).
+	 * @return the paged data to expose
+	 */
 	protected Object createPagedData() {
 		LazyDataLoader<Object, PagedDataModelState> lazyDataLoader = new LazyDataLoader<Object, PagedDataModelState>() {
 			public DataModelRowSet<Object> getRows(PagedDataModelState state) {
@@ -160,10 +166,24 @@ public class UIPagedData extends UIComponentBase {
 		return adaptPagedDataModel(new PagedDataModel<Object>(lazyDataLoader, state));
 	}
 
+	/**
+	 * Strategy method called to adapt a {@link PagedDataModel} to a more appropriate subclass. By default this method
+	 * is used to support PrimeFaces.
+	 * @param pagedDataModel the data model
+	 * @return the adapted model
+	 */
 	protected Object adaptPagedDataModel(PagedDataModel<Object> pagedDataModel) {
 		return primeFacesSupport.wrapPagedDataRows(pagedDataModel);
 	}
 
+	/**
+	 * Strategy method used to obtain the rows to be used by the {@link PagedDataModel}. By default this method will
+	 * expose a <tt>pageRequest</tt> before calling the appropriate EL expressions.
+	 * @param stateHolder the state holder
+	 * @return the data model rows
+	 * @see #getRowCountFromValue(Object)
+	 * @see #getContentFromValue(Object)
+	 */
 	protected DataModelRowSet<Object> getRows(PagedDataModelState stateHolder) {
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
 		PageRequest pageRequest = createPageRequest(stateHolder);
@@ -179,11 +199,21 @@ public class UIPagedData extends UIComponentBase {
 		}
 	}
 
+	/**
+	 * Create the page request to expose. This method also deals with adding Spring Data <tt>Pageable</tt> support.
+	 * @param stateHolder the state holder
+	 * @return a page request
+	 */
 	private PageRequest createPageRequest(PagedDataModelState stateHolder) {
 		PageRequest pageRequest = new PageRequestAdapter(stateHolder);
 		return springDataSupport.makePageable(pageRequest);
 	}
 
+	/**
+	 * Executes the appropriate EL expression to obtain page and row count data.
+	 * @param pageRequest the page request
+	 * @return the data model rows
+	 */
 	private DataModelRowSet<Object> executeExpressionsToGetRows(PageRequest pageRequest) {
 		ELContext context = getFacesContext().getELContext();
 		ValueExpression valueExpression = getValue();
@@ -193,6 +223,13 @@ public class UIPagedData extends UIComponentBase {
 		return getRowsFromExpressionResults(pageRequest, value, rowCount);
 	}
 
+	/**
+	 * Obtains row data from the results of the EL expressions.
+	 * @param pageRequest the page request
+	 * @param value the value EL result
+	 * @param rowCount the rowCount EL result
+	 * @return the data model rows
+	 */
 	@SuppressWarnings("unchecked")
 	private DataModelRowSet<Object> getRowsFromExpressionResults(PageRequest pageRequest, Object value, Object rowCount) {
 		if (rowCount == null) {
@@ -210,10 +247,22 @@ public class UIPagedData extends UIComponentBase {
 				pageRequest.getPageSize(), totalRowCount);
 	}
 
+	/**
+	 * Strategy method used to obtain a count from the value EL result. This method is called when no rowCount EL
+	 * expression is specified. By default this method will deal with Spring Data <tt>Page</tt> results.
+	 * @param value the value EL result
+	 * @return a row count or <tt>null</tt>
+	 */
 	protected Object getRowCountFromValue(Object value) {
 		return springDataSupport.getRowCountFromPage(value);
 	}
 
+	/**
+	 * Strategy method used to obtain content from the value EL result. By default this method will deal with Spring
+	 * Data <tt>Page</tt> results.
+	 * @param value the value EL result
+	 * @return contents extracted from the value of the original value unchanged.
+	 */
 	protected Object getContentFromValue(Object value) {
 		return springDataSupport.getContentFromPage(value);
 	}
