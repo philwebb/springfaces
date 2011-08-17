@@ -6,9 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 /**
@@ -26,8 +28,8 @@ public class DefaultDestinationViewResolver implements DestinationViewResolver,
 		delegate.onApplicationEvent(event);
 	}
 
-	public View resolveDestination(Object destination, Locale locale) throws Exception {
-		return delegate.resolveViewId(destination.toString(), locale);
+	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
+		return new ModelAndView(delegate.resolveViewId(destination.toString(), locale));
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet {

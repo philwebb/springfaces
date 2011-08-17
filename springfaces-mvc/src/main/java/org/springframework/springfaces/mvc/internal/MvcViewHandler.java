@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
@@ -187,9 +188,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	private ModelAndView getModelAndView(FacesContext context, String viewId, Map<String, List<String>> parameters) {
 		DestinationAndModel destinationAndModel = getDestinationAndModelForViewId(context, viewId);
 		if (destinationAndModel != null) {
-			View view = resolveDestination(context, destinationAndModel.getDestination());
-			Map<String, Object> model = destinationAndModel.getModel(context, parameters);
-			return new ModelAndView(view, model);
+			ModelAndView modelAndView = resolveDestination(context, destinationAndModel.getDestination());
+			Map<String, Object> resolvedViewModel = destinationAndModel.getModel(context, parameters, modelAndView.getModel());
+			return new ModelAndView(modelAndView.getView(), resolvedViewModel);
 		}
 		return null;
 	}
@@ -202,13 +203,17 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		return destinationAndModel;
 	}
 
-	private View resolveDestination(FacesContext context, Object destination) {
+	private ModelAndView resolveDestination(FacesContext context, Object destination) {
 		if (destination instanceof View) {
-			return (View) destination;
+			return new ModelAndView((View) destination);
+		}
+		if (destination instanceof ModelAndView) {
+			return (ModelAndView) destination;
 		}
 		try {
 			Locale locale = FacesUtils.getLocale(context);
-			return destinationViewResolver.resolveDestination(destination, locale);
+			SpringFacesModel model = SpringFacesModelHolder.getModel(context.getViewRoot());
+			return destinationViewResolver.resolveDestination(destination, locale, model);
 		} catch (Exception e) {
 			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
 		}

@@ -1,7 +1,6 @@
 package org.springframework.springfaces.traveladvisor.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.springfaces.traveladvisor.service.SearchService;
 import org.springframework.springfaces.traveladvisor.web.SearchCriteria;
@@ -21,11 +20,11 @@ public class SearchController {
 	}
 
 	@NavigationMapping
-	public Object onSearch(SearchCriteria searchCriteria) {
+	public String onSearch(SearchCriteria searchCriteria) {
 		if (searchService.isCityNameExactMatch(searchCriteria.getName())) {
 			return "@cityController.showCity";
 		}
-		return new NavigationOutcome("@performSearch", "searchCriteria", searchCriteria);
+		return "@performSearch";
 	}
 
 	@RequestMapping("/cities")

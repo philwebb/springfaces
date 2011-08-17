@@ -102,10 +102,12 @@ public class DestinationAndModelTest {
 		FacesContext context = mock(FacesContext.class);
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("parameters", Collections.<String> emptyList());
-		dam.getModel(context, parameters);
+		Map<String, Object> resolvedViewModel = Collections.<String, Object> singletonMap("resolved", "resolvedValue");
+		dam.getModel(context, parameters, resolvedViewModel);
 		InOrder ordered = inOrder(modelBuilder);
 		ordered.verify(modelBuilder).addFromComponent(component);
 		ordered.verify(modelBuilder).add(implicitModel, true);
 		ordered.verify(modelBuilder).addFromParamterList(parameters);
+		ordered.verify(modelBuilder).add(resolvedViewModel, false);
 	}
 }

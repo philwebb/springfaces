@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -22,6 +23,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 /**
@@ -70,10 +72,10 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 
 	private String prefix = "@";
 
-	public View resolveDestination(Object destination, Locale locale) throws Exception {
+	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
 		if ((destination instanceof String) && ((String) destination).startsWith(prefix)) {
 			try {
-				return resolvePrefixedDestination(((String) destination).substring(prefix.length()), locale);
+				return resolvePrefixedDestination(((String) destination).substring(prefix.length()), locale, model);
 			} catch (RuntimeException e) {
 				throw new IllegalStateException("Unable to resolve @RequestMapped view from destination '"
 						+ destination + "' : " + e.getMessage(), e);
@@ -86,17 +88,20 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * Resolve a {@link #setPrefix prefixed} destination.
 	 * @param destination the destination (not including any prefix)
 	 * @param locale the locale in which to resolve the view
+	 * @param model the {@link SpringFacesModel} at the time the view was resolved.
 	 * @return a resolved view
 	 * @throws Exception if the view cannot be resolved
 	 */
-	private View resolvePrefixedDestination(String destination, Locale locale) throws Exception {
+	private ModelAndView resolvePrefixedDestination(String destination, Locale locale, SpringFacesModel model)
+			throws Exception {
 		Object handler = resolveDestinationHandler(destination);
 		Method method = cachedDestinationMethods.get(destination);
 		if (method == null) {
 			method = resolveDestinationMethod(handler, destination);
 			cachedDestinationMethods.put(destination, method);
 		}
-		return createView(this, handler, method);
+		View view = createView(this, handler, method);
+		return new ModelAndView(view, getPropagatedModel(view, model));
 	}
 
 	/**
@@ -109,6 +114,17 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 */
 	protected View createView(RequestMappedRedirectViewContext context, Object handler, Method method) {
 		return new RequestMappedRedirectView(context, handler, method);
+	}
+
+	/**
+	 * Strategy method used to obtain the model that should be propagated to the resolved {@link ModelAndView}. By
+	 * default this method returns all entries from the {@link SpringFacesModel}.
+	 * @param view the {@link #createView created} view
+	 * @param model the {@link SpringFacesModel} at the time the view was resolved.
+	 * @return the model to be propagated
+	 */
+	protected Map<String, Object> getPropagatedModel(View view, SpringFacesModel model) {
+		return (model == null ? null : model.asMap());
 	}
 
 	private Object resolveDestinationHandler(String destination) {

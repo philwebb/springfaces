@@ -1,7 +1,7 @@
 package org.springframework.springfaces.mvc.navigation;
 
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
-import org.springframework.web.servlet.View;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Tests for {@link DestinationViewResolverChain}.
@@ -27,14 +28,16 @@ public class DestinationViewResolverChainTest {
 
 	private Object destination = new Object();
 
+	private SpringFacesModel model = new SpringFacesModel();
+
 	@Test
 	public void shouldReturnNullWhenNullResolvers() throws Exception {
-		assertNull(chain.resolveDestination(destination, locale));
+		assertNull(chain.resolveDestination(destination, locale, model));
 	}
 
 	@Test
 	public void shouldReturnFirstSuitableResolver() throws Exception {
-		View view = mock(View.class);
+		ModelAndView modelAndView = mock(ModelAndView.class);
 		List<DestinationViewResolver> resolvers = new ArrayList<DestinationViewResolver>();
 		DestinationViewResolver r1 = mock(DestinationViewResolver.class);
 		DestinationViewResolver r2 = mock(DestinationViewResolver.class);
@@ -42,11 +45,11 @@ public class DestinationViewResolverChainTest {
 		resolvers.add(r1);
 		resolvers.add(r2);
 		resolvers.add(r3);
-		given(r2.resolveDestination(destination, locale)).willReturn(view);
+		given(r2.resolveDestination(destination, locale, model)).willReturn(modelAndView);
 		chain.setResolvers(resolvers);
-		View resolved = chain.resolveDestination(destination, locale);
-		assertSame(view, resolved);
-		verify(r1).resolveDestination(destination, locale);
-		verify(r3, never()).resolveDestination(resolved, locale);
+		ModelAndView resolved = chain.resolveDestination(destination, locale, model);
+		assertSame(modelAndView, resolved);
+		verify(r1).resolveDestination(destination, locale, model);
+		verify(r3, never()).resolveDestination(resolved, locale, model);
 	}
 }

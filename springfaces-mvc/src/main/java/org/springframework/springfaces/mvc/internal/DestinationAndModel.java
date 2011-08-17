@@ -73,15 +73,17 @@ class DestinationAndModel {
 	 * page mark-up.
 	 * @param context the faces context
 	 * @param parameters parameters identified by JSF that should be included in the model.
-	 * @return the model The model
+	 * @param resolvedViewModel the model obtained when the destination was {@link DestinationViewResolver resolved}
+	 * (can be <tt>null</tt>)
+	 * @return the model The final model
 	 */
-	public Map<String, Object> getModel(FacesContext context, Map<String, List<String>> parameters) {
+	public Map<String, Object> getModel(FacesContext context, Map<String, List<String>> parameters,
+			Map<String, Object> resolvedViewModel) {
 		ModelBuilder modelBuilder = newModelBuilder(context);
 		modelBuilder.addFromComponent(getComponent());
 		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
 		modelBuilder.addFromParamterList(parameters);
-		// FIXME for RequestMappedRedirectDestinationViewResolver we could also include the current model as it will be
-		// filtered, would save needing to build a pass-through model or add <f:param>.
+		modelBuilder.add(resolvedViewModel, false);
 		return modelBuilder.getModel();
 	}
 

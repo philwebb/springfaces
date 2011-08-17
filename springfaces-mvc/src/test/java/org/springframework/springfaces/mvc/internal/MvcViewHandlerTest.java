@@ -15,6 +15,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,7 @@ import org.springframework.springfaces.mvc.FacesContextSetter;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.internal.MvcViewHandler.NavigationResponseUIViewRoot;
+import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
@@ -166,10 +168,11 @@ public class MvcViewHandlerTest {
 		assertFalse(view instanceof NavigationResponseUIViewRoot);
 	}
 
-	private void setupDestination(String viewId, Object destination) {
+	private DestinationAndModel setupDestination(String viewId, Object destination) {
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
 		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
+		return destinationAndModel;
 	}
 
 	@Test
@@ -308,15 +311,21 @@ public class MvcViewHandlerTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void shouldResolveDestination() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
 		Object destination = "resolvableDestination";
-		setupDestination("test", destination);
+		DestinationAndModel destinationAndModel = setupDestination("test", destination);
 		given(context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
 		View view = mock(View.class);
-		given(destinationViewResolver.resolveDestination(eq(destination), any(Locale.class))).willReturn(view);
+		Map<String, Object> model = Collections.<String, Object> singletonMap("m", "v");
+		ModelAndView modelAndView = new ModelAndView(view, model);
+		given(
+				destinationViewResolver.resolveDestination(eq(destination), any(Locale.class),
+						any(SpringFacesModel.class))).willReturn(modelAndView);
 		UIViewRoot createdView = handler.createView(context, "/test");
 		assertSame(view, ((NavigationResponseUIViewRoot) createdView).getModelAndView().getView());
+		verify(destinationAndModel).getModel(any(FacesContext.class), anyMap(), eq(model));
 	}
 
 	@Test
