@@ -1,6 +1,7 @@
 package org.springframework.springfaces.mvc.navigation;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.util.Assert;
@@ -39,10 +40,17 @@ public final class NavigationOutcome implements Serializable {
 	 * @param implicitModel An implicit model to be used with destination or <tt>null</tt>.
 	 */
 	public NavigationOutcome(Object destination, Map<String, Object> implicitModel) {
-		super();
 		Assert.notNull(destination, "Destination must not be null");
 		this.destination = destination;
 		this.implicitModel = implicitModel;
+	}
+
+	public NavigationOutcome(Object destination, String implicitModelName, Object implicitModelObject) {
+		// FIXME Test
+		Assert.notNull(destination, "Destination must not be null");
+		// FIXME null rules
+		this.destination = destination;
+		this.implicitModel = Collections.singletonMap(implicitModelName, implicitModelObject);
 	}
 
 	/**

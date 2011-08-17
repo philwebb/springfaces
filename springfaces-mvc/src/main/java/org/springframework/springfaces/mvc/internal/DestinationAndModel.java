@@ -80,6 +80,8 @@ class DestinationAndModel {
 		modelBuilder.addFromComponent(getComponent());
 		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
 		modelBuilder.addFromParamterList(parameters);
+		// FIXME for RequestMappedRedirectDestinationViewResolver we could also include the current model as it will be
+		// filtered, would save needing to build a pass-through model or add <f:param>.
 		return modelBuilder.getModel();
 	}
 

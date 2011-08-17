@@ -409,6 +409,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		if (result == null) {
 			return null;
 		}
+		// FIXME should we deal with ModelAndView results
 		if (result instanceof NavigationOutcome) {
 			return (NavigationOutcome) result;
 		}

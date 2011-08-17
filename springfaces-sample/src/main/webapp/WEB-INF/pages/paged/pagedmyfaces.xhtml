@@ -14,6 +14,7 @@
 	<h:form id="form">
 
 		<s:pagedData value="#{addressRepository.findAll(pageRequest)}" />
+		
 		<t:dataTable value="#{pagedData}" rows="#{pagedData.pageSize}"
 			sortColumn="#{pagedData.sortColumn}"
 			sortAscending="#{pagedData.sortAscending}" var="address" border="1">

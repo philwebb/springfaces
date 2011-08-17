@@ -1,6 +1,7 @@
-package org.springframework.springfaces.traveladvisor.controller;
+package org.springframework.springfaces.traveladvisor.web;
 
 public class SearchCriteria {
+
 	private String name;
 
 	public String getName() {
@@ -10,5 +11,4 @@ public class SearchCriteria {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 }

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.traveladvisor.controller;
+package org.springframework.springfaces.traveladvisor.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;

@@ -160,7 +160,10 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		@Override
 		public void render(ModelAndViewArtifact modelAndViewArtifact) {
 			checkNotRelased();
-			Assert.state(rendering == null, "The SpringFacesContext is already rendering");
+			if (rendering != null) {
+				throw new IllegalStateException("Unable to render " + modelAndViewArtifact.getViewArtifact()
+						+ "  as the SpringFacesContext is already rendering " + rendering.getViewArtifact());
+			}
 			this.rendering = modelAndViewArtifact;
 			try {
 				FacesContext facesContext = getFacesContext();
