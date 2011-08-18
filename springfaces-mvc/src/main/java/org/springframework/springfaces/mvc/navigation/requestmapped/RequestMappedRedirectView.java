@@ -171,6 +171,7 @@ public class RequestMappedRedirectView implements BookmarkableView {
 	 * @return relevant model items
 	 */
 	protected Map<String, ?> getRelevantModel(NativeWebRequest request, String url, Map<String, ?> sourceModel) {
+		// FIXME perhaps better error if the model builder fails
 		Map<String, Object> model = modelBuilder.build(request, sourceModel);
 		addUriTemplateParameters(model, url, sourceModel);
 		return model;

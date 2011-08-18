@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://www.springframework.org/tags/springfaces"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<ui:composition template="/WEB-INF/templates/layout.xhtml">
+		<ui:param name="title" value="Hotel"/>
+
+		<h:outputText value="#{hotel.name}"/>
+
+		<!-- FIXME rating summary -->
+
+		<!-- FIXME map -->
+
+		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}" var="reviews" />
+
+		<h:dataTable value="#{reviews}" var="review">
+			<h:column>
+				<h:link value="#{review.title}" outcome="spring:@hotelReview">
+					<f:param name="key" value="#{hotel.key}"/>
+					<f:param name="reviewNumber" value="#{review.number}"/>
+				</h:link>
+			</h:column>
+			<h:column>
+				<h:outputText value="#{review.rating}"/>
+			</h:column>
+		</h:dataTable>
+
+		<h:button value="Write Review" outcome="spring:@writeHotelReview">
+					<f:param name="key" value="#{hotel.key}"/>
+		</h:button>
+
+	</ui:composition>
+
+</html>
+
+
+

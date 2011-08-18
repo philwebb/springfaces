@@ -8,16 +8,20 @@
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
-		<ui:param name="title" value="Cities"/>
+		<ui:param name="title" value="City"/>
 
-		<s:pagedData value="#{cityService.findCities(citySearchCriteria, pageRequest)}" var="cities"/>
+		<h:outputText value="#{city.name} #{city.country}"/>
 
-		<h:dataTable value="#{cities}" var="city">
+		<s:pagedData value="#{cityService.getHotels(city, pageRequest)}" var="hotels"/>
+
+		<h:dataTable value="#{hotels}" var="hotel">
 			<h:column>
-				<h:link value="#{city.name}" outcome="spring:@showCity">
-					<f:param name="country" value="#{city.country.toLowerCase()}"/>
-					<f:param name="name" value="#{city.name.toLowerCase()}"/>
+				<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
+					<f:param name="key" value="#{hotel.key}"/>
 				</h:link>
+			</h:column>
+			<h:column>
+				<h:outputText value="#{hotel.averageRating}"/>
 			</h:column>
 		</h:dataTable>
 

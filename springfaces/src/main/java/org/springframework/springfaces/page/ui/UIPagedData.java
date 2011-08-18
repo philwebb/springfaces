@@ -236,6 +236,7 @@ public class UIPagedData extends UIComponentBase {
 			rowCount = getRowCountFromValue(value);
 		}
 		value = getContentFromValue(value);
+		// FIXME should a null return throw an exception, it can mast EL errors
 		value = value == null ? Collections.emptyList() : value;
 		long totalRowCount = -1;
 		Assert.isInstanceOf(List.class, value);

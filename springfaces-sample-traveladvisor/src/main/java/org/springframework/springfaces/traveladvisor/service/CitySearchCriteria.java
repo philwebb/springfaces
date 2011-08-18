@@ -1,6 +1,6 @@
-package org.springframework.springfaces.traveladvisor.web;
+package org.springframework.springfaces.traveladvisor.service;
 
-public class SearchCriteria {
+public class CitySearchCriteria {
 
 	private String name;
 

@@ -8,19 +8,11 @@
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
-		<ui:param name="title" value="Cities"/>
+		<ui:param name="title" value="Review"/>
 
-		<s:pagedData value="#{cityService.findCities(citySearchCriteria, pageRequest)}" var="cities"/>
-
-		<h:dataTable value="#{cities}" var="city">
-			<h:column>
-				<h:link value="#{city.name}" outcome="spring:@showCity">
-					<f:param name="country" value="#{city.country.toLowerCase()}"/>
-					<f:param name="name" value="#{city.name.toLowerCase()}"/>
-				</h:link>
-			</h:column>
-		</h:dataTable>
-
+		<h:outputText value="#{review.title}"/>
+		<br/>
+		<h:outputText value="#{reviewRatingValue.value}"/>
 	</ui:composition>
 
 </html>
