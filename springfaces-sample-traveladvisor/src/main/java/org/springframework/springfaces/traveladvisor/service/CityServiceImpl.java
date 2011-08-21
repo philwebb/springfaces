@@ -21,7 +21,6 @@ public class CityServiceImpl implements CityService {
 		return new PageImpl<City>(content);
 	}
 
-	// FIXME consider making country a domain specific type
 	public City getCity(String name, String country) {
 		return new City(name, country);
 	}
