@@ -71,4 +71,12 @@ public class CityRepositoryTest {
 		assertThat(hotels.getTotalElements(), is(2L));
 		assertThat(hotels.getContent().get(0).getAverageRating(), is(2.0));
 	}
+
+	@Test
+	public void shouldFindHotelsWithoutReview() throws Exception {
+		City city = cityRepository.findByNameAndCountry("Melbourne", "Australia");
+		Page<HotelSummary> hotels = cityRepository.getHotels(city, pageable);
+		assertThat(hotels.getTotalElements(), is(1L));
+		assertThat(hotels.getContent().get(0).getAverageRating(), is(nullValue()));
+	}
 }

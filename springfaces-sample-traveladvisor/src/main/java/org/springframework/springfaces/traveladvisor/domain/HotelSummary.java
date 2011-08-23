@@ -3,9 +3,9 @@ package org.springframework.springfaces.traveladvisor.domain;
 public class HotelSummary {
 
 	private Hotel hotel;
-	private double averageRating;
+	private Double averageRating;
 
-	public HotelSummary(Hotel hotel, double averageRating) {
+	public HotelSummary(Hotel hotel, Double averageRating) {
 		this.hotel = hotel;
 		this.averageRating = averageRating;
 	}
@@ -18,7 +18,7 @@ public class HotelSummary {
 		return hotel.getName();
 	}
 
-	public double getAverageRating() {
+	public Double getAverageRating() {
 		return averageRating;
 	}
 
