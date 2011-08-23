@@ -17,7 +17,9 @@
 		<h:dataTable value="#{hotels}" var="hotel">
 			<h:column>
 				<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
-					<f:param name="key" value="#{hotel.key}"/>
+					<f:param name="country" value="#{hotel.city.country}"/>
+					<f:param name="city" value="#{hotel.city.name}"/>
+					<f:param name="hotel" value="#{hotel.name}"/>
 				</h:link>
 			</h:column>
 			<h:column>

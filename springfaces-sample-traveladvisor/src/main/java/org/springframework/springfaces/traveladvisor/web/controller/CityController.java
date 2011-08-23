@@ -19,7 +19,7 @@ public class CityController {
 
 	private CityService cityService;
 
-	@RequestMapping("/cities/search")
+	@RequestMapping("/advisor/cities/search")
 	public String enterSearchDetails(Model model) {
 		model.addAttribute(new CitySearchCriteria());
 		return "citysearch";
@@ -44,11 +44,12 @@ public class CityController {
 		return null;
 	}
 
-	@RequestMapping("/cities")
-	public void performSearch(CitySearchCriteria searchCriteria, Model model) {
+	@RequestMapping("/advisor/cities")
+	public String performSearch(CitySearchCriteria searchCriteria, Model model) {
+		return "cities";
 	}
 
-	@RequestMapping("/city/{country}/{name}")
+	@RequestMapping("/advisor/{country}/{name}")
 	public String showCity(@PathVariable String country, @PathVariable String name, Model model) {
 		model.addAttribute(cityService.getCity(name, country));
 		return "city";

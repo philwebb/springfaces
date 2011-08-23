@@ -20,18 +20,22 @@
 
 		<h:dataTable value="#{reviews}" var="review">
 			<h:column>
-				<h:link value="#{review.title}" outcome="spring:@hotelReview">
-					<f:param name="key" value="#{hotel.key}"/>
-					<f:param name="reviewNumber" value="#{review.number}"/>
+				<h:link value="#{review.details.title}" outcome="spring:@hotelReview">
+					<f:param name="country" value="#{hotel.city.country}"/>
+					<f:param name="city" value="#{hotel.city.name}"/>
+					<f:param name="hotel" value="#{hotel.name}"/>
+					<f:param name="index" value="#{review.index}"/>
 				</h:link>
 			</h:column>
 			<h:column>
-				<h:outputText value="#{review.rating}"/>
+				<h:outputText value="#{review.details.rating}"/>
 			</h:column>
 		</h:dataTable>
 
 		<h:button value="Write Review" outcome="spring:@writeHotelReview">
-					<f:param name="key" value="#{hotel.key}"/>
+			<f:param name="country" value="#{hotel.city.country}"/>
+			<f:param name="city" value="#{hotel.city.name}"/>
+			<f:param name="hotel" value="#{hotel.name}"/>
 		</h:button>
 
 	</ui:composition>

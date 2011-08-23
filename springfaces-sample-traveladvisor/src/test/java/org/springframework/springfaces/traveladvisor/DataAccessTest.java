@@ -5,10 +5,6 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.springfaces.traveladvisor.domain.City;
-import org.springframework.springfaces.traveladvisor.domain.Hotel;
-import org.springframework.springfaces.traveladvisor.domain.Rating;
-import org.springframework.springfaces.traveladvisor.domain.Review;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -25,18 +21,18 @@ public class DataAccessTest {
 
 	@Test
 	public void testname() throws Exception {
-		City city = new City("name", "country");
-		Hotel hotel = new Hotel("key", "name");
-		hotel.setCity(city);
-		Review review = new Review(null, "title", Rating.AVERAGE);
-		review.setHotel(hotel);
-		entityManager.persist(city);
-		entityManager.persist(hotel);
-		entityManager.persist(review);
-		entityManager.flush();
-		System.out.println(city.getId());
-		System.out.println(hotel.getId());
-		System.out.println(review.getNumber());
+		// City city = new City("name", "country");
+		// Hotel hotel = new Hotel("key", "name");
+		// hotel.setCity(city);
+		// Review review = new Review(null, "title", Rating.AVERAGE);
+		// review.setHotel(hotel);
+		// entityManager.persist(city);
+		// entityManager.persist(hotel);
+		// entityManager.persist(review);
+		// entityManager.flush();
+		// System.out.println(city.getId());
+		// System.out.println(hotel.getId());
+		// System.out.println(review.getNumber());
 	}
 
 }

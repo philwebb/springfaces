@@ -1,7 +1,7 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
-import java.util.Date;
-
+import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,53 +12,36 @@ public class Review {
 
 	@Id
 	@GeneratedValue
+	@SuppressWarnings("unused")
 	private Long id;
-
-	private Integer number;
 
 	@ManyToOne(optional = false)
 	private Hotel hotel;
 
-	private Rating rating;
+	@Column(nullable = false)
+	private int index;
 
-	private Date checkInDate;
+	@Embedded
+	private ReviewDetails details;
 
-	private TripType tripType;
-
-	private String title;
-
-	private String details;
-
-	public Review() {
+	protected Review() {
 	}
 
-	public Review(Integer number, String title, Rating rating) {
-		this.number = number;
-		this.title = title;
-		this.rating = rating;
-	}
-
-	public void setHotel(Hotel hotel) {
+	public Review(Hotel hotel, int index, ReviewDetails details) {
 		this.hotel = hotel;
+		this.index = index;
+		this.details = details;
 	}
 
-	public Integer getNumber() {
-		return number;
+	public Hotel getHotel() {
+		return hotel;
 	}
 
-	public String getTitle() {
-		return title;
+	public int getIndex() {
+		return index;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public Rating getRating() {
-		return rating;
-	}
-
-	public void setRating(Rating rating) {
-		this.rating = rating;
+	public ReviewDetails getDetails() {
+		return details;
 	}
 }

@@ -15,8 +15,8 @@
 		<h:dataTable value="#{cities}" var="city">
 			<h:column>
 				<h:link value="#{city.name}" outcome="spring:@showCity">
-					<f:param name="country" value="#{city.country.toLowerCase()}"/>
-					<f:param name="name" value="#{city.name.toLowerCase()}"/>
+					<f:param name="country" value="#{city.country}"/>
+					<f:param name="name" value="#{city.name}"/>
 				</h:link>
 			</h:column>
 		</h:dataTable>

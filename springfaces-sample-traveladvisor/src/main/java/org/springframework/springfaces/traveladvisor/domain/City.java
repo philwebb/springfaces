@@ -1,5 +1,6 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,10 +10,13 @@ public class City {
 
 	@Id
 	@GeneratedValue
+	@SuppressWarnings("unused")
 	private Long id;
 
+	@Column(nullable = false)
 	private String name;
 
+	@Column(nullable = false)
 	private String country;
 
 	protected City() {
@@ -22,10 +26,6 @@ public class City {
 		super();
 		this.name = name;
 		this.country = country;
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 	public String getName() {
