@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
+import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
 import org.springframework.stereotype.Component;
 
 @Component("cityService")

@@ -3,6 +3,7 @@ package org.springframework.springfaces.traveladvisor.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
+import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
 
 public interface CityService {
 
