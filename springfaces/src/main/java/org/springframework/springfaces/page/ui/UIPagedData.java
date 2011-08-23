@@ -129,6 +129,18 @@ public class UIPagedData extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.pageSize, pageSize);
 	}
 
+	public String getSortColumn() {
+		return (String) getStateHelper().eval(PropertyKeys.sortColumn);
+	}
+
+	/**
+	 * Set the initial sort column for the {@link PagedDataRows}.
+	 * @param sortColumn the sort column
+	 */
+	public void setSortColumn(String sortColumn) {
+		getStateHelper().put(PropertyKeys.sortColumn, sortColumn);
+	}
+
 	@Override
 	public void restoreState(FacesContext context, Object state) {
 		super.restoreState(context, state);
@@ -161,6 +173,7 @@ public class UIPagedData extends UIComponentBase {
 		PagedDataModelState state = (PagedDataModelState) getStateHelper().get(PropertyKeys.dataModelstate);
 		if (state == null) {
 			state = new PagedDataModelState(getPageSize());
+			state.setSortColumn(getSortColumn());
 			getStateHelper().put(PropertyKeys.dataModelstate, state);
 		}
 		return adaptPagedDataModel(new PagedDataModel<Object>(lazyDataLoader, state));
@@ -179,14 +192,14 @@ public class UIPagedData extends UIComponentBase {
 	/**
 	 * Strategy method used to obtain the rows to be used by the {@link PagedDataModel}. By default this method will
 	 * expose a <tt>pageRequest</tt> before calling the appropriate EL expressions.
-	 * @param stateHolder the state holder
+	 * @param state the state
 	 * @return the data model rows
 	 * @see #getRowCountFromValue(Object)
 	 * @see #getContentFromValue(Object)
 	 */
-	protected DataModelRowSet<Object> getRows(PagedDataModelState stateHolder) {
+	protected DataModelRowSet<Object> getRows(PagedDataModelState state) {
 		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
-		PageRequest pageRequest = createPageRequest(stateHolder);
+		PageRequest pageRequest = createPageRequest(state);
 		Object previousPageRequest = requestMap.put(PAGE_REQUEST_VARIABLE, pageRequest);
 		try {
 			return executeExpressionsToGetRows(pageRequest);
@@ -201,11 +214,11 @@ public class UIPagedData extends UIComponentBase {
 
 	/**
 	 * Create the page request to expose. This method also deals with adding Spring Data <tt>Pageable</tt> support.
-	 * @param stateHolder the state holder
+	 * @param state the state
 	 * @return a page request
 	 */
-	private PageRequest createPageRequest(PagedDataModelState stateHolder) {
-		PageRequest pageRequest = new PageRequestAdapter(stateHolder);
+	private PageRequest createPageRequest(PagedDataModelState state) {
+		PageRequest pageRequest = new PageRequestAdapter(state);
 		return springDataSupport.makePageable(pageRequest);
 	}
 
@@ -269,6 +282,6 @@ public class UIPagedData extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, rowCount, var, pageSize, dataModelstate
+		value, rowCount, var, pageSize, sortColumn, dataModelstate
 	}
 }

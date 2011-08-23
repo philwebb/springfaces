@@ -3,6 +3,7 @@ package org.springframework.springfaces.page.ui;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -221,6 +222,23 @@ public class UIPagedDataTest {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("PageSize must be a positive number");
 		uiPagedData.setPageSize(0);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void shouldDefaultToNullSortColumn() throws Exception {
+		uiPagedData.encodeEnd(context);
+		PagedDataRows rows = (PagedDataRows) requestMap.get("pagedData");
+		assertThat(rows.getSortColumn(), is(nullValue()));
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void shouldPassSortColumnToDataRows() throws Exception {
+		uiPagedData.setSortColumn("sort");
+		uiPagedData.encodeEnd(context);
+		PagedDataRows rows = (PagedDataRows) requestMap.get("pagedData");
+		assertThat(rows.getSortColumn(), is(equalTo("sort")));
 	}
 
 	private ValueExpression mockExpression(final Object result) {

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.springfaces.page.model.PagedDataModelState;
+import org.springframework.util.Assert;
 
 /**
  * Adapter class that converts {@link PagedDataModelState} to a {@link PageRequest}.
@@ -12,18 +13,19 @@ import org.springframework.springfaces.page.model.PagedDataModelState;
  */
 class PageRequestAdapter implements PageRequest {
 
-	private PagedDataModelState stateHolder;
+	private PagedDataModelState state;
 
-	public PageRequestAdapter(PagedDataModelState stateHolder) {
-		this.stateHolder = stateHolder;
+	public PageRequestAdapter(PagedDataModelState state) {
+		Assert.notNull(state, "State must not be null");
+		this.state = state;
 	}
 
 	public int getPageNumber() {
-		return stateHolder.getRowIndex() / getPageSize();
+		return state.getRowIndex() / getPageSize();
 	}
 
 	public int getPageSize() {
-		return stateHolder.getPageSize();
+		return state.getPageSize();
 	}
 
 	public int getOffset() {
@@ -31,15 +33,15 @@ class PageRequestAdapter implements PageRequest {
 	}
 
 	public String getSortColumn() {
-		return stateHolder.getSortColumn();
+		return state.getSortColumn();
 	}
 
 	public boolean isSortAscending() {
-		return stateHolder.isSortAscending();
+		return state.isSortAscending();
 	}
 
 	public Map<String, String> getFilters() {
-		Map<String, String> filters = stateHolder.getFilters();
+		Map<String, String> filters = state.getFilters();
 		return (filters == null ? Collections.<String, String> emptyMap() : filters);
 	}
 }
