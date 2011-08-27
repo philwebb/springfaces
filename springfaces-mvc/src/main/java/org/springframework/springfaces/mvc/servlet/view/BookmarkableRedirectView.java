@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriTemplate;
+import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -77,7 +78,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 		UriTemplate uriTemplate = createUriTemplate(getUrl(), enc);
 		for (String variable : uriTemplate.getVariableNames()) {
 			Object value = mutableModel.get(variable);
-			value = urlEncode(value == null ? "" : value.toString(), enc);
+			value = UriUtils.encodePath(value == null ? "" : value.toString(), enc);
 			mutableModel.put(variable, value);
 		}
 

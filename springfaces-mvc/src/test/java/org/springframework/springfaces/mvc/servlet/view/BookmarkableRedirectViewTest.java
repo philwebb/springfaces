@@ -44,7 +44,7 @@ public class BookmarkableRedirectViewTest {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "C D");
 		String actual = view.getBookmarkUrl(model, request);
-		assertEquals("/ab/C+D", actual);
+		assertEquals("/ab/C%20D", actual);
 	}
 
 	@Test
