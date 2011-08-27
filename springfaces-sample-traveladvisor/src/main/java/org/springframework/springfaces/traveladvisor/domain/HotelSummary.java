@@ -1,21 +1,31 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 public class HotelSummary {
 
-	private Hotel hotel;
+	private static final MathContext MATH_CONTEXT = new MathContext(2, RoundingMode.HALF_UP);
+
 	private Double averageRating;
 
-	public HotelSummary(Hotel hotel, Double averageRating) {
-		this.hotel = hotel;
-		this.averageRating = averageRating;
+	private City city;
+
+	private String name;
+
+	public HotelSummary(City city, String name, Double averageRating) {
+		this.city = city;
+		this.name = name;
+		this.averageRating = averageRating == null ? null : new BigDecimal(averageRating, MATH_CONTEXT).doubleValue();
 	}
 
 	public City getCity() {
-		return hotel.getCity();
+		return city;
 	}
 
 	public String getName() {
-		return hotel.getName();
+		return name;
 	}
 
 	public Double getAverageRating() {

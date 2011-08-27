@@ -12,7 +12,7 @@ public interface CityRepository extends Repository<City, Long> {
 
 	City findByNameAndCountry(String name, String country);
 
-	@Query(value = "select new org.springframework.springfaces.traveladvisor.domain.HotelSummary(h, avg(r.details.rating)) "
+	@Query(value = "select new org.springframework.springfaces.traveladvisor.domain.HotelSummary(h.city, h.name, avg(r.details.rating)) "
 			+ "from Hotel h left outer join h.reviews r where h.city = ?1 group by h", countQuery = "select count(h) from Hotel h where h.city = ?1")
 	Page<HotelSummary> getHotels(City city, Pageable pageable);
 

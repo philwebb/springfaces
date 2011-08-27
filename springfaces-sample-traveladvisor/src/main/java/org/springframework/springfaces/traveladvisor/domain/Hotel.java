@@ -28,6 +28,12 @@ public class Hotel {
 	@NaturalId
 	private String name;
 
+	@Column(nullable = false)
+	private String address;
+
+	@Column(nullable = false)
+	private String zip;
+
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "hotel")
 	@SuppressWarnings("unused")
 	private Set<Review> reviews;

@@ -28,8 +28,8 @@ public class CityServiceImpl implements CityService {
 
 	public Page<HotelSummary> getHotels(City city, Pageable pageable) {
 		List<HotelSummary> content = new ArrayList<HotelSummary>();
-		content.add(new HotelSummary(city, "The Royal Hotel", 4));
-		content.add(new HotelSummary(city, "Willow Lodge", 2));
+		content.add(new HotelSummary(city, "The Royal Hotel", 4.0));
+		content.add(new HotelSummary(city, "Willow Lodge", 2.0));
 		return new PageImpl<HotelSummary>(content);
 	}
 }

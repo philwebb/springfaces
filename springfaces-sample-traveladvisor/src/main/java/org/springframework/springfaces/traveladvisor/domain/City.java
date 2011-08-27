@@ -17,6 +17,9 @@ public class City {
 	private String name;
 
 	@Column(nullable = false)
+	private String state;
+
+	@Column(nullable = false)
 	private String country;
 
 	protected City() {
@@ -30,6 +33,10 @@ public class City {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getState() {
+		return state;
 	}
 
 	public String getCountry() {
