@@ -1,14 +1,15 @@
-package org.springframework.springfaces.traveladvisor.service;
+package org.springframework.springfaces.traveladvisor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.Hotel;
-import org.springframework.springfaces.traveladvisor.domain.HotelRepository;
 import org.springframework.springfaces.traveladvisor.domain.Review;
 import org.springframework.springfaces.traveladvisor.domain.ReviewDetails;
-import org.springframework.springfaces.traveladvisor.domain.ReviewRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.ReviewRepository;
+import org.springframework.springfaces.traveladvisor.service.HotelService;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;

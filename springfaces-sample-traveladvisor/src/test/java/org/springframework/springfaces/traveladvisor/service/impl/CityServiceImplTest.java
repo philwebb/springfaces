@@ -1,4 +1,4 @@
-package org.springframework.springfaces.traveladvisor.service;
+package org.springframework.springfaces.traveladvisor.service.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -12,9 +12,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
-import org.springframework.springfaces.traveladvisor.domain.CityRepository;
-import org.springframework.springfaces.traveladvisor.domain.HotelRepository;
 import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
+import org.springframework.springfaces.traveladvisor.domain.repository.CityRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
+import org.springframework.springfaces.traveladvisor.service.CitySearchCriteria;
+import org.springframework.springfaces.traveladvisor.service.impl.CityServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CityServiceImplTest {

@@ -10,33 +10,36 @@
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
 		<ui:param name="title" value="Hotel"/>
 
+		<h2>
 		<h:outputText value="#{hotel.name}"/>
+		</h2>
 
 		<!-- FIXME rating summary -->
 
 		<!-- FIXME map -->
 
-		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}" var="reviews" />
+		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
+			sortColumn="details.title" var="reviews" />
 
-		<h:dataTable value="#{reviews}" var="review">
-			<h:column>
-				<h:link value="#{review.details.title}" outcome="spring:@hotelReview">
+		<p:dataTable value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
+			<p:column headerText="Title" sortBy="#{review.title}">
+				<h:link value="#{review.title}" outcome="spring:@hotelReview">
 					<f:param name="country" value="#{hotel.city.country}"/>
 					<f:param name="city" value="#{hotel.city.name}"/>
 					<f:param name="hotel" value="#{hotel.name}"/>
 					<f:param name="index" value="#{review.index}"/>
 				</h:link>
-			</h:column>
-			<h:column>
-				<h:outputText value="#{review.details.rating}"/>
-			</h:column>
-		</h:dataTable>
+			</p:column>
+			<p:column headerText="Rating" sortBy="#{review.rating}">
+				<h:outputText value="#{review.rating}"/>
+			</p:column>
+		</p:dataTable>
 
-		<h:button value="Write Review" outcome="spring:@writeHotelReview">
+		<p:button value="Write Review" outcome="spring:@writeHotelReview">
 			<f:param name="country" value="#{hotel.city.country}"/>
 			<f:param name="city" value="#{hotel.city.name}"/>
 			<f:param name="hotel" value="#{hotel.name}"/>
-		</h:button>
+		</p:button>
 
 	</ui:composition>
 

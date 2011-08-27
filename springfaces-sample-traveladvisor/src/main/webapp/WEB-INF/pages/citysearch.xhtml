@@ -10,9 +10,8 @@
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
 		<ui:param name="title" value="Search"/>
 
-		<h:inputText value="#{citySearchCriteria.name}"/>
-
-		<h:commandButton value="Search" action="search"/>
+		<p:inputText value="#{citySearchCriteria.name}"/>
+		<p:commandButton value="Search" action="search"/>
 
 	</ui:composition>
 

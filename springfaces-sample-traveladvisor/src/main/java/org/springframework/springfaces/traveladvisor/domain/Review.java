@@ -44,4 +44,12 @@ public class Review {
 	public ReviewDetails getDetails() {
 		return details;
 	}
+
+	public String getTitle() {
+		return details.getTitle();
+	}
+
+	public Rating getRating() {
+		return details.getRating();
+	}
 }

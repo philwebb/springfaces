@@ -1,14 +1,18 @@
-package org.springframework.springfaces.traveladvisor.domain;
+package org.springframework.springfaces.traveladvisor.domain.repository;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -45,6 +49,18 @@ public class CityRepositoryTest {
 	public void shouldFindMoreThanOneCity() throws Exception {
 		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
 		assertThat(page.getTotalElements(), is(2L));
+	}
+
+	@Test
+	@Ignore("Spring data bug")
+	public void shouldSortFindingMoreThanOneCity() throws Exception {
+		// FIXME
+		pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
+		Page<City> page1 = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
+		pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "name"));
+		Page<City> page2 = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
+		assertThat(page1.getTotalElements(), is(2L));
+		assertThat(page1.getContent().get(0).getCountry(), is(page2.getContent().get(1).getCountry()));
 	}
 
 	@Test

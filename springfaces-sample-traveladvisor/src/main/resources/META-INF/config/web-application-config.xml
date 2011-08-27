@@ -27,6 +27,16 @@
 	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport" />
 	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor" />
 
+	<bean id="facesResourceHandler" class="org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler"/>
+	<bean id="facesResourceMapper" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map>
+				<entry key="/javax.faces.resource/**" value="facesResourceHandler"/>
+			</map>
+		</property>
+		<property name="order" value="99"/>
+	</bean>
+
 	<bean id="facesViewResolver" class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">
 		<property name="viewClass"
 			value="org.springframework.springfaces.mvc.servlet.view.FacesView" />

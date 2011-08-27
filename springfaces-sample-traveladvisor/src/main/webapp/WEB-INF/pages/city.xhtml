@@ -12,20 +12,21 @@
 
 		<h:outputText value="#{city.name} #{city.country}"/>
 
-		<s:pagedData value="#{cityService.getHotels(city, pageRequest)}" var="hotels"/>
+		<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
+			sortColumn="name" var="hotels"/>
 
-		<h:dataTable value="#{hotels}" var="hotel">
-			<h:column>
+		<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" lazy="true" var="hotel">
+			<p:column headerText="Name" sortBy="#{hotel.name}">
 				<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
 					<f:param name="country" value="#{hotel.city.country}"/>
 					<f:param name="city" value="#{hotel.city.name}"/>
 					<f:param name="hotel" value="#{hotel.name}"/>
 				</h:link>
-			</h:column>
-			<h:column>
+			</p:column>
+			<p:column headerText="Average Rating" sortBy="#{hotel.averageRating}">
 				<h:outputText value="#{hotel.averageRating}"/>
-			</h:column>
-		</h:dataTable>
+			</p:column>
+		</p:dataTable>
 
 	</ui:composition>
 

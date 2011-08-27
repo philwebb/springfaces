@@ -10,19 +10,22 @@
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
 		<ui:param name="title" value="Cities"/>
 
-		<s:pagedData value="#{cityService.findCities(citySearchCriteria, pageRequest)}" var="cities"/>
+		<s:pagedData value="#{cityService.findCities(citySearchCriteria, pageRequest)}"
+			sortColumn="country" var="cities" />
 
-		<h:dataTable value="#{cities}" var="city">
-			<h:column>
+		<p:dataTable value="#{cities}" paginator="true" rows="#{cities.pageSize}" lazy="true" var="city">
+			<p:column headerText="Name" sortBy="#{city.name}">
 				<h:link value="#{city.name}" outcome="spring:@showCity">
 					<f:param name="country" value="#{city.country}"/>
 					<f:param name="name" value="#{city.name}"/>
 				</h:link>
-			</h:column>
-		</h:dataTable>
+			</p:column>
+			<p:column headerText="Country" sortBy="#{city.country}">
+				<h:outputText value="#{city.country}"/>
+			</p:column>
+		</p:dataTable>
 
 	</ui:composition>
-
 </html>
 
 

@@ -1,9 +1,10 @@
-package org.springframework.springfaces.traveladvisor.domain;
+package org.springframework.springfaces.traveladvisor.domain.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
+import org.springframework.springfaces.traveladvisor.domain.City;
 
 public interface CityRepository extends Repository<City, Long> {
 

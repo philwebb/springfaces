@@ -8,11 +8,11 @@ public class HotelSummary {
 
 	private static final MathContext MATH_CONTEXT = new MathContext(2, RoundingMode.HALF_UP);
 
-	private Double averageRating;
-
 	private City city;
 
 	private String name;
+
+	private Double averageRating;
 
 	public HotelSummary(City city, String name, Double averageRating) {
 		this.city = city;
@@ -31,5 +31,4 @@ public class HotelSummary {
 	public Double getAverageRating() {
 		return averageRating;
 	}
-
 }

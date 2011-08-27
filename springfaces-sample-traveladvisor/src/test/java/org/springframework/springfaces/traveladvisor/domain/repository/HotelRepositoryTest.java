@@ -1,4 +1,4 @@
-package org.springframework.springfaces.traveladvisor.domain;
+package org.springframework.springfaces.traveladvisor.domain.repository;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -18,6 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.springfaces.traveladvisor.domain.City;
+import org.springframework.springfaces.traveladvisor.domain.Hotel;
+import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
