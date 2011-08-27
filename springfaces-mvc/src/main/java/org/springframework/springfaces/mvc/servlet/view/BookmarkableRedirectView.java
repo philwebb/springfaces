@@ -1,16 +1,18 @@
 package org.springframework.springfaces.mvc.servlet.view;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriTemplate;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -56,42 +58,50 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		String targetUrl = getBookmarkUrl(model, request);
+		String targetUrl = doCreateTargetUrl(model, request);
 		sendRedirect(request, response, targetUrl, this.http10Compatible);
 	}
 
 	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {
-		Map<String, Object> mergedModel = new HashMap<String, Object>();
+		return doCreateTargetUrl(model, request);
+	}
+
+	private String doCreateTargetUrl(Map<String, ?> model, HttpServletRequest request)
+			throws UnsupportedEncodingException {
+		Map<String, Object> mutableModel = new HashMap<String, Object>();
 		if (model != null) {
-			mergedModel.putAll(model);
-		}
-		StringBuilder targetUrl = new StringBuilder();
-		if (this.contextRelative && getUrl().startsWith("/")) {
-			targetUrl.append(request.getContextPath());
+			mutableModel.putAll(model);
 		}
 
-		StringBuffer variableExpandedUrl = new StringBuffer();
-		Matcher matcher = VARIABLE_PATTERN.matcher(getUrl());
-		while (matcher.find()) {
-			String variableName = matcher.group(1);
-			Object variableValue = mergedModel.remove(variableName);
-			Assert.state(variableValue != null, "Unable to locate path variable '" + variableName
-					+ "' from model for URL '" + getUrl() + "'");
-			matcher.appendReplacement(variableExpandedUrl, variableValue.toString());
+		// Work around Spring encoding bug
+		String enc = this.encodingScheme;
+		if (enc == null) {
+			enc = request.getCharacterEncoding();
 		}
-		matcher.appendTail(variableExpandedUrl);
-		targetUrl.append(variableExpandedUrl);
+		if (enc == null) {
+			enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+		}
+		UriTemplate uriTemplate = createUriTemplate(getUrl(), enc);
+		for (String variable : uriTemplate.getVariableNames()) {
+			Object value = mutableModel.get(variable);
+			value = urlEncode(value == null ? "" : value.toString(), enc);
+			mutableModel.put(variable, value);
+		}
 
-		if (this.exposeModelAttributes) {
-			String enc = this.encodingScheme;
-			if (enc == null) {
-				enc = request.getCharacterEncoding();
+		return createTargetUrl(mutableModel, request);
+	}
+
+	@SuppressWarnings("serial")
+	private UriTemplate createUriTemplate(String targetUrl, final String encoding) {
+		return new UriTemplate(targetUrl.toString()) {
+			@Override
+			protected URI encodeUri(String uri) {
+				try {
+					return new URI(uri);
+				} catch (URISyntaxException ex) {
+					throw new IllegalArgumentException("Could not create URI from [" + uri + "]: " + ex, ex);
+				}
 			}
-			if (enc == null) {
-				enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-			}
-			appendQueryProperties(targetUrl, mergedModel, enc);
-		}
-		return targetUrl.toString();
+		};
 	}
 }

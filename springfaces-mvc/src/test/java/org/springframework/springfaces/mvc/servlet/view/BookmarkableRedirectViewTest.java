@@ -39,6 +39,15 @@ public class BookmarkableRedirectViewTest {
 	}
 
 	@Test
+	public void shouldEncodePathVariables() throws Exception {
+		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab/{cd}");
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("cd", "C D");
+		String actual = view.getBookmarkUrl(model, request);
+		assertEquals("/ab/C+D", actual);
+	}
+
+	@Test
 	public void shouldNotAddQueryParamForPathVariable() throws Exception {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab/{cd}");
 		Map<String, Object> model = new HashMap<String, Object>();
