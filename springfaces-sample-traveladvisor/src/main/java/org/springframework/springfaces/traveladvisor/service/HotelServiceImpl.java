@@ -1,11 +1,11 @@
 package org.springframework.springfaces.traveladvisor.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.Hotel;
 import org.springframework.springfaces.traveladvisor.domain.HotelRepository;
-import org.springframework.springfaces.traveladvisor.domain.Rating;
 import org.springframework.springfaces.traveladvisor.domain.Review;
 import org.springframework.springfaces.traveladvisor.domain.ReviewDetails;
 import org.springframework.springfaces.traveladvisor.domain.ReviewRepository;
@@ -34,10 +34,9 @@ public class HotelServiceImpl implements HotelService {
 		return reviewRepository.findByHotel(hotel, pageable);
 	}
 
-	// FIXME here down
-
 	public Review getReview(Hotel hotel, int reviewNumber) {
-		return new Review(hotel, 1, new ReviewDetails("Top hotel", Rating.EXCELLENT));
+		Assert.notNull(hotel, "Hotel must not be null");
+		return reviewRepository.findByHotelAndIndex(hotel, reviewNumber);
 	}
 
 	public Review addReview(Hotel hotel, ReviewDetails details) {
@@ -45,7 +44,13 @@ public class HotelServiceImpl implements HotelService {
 		return new Review(hotel, 1, details);
 	}
 
+	@Autowired
 	public void setHotelRepository(HotelRepository hotelRepository) {
 		this.hotelRepository = hotelRepository;
+	}
+
+	@Autowired
+	public void setReviewRepository(ReviewRepository reviewRepository) {
+		this.reviewRepository = reviewRepository;
 	}
 }

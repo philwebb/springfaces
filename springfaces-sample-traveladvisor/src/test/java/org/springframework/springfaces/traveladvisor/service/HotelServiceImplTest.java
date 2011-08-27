@@ -41,6 +41,9 @@ public class HotelServiceImplTest {
 	@Mock
 	private Page<Review> reviews;
 
+	@Mock
+	private Review review;
+
 	@Test
 	public void shouldGetHotel() throws Exception {
 		given(hotelRepository.findByCityAndName(city, "name")).willReturn(hotel);
@@ -48,8 +51,14 @@ public class HotelServiceImplTest {
 	}
 
 	@Test
-	public void should() throws Exception {
+	public void shouldGetReviews() throws Exception {
 		given(reviewRepository.findByHotel(hotel, pageable)).willReturn(reviews);
 		assertThat(hotelService.getReviews(hotel, pageable), is(reviews));
+	}
+
+	@Test
+	public void shouldGetReview() throws Exception {
+		given(reviewRepository.findByHotelAndIndex(hotel, 1)).willReturn(review);
+		assertThat(hotelService.getReview(hotel, 1), is(review));
 	}
 }

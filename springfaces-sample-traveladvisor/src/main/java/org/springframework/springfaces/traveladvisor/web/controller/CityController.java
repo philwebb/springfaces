@@ -29,8 +29,8 @@ public class CityController {
 	public Object onSearch(CitySearchCriteria criteria) {
 		City city = findSingleCity(criteria);
 		if (city != null) {
-			ExtendedModelMap model = new ExtendedModelMap().addAttribute("country", city.getCountry().toLowerCase())
-					.addAttribute("name", city.getName().toLowerCase());
+			ExtendedModelMap model = new ExtendedModelMap().addAttribute("country", city.getCountry()).addAttribute(
+					"name", city.getName());
 			return new NavigationOutcome("@showCity", model);
 		}
 		return "@performSearch";
@@ -38,7 +38,7 @@ public class CityController {
 
 	private City findSingleCity(CitySearchCriteria criteria) {
 		Page<City> cities = cityService.findCities(criteria, new PageRequest(0, 1));
-		if (cities.getNumberOfElements() == 1) {
+		if (cities.getTotalElements() == 1L) {
 			return cities.getContent().get(0);
 		}
 		return null;

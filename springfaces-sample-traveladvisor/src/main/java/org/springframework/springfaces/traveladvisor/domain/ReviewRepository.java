@@ -8,4 +8,6 @@ public interface ReviewRepository extends Repository<Review, Long> {
 
 	Page<Review> findByHotel(Hotel hotel, Pageable pageable);
 
+	Review findByHotelAndIndex(Hotel hotel, int index);
+
 }

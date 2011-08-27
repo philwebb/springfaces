@@ -11,7 +11,7 @@ insert into Hotel(city_id,name,address,zip) values (1,'Conrad Treasury Place', '
 
 -- Melbourne
 insert into City(country,name,state) values ('Australia', 'Melbourne', 'Victoria')
-insert into Hotel(city_id,name,address,zip) values (2,'The Langham, Melbourne','1 Southgate Ave, Southbank', '3006')
+insert into Hotel(city_id,name,address,zip) values (2,'The Langham','1 Southgate Ave, Southbank', '3006')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,0,'2005-05-10',2,4,'Pretty average','I stayed in 2005, the hotel was nice enough but nothing special.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,1,'2006-01-12',4,2,'Bright hotel with big rooms','This hotel has a fantastic lovely big windows.  The room we stayed in had lots of space.  Recommended.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,2,'2006-05-25',3,1,'Pretty good','I liked this hotel and would stay again.')

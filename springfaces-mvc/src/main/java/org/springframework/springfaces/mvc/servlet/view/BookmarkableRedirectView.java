@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,11 +22,7 @@ import org.springframework.web.util.WebUtils;
  */
 public class BookmarkableRedirectView extends RedirectView implements BookmarkableView {
 
-	private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{([^/]+?)\\}");
-
-	private boolean contextRelative;
 	private boolean http10Compatible;
-	private boolean exposeModelAttributes;
 
 	private String encodingScheme;
 
@@ -50,9 +45,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 	public BookmarkableRedirectView(String url, boolean contextRelative, boolean http10Compatible,
 			boolean exposeModelAttributes) {
 		super(url, contextRelative, http10Compatible, exposeModelAttributes);
-		this.contextRelative = contextRelative;
 		this.http10Compatible = http10Compatible;
-		this.exposeModelAttributes = exposeModelAttributes;
 	}
 
 	@Override
@@ -73,7 +66,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 			mutableModel.putAll(model);
 		}
 
-		// Work around Spring encoding bug
+		// Work around Spring encoding bug SPR-8646
 		String enc = this.encodingScheme;
 		if (enc == null) {
 			enc = request.getCharacterEncoding();

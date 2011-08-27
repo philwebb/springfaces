@@ -36,8 +36,14 @@ public class ReviewRepositoryTest {
 	}
 
 	@Test
-	public void shouldFindReviews() throws Exception {
+	public void shouldFindByHotel() throws Exception {
 		Page<Review> reviews = reviewRepository.findByHotel(bathTravelodge, pageable);
 		assertThat(reviews.getTotalElements(), is(14L));
+	}
+
+	@Test
+	public void shouldFindByHotelAndIndex() throws Exception {
+		Review review = reviewRepository.findByHotelAndIndex(bathTravelodge, 8);
+		assertThat(review.getDetails().getTitle(), is("Very Noisy"));
 	}
 }
