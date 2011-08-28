@@ -333,7 +333,7 @@ public class MvcViewHandlerTest {
 		View view = mock(View.class);
 		Map<String, Object> model = new HashMap<String, Object>();
 		ModelAndView modelAndView = new ModelAndView(view, model);
-		NavigationResponseUIViewRoot viewRoot = new NavigationResponseUIViewRoot(viewId, modelAndView);
+		NavigationResponseUIViewRoot viewRoot = new NavigationResponseUIViewRoot(viewId, null, modelAndView);
 		viewRoot.encodeAll(context);
 		verify(view).render(model, request, response);
 	}

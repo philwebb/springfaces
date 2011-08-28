@@ -13,8 +13,6 @@ import org.springframework.web.servlet.View;
  */
 public interface BookmarkableView extends View {
 
-	// FIXME this should be removed if SPR-8431 if accepted
-
 	/**
 	 * Return a bookmark URL for the view given the specified model.
 	 * @param model Map with name Strings as keys and corresponding model objects as values (Map can also be

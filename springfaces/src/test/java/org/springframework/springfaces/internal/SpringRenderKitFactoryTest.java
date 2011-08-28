@@ -43,4 +43,6 @@ public class SpringRenderKitFactoryTest {
 		assertTrue(renderKitCaptor.getValue() instanceof SpringRenderKit);
 		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
+
+	// FIXME test re-wraps
 }

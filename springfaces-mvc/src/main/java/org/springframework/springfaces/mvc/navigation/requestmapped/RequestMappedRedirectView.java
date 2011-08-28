@@ -12,6 +12,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.springfaces.mvc.bind.ReverseDataBinder;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectView;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
+import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
@@ -64,7 +65,7 @@ import org.springframework.web.util.UriTemplate;
  * 
  * @author Phillip Webb
  */
-public class RequestMappedRedirectView implements BookmarkableView {
+public class RequestMappedRedirectView implements BookmarkableView, FacesRenderedView {
 
 	/**
 	 * Context for the view
@@ -111,6 +112,21 @@ public class RequestMappedRedirectView implements BookmarkableView {
 		String url = buildRedirectUrl(request);
 		Map<String, ?> relevantModel = getRelevantModel(webRequest, url, model);
 		createDelegateRedirector(url).render(relevantModel, request, response);
+	}
+
+	public void render(Map<String, ?> model, FacesContext facesContext) throws Exception {
+		// FIXME test
+		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
+		String url = buildRedirectUrl(request);
+		Map<String, ?> relevantModel = getRelevantModel(webRequest, url, model);
+		BookmarkableView delegate = createDelegateRedirector(url);
+		if (delegate instanceof FacesRenderedView) {
+			((FacesRenderedView) delegate).render(relevantModel, facesContext);
+		} else {
+			HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+			delegate.render(relevantModel, request, response);
+		}
 	}
 
 	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws Exception {

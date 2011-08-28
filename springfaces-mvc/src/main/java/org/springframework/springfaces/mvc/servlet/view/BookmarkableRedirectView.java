@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,7 +22,7 @@ import org.springframework.web.util.WebUtils;
  * 
  * @author Phillip Webb
  */
-public class BookmarkableRedirectView extends RedirectView implements BookmarkableView {
+public class BookmarkableRedirectView extends RedirectView implements BookmarkableView, FacesRenderedView {
 
 	private boolean http10Compatible;
 
@@ -54,6 +55,13 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 			HttpServletResponse response) throws IOException {
 		String targetUrl = doCreateTargetUrl(model, request);
 		sendRedirect(request, response, targetUrl, this.http10Compatible);
+	}
+
+	// FIXME test
+	public void render(Map<String, ?> model, FacesContext facesContext) throws Exception {
+		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+		String targetUrl = doCreateTargetUrl(model, request);
+		facesContext.getExternalContext().redirect(targetUrl);
 	}
 
 	public String getBookmarkUrl(Map<String, ?> model, HttpServletRequest request) throws IOException {

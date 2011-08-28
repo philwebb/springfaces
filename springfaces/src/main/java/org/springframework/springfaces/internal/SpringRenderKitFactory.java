@@ -1,5 +1,8 @@
 package org.springframework.springfaces.internal;
 
+import java.util.Iterator;
+
+import javax.faces.context.FacesContext;
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
@@ -23,6 +26,19 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 			logger.debug("Wrapping RenderKitFactory " + delegate.getClass() + " to provide integration with Spring");
 		}
 		this.delegate = delegate;
+		reloadRenderKits();
+	}
+
+	private void reloadRenderKits() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Iterator<String> renderKitIds = getRenderKitIds();
+		while (renderKitIds.hasNext()) {
+			String renderKitId = renderKitIds.next();
+			RenderKit renderKit = getRenderKit(context, renderKitId);
+			if (renderKit != null) {
+				addRenderKit(renderKitId, renderKit);
+			}
+		}
 	}
 
 	@Override
@@ -32,6 +48,9 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 
 	@Override
 	public void addRenderKit(String renderKitId, RenderKit renderKit) {
+		if (renderKit instanceof SpringRenderKit) {
+			renderKit = ((SpringRenderKit) renderKit).getWrapped();
+		}
 		super.addRenderKit(renderKitId, new SpringRenderKit(renderKitId, renderKit));
 	}
 }

@@ -11,7 +11,9 @@ import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +24,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
+import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
@@ -86,7 +89,9 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
 			ModelAndView modelAndView = getModelAndView(context, viewId, null);
 			if (modelAndView != null) {
-				return new NavigationResponseUIViewRoot(viewId, modelAndView);
+				UIViewRoot existingViewRoot = context.getViewRoot();
+				String renderKitId = existingViewRoot == null ? null : existingViewRoot.getRenderKitId();
+				return new NavigationResponseUIViewRoot(viewId, renderKitId, modelAndView);
 			}
 		}
 		return null;
@@ -189,7 +194,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		DestinationAndModel destinationAndModel = getDestinationAndModelForViewId(context, viewId);
 		if (destinationAndModel != null) {
 			ModelAndView modelAndView = resolveDestination(context, destinationAndModel.getDestination());
-			Map<String, Object> resolvedViewModel = destinationAndModel.getModel(context, parameters, modelAndView.getModel());
+			Map<String, Object> resolvedViewModel = destinationAndModel.getModel(context, parameters,
+					modelAndView.getModel());
 			return new ModelAndView(modelAndView.getView(), resolvedViewModel);
 		}
 		return null;
@@ -222,8 +228,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	protected static class NavigationResponseUIViewRoot extends UIViewRoot {
 		private ModelAndView modelAndView;
 
-		public NavigationResponseUIViewRoot(String viewId, ModelAndView modelAndView) {
+		public NavigationResponseUIViewRoot(String viewId, String renderKitId, ModelAndView modelAndView) {
+			// FIXME test render kit
 			setViewId(viewId);
+			setRenderKitId(renderKitId == null ? RenderKitFactory.HTML_BASIC_RENDER_KIT : renderKitId);
 			this.modelAndView = modelAndView;
 		}
 
@@ -233,10 +241,23 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 		@Override
 		public void encodeAll(FacesContext context) throws IOException {
-			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 			try {
-				modelAndView.getView().render(modelAndView.getModel(), request, response);
+				View view = modelAndView.getView();
+				Map<String, Object> model = modelAndView.getModel();
+				if (view instanceof FacesRenderedView) {
+					// FIXME test
+					((FacesRenderedView) view).render(model, context);
+				} else {
+					HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+					HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+					if (context.getPartialViewContext().isPartialRequest()) {
+						// FIXME test is thrown
+						PartialViewContext partialViewContext = context.getPartialViewContext();
+						Assert.state(!partialViewContext.isAjaxRequest(),
+								"Unable to render MVC response to Faces AJAX request");
+					}
+					view.render(model, request, response);
+				}
 			} catch (Exception e) {
 				throw new FacesException(e);
 			}
