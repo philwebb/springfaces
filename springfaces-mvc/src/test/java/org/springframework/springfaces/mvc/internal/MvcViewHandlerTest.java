@@ -25,6 +25,7 @@ import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +98,8 @@ public class MvcViewHandlerTest {
 		given(externalContext.getRequestPathInfo()).willReturn("/si");
 		given(externalContext.getRequest()).willReturn(request);
 		given(externalContext.getResponse()).willReturn(response);
+		PartialViewContext partialViewContext = mock(PartialViewContext.class);
+		given(context.getPartialViewContext()).willReturn(partialViewContext);
 
 		handler = new MvcViewHandler(delegate, destinationViewResolver) {
 			protected DestinationAndModelRegistry newDestinationAndModelRegistry() {

@@ -32,11 +32,13 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 	private void reloadRenderKits() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		Iterator<String> renderKitIds = getRenderKitIds();
-		while (renderKitIds.hasNext()) {
-			String renderKitId = renderKitIds.next();
-			RenderKit renderKit = getRenderKit(context, renderKitId);
-			if (renderKit != null) {
-				addRenderKit(renderKitId, renderKit);
+		if (renderKitIds != null) {
+			while (renderKitIds.hasNext()) {
+				String renderKitId = renderKitIds.next();
+				RenderKit renderKit = getRenderKit(context, renderKitId);
+				if (renderKit != null) {
+					addRenderKit(renderKitId, renderKit);
+				}
 			}
 		}
 	}

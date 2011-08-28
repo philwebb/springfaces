@@ -21,7 +21,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.Hotel;
 import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
-import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -79,4 +78,6 @@ public class HotelRepositoryTest {
 		assertThat(hotels.getTotalElements(), is(1L));
 		assertThat(hotels.getContent().get(0).getAverageRating(), is(nullValue()));
 	}
+
+	// FIXME order by rating
 }
