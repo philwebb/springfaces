@@ -141,6 +141,19 @@ public class UIPagedData extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.sortColumn, sortColumn);
 	}
 
+	// FIXME test
+	public Boolean getSortAscending() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.sortAscending);
+	}
+
+	/**
+	 * Set the initial sort ascending value for the {@link PagedDataRows}.
+	 * @param sortAscending the sort scending value
+	 */
+	public void setSortAscending(Boolean sortAscending) {
+		getStateHelper().put(PropertyKeys.sortAscending, sortAscending);
+	}
+
 	@Override
 	public void restoreState(FacesContext context, Object state) {
 		super.restoreState(context, state);
@@ -174,6 +187,9 @@ public class UIPagedData extends UIComponentBase {
 		if (state == null) {
 			state = new PagedDataModelState(getPageSize());
 			state.setSortColumn(getSortColumn());
+			if (getSortAscending() != null) {
+				state.setSortAscending(getSortAscending().booleanValue());
+			}
 			getStateHelper().put(PropertyKeys.dataModelstate, state);
 		}
 		return adaptPagedDataModel(new PagedDataModel<Object>(lazyDataLoader, state));
@@ -282,6 +298,6 @@ public class UIPagedData extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, rowCount, var, pageSize, sortColumn, dataModelstate
+		value, rowCount, var, pageSize, sortColumn, sortAscending, dataModelstate
 	}
 }

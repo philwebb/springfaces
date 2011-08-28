@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HotelSummaryRepository {
 
-	private static final String AVERAGE_REVIEW_FUNCTION = "avg(r.details.rating)";
+	private static final String AVERAGE_REVIEW_FUNCTION = "avg(r.rating)";
 
 	private static final String QUERY = "select new " + HotelSummary.class.getName() + "(h.city, h.name, "
 			+ AVERAGE_REVIEW_FUNCTION + ") from Hotel h left outer join h.reviews r where h.city = ?1 group by h";

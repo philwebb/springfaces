@@ -19,10 +19,10 @@
 		<!-- FIXME map -->
 
 		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
-			var="reviews" />
+			sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
 		<p:dataTable value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
-			<p:column headerText="Title">
+			<p:column headerText="Title" sortBy="#{review.title}">
 				<h:link value="#{review.title}" outcome="spring:@hotelReview">
 					<f:param name="country" value="#{hotel.city.country}"/>
 					<f:param name="city" value="#{hotel.city.name}"/>
@@ -30,7 +30,7 @@
 					<f:param name="index" value="#{review.index}"/>
 				</h:link>
 			</p:column>
-			<p:column headerText="Rating">
+			<p:column headerText="Rating" sortBy="#{review.rating}">
 				<h:outputText value="#{review.rating}"/>
 			</p:column>
 		</p:dataTable>

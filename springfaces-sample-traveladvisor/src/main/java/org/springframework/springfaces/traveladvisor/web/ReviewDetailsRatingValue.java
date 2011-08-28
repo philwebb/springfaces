@@ -28,7 +28,7 @@ public class ReviewDetailsRatingValue {
 	private Review review;
 
 	public Double getValue() {
-		return VALUES.get(review.getDetails().getRating());
+		return VALUES.get(review.getRating());
 	}
 
 	private void setValue(Double value) {

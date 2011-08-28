@@ -12,9 +12,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.springfaces.traveladvisor.domain.Hotel;
 import org.springframework.springfaces.traveladvisor.domain.Review;
-import org.springframework.springfaces.traveladvisor.domain.repository.ReviewRepository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -47,6 +48,13 @@ public class ReviewRepositoryTest {
 	@Test
 	public void shouldFindByHotelAndIndex() throws Exception {
 		Review review = reviewRepository.findByHotelAndIndex(bathTravelodge, 8);
-		assertThat(review.getDetails().getTitle(), is("Very Noisy"));
+		assertThat(review.getTitle(), is("Very Noisy"));
+	}
+
+	@Test
+	public void shouldSortReviews() throws Exception {
+		pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "rating"));
+		reviewRepository.findByHotel(bathTravelodge, pageable);
+		// FIXME assert
 	}
 }

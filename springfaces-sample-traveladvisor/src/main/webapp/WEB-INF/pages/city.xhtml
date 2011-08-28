@@ -13,7 +13,7 @@
 		<h:outputText value="#{city.name} #{city.country}"/>
 
 		<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
-			sortColumn="name" var="hotels"/>
+			sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
 
 		<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" lazy="true" var="hotel">
 			<p:column headerText="Name" sortBy="#{hotel.name}">

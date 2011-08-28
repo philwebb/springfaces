@@ -2,34 +2,18 @@ package org.springframework.springfaces.traveladvisor.domain;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+//FIXME Hibernate bug HHH-5792 prevents this being embedded
 
-@Embeddable
 public class ReviewDetails {
 
-	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
 	private Rating rating;
 
-	@Column(nullable = false)
-	@Temporal(TemporalType.DATE)
 	private Date checkInDate;
 
-	@Column(nullable = false)
-	@Enumerated(EnumType.ORDINAL)
 	private TripType tripType;
 
-	@Column(nullable = false)
 	private String title;
 
-	@Column(nullable = false)
-	@Lob
 	private String details;
 
 	public ReviewDetails() {

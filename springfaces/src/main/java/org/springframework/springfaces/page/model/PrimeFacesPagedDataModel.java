@@ -108,8 +108,10 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 
 	public List load(int first, int pageSize, String sortField, boolean sortOrder, Map filters) {
 		setPageSize(pageSize);
-		setSortColumn(sortField);
-		setSortAscending(sortOrder);
+		if (sortField != null) {
+			setSortColumn(sortField);
+			setSortAscending(sortOrder);
+		}
 		setFilters(filters);
 		return Collections.emptyList();
 	}
