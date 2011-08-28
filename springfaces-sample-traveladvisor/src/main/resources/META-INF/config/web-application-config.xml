@@ -22,7 +22,9 @@
 		</property>
 	</bean>
 
-	<context:component-scan base-package="org.springframework.springfaces.traveladvisor" />
+	<context:component-scan base-package="org.springframework.springfaces.traveladvisor" >
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
 
 	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport" />
 	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor" />

@@ -14,9 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
 import org.springframework.springfaces.traveladvisor.domain.repository.CityRepository;
-import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelSummaryRepository;
 import org.springframework.springfaces.traveladvisor.service.CitySearchCriteria;
-import org.springframework.springfaces.traveladvisor.service.impl.CityServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CityServiceImplTest {
@@ -28,7 +27,7 @@ public class CityServiceImplTest {
 	private CityRepository cityRepository;
 
 	@Mock
-	private HotelRepository hotelRepository;
+	private HotelSummaryRepository hotelSummaryRepository;
 
 	@Mock
 	private Page<City> cities;
@@ -80,7 +79,7 @@ public class CityServiceImplTest {
 
 	@Test
 	public void shouldGetHotels() throws Exception {
-		given(hotelRepository.findByCity(city, pageable)).willReturn(hotels);
+		given(hotelSummaryRepository.findByCity(city, pageable)).willReturn(hotels);
 		assertThat(cityService.getHotels(city, pageable), is(hotels));
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
 import org.springframework.springfaces.traveladvisor.domain.repository.CityRepository;
-import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelSummaryRepository;
 import org.springframework.springfaces.traveladvisor.service.CitySearchCriteria;
 import org.springframework.springfaces.traveladvisor.service.CityService;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class CityServiceImpl implements CityService {
 
 	private CityRepository cityRepository;
 
-	private HotelRepository hotelRepository;
+	private HotelSummaryRepository hotelSummaryRepository;
 
 	public Page<City> findCities(CitySearchCriteria criteria, Pageable pageable) {
 		Assert.notNull(criteria, "Criteria must not be null");
@@ -45,7 +45,7 @@ public class CityServiceImpl implements CityService {
 
 	public Page<HotelSummary> getHotels(City city, Pageable pageable) {
 		Assert.notNull(city, "City must not be null");
-		return hotelRepository.findByCity(city, pageable);
+		return hotelSummaryRepository.findByCity(city, pageable);
 	}
 
 	@Autowired
@@ -54,7 +54,7 @@ public class CityServiceImpl implements CityService {
 	}
 
 	@Autowired
-	public void setHotelRepository(HotelRepository hotelRepository) {
-		this.hotelRepository = hotelRepository;
+	public void setHotelSummaryRepository(HotelSummaryRepository hotelSummaryRepository) {
+		this.hotelSummaryRepository = hotelSummaryRepository;
 	}
 }
