@@ -103,4 +103,6 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		assertThat(getDataModel().getRowIndex(), is(-1));
 		assertThat(reset, is(true));
 	}
+
+	// FIXME v3 test
 }

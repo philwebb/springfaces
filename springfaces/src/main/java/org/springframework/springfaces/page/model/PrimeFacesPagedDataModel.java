@@ -8,6 +8,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.DataModelListener;
 
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 import org.springframework.util.Assert;
 
 /**
@@ -106,6 +107,7 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		throw new UnsupportedOperationException("Unable to set the row count for a PagedDataModel");
 	}
 
+	// Primefaces 2.1
 	public List load(int first, int pageSize, String sortField, boolean sortOrder, Map filters) {
 		setPageSize(pageSize);
 		if (sortField != null) {
@@ -114,5 +116,11 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		}
 		setFilters(filters);
 		return Collections.emptyList();
+	}
+
+	// Primefaces 3
+	public List load(int first, int pageSize, String sortField, org.primefaces.model.SortOrder sortOrder, Map filters) {
+		boolean sort = sortOrder == SortOrder.ASCENDING || sortOrder == SortOrder.UNSORTED;
+		return load(first, pageSize, sortField, sort, filters);
 	}
 }
