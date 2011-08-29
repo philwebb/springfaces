@@ -22,6 +22,9 @@ public class City {
 	@Column(nullable = false)
 	private String country;
 
+	@Column(nullable = false)
+	private String map;
+
 	protected City() {
 	}
 
@@ -43,8 +46,12 @@ public class City {
 		return country;
 	}
 
+	public String getMap() {
+		return map;
+	}
+
 	@Override
 	public String toString() {
-		return getName();
+		return getName() + "," + getState() + "," + getCountry();
 	}
 }

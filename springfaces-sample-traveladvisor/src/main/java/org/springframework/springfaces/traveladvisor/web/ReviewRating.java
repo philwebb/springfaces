@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("request")
-public class ReviewDetailsRatingValue {
+public class ReviewRating {
 
 	private static final Map<Rating, Double> VALUES;
 	static {

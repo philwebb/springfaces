@@ -6,11 +6,11 @@
 -- AUSTRALIA
 
 -- Brisbane
-insert into City(country,name,state) values ('Australia', 'Brisbane', 'Queensland')
+insert into City(country,name,state,map) values ('Australia', 'Brisbane', 'Queensland', '-27.470933,153.023502')
 insert into Hotel(city_id,name,address,zip) values (1,'Conrad Treasury Place', 'William & George Streets', '4001')
 
 -- Melbourne
-insert into City(country,name,state) values ('Australia', 'Melbourne', 'Victoria')
+insert into City(country,name,state,map) values ('Australia', 'Melbourne', 'Victoria', '-37.813187,144.96298')
 insert into Hotel(city_id,name,address,zip) values (2,'The Langham','1 Southgate Ave, Southbank', '3006')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,0,'2005-05-10',2,4,'Pretty average','I stayed in 2005, the hotel was nice enough but nothing special.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,1,'2006-01-12',4,2,'Bright hotel with big rooms','This hotel has a fantastic lovely big windows.  The room we stayed in had lots of space.  Recommended.')
@@ -18,7 +18,7 @@ insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) val
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (2,3,'2009-01-20',3,2,'Nice clean rooms','The rooms are maintained to a high standard and very clean, the bathroom was spotless!!')
 
 -- Sydney
-insert into City(country,name,state) values ('Australia', 'Sydney', 'New South Wales')
+insert into City(country,name,state,map) values ('Australia', 'Sydney', 'New South Wales', '-33.868901,151.207091')
 insert into Hotel(city_id,name,address,zip) values (3,'Swissotel', '68 Market Street', '2000')
 
 
@@ -26,7 +26,7 @@ insert into Hotel(city_id,name,address,zip) values (3,'Swissotel', '68 Market St
 -- CANADA
 
 -- Montreal
-insert into City(country,name,state) values ('Canada', 'Montreal', 'Quebec')
+insert into City(country,name,state,map) values ('Canada', 'Montreal', 'Quebec', '45.508889,-73.554167')
 insert into Hotel(city_id,name,address,zip) values (4,'Ritz Carlton', '1228 Sherbrooke St','H3G1H6')
 
 
@@ -34,7 +34,7 @@ insert into Hotel(city_id,name,address,zip) values (4,'Ritz Carlton', '1228 Sher
 -- ISRAEL
 
 -- Tel Aviv
-insert into City(country,name,state) values ('Israel', 'Tel Aviv', '')
+insert into City(country,name,state,map) values ('Israel', 'Tel Aviv', '', '32.066157,34.777821')
 insert into Hotel(city_id,name,address,zip) values (5,'Hilton Tel Aviv', 'Independence Park', '63405')
 
 
@@ -42,7 +42,7 @@ insert into Hotel(city_id,name,address,zip) values (5,'Hilton Tel Aviv', 'Indepe
 -- JAPAN
 
 -- Tokyo
-insert into City(country,name,state) values ('Japan', 'Tokyo', '')
+insert into City(country,name,state,map) values ('Japan', 'Tokyo', '', '35.689488,139.691706')
 insert into Hotel(city_id,name,address,zip) values (6,'InterContinental Tokyo Bay', 'Takeshiba Pier', '105')
 
 
@@ -50,14 +50,14 @@ insert into Hotel(city_id,name,address,zip) values (6,'InterContinental Tokyo Ba
 -- SPAIN
 
 -- Barcelona
-insert into City(country,name,state) values ('Spain', 'Barcelona', 'Catalunya')
+insert into City(country,name,state,map) values ('Spain', 'Barcelona', 'Catalunya', '41.387917,2.169919')
 insert into Hotel(city_id,name,address,zip) values (7,'Hilton Diagonal Mar', 'Passeig del Taulat 262-264', '08019')
 
 -- =================================================================================================
 -- SWITZERLAND
 
 -- Neuchatel
-insert into City(country,name,state) values ('Switzerland', 'Neuchatel', '')
+insert into City(country,name,state,map) values ('Switzerland', 'Neuchatel', '', '46.992979,6.931933')
 insert into Hotel(city_id,name,address,zip) values (8,'Hotel Beaulac', ' Esplanade Leopold-Robert 2', '2000')
 
 
@@ -65,7 +65,7 @@ insert into Hotel(city_id,name,address,zip) values (8,'Hotel Beaulac', ' Esplana
 -- UNITED KINGDOM
 
 -- Bath
-insert into City(country,name,state) values ('UK', 'Bath', 'Somerset')
+insert into City(country,name,state,map) values ('UK', 'Bath', 'Somerset', '51.381428,-2.357454')
 insert into Hotel(city_id,name,address,zip) values (9,'The Bath Priory Hotel', 'Weston Road', 'BA1 2XT')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (9,0,'2000-01-23',4,1,'A lovely hotel','We stayed here after a wedding and it was fantastic.  Recommend to all.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (9,1,'2000-08-04',3,1,'Very special','A very special hotel with lovely staff.')
@@ -106,11 +106,11 @@ insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) val
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (10,13,'2011-01-10',3,1,'Reburished and nice','Looks like this hotel has had a major facelift.  If you have stayed before 2011 perhaps it''s time to give this hotel another try.  Very good value for money and pretty nice.')
 
 -- London
-insert into City(country,name,state) values ('UK', 'London', '')
+insert into City(country,name,state,map) values ('UK', 'London', '', '51.500152,-0.126236')
 insert into Hotel(city_id,name,address,zip) values (10,'Melia White House', 'Albany Street','NW1 3UP')
 
 -- Southampton
-insert into City(country,name,state) values ('UK', 'Southampton', 'Hampshire')
+insert into City(country,name,state,map) values ('UK', 'Southampton', 'Hampshire', '50.902571,-1.397238')
 insert into Hotel(city_id,name,address,zip) values (11,'Chilworth Manor', 'The Cottage, Southampton Business Park', 'SO16 7JF')
 
 
@@ -118,7 +118,7 @@ insert into Hotel(city_id,name,address,zip) values (11,'Chilworth Manor', 'The C
 -- USA
 
 -- Atlanta
-insert into City(country,name,state) values ('USA', 'Atlanta', 'GA')
+insert into City(country,name,state,map) values ('USA', 'Atlanta', 'GA', '33.748995,-84.387982')
 insert into Hotel(city_id,name,address,zip) values (12,'Marriott Courtyard', 'Tower Place, Buckhead', '30305')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (13,0,'2009-01-20',3,0,'Better than most','Most other hotels is this area are a bit ropey, this one is actually pretty good.')
 insert into Hotel(city_id,name,address,zip) values (12,'Ritz Carlton', 'Peachtree Rd, Buckhead','30326')
@@ -127,60 +127,60 @@ insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) val
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (15,1,'2009-01-20',2,2,'Nice area but small rooms','The area felt nice and safe but the rooms are a little on the small side')
 
 -- Chicago
-insert into City(country,name,state) values ('USA', 'Chicago', 'IL')
+insert into City(country,name,state,map) values ('USA', 'Chicago', 'IL', '41.878114,-87.629798')
 insert into Hotel(city_id,name,address,zip) values (13,'Hotel Allegro', '171 West Randolph Street',  '60601')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (16,0,'2009-12-15',3,2,'Cheap and Recommended','Good value for money, can''t really fault it.')
 
 -- Eau Claire
-insert into City(country,name,state) values ('USA', 'Eau Claire', 'WI')
+insert into City(country,name,state,map) values ('USA', 'Eau Claire', 'WI', '44.811349,-91.498494')
 insert into Hotel(city_id,name,address,zip) values (14, 'Sea Horse Inn', '2106 N Clairemont Ave', '54703')
 insert into Hotel(city_id,name,address,zip) values (14, 'Super 8 Eau Claire Campus Area', '1151 W Macarthur Ave', '54701')
 
 -- Hollywood
-insert into City(country,name,state) values ('USA', 'Hollywood', 'FL')
+insert into City(country,name,state,map) values ('USA', 'Hollywood', 'FL', '26.011201,-80.14949')
 insert into Hotel(city_id,name,address,zip) values (15, 'Westin Diplomat', '3555 S. Ocean Drive','33019')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (19,0,'2006-01-11',0,0,'Avoid','The hotel has a very bad reputation.  I would avoid it if I were you.')
 
 -- Miami
-insert into City(country,name,state) values ('USA', 'Miami', 'FL')
+insert into City(country,name,state,map) values ('USA', 'Miami', 'FL', '25.788969,-80.226439')
 insert into Hotel(city_id,name,address,zip) values (16,'Conrad Miami', '1395 Brickell Ave', '33131')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (20,0,'2010-01-09',3,2,'Close to the local attractions','Fantastic access to all the local attractions mean you won''t mind the small rooms.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (20,1,'2010-09-10',2,2,'Good value and friendly','Not expensive and very welcoming staff. I would stay again.')
 
 -- Melbourne
-insert into City(country,name,state) values ('USA', 'Melbourne', 'FL')
+insert into City(country,name,state,map) values ('USA', 'Melbourne', 'FL', '28.083627,-80.608109')
 insert into Hotel(city_id,name,address,zip) values (17,'Radisson Suite Hotel Oceanfront', '3101 North Hwy', '32903')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (21,0,'2005-06-15',3,3,'A very nice hotel','I can''t fault this hotel and I have stayed here many times.  Always friendly staff and lovely atmosphere.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (21,1,'2006-01-20',2,4,'Comfortable and good value','To complaints at all.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (21,2,'2007-08-21',3,1,'Above average','Better than a lot of hotels in the area and not too pricey.')
 
 -- New York
-insert into City(country,name,state) values ('USA', 'New York', 'NY')
-insert into Hotel(city_id,name,address,zip) values (18, 'W Hotel', 'Union Square, Manhattan', '10011')
+insert into City(country,name,state,map) values ('USA', 'New York', 'NY', '40.714353,-74.005973')
+insert into Hotel(city_id,name,address,zip) values (18, 'W Union Hotel', 'Union Square, Manhattan', '10011')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (22,0,'2002-01-19',0,1,'Too noisy, too small','The city never sleeps and neither will you if you say here.  The rooms are small and the sound insulation is poor!')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (22,1,'2004-03-10',1,4,'Overpriced','Far too much money for such a tiny room!')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (22,2,'2007-04-11',2,0,'So so, nothing special','Not brilliant but not too bad either.')
-insert into Hotel(city_id,name,address,zip) values (18, 'W Hotel', 'Lexington Ave, Manhattan', '10011')
+insert into Hotel(city_id,name,address,zip) values (18, 'W Lexington Hotel', 'Lexington Ave, Manhattan', '10011')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (23,0,'2004-07-21',3,2,'Excellent location','So close to the heart of the city.  Recommended.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (23,1,'2006-05-20',3,1,'Very nice','I can''t fault this hotel, clean, good location and nice staff.')
 insert into Hotel(city_id,name,address,zip) values (18, '70 Park Avenue Hotel', '70 Park Avenue', '10011')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (24,0,'2003-11-10',4,1,'Great!!','I own this hotel and I think it is pretty darn good.')
 
 -- Palm Bay
-insert into City(country,name,state) values ('USA', 'Palm Bay', 'FL')
+insert into City(country,name,state,map) values ('USA', 'Palm Bay', 'FL', '28.034462,-80.588665')
 insert into Hotel(city_id,name,address,zip) values (19,'Jameson Inn', '890 Palm Bay Rd NE', '32905')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (25,0,'2005-10-20',3,2,'Fantastical','This is the BEST hotel in Palm Bay, not complaints at all.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (25,1,'2006-01-12',4,1,'Top marks','I rate this hotel 5 stars, the best in the area by miles.')
 
 -- San Francisco
-insert into City(country,name,state) values ('USA', 'San Francisco', 'CA')
+insert into City(country,name,state,map) values ('USA', 'San Francisco', 'CA', '37.77493,-122.419415')
 insert into Hotel(city_id,name,address,zip) values (20, 'Marriot Downtown', '55 Fourth Street', '94103')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (26,0,'2006-07-02',2,3,'Could be better','I stayed in late 2006 with work, the room was very small and the restaurant does not stay open very late.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (26,1,'2008-07-01',1,4,'Brrrr cold!','My room was freezing cold, I would not recommend this place.')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (26,2,'2009-01-05',3,2,'Nice for money','You can''t really go wrong here for the money.  There may be better places to stay but not for this price.')
 
 -- Washington
-insert into City(country,name,state) values ('USA', 'Washington', 'DC')
+insert into City(country,name,state,map) values ('USA', 'Washington', 'DC', '38.895112,-77.036366')
 insert into Hotel(city_id,name,address,zip) values (21, 'Hotel Rouge', '1315 16th Street NW', '20036')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (27,0,'2000-01-29',0,2,'Never again','I will never ever stay here again!!  They wanted extra cash to get fresh batteries for the TV remote')
 insert into Review(hotel_id,index,checkInDate,rating,tripType,title,details) values (27,1,'2006-02-20',0,0,'Avoid','This place is the pits, they charged us twice for a single night stay.  I only got refunded after contacting my credit card company.')

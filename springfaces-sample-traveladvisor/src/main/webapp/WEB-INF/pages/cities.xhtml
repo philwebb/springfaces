@@ -10,20 +10,16 @@
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
 		<ui:param name="title" value="Cities"/>
 
-		<s:pagedData value="#{cityService.findCities(citySearchCriteria, pageRequest)}"
-			sortColumn="country" var="cities" />
+		<p:selectOneMenu value="#{model.selectedCity}">
+			<f:converter binding="#{selectItemsConverter}"/>
+			<f:selectItems value="#{cities}" var="city" itemLabel="#{city.name}, #{city.country}" itemValue="#{city}" />
+			<!-- FIXME replace with s:selectItems value=#{cities} itemLabel="#{item.name}, #{item.value}" -->
+		</p:selectOneMenu>
 
-		<p:dataTable value="#{cities}" paginator="true" rows="#{cities.pageSize}" lazy="true" var="city">
-			<p:column headerText="Name" sortBy="#{city.name}">
-				<h:link value="#{city.name}" outcome="spring:@showCity">
-					<f:param name="country" value="#{city.country}"/>
-					<f:param name="name" value="#{city.name}"/>
-				</h:link>
-			</p:column>
-			<p:column headerText="Country" sortBy="#{city.country}">
-				<h:outputText value="#{city.country}"/>
-			</p:column>
-		</p:dataTable>
+		<p:commandButton value="Continue" action="spring:@showCity">
+			<f:param name="country" value="#{model.selectedCity.country}"/>
+			<f:param name="name" value="#{model.selectedCity.name}"/>
+		</p:commandButton>
 
 	</ui:composition>
 </html>

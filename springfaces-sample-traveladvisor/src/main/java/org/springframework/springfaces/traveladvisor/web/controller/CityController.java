@@ -46,6 +46,8 @@ public class CityController {
 
 	@RequestMapping("/advisor/cities")
 	public String performSearch(CitySearchCriteria searchCriteria, Model model) {
+		Page<City> cities = cityService.findCities(searchCriteria, null);
+		model.addAttribute("cities", cities.getContent());
 		return "cities";
 	}
 

@@ -8,7 +8,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -44,8 +43,7 @@ public class Review {
 	@Column(nullable = false)
 	private String title;
 
-	@Column(nullable = false)
-	@Lob
+	@Column(nullable = false, length = 5000)
 	private String details;
 
 	protected Review() {

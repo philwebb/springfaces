@@ -21,17 +21,25 @@
 		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
 			sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
+		<p:commandLink value="Sort by Rating"/> |
+		<p:commandLink value="Sort by Date"/>
+
 		<p:dataTable value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
-			<p:column headerText="Title" sortBy="#{review.title}">
-				<h:link value="#{review.title}" outcome="spring:@hotelReview">
-					<f:param name="country" value="#{hotel.city.country}"/>
-					<f:param name="city" value="#{hotel.city.name}"/>
-					<f:param name="hotel" value="#{hotel.name}"/>
-					<f:param name="index" value="#{review.index}"/>
-				</h:link>
-			</p:column>
-			<p:column headerText="Rating" sortBy="#{review.rating}">
-				<h:outputText value="#{review.rating}"/>
+			<p:column headerText="Reviews" sortBy="#{review.rating}">
+				<p>
+					<h:link value="#{review.title}" outcome="spring:@hotelReview">
+						<f:param name="country" value="#{hotel.city.country}"/>
+						<f:param name="city" value="#{hotel.city.name}"/>
+						<f:param name="hotel" value="#{hotel.name}"/>
+						<f:param name="index" value="#{review.index}"/>
+					</h:link>
+					<br/>
+					<h:outputText value="#{reviewUtils.getDetailsSummary(review)}"/>
+					<br/>
+					<h:outputText value="#{review.tripType}"/>
+				</p>
+				<p:rating value="#{reviewUtils.getRating(review)}" disabled="true" stars="4"/>
+				<h:outputText value=" (#{review.rating})"/>
 			</p:column>
 		</p:dataTable>
 
