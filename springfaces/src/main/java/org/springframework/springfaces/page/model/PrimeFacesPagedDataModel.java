@@ -80,7 +80,10 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 
 	public void setSortColumn(String sortColumn) {
 		delegate.setSortColumn(sortColumn);
+	}
 
+	public void toggleSort(String sortColumn) {
+		delegate.toggleSort(sortColumn);
 	}
 
 	public Map<String, String> getFilters() {

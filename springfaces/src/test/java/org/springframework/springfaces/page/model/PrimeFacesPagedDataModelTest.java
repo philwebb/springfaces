@@ -39,7 +39,7 @@ public class PrimeFacesPagedDataModelTest {
 
 	@Test
 	public void shouldNeedDelegate() throws Exception {
-
+		// FIXME
 	}
 
 	@Test
@@ -123,6 +123,13 @@ public class PrimeFacesPagedDataModelTest {
 		String sortColumn = "column";
 		dataModel.setSortColumn(sortColumn);
 		verify(delegate).setSortColumn(sortColumn);
+	}
+
+	@Test
+	public void shouldDelegateToggleSort() throws Exception {
+		String sortColumn = "column";
+		dataModel.toggleSort(sortColumn);
+		verify(delegate).toggleSort(sortColumn);
 	}
 
 	@Test

@@ -60,6 +60,15 @@ public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> imp
 		}
 	}
 
+	public void toggleSort(String sortColumn) {
+		if (ObjectUtils.nullSafeEquals(sortColumn, getSortColumn())) {
+			setSortAscending(!isSortAscending());
+		} else {
+			setSortColumn(sortColumn);
+			setSortAscending(true);
+		}
+	}
+
 	public Map<String, String> getFilters() {
 		return getState().getFilters();
 	}

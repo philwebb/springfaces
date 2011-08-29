@@ -63,6 +63,14 @@ public interface PagedDataRows<E> extends DataRows<E> {
 	void setSortAscending(boolean sortAscending);
 
 	/**
+	 * Toggle sorting parameters. If the rows are already sorted by the specified <tt>sortColumn</tt> then the
+	 * {@link #isSortAscending() sort order} is toggled. If the specified <tt>sortColumn</tt> differs from the
+	 * {@link #getSortColumn() current column} then the sort column is updates and the order is set to ascending.
+	 * @param sortColumn the sort column
+	 */
+	void toggleSort(String sortColumn);
+
+	/**
 	 * Returns the filters that should be applied to the data. The key of the filter map is the column that should be
 	 * filtered and the value is the filter that should be applied.
 	 * @return the filters.

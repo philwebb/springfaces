@@ -81,6 +81,36 @@ public class PagedDataModelTest extends LazyDataModelTest {
 	}
 
 	@Test
+	public void shouldToggleExistingSortColumn() throws Exception {
+		getDataModel().setSortColumn("column");
+		getDataModel().setSortAscending(false);
+		getDataModel().toggleSort("column");
+		assertThat(getDataModel().getSortColumn(), is("column"));
+		assertThat(getDataModel().isSortAscending(), is(true));
+		getDataModel().toggleSort("column");
+		assertThat(getDataModel().getSortColumn(), is("column"));
+		assertThat(getDataModel().isSortAscending(), is(false));
+	}
+
+	@Test
+	public void shouldToggleNewSortColumnSettingAscendingFromFalse() throws Exception {
+		getDataModel().setSortColumn("column1");
+		getDataModel().setSortAscending(false);
+		getDataModel().toggleSort("column2");
+		assertThat(getDataModel().getSortColumn(), is("column2"));
+		assertThat(getDataModel().isSortAscending(), is(true));
+	}
+
+	@Test
+	public void shouldToggleNewSortColumnSettingAscendingFromTrue() throws Exception {
+		getDataModel().setSortColumn("column1");
+		getDataModel().setSortAscending(true);
+		getDataModel().toggleSort("column2");
+		assertThat(getDataModel().getSortColumn(), is("column2"));
+		assertThat(getDataModel().isSortAscending(), is(true));
+	}
+
+	@Test
 	public void shouldResetRowIndexOnSortColumnChange() throws Exception {
 		getDataModel().setRowIndex(0);
 		getDataModel().setSortColumn("column");
