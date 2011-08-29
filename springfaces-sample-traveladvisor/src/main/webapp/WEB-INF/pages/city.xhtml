@@ -15,7 +15,7 @@
         </ui:define>
 
 		<p>
-			<h:outputText value="#{city.name} (#{city.country})"/>
+			<h:outputText value="#{city}"/>
 		</p>
 
 		<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
@@ -32,7 +32,7 @@
 				<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
 					<f:param name="country" value="#{hotel.city.country}"/>
 					<f:param name="city" value="#{hotel.city.name}"/>
-					<f:param name="hotel" value="#{hotel.name}"/>
+					<f:param name="name" value="#{hotel.name}"/>
 				</h:link>
 			</p:column>
 			<p:column headerText="Average Rating" sortBy="#{hotel.averageRating}">

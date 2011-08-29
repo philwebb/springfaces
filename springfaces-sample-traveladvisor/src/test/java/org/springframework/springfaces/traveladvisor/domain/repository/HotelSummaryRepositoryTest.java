@@ -25,7 +25,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.springfaces.traveladvisor.domain.City;
+import org.springframework.springfaces.traveladvisor.domain.Hotel;
 import org.springframework.springfaces.traveladvisor.domain.HotelSummary;
+import org.springframework.springfaces.traveladvisor.domain.Rating;
+import org.springframework.springfaces.traveladvisor.domain.RatingCount;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
@@ -46,12 +49,16 @@ public class HotelSummaryRepositoryTest {
 
 	private City tokyo;
 
+	private Hotel bathPriory;
+
 	@Before
 	public void setup() {
 		this.bath = entityManager.find(City.class, 9L);
 		this.tokyo = entityManager.find(City.class, 6L);
+		this.bathPriory = entityManager.find(Hotel.class, 9L);
 		assertThat(bath.getName(), is("Bath"));
 		assertThat(tokyo.getName(), is("Tokyo"));
+		assertThat(bathPriory.getName(), is("The Bath Priory Hotel"));
 	}
 
 	@Test
@@ -104,4 +111,18 @@ public class HotelSummaryRepositoryTest {
 		assertThat(hotels, is(equalTo("Bath Travelodge,The Bath Priory Hotel")));
 	}
 
+	@Test
+	public void shouldFindRatingCounts() throws Exception {
+		List<RatingCount> ratingCounts = hotelSummaryRepository.findRatingCounts(bathPriory);
+		assertThat(ratingCounts.get(0).getRating(), is(Rating.EXCELLENT));
+		assertThat(ratingCounts.get(0).getCount(), is(11L));
+		assertThat(ratingCounts.get(1).getRating(), is(Rating.GOOD));
+		assertThat(ratingCounts.get(1).getCount(), is(6L));
+		assertThat(ratingCounts.get(2).getRating(), is(Rating.AVERAGE));
+		assertThat(ratingCounts.get(2).getCount(), is(3L));
+		assertThat(ratingCounts.get(3).getRating(), is(Rating.POOR));
+		assertThat(ratingCounts.get(3).getCount(), is(1L));
+		assertThat(ratingCounts.get(4).getRating(), is(Rating.TERRIBLE));
+		assertThat(ratingCounts.get(4).getCount(), is(1L));
+	}
 }

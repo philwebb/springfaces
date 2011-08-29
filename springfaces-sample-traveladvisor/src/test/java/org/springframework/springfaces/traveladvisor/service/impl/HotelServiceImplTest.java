@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -13,10 +16,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.springfaces.traveladvisor.domain.City;
 import org.springframework.springfaces.traveladvisor.domain.Hotel;
+import org.springframework.springfaces.traveladvisor.domain.Rating;
+import org.springframework.springfaces.traveladvisor.domain.RatingCount;
 import org.springframework.springfaces.traveladvisor.domain.Review;
 import org.springframework.springfaces.traveladvisor.domain.repository.HotelRepository;
+import org.springframework.springfaces.traveladvisor.domain.repository.HotelSummaryRepository;
 import org.springframework.springfaces.traveladvisor.domain.repository.ReviewRepository;
-import org.springframework.springfaces.traveladvisor.service.impl.HotelServiceImpl;
+import org.springframework.springfaces.traveladvisor.service.ReviewsSummary;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HotelServiceImplTest {
@@ -26,6 +32,9 @@ public class HotelServiceImplTest {
 
 	@Mock
 	private HotelRepository hotelRepository;
+
+	@Mock
+	private HotelSummaryRepository hotelSummaryRepository;
 
 	@Mock
 	private ReviewRepository reviewRepository;
@@ -61,5 +70,19 @@ public class HotelServiceImplTest {
 	public void shouldGetReview() throws Exception {
 		given(reviewRepository.findByHotelAndIndex(hotel, 1)).willReturn(review);
 		assertThat(hotelService.getReview(hotel, 1), is(review));
+	}
+
+	@Test
+	public void shouldGetReviewSummary() throws Exception {
+		List<RatingCount> ratingCounts = new ArrayList<RatingCount>();
+		ratingCounts.add(new RatingCount(Rating.EXCELLENT, 10));
+		ratingCounts.add(new RatingCount(Rating.AVERAGE, 9));
+		ratingCounts.add(new RatingCount(Rating.GOOD, 8));
+		given(hotelSummaryRepository.findRatingCounts(hotel)).willReturn(ratingCounts);
+		ReviewsSummary summary = hotelService.getReviewSummary(hotel);
+		assertThat(summary.getNumberOfReviewsWithRating(Rating.EXCELLENT), is(10L));
+		assertThat(summary.getNumberOfReviewsWithRating(Rating.AVERAGE), is(9L));
+		assertThat(summary.getNumberOfReviewsWithRating(Rating.GOOD), is(8L));
+		assertThat(summary.getNumberOfReviewsWithRating(Rating.POOR), is(0L));
 	}
 }

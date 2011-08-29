@@ -16,7 +16,10 @@
 
 		<!-- FIXME rating summary -->
 
-		<!-- FIXME map -->
+		<p:barChart value="#{reviewsSummary}"
+			barMargin="4" orientation="horizontal"
+
+			style="width:250px;height:200px"/>
 
 		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
 			sortColumn="rating" sortAscending="#{false}" var="reviews" />
@@ -30,7 +33,7 @@
 					<h:link value="#{review.title}" outcome="spring:@hotelReview">
 						<f:param name="country" value="#{hotel.city.country}"/>
 						<f:param name="city" value="#{hotel.city.name}"/>
-						<f:param name="hotel" value="#{hotel.name}"/>
+						<f:param name="name" value="#{hotel.name}"/>
 						<f:param name="index" value="#{review.index}"/>
 					</h:link>
 					<br/>
@@ -46,7 +49,7 @@
 		<p:button value="Write Review" outcome="spring:@writeHotelReview">
 			<f:param name="country" value="#{hotel.city.country}"/>
 			<f:param name="city" value="#{hotel.city.name}"/>
-			<f:param name="hotel" value="#{hotel.name}"/>
+			<f:param name="name" value="#{hotel.name}"/>
 		</p:button>
 
 	</ui:composition>

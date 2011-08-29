@@ -17,4 +17,6 @@ public interface HotelService {
 
 	Review addReview(Hotel hotel, ReviewDetails details);
 
+	ReviewsSummary getReviewSummary(Hotel hotel);
+
 }

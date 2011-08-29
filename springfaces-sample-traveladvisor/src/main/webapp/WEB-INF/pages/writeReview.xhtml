@@ -10,9 +10,33 @@
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
 		<ui:param name="title" value="Write Review"/>
 
-		<h:outputText value="Write review for #{hotel.name}"/>
+		<h:outputText value="Write review for #{hotel.name} #{city}"/>
+
+		<p>
+			<p:inputText value="#{review.title}"/>
+		</p>
+
+		<p>
+			<p:rating value="#{reviewRating.value}" stars="4"/>
+		</p>
 		<br/>
-		<h:inputText value="#{details.title}" required="true"/>
+		<p>
+			<p:selectOneMenu value="#{review.tripType}">
+				<!-- FIXME selections -->
+			</p:selectOneMenu>
+		</p>
+
+		<p>
+			<p:calendar value="#{review.checkInDate}"/>
+		</p>
+
+		<p>
+			<p:inputTextarea value="#{review.details}"/>
+		</p>
+
+		<p>
+			<p:captcha/>
+		</p>
 
 		<h:commandButton value="Submit" action="submitReview"/>
 

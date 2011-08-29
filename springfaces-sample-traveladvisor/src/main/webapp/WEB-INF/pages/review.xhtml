@@ -8,11 +8,33 @@
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
 	<ui:composition template="/WEB-INF/templates/layout.xhtml">
+
 		<ui:param name="title" value="Review"/>
 
-		<h:outputText value="#{review.title}"/>
+		<p>
+			<h:outputText value="#{review.hotel.name} #{review.hotel.city}"/>
+		</p>
+
+		<p>
+			<h:outputText value="#{review.title}"/>
+		</p>
+
+		<p>
+			<p:rating value="#{reviewUtils.getRating(review)}" stars="4" disabled="true"/>
+		</p>
 		<br/>
-		<h:outputText value="#{reviewDetailsRatingValue.value}"/>
+		<p>
+			<h:outputText value="#{review.tripType}"/>
+		</p>
+
+		<p>
+			<h:outputText value="#{review.checkInDate}"/>
+		</p>
+
+		<p>
+			<h:outputText value="#{review.details}"/>
+		</p>
+
 	</ui:composition>
 
 </html>

@@ -1,38 +1,25 @@
 package org.springframework.springfaces.traveladvisor.web;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.springfaces.traveladvisor.domain.Rating;
-import org.springframework.springfaces.traveladvisor.domain.Review;
+import org.springframework.springfaces.traveladvisor.domain.ReviewDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("request")
 public class ReviewRating {
 
-	private static final Map<Rating, Double> VALUES;
-	static {
-		VALUES = new HashMap<Rating, Double>();
-		VALUES.put(Rating.EXCELLENT, 4.0);
-		VALUES.put(Rating.GOOD, 3.0);
-		VALUES.put(Rating.AVERAGE, 2.0);
-		VALUES.put(Rating.POOR, 1.0);
-		VALUES.put(Rating.TERRIBLE, 0.0);
-
-	}
-
 	@Value("#{review}")
-	private Review review;
+	private ReviewDetails review;
 
 	public Double getValue() {
-		return VALUES.get(review.getRating());
+		Rating rating = review.getRating();
+		return (rating == null ? null : (double) rating.ordinal());
 	}
 
-	private void setValue(Double value) {
-		// FIXME
+	public void setValue(Double value) {
+		Rating rating = value == null ? null : Rating.values()[value.intValue()];
+		review.setRating(rating);
 	}
-
 }
