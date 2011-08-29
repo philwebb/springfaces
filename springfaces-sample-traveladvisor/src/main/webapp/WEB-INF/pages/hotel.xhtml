@@ -21,10 +21,10 @@
 		<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
 			sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
-		<p:commandLink value="Sort by Rating"/> |
-		<p:commandLink value="Sort by Date"/>
+		<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
+		<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
 
-		<p:dataTable value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
+		<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
 			<p:column headerText="Reviews" sortBy="#{review.rating}">
 				<p>
 					<h:link value="#{review.title}" outcome="spring:@hotelReview">
