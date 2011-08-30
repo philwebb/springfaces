@@ -10,7 +10,7 @@
 		<module>../springfaces</module>
 		<module>../springfaces-mvc</module>
 		<module>../springfaces-sample</module>
-		<module>../springfaces-booking-sample</module>
+		<module>../springfaces-sample-traveladvisor</module>
 	</modules>
 	<properties>
 		<eclipse.project.autoformat>http://svn.xp-dev.com/svn/spring-faces-mvc/spring-faces/trunk/springfaces-parent/eclipse-code-formatter.xml</eclipse.project.autoformat>

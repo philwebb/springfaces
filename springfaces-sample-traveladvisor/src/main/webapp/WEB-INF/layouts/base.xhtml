@@ -32,18 +32,38 @@
 			<div class="container">
 				<!-- Header -->
 				<div class="span-24">
-					Header
+					<div class="header">
+		           		<p:graphicImage value="/images/logo.png" alt="Spring TravelAdvisor"/>
+		           	</div>
+		           	<div class="header-padding"/>
 				</div>
 
 				<!-- Main -->
 				<ui:insert name="main"/>
 
 				<!-- Footer -->
-				<div class="span-24">
-					<h:outputText value="Icons from "/>
-					<h:outputLink value="http://www.icondrawer.com">
-						<h:outputText value="www.icondrawer.com"/>
-					</h:outputLink>
+				<div class="span-24 footer">
+					<ul>
+						<li class="first">
+							<h:outputText value="Powered by "/>
+							<h:outputLink value="http://www.springframework.org">
+								<h:outputText value="Spring"/>
+							</h:outputLink>
+							<h:outputText value=" &amp; JavaServer Faces"/>
+						</li>
+						<li>
+							<h:outputText value="Rich UI components by "/>
+							<h:outputLink value="http://www.primefaces.org">
+								<h:outputText value="Primefaces"/>
+							</h:outputLink>
+						</li>
+						<li>
+							<h:outputText value="Icons from "/>
+							<h:outputLink value="http://www.icondrawer.com">
+								<h:outputText value="www.icondrawer.com"/>
+							</h:outputLink>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</h:form>
