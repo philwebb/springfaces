@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:util="http://java.sun.com/jsf/composite/components/util"
+	xmlns:s="http://www.springframework.org/tags/springfaces"
+	xmlns:p="http://primefaces.prime.com.tr/ui">
+
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>
+			<h:outputText value="Spring Faces MVC: Travel Advisor Sample Application - "/>
+			<h:outputText value="#{title}"/>
+		</title>
+
+		<link rel="stylesheet" href="#{request.contextPath}/styles/blueprint/screen.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="#{request.contextPath}/styles/blueprint/print.css" type="text/css" media="print" />
+		<!--[if lt IE 8]>
+		<link rel="stylesheet" href="${request.contextPath}/styles/blueprint/ie.css" type="text/css" media="screen, projection" />
+		<![endif]-->
+		<link rel="stylesheet" href="${request.contextPath}/styles/travel.css" type="text/css" media="screen, projection" />
+
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"/>
+
+		<ui:insert name="head"/>
+	</h:head>
+
+	<h:body>
+		<h:form id="form">
+			<div class="container">
+				<!-- Header -->
+				<div class="span-24">
+					Header
+				</div>
+
+				<!-- Main -->
+				<ui:insert name="main"/>
+
+				<!-- Footer -->
+				<div class="span-24">
+					<h:outputText value="Icons from "/>
+					<h:outputLink value="http://www.icondrawer.com">
+						<h:outputText value="www.icondrawer.com"/>
+					</h:outputLink>
+				</div>
+			</div>
+		</h:form>
+	</h:body>
+</ui:composition>
+
+
+

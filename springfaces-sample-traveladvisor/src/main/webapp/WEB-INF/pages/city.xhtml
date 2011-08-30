@@ -7,40 +7,39 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces"
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<ui:composition template="/WEB-INF/templates/layout.xhtml">
+	<ui:composition template="/WEB-INF/layouts/details.xhtml">
+
 		<ui:param name="title" value="City"/>
 
-	  	<ui:define name="head">
-			<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"/>
-        </ui:define>
-
-		<p>
+		<ui:define name="top">
 			<h:outputText value="#{city}"/>
-		</p>
+			<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
+		</ui:define>
 
-		<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
+		<ui:define name="content">
+			<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
+				sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
 
-		<p:gmap center="#{city.map}" zoom="10" type="ROADMAP"
-				style="width:200px;height:200px"
-				mapTypeControl="false" disableDoubleClickZoom="true" />
+			<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" lazy="true" var="hotel">
+				<p:column headerText="Name">
+					<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
+						<f:param name="country" value="#{hotel.city.country}"/>
+						<f:param name="city" value="#{hotel.city.name}"/>
+						<f:param name="name" value="#{hotel.name}"/>
+					</h:link>
+				</p:column>
+				<p:column headerText="Average Rating" sortBy="#{hotel.averageRating}">
+					<p:rating value="#{hotel.averageRating}" disabled="true" stars="4"/>
+					<h:outputText value=" (#{hotel.averageRating})"/>
+				</p:column>
+			</p:dataTable>
+		</ui:define>
 
-		<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
-			sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
-
-		<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" lazy="true" var="hotel">
-			<p:column headerText="Name">
-				<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
-					<f:param name="country" value="#{hotel.city.country}"/>
-					<f:param name="city" value="#{hotel.city.name}"/>
-					<f:param name="name" value="#{hotel.name}"/>
-				</h:link>
-			</p:column>
-			<p:column headerText="Average Rating" sortBy="#{hotel.averageRating}">
-				<p:rating value="#{hotel.averageRating}" disabled="true" stars="4"/>
-				<h:outputText value=" (#{hotel.averageRating})"/>
-			</p:column>
-		</p:dataTable>
-
+		<ui:define name="sidebar">
+			<p:gmap center="#{city.map}" zoom="10" type="ROADMAP"
+					style="width:200px;height:200px"
+					mapTypeControl="false" disableDoubleClickZoom="true" />
+		</ui:define>
 	</ui:composition>
 
 </html>

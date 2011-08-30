@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:util="http://java.sun.com/jsf/composite/components/util"
+	xmlns:s="http://www.springframework.org/tags/springfaces"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+	template="/WEB-INF/layouts/base.xhtml">
+
+	<ui:define name="main">
+		<div class="span-24">
+			<ui:insert name="top"/>
+		</div>
+		<div class="span-18 colborder main">
+			<ui:insert name="content"/>
+		</div>
+		<div class="span-5 last">
+			<ui:insert name="sidebar"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

@@ -7,11 +7,18 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces"
 	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<ui:composition template="/WEB-INF/templates/layout.xhtml">
+	<ui:composition template="/WEB-INF/layouts/standard.xhtml">
+
 		<ui:param name="title" value="Search"/>
 
 		<p:autoComplete value="#{citySearchCriteria.name}" completeMethod="#{cityAutoComplete.suggest}"
 				var="city" itemValue="#{city.name}, #{city.country}" itemLabel="#{city.name}, #{city.country}">
+			<p:column>
+	           	<p:graphicImage value="/images/flags/24/#{city.country}.png" width="24" height="24"/>
+			</p:column>
+			<p:column>
+				<h:outputText value="#{city.name}, #{city.country}"/>
+			</p:column>
 		</p:autoComplete>
 
 		<p:commandButton value="Search" action="search"/>
