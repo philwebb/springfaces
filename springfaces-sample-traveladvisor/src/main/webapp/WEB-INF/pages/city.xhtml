@@ -12,11 +12,21 @@
 		<ui:param name="title" value="City"/>
 
 		<ui:define name="top">
-			<h:outputText value="#{city}"/>
-			<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
+			<ui:decorate template="/WEB-INF/templates/title.xhtml">
+				<ui:define name="context">
+					<p:graphicImage value="/images/flags/24/#{city.country}.png" width="24" height="24"/>
+					<h:outputText value="#{city.country}"/>
+				</ui:define>
+				<h:outputText value="#{city.name}"/>
+			</ui:decorate>
 		</ui:define>
 
 		<ui:define name="content">
+
+			<div class="spaced">
+				<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
+			</div>
+
 			<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
 				sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
 

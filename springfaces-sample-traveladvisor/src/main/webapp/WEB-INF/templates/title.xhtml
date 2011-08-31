@@ -6,19 +6,15 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:util="http://java.sun.com/jsf/composite/components/util"
 	xmlns:s="http://www.springframework.org/tags/springfaces"
-	xmlns:p="http://primefaces.prime.com.tr/ui"
-	template="/WEB-INF/layouts/base.xhtml">
+	xmlns:p="http://primefaces.prime.com.tr/ui">
 
-	<ui:define name="main">
-		<div class="span-22 prepend-1 append-1 last top">
-			<ui:insert name="top"/>
+	<div class="title-container">
+		<div class="title-context">
+			<ui:insert name="context"/>
 		</div>
-		<div class="span-15 prepend-1 colborder main">
-			<ui:insert name="content"/>
+		<div class="title">
+			<ui:insert/>
 		</div>
-		<div class="span-6 append-1 last">
-			<ui:insert name="sidebar"/>
-		</div>
-	</ui:define>
+	</div>
 
 </ui:composition>

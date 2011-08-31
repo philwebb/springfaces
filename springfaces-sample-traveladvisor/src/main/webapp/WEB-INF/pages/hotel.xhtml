@@ -11,20 +11,31 @@
 		<ui:param name="title" value="Hotel"/>
 
 		<ui:define name="top">
-			<h2>
+			<ui:decorate template="/WEB-INF/templates/title.xhtml">
+				<ui:define name="context">
+					<p:graphicImage value="/images/flags/24/#{hotel.city.country}.png" width="24" height="24"/>
+					<h:outputText value="#{hotel.city.country}"/>,
+					<h:link value="#{hotel.city.name}" outcome="spring:@showCity">
+						<f:param name="country" value="#{hotel.city.country}"/>
+						<f:param name="name" value="#{hotel.city.name}"/>
+					</h:link>
+				</ui:define>
 				<h:outputText value="#{hotel.name}"/>
-			</h2>
+			</ui:decorate>
 		</ui:define>
 
 		<ui:define name="content">
+
 			<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
 				sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
-			<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
-			<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
+			<div class="spaced">
+				<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
+				<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
+			</div>
 
 			<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
-				<p:column headerText="Reviews" sortBy="#{review.rating}">
+				<p:column headerText="Reviews">
 					<p>
 						<h:link value="#{review.title}" outcome="spring:@hotelReview">
 							<f:param name="country" value="#{hotel.city.country}"/>
@@ -42,11 +53,13 @@
 				</p:column>
 			</p:dataTable>
 
-			<p:button value="Write Review" outcome="spring:@writeHotelReview">
-				<f:param name="country" value="#{hotel.city.country}"/>
-				<f:param name="city" value="#{hotel.city.name}"/>
-				<f:param name="name" value="#{hotel.name}"/>
-			</p:button>
+			<div class="spaced">
+				<p:button value="Write Review" outcome="spring:@writeHotelReview">
+					<f:param name="country" value="#{hotel.city.country}"/>
+					<f:param name="city" value="#{hotel.city.name}"/>
+					<f:param name="name" value="#{hotel.name}"/>
+				</p:button>
+			</div>
 		</ui:define>
 
 		<ui:define name="sidebar">

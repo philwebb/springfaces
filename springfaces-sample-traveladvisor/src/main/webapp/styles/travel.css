@@ -61,3 +61,36 @@ div.footer ul li a:hover {
 div.footer ul li a:hover {
 	text-decoration: underline;
 }
+
+div.top {
+	padding-bottom: 1em;
+}
+
+div.spaced {
+	padding: 0.5em 0 0.5em 0;
+}
+
+.title-container .title-context img {
+	vertical-align:middle;
+	padding-right: 4px;
+	margin-bottom: 6px;
+}
+
+.title-container .title-context {
+	font-size: 2em;
+	padding-bottom: 0;
+	margin-bottom: -0.5em;
+}
+
+.title-container .title-context a {
+	color: black;
+	text-decoration: none;
+}
+
+.title-container .title-context a:hover {
+	text-decoration: underline;
+}
+
+.title-container .title {
+	font-size: 3em;
+}
