@@ -1,6 +1,8 @@
 package org.springframework.springfaces.util;
 
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -35,6 +37,38 @@ public abstract class FacesUtils {
 			current = current.getParent();
 		}
 		return null;
+	}
+
+	public static <V> V doWithRequestScopeVariable(FacesContext context, String key, Object value, Callable<V> callable) {
+		Assert.notNull(context, "Context must not be null");
+		Assert.notNull(callable, "Callable must not be null");
+		try {
+			if (key == null) {
+				return callable.call();
+			}
+			Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
+			Object previousValue = requestMap.put(key, value);
+			try {
+				return callable.call();
+			} finally {
+				requestMap.remove(key);
+				if (previousValue != null) {
+					requestMap.put(key, previousValue);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getLocalizedMessage(), e);
+		}
+	}
+
+	public static void doWithRequestScopeVariable(FacesContext context, String key, Object value,
+			final Runnable runnable) {
+		doWithRequestScopeVariable(context, key, value, new Callable<Object>() {
+			public Object call() throws Exception {
+				runnable.run();
+				return null;
+			}
+		});
 	}
 
 }

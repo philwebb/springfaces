@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
@@ -18,6 +19,7 @@ import org.springframework.springfaces.page.model.PagedDataModel;
 import org.springframework.springfaces.page.model.PagedDataModelState;
 import org.springframework.springfaces.page.model.PagedDataRows;
 import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
+import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
 /**
@@ -214,18 +216,13 @@ public class UIPagedData extends UIComponentBase {
 	 * @see #getContentFromValue(Object)
 	 */
 	protected DataModelRowSet<Object> getRows(PagedDataModelState state) {
-		Map<String, Object> requestMap = getFacesContext().getExternalContext().getRequestMap();
-		PageRequest pageRequest = createPageRequest(state);
-		Object previousPageRequest = requestMap.put(PAGE_REQUEST_VARIABLE, pageRequest);
-		try {
-			return executeExpressionsToGetRows(pageRequest);
-		} finally {
-			// Cleanup the page request
-			requestMap.remove(PAGE_REQUEST_VARIABLE);
-			if (previousPageRequest != null) {
-				requestMap.put(PAGE_REQUEST_VARIABLE, previousPageRequest);
-			}
-		}
+		final PageRequest pageRequest = createPageRequest(state);
+		return FacesUtils.doWithRequestScopeVariable(getFacesContext(), PAGE_REQUEST_VARIABLE, pageRequest,
+				new Callable<DataModelRowSet<Object>>() {
+					public DataModelRowSet<Object> call() throws Exception {
+						return executeExpressionsToGetRows(pageRequest);
+					}
+				});
 	}
 
 	/**
