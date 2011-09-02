@@ -1,6 +1,7 @@
 package org.springframework.springfaces.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,9 +9,20 @@ import java.util.Set;
 
 import javax.faces.model.SelectItem;
 
+import org.springframework.util.Assert;
+
 /**
- * Iterates {@link SelectItem}s for a given value. Subclasses must provide a {@link #createSelectItem(Object)}
+ * Iterates {@link SelectItem}s for a given value. Subclasses must provide a {@link #convertToSelectItem}
  * implementation.
+ * <p>
+ * The following value objects are supported:
+ * <ul>
+ * <li>A single {@link SelectItem}.</li>
+ * <li>A {@link Map} of {@link Object}s. Each entry from the map is converted to a single {@link SelectItem} with the
+ * <tt>value</tt> exposed as <tt>SelectItem.getValue()</tt> and the key used as <tt>SelectItem.getLabel()</tt>.</li>
+ * <li>A {@link Collection}, {@link Iterable} or <tt>Array</tt> of objects. Any contained object that is not a
+ * {@link SelectItem}s will be converted using the {@link #convertToSelectItem} method.</li>
+ * </ul>
  * 
  * @author Phillip Webb
  */
@@ -19,6 +31,7 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 	private Object value;
 
 	public SelectItems(Object value) {
+		Assert.notNull(value, "Value must not be null");
 		this.value = value;
 	}
 
@@ -43,7 +56,7 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 				+ " return from UISelectItems value");
 	}
 
-	protected abstract SelectItem createSelectItem(Object value);
+	protected abstract SelectItem convertToSelectItem(Object value);
 
 	protected final <T> T firstNonNullValue(T... values) {
 		for (T value : values) {
@@ -122,7 +135,7 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 			if (sourceValue instanceof SelectItem) {
 				return (SelectItem) sourceValue;
 			}
-			return createSelectItem(sourceValue);
+			return convertToSelectItem(sourceValue);
 		}
 	}
 }
