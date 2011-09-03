@@ -1,5 +1,8 @@
 package org.springframework.springfaces.mvc.servlet;
 
+import org.junit.Ignore;
+
+@Ignore
 public class FacesHandlerInterceptorTest {
 
 	// FIXME incorporate handler test
