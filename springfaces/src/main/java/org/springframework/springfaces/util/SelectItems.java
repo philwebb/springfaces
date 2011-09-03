@@ -30,8 +30,11 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 
 	private Object value;
 
+	/**
+	 * Create a new {@link SelectItems} instance.
+	 * @param value the object used to extract the {@link SelectItem}s (can be null).
+	 */
 	public SelectItems(Object value) {
-		Assert.notNull(value, "Value must not be null");
 		this.value = value;
 	}
 
@@ -41,10 +44,10 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 			return Collections.<SelectItem> emptySet().iterator();
 		}
 		if (value instanceof SelectItem) {
-			Collections.singleton((SelectItem) value).iterator();
+			return Collections.singleton((SelectItem) value).iterator();
 		}
 		if (value instanceof Map) {
-			return new MapIterator(((Map) value).entrySet());
+			return new MapEntryIterator(((Map) value).entrySet());
 		}
 		if (value.getClass().isArray()) {
 			return new ValuesIterator(Arrays.asList((Object[]) value));
@@ -53,11 +56,24 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 			return new ValuesIterator(((Iterable) value));
 		}
 		throw new IllegalArgumentException("Unsupport class type " + value.getClass().getName()
-				+ " return from UISelectItems value");
+				+ " for SelectItem value");
 	}
 
+	/**
+	 * Convert the specified value into a {@link SelectItem}. Subclasses can implement their own strategy for converting
+	 * values (for example, by using EL expressions).
+	 * @param value the value to convert (never be a collection type, {@link SelectItem} or <tt>null</tt>)
+	 * @return a select item relevant to the value.
+	 */
 	protected abstract SelectItem convertToSelectItem(Object value);
 
+	/**
+	 * Utility method that will return the first <tt>non-null</tt> value from the given array.
+	 * @param <T> the array type
+	 * @param values an array of values
+	 * @return the first <tt>non-null</tt> value from the array or <tt>null</tt> if the array is empty or contains only
+	 * <tt>null</tt>s
+	 */
 	protected final <T> T firstNonNullValue(T... values) {
 		for (T value : values) {
 			if (value != null) {
@@ -67,10 +83,25 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 		return null;
 	}
 
+	/**
+	 * Utility method get a boolean value from an object. Returns <tt>false</tt> if the object is <tt>null</tt>.
+	 * @param o the source object can be a Boolean or any object with a {@link Object#toString() toString()} that
+	 * returns <tt>"true"</tt> or <tt>"false"</tt>.
+	 * @return a boolean value.
+	 * @see #getBooleanValue(Object, Boolean)
+	 */
 	protected boolean getBooleanValue(Object o) {
 		return getBooleanValue(o, Boolean.FALSE);
 	}
 
+	/**
+	 * Utility method get a boolean value from an object. Returns the specified default if the object is <tt>null</tt>.
+	 * @param o the source object can be a Boolean or any object with a {@link Object#toString() toString()} that
+	 * returns <tt>"true"</tt> or <tt>"false"</tt>.
+	 * @param defaultValue The default value to return if the object is <tt>null</tt>
+	 * @return a Boolean value.
+	 * @see #getBooleanValue(Object)
+	 */
 	protected Boolean getBooleanValue(Object o, Boolean defaultValue) {
 		if (o == null) {
 			return defaultValue;
@@ -78,19 +109,38 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 		return (o instanceof Boolean ? (Boolean) o : Boolean.valueOf(o.toString()));
 	}
 
+	/**
+	 * Utility method to convert an {@link Object} to a {@link String}.
+	 * @param o The object
+	 * @return a {@link String} value of the object or <tt>null</tt> if the object was null.
+	 */
 	protected String getStringValue(Object o) {
 		return o == null ? null : o.toString();
 	}
 
+	/**
+	 * Returns the value object acting as the source of the select items.
+	 * @return the value
+	 */
 	protected final Object getValue() {
 		return value;
 	}
 
-	protected abstract class AdaptingIterator<E> implements Iterator<SelectItem> {
+	/**
+	 * Decorator class that adapts a source {@link Iterator} by {@link #adapt(Object) adapting} objects to
+	 * {@link SelectItem}s.
+	 * @param <E> The source iterator type.
+	 */
+	private abstract class AdaptingIterator<E> implements Iterator<SelectItem> {
 
 		private Iterator<E> source;
 
+		/**
+		 * Create a new {@link AdaptingIterator} instance.
+		 * @param source the source iterator
+		 */
 		public AdaptingIterator(Iterable<E> source) {
+			Assert.notNull(source, "Source must not be null");
 			this.source = source.iterator();
 		}
 
@@ -102,6 +152,11 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 			return adapt(source.next());
 		}
 
+		/**
+		 * Adapt a value from the source iterator to a {@link SelectItem}.
+		 * @param sourceValue the source value to adapt
+		 * @return a {@link SelectItem}
+		 */
 		protected abstract SelectItem adapt(E sourceValue);
 
 		public void remove() {
@@ -109,10 +164,18 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 		}
 	}
 
+	/**
+	 * Decorator class that adapts a source {@link Iterator} containing {@link Map.Entry map entries} to
+	 * {@link SelectItem}s.
+	 */
 	@SuppressWarnings("rawtypes")
-	protected class MapIterator extends AdaptingIterator<Map.Entry> {
+	private class MapEntryIterator extends AdaptingIterator<Map.Entry> {
 
-		public MapIterator(Set<Map.Entry> source) {
+		/**
+		 * Create a new {@link MapEntryIterator} instance.
+		 * @param source the source iterator
+		 */
+		public MapEntryIterator(Set<Map.Entry> source) {
 			super(source);
 		}
 
@@ -124,8 +187,16 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 		}
 	}
 
-	protected class ValuesIterator extends AdaptingIterator<Object> {
+	/**
+	 * Decorator class that adapts a source {@link Iterator} to {@link SelectItem}s by calling the
+	 * {@link SelectItems#convertToSelectItem(Object)} method.
+	 */
+	private class ValuesIterator extends AdaptingIterator<Object> {
 
+		/**
+		 * Create a new {@link ValuesIterator} instance.
+		 * @param source the source iterator
+		 */
 		public ValuesIterator(Iterable<Object> source) {
 			super(source);
 		}
@@ -135,7 +206,9 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 			if (sourceValue instanceof SelectItem) {
 				return (SelectItem) sourceValue;
 			}
-			return convertToSelectItem(sourceValue);
+			SelectItem selectItem = convertToSelectItem(sourceValue);
+			Assert.state(selectItem != null, "Unexpected null result when converting source value to a SelectItem");
+			return selectItem;
 		}
 	}
 }
