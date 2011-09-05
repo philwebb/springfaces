@@ -21,6 +21,9 @@ import org.springframework.core.convert.converter.GenericConverter;
  */
 public class ClassToEnumsConverter implements ConditionalGenericConverter {
 
+	// FIXME this is probably a bad idea, push into select items specific interface and stop trying to reuse Spring
+	// converters
+
 	public Set<ConvertiblePair> getConvertibleTypes() {
 		return new HashSet<GenericConverter.ConvertiblePair>(Arrays.asList(new ConvertiblePair(Class.class,
 				Object[].class), new ConvertiblePair(Class.class, Collection.class)));

@@ -225,6 +225,18 @@ public class MvcViewHandlerTest {
 	}
 
 	@Test
+	public void shouldUseSelfPostbackForActionURLFromMVCRenderWithoutPartialState() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
+		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
+		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
+		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
+		handler.restoreView(context, "anything");
+		String actionUrl = handler.getActionURL(context, "mvc");
+		assertEquals("/rc/sp/si", actionUrl);
+	}
+
+	@Test
 	public void shouldDelegateVDL() throws Exception {
 		handler.getViewDeclarationLanguage(context, viewId);
 		verify(delegate).getViewDeclarationLanguage(context, viewId);

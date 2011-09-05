@@ -75,6 +75,7 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 			mutableModel.putAll(model);
 		}
 
+		// FIXME replace this now SPR-8646 is fixed.
 		// Work around Spring encoding bug SPR-8646
 		String enc = this.encodingScheme;
 		if (enc == null) {
