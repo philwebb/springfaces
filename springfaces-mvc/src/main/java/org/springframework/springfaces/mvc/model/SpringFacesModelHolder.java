@@ -28,6 +28,10 @@ public class SpringFacesModelHolder extends UIComponentBase {
 
 	private SpringFacesModel model;
 
+	public SpringFacesModelHolder() {
+		this(null);
+	}
+
 	/**
 	 * Creates a new {@link SpringFacesModelHolder} with the specified model.
 	 * @param model the model that should be contained in the holder component (can be <tt>null</tt>)

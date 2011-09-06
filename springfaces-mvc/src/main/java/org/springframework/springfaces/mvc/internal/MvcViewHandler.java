@@ -113,6 +113,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (SpringFacesContext.getCurrentInstance() != null
 				&& SpringFacesContext.getCurrentInstance().getRendering() != null) {
 			ModelAndViewArtifact rendering = SpringFacesContext.getCurrentInstance().getRendering();
+			context.getAttributes().put(ACTION_ATTRIBUTE, rendering.getViewArtifact().toString());
 			return super.restoreView(context, rendering.getViewArtifact().toString());
 		}
 		return super.restoreView(context, viewId);

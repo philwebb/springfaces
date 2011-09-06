@@ -80,8 +80,10 @@ public class SpringFacesModelHolderTest {
 		Map<String, String> m = Collections.singletonMap("k", "v");
 		SpringFacesModelHolder h1 = new SpringFacesModelHolder(m);
 		Object state = h1.saveState(context);
-		h.restoreState(context, state);
-		assertEquals("v", new SpringFacesModelHolder(m).getModel().get("k"));
+		// Restore : Note default constructor is required
+		SpringFacesModelHolder h2 = SpringFacesModelHolder.class.newInstance();
+		h2.restoreState(context, state);
+		assertEquals("v", h2.getModel().get("k"));
 	}
 
 	@Test
