@@ -157,5 +157,10 @@
 			<version>${org.springframework-version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		   <groupId>org.jboss.seam.faces</groupId>
+		   <artifactId>seam-faces</artifactId>
+		   <version>3.0.2.Final</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -14,7 +14,7 @@ import org.springframework.core.convert.converter.GenericConverter;
 
 /**
  * A {@link ConditionalGenericConverter} that converts a class to an array or collection of containing the values of the
- * enum. For example <tt>conversionService.convert(MyEnum.class, MyEnum[].class)</tt> will return the name result as
+ * enum. For example <tt>conversionService.convert(MyEnum.class, MyEnum[].class)</tt> will return the same result as
  * <tt>MyEnum.values()</tt>.
  * 
  * @author Phillip Webb

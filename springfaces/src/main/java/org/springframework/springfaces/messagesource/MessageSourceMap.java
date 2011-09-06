@@ -64,8 +64,8 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	/**
 	 * Create a new MessageSourceMap
 	 * @param messageSource a non-null message source
-	 * @param prefixCodes prefixes that should be applied to codes being resolved or <tt>null</tt> if not prefixes are
-	 * required. Prefixes should be specified in the order that they should get tried
+	 * @param prefixCodes prefixes that should be applied to codes being resolved or <tt>null</tt> if no prefixes are
+	 * required. Prefixes should be specified in the order that they are tried
 	 * @param localeProvider provides access to the {@link Locale} that should be used when resolving messages. Both
 	 * this parameter and the return from the <tt>Callable</tt> can be <tt>null</tt>
 	 * @param messageArgumentResolver a {@link MessageArgumentResolver} that will be used to resolve arguments before
