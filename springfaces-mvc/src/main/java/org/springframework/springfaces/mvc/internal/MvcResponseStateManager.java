@@ -10,7 +10,7 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
 import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.springfaces.render.RenderKitIdAware;
-import org.springframework.springfaces.util.ResponseStateManagerWrapper;
+import org.springframework.springfaces.render.ResponseStateManagerWrapper;
 
 /**
  * A JSF {@link ResponseStateManager} that provides integration with Spring MVC.

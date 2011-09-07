@@ -135,6 +135,7 @@ class WrapperHandler<T> {
 
 	/**
 	 * Wrap the specified delegate by consulting all {@link FacesWrapperFactory factories} registered with Spring.
+	 * @param externalContext the external context
 	 * @param delegate the root delegate
 	 * @return a wrapped implementation
 	 */
@@ -261,6 +262,7 @@ class WrapperHandler<T> {
 
 	/**
 	 * Implementation of {@link WrapperHandler.DelegateAccessor} that simple returns an object instance.
+	 * @param <T> the data type
 	 */
 	private static class DirectDelegateAccessor<T> implements DelegateAccessor<T> {
 

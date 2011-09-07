@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.component;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -14,6 +14,8 @@ import javax.faces.component.UISelectOne;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import org.springframework.springfaces.model.SelectItems;
+import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
 /**

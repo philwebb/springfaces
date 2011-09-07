@@ -183,6 +183,7 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 	 * Extract the relevant items from the source model. The default implementation delegates to
 	 * {@link RequestMappedRedirectViewModelBuilder}.
 	 * @param request the current request
+	 * @param url the URL
 	 * @param sourceModel the source model
 	 * @return relevant model items
 	 */

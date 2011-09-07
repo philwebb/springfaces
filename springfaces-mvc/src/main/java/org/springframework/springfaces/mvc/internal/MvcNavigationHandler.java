@@ -12,11 +12,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.PreRenderComponentEvent;
 
+import org.springframework.springfaces.application.ConfigurableNavigationHandlerWrapper;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
-import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 

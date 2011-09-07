@@ -2,21 +2,19 @@ package org.springframework.springfaces.convert;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
 /**
- * A variation of the JSF {@link Converter} that is for a specific class type. Beans registered within the Spring
- * context that implement this interface will be considered as the default converter for the class.
+ * A variation of the JSF {@link javax.faces.convert.Converter} that support generic typing.
  * 
- * @param <T> The class that the converter is for.
+ * @param <T> The type the converter is for.
  * @See {@link ConditionalConverterForClass}
  * 
  * @author Phillip Webb
  */
-public interface ConverterForClass<T> {
+public interface Converter<T> {
 
 	/**
-	 * See {@link Converter#getAsObject(FacesContext, UIComponent, String)}.
+	 * See {@link javax.faces.convert.Converter#getAsObject(FacesContext, UIComponent, String)}.
 	 * @param context the faces context
 	 * @param component the component
 	 * @param value the string value to convert
@@ -25,7 +23,7 @@ public interface ConverterForClass<T> {
 	T getAsObject(FacesContext context, UIComponent component, String value);
 
 	/**
-	 * See {@link Converter#getAsString(FacesContext, UIComponent, Object)}.
+	 * See {@link javax.faces.convert.Converter#getAsString(FacesContext, UIComponent, Object)}.
 	 * @param context the faces context
 	 * @param component the component
 	 * @param value the value to convert

@@ -79,9 +79,10 @@ public abstract class AbstractELResolver extends ELResolver {
 
 	/**
 	 * Template method used to handle searching for the property and invoking some operation on the scope.
-	 * @param elContext
-	 * @param base
-	 * @param property
+	 * @param <T> the property type
+	 * @param elContext the EL context
+	 * @param base the base object
+	 * @param property the property
 	 * @param operation Callback interface used to execute the operation
 	 * @return Result of the operation
 	 */
@@ -144,6 +145,7 @@ public abstract class AbstractELResolver extends ELResolver {
 
 	/**
 	 * Internal callback interface used to perform a scope operation.
+	 * @param <T> The data type
 	 */
 	protected static interface ELOperation<T> {
 		public T execute(String property);

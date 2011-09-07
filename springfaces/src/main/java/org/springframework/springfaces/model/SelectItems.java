@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.model;
 
 import java.util.Arrays;
 import java.util.Collection;

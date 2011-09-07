@@ -66,6 +66,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 
 	/**
 	 * Obtain the {@link FacesHandlerInterceptor} by searching all mapped interceptors.
+	 * @return the interceptor
 	 */
 	protected HandlerInterceptor findFacesHandlerInterceptor() {
 		Map<String, MappedInterceptor> mappedInterceptors = BeanFactoryUtils.beansOfTypeIncludingAncestors(

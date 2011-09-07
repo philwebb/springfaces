@@ -1,36 +1,35 @@
-package org.springframework.springfaces.convert;
+package org.springframework.springfaces.internal;
 
 import javax.faces.FacesWrapper;
 import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
 import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 
 /**
- * A JSF {@link Converter} that delegates to a Spring bean.
+ * A JSF {@link javax.faces.convert.Converter} that delegates to a Spring bean.
  * 
  * @author Phillip Webb
  */
-public class SpringBeanConverter extends SpringBeanPartialStateHolder<Converter> implements Converter,
-		FacesWrapper<Converter> {
+public class SpringBeanFacesConverter extends SpringBeanPartialStateHolder<javax.faces.convert.Converter> implements
+		javax.faces.convert.Converter, FacesWrapper<javax.faces.convert.Converter> {
 
 	/**
 	 * Constructor to satisfy the {@link StateHolder}. This constructor should not be used directly.
 	 * @deprecated use alternative constructor
 	 */
 	@Deprecated
-	public SpringBeanConverter() {
+	public SpringBeanFacesConverter() {
 		super();
 	}
 
 	/**
-	 * Create a new {@link SpringBeanConverter} instance.
+	 * Create a new {@link SpringBeanFacesConverter} instance.
 	 * @param context the faces context
 	 * @param beanName the bean name
 	 */
-	public SpringBeanConverter(FacesContext context, String beanName) {
+	public SpringBeanFacesConverter(FacesContext context, String beanName) {
 		super(context, beanName);
 	}
 
@@ -42,7 +41,7 @@ public class SpringBeanConverter extends SpringBeanPartialStateHolder<Converter>
 		return getBean().getAsString(context, component, value);
 	}
 
-	public Converter getWrapped() {
+	public javax.faces.convert.Converter getWrapped() {
 		return getBean();
 	}
 }

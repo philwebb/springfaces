@@ -139,6 +139,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 
 	/**
 	 * Obtain a {@link Method} for the specified destination.
+	 * @param handler the handler
 	 * @param destination the destination (excluding any prefix)
 	 * @return a {@link Method} resolved from the destination
 	 * @throws IllegalStateException if the destination cannot be resolved

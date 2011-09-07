@@ -205,6 +205,9 @@ public class ReverseDataBinder {
 	 * @param typeDescriptor the type description of the property
 	 * @return the corresponding editor, or <code>null</code> if none
 	 * 
+	 * @param propertyEditorRegistry
+	 * @param targetObject
+	 * 
 	 * @author Juergen Hoeller
 	 * @author Rob Harrop
 	 */

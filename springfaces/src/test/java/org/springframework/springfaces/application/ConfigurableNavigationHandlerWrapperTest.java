@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.application;
 
 import static org.mockito.Mockito.verify;
 

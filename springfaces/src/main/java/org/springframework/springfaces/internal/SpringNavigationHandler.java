@@ -5,7 +5,7 @@ import javax.faces.application.NavigationHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.util.ConfigurableNavigationHandlerWrapper;
+import org.springframework.springfaces.application.ConfigurableNavigationHandlerWrapper;
 
 /**
  * A JSF {@link NavigationHandler} that provides integration with Spring.

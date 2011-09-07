@@ -4,7 +4,7 @@ import javax.faces.event.ActionListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.util.ActionListenerWrapper;
+import org.springframework.springfaces.event.ActionListenerWrapper;
 
 /**
  * A JSF {@link ActionListener} that provides integration with Spring.

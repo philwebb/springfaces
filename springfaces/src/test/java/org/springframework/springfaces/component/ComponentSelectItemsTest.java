@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.component;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -36,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
+import org.springframework.springfaces.component.ComponentSelectItems;
 
 /**
  * Tests for {@link ComponentSelectItems}.

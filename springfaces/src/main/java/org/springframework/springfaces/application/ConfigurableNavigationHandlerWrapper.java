@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.application;
 
 import java.util.Map;
 import java.util.Set;

@@ -81,6 +81,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 	/**
 	 * Returns the {@link SpringFacesContextImpl}.
+	 * @param required if the context is required
 	 * @return the {@link SpringFacesContextImpl}
 	 */
 	private SpringFacesContextImpl getSpringFacesContext(boolean required) {

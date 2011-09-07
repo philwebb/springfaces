@@ -1,4 +1,4 @@
-package org.springframework.springfaces.util;
+package org.springframework.springfaces.event;
 
 import javax.faces.FacesWrapper;
 import javax.faces.event.AbortProcessingException;

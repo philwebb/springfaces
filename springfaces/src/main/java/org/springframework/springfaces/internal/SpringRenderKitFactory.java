@@ -8,7 +8,7 @@ import javax.faces.render.RenderKitFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.springfaces.util.RenderKitFactoryWrapper;
+import org.springframework.springfaces.render.RenderKitFactoryWrapper;
 
 /**
  * A JSF {@link RenderKitFactory} that provides integration with Spring.

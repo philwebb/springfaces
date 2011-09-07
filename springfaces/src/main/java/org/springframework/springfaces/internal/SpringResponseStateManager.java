@@ -5,7 +5,7 @@ import javax.faces.render.ResponseStateManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.springfaces.render.RenderKitIdAware;
-import org.springframework.springfaces.util.ResponseStateManagerWrapper;
+import org.springframework.springfaces.render.ResponseStateManagerWrapper;
 
 /**
  * A JSF {@link ResponseStateManager} that provides integration with Spring.
