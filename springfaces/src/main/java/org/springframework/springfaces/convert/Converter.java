@@ -2,6 +2,7 @@ package org.springframework.springfaces.convert;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.ConverterException;
 
 /**
  * A variation of the JSF {@link javax.faces.convert.Converter} that support generic typing.
@@ -19,8 +20,9 @@ public interface Converter<T> {
 	 * @param component the component
 	 * @param value the string value to convert
 	 * @return the object value
+	 * @throws ConverterException
 	 */
-	T getAsObject(FacesContext context, UIComponent component, String value);
+	T getAsObject(FacesContext context, UIComponent component, String value) throws ConverterException;
 
 	/**
 	 * See {@link javax.faces.convert.Converter#getAsString(FacesContext, UIComponent, Object)}.
@@ -28,6 +30,7 @@ public interface Converter<T> {
 	 * @param component the component
 	 * @param value the value to convert
 	 * @return the string value
+	 * @throws ConverterException
 	 */
-	String getAsString(FacesContext context, UIComponent component, T value);
+	String getAsString(FacesContext context, UIComponent component, T value) throws ConverterException;
 }
