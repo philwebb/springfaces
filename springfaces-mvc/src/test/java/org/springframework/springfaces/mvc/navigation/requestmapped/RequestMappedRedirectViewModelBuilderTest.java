@@ -163,7 +163,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 	}
 
 	@Test
-	public void shouldIgnoreParamters() throws Exception {
+	public void shouldIgnoreParameters() throws Exception {
 		Map<String, Object> source = new HashMap<String, Object>();
 		source.put("p1", new Object());
 		source.put("p2", Locale.UK);

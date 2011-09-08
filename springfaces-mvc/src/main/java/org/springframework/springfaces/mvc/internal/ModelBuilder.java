@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
  * 
  * @see #add(Map, boolean)
  * @see #addFromComponent(UIComponent)
- * @see #addFromParamterList(Map)
+ * @see #addFromParameterList(Map)
  * 
  * @author Phillip Webb
  */
@@ -102,7 +102,7 @@ public class ModelBuilder {
 	 * add {@link UIParameter}s before calling this method.
 	 * @param parameters the parameters to add or <tt>null</tt>
 	 */
-	public void addFromParamterList(Map<String, List<String>> parameters) {
+	public void addFromParameterList(Map<String, List<String>> parameters) {
 		if (parameters != null) {
 			for (Map.Entry<String, List<String>> parameter : parameters.entrySet()) {
 				if (parameter.getValue().size() == 1) {

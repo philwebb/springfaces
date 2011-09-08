@@ -255,7 +255,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	 * names).
 	 * <p>
 	 * Default is a {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer}.
-	 * @param parameterNameDiscoverer the paramter name discoverer
+	 * @param parameterNameDiscoverer the parameter name discoverer
 	 */
 	public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
 		this.parameterNameDiscoverer = parameterNameDiscoverer;

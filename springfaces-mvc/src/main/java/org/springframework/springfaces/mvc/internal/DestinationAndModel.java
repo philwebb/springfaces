@@ -82,7 +82,7 @@ class DestinationAndModel {
 		ModelBuilder modelBuilder = newModelBuilder(context);
 		modelBuilder.addFromComponent(getComponent());
 		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
-		modelBuilder.addFromParamterList(parameters);
+		modelBuilder.addFromParameterList(parameters);
 		modelBuilder.add(resolvedViewModel, false);
 		return modelBuilder.getModel();
 	}

@@ -126,7 +126,7 @@ public class RequestMappedRedirectViewModelBuilder {
 				if (pathVariable != null) {
 					addToPathVariableModel(model, methodParameter, pathVariable, source);
 				} else {
-					addRequestParamterToModel(model, methodParameter, requestParam, source);
+					addRequestParameterToModel(model, methodParameter, requestParam, source);
 				}
 			}
 		}
@@ -171,7 +171,7 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * @param requestParam The {@link RequestParam} annotation or null;
 	 * @param source the source data map
 	 */
-	private void addRequestParamterToModel(Map<String, Object> model, MethodParameter methodParameter,
+	private void addRequestParameterToModel(Map<String, Object> model, MethodParameter methodParameter,
 			RequestParam requestParam, Map<String, ?> source) {
 		// FIXME will throw even if not required
 		String name;

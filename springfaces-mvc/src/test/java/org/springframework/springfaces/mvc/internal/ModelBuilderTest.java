@@ -177,7 +177,7 @@ public class ModelBuilderTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("v1"));
 		parameters.put("m2", Collections.singletonList("v2"));
-		modelBuilder.addFromParamterList(parameters);
+		modelBuilder.addFromParameterList(parameters);
 		Map<String, Object> model = modelBuilder.getModel();
 		assertEquals(2, model.size());
 		assertEquals("v1", model.get("m1"));
@@ -186,7 +186,7 @@ public class ModelBuilderTest {
 
 	@Test
 	public void shouldSkipNullParametersList() throws Exception {
-		modelBuilder.addFromParamterList(null);
+		modelBuilder.addFromParameterList(null);
 		assertEquals(0, modelBuilder.getModel().size());
 	}
 
@@ -195,7 +195,7 @@ public class ModelBuilderTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("#{expression}"));
 		given(application.evaluateExpressionGet(context, "#{expression}", Object.class)).willReturn("resolved");
-		modelBuilder.addFromParamterList(parameters);
+		modelBuilder.addFromParameterList(parameters);
 		assertEquals("resolved", modelBuilder.getModel().get("m1"));
 	}
 
@@ -204,7 +204,7 @@ public class ModelBuilderTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("v1"));
 		parameters.put("m2", Arrays.asList("v2a", "v2b"));
-		modelBuilder.addFromParamterList(parameters);
+		modelBuilder.addFromParameterList(parameters);
 		Map<String, Object> model = modelBuilder.getModel();
 		assertEquals(1, model.size());
 		assertEquals("v1", model.get("m1"));
@@ -226,7 +226,7 @@ public class ModelBuilderTest {
 
 		modelBuilder.addFromComponent(component);
 		modelBuilder.add(map, false);
-		modelBuilder.addFromParamterList(parameters);
+		modelBuilder.addFromParameterList(parameters);
 
 		Map<String, Object> model = modelBuilder.getModel();
 

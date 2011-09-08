@@ -37,7 +37,7 @@ public interface RequestMappedRedirectViewContext {
 	 * Returns the ParameterNameDiscoverer to use for resolving method parameter names if needed (e.g. for default
 	 * attribute names). If this method returns <tt>null</tt> the
 	 * {@link org.springframework.core.LocalVariableTableParameterNameDiscoverer} should be used.
-	 * @return a paramter name discoverer or <tt>null</tt>
+	 * @return a parameter name discoverer or <tt>null</tt>
 	 */
 	public ParameterNameDiscoverer getParameterNameDiscoverer();
 

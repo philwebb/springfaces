@@ -107,7 +107,7 @@ public class DestinationAndModelTest {
 		InOrder ordered = inOrder(modelBuilder);
 		ordered.verify(modelBuilder).addFromComponent(component);
 		ordered.verify(modelBuilder).add(implicitModel, true);
-		ordered.verify(modelBuilder).addFromParamterList(parameters);
+		ordered.verify(modelBuilder).addFromParameterList(parameters);
 		ordered.verify(modelBuilder).add(resolvedViewModel, false);
 	}
 }
