@@ -4,12 +4,10 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-public interface MessageResolver<T> {
+public interface MessageResolver {
 
-	public boolean isResolvable(MessageSource messageSource, Class<?> type);
+	boolean canResolveMessage(Class<?> type);
 
-	public String resolve(MessageSource messageSource, Locale locale, T object);
-
-	public String resolve(MessageSource messageSource, Locale locale, String option, T object);
+	String resolveMessage(Object object, Locale locale);
 
 }
