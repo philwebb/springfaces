@@ -7,10 +7,10 @@ import java.util.Set;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.GenericTypeResolver;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.util.Assert;
 
 public class DefaultMessageResolver implements MessageResolver {
 
@@ -18,20 +18,23 @@ public class DefaultMessageResolver implements MessageResolver {
 
 	private MessageSource messageSource;
 
-	private ConversionService conversionService;
+	private DefaultConversionService conversionService;
 
 	public DefaultMessageResolver(MessageSource messageSource) {
 		this.messageSource = messageSource;
 		conversionService = new DefaultConversionService();
-		((DefaultConversionService) conversionService).addConverter(MessageConverterAdapter
-				.newInstance(new ObjectMessageCodeConverter()));
-		((DefaultConversionService) conversionService).addConverter(MessageConverterAdapter
-				.newInstance(new EnumMessageCodeConverter()));
+		addConverter(new ObjectMessageCodeConverter());
+		addConverter(new EnumMessageCodeConverter());
 	}
 
 	public boolean canResolveMessage(Class<?> type) {
-		// TODO Auto-generated method stub
-		return false;
+		Assert.notNull(type, "Type must not be null");
+		contextLocal.set(new Context(messageSource));
+		try {
+			return conversionService.canConvert(type, MessageCode.class);
+		} finally {
+			contextLocal.set(null);
+		}
 	}
 
 	public String resolveMessage(Object object, Locale locale) {
@@ -40,11 +43,20 @@ public class DefaultMessageResolver implements MessageResolver {
 		}
 		contextLocal.set(new Context(messageSource));
 		try {
-			MessageCode code = conversionService.convert(object, MessageCode.class);
-			return messageSource.getMessage(new DefaultMessageSourceResolvable(code.toString()), locale);
+			return doResolveMessage(object, locale, true);
 		} finally {
 			contextLocal.set(null);
 		}
+	}
+
+	private String doResolveMessage(Object object, Locale locale, boolean onlyFromCode) {
+		MessageCode code = conversionService.convert(object, MessageCode.class);
+		String message = messageSource.getMessage(new DefaultMessageSourceResolvable(code.toString()), locale);
+		return message;
+	}
+
+	public void addConverter(MessageCodeConverter<?> converter) {
+		conversionService.addConverter(MessageCodeConverterAdapter.newInstance(converter));
 	}
 
 	private static class Context {
@@ -73,20 +85,20 @@ public class DefaultMessageResolver implements MessageResolver {
 		}
 	}
 
-	private static class MessageConverterAdapter<T> implements ConditionalGenericConverter {
+	private static class MessageCodeConverterAdapter<T> implements ConditionalGenericConverter {
 
 		private MessageCodeConverter<T> messageConverter;
 		private Set<ConvertiblePair> convertibleTypes;
 
-		public MessageConverterAdapter(MessageCodeConverter<T> messageConverter) {
+		public MessageCodeConverterAdapter(MessageCodeConverter<T> messageConverter) {
 			this.messageConverter = messageConverter;
 			Class<?> sourceType = GenericTypeResolver.resolveTypeArgument(messageConverter.getClass(),
 					MessageCodeConverter.class);
 			this.convertibleTypes = Collections.singleton(new ConvertiblePair(sourceType, MessageCode.class));
 		}
 
-		public static <T> MessageConverterAdapter<T> newInstance(MessageCodeConverter<T> messageConverter) {
-			return new MessageConverterAdapter<T>(messageConverter);
+		public static <T> MessageCodeConverterAdapter<T> newInstance(MessageCodeConverter<T> messageConverter) {
+			return new MessageCodeConverterAdapter<T>(messageConverter);
 		}
 
 		public Set<ConvertiblePair> getConvertibleTypes() {

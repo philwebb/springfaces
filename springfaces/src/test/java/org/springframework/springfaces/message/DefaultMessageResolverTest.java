@@ -11,8 +11,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.support.StaticMessageSource;
 
-@Ignore
 public class DefaultMessageResolverTest {
+
 	// FIXME
 	private static final Locale LOCALE = Locale.getDefault();
 
@@ -36,13 +36,13 @@ public class DefaultMessageResolverTest {
 	}
 
 	@Test
-	public void shouldBeForMappedClass() throws Exception {
+	public void shouldSupportMappedClasses() throws Exception {
 		assertThat(resolver.canResolveMessage(Mapped.class), is(true));
 		assertThat(resolver.canResolveMessage(NotMapped.class), is(false));
 	}
 
 	@Test
-	public void shouldBeForMappedClassWhenUsingDefaults() throws Exception {
+	public void shouldSupportMappedClassesWhenUsingCodeAsDefaultMessage() throws Exception {
 		messageSource.setUseCodeAsDefaultMessage(true);
 		assertThat(resolver.canResolveMessage(Mapped.class), is(true));
 		assertThat(resolver.canResolveMessage(NotMapped.class), is(false));
@@ -61,7 +61,9 @@ public class DefaultMessageResolverTest {
 	}
 
 	@Test
+	@Ignore
 	public void shouldGetWithExpandedArguments() throws Exception {
+		// FIXME
 		String actual = resolver.resolveMessage(new MappedArguments("x"), LOCALE);
 		assertThat(actual, is("a x b"));
 	}
