@@ -1,4 +1,4 @@
-package org.springframework.springfaces.messagesource;
+package org.springframework.springfaces.message.ui;
 
 import java.util.AbstractMap;
 import java.util.Locale;
@@ -8,7 +8,7 @@ import java.util.Set;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.springfaces.messagesource.MessageSourceMap.Value;
+import org.springframework.springfaces.message.ui.MessageSourceMap.Value;
 import org.springframework.util.Assert;
 
 /**
@@ -57,32 +57,22 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	private String[] prefixCodes;
 
 	/**
-	 * The message argument resolver.
-	 */
-	private MessageArgumentResolver messageArgumentResolver;
-
-	/**
 	 * Create a new MessageSourceMap
 	 * @param messageSource a non-null message source
 	 * @param prefixCodes prefixes that should be applied to codes being resolved or <tt>null</tt> if no prefixes are
 	 * required. Prefixes should be specified in the order that they are tried
 	 * @param localeProvider provides access to the {@link Locale} that should be used when resolving messages. Both
 	 * this parameter and the return from the <tt>Callable</tt> can be <tt>null</tt>
-	 * @param messageArgumentResolver a {@link MessageArgumentResolver} that will be used to resolve arguments before
-	 * they are resolved or <tt>null</tt> if not required
 	 */
-	public MessageSourceMap(MessageSource messageSource, String[] prefixCodes, LocaleProvider localeProvider,
-			MessageArgumentResolver messageArgumentResolver) {
+	public MessageSourceMap(MessageSource messageSource, String[] prefixCodes, LocaleProvider localeProvider) {
 		Assert.notNull(messageSource, "MessageSource must not be null");
 		this.messageSource = messageSource;
 		this.prefixCodes = (prefixCodes == null ? NO_PREFIX_CODES : prefixCodes);
 		this.localeProvider = (localeProvider == null ? NULL_LOCALE : localeProvider);
-		this.messageArgumentResolver = (messageArgumentResolver == null ? MessageArgumentResolver.NONE
-				: messageArgumentResolver);
 	}
 
-	protected final Object resolveMessageArgument(Object argument) {
-		return messageArgumentResolver.resolveMessageArgument(argument);
+	protected Object resolveMessageArgument(Object argument) {
+		return argument;
 	}
 
 	@Override

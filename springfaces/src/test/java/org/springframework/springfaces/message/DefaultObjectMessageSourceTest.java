@@ -26,8 +26,8 @@ public class DefaultObjectMessageSourceTest {
 		this.messageSource = new StaticMessageSource();
 		this.objectMessageSource = new DefaultObjectMessageSource(messageSource);
 		setupMessage(INNER + "Mapped", "mapped");
-		setupMessage(INNER + "MappedArguments", "a {name} b");
-		setupMessage(INNER + "Enum.ONE", "1");
+		setupMessage(INNER + "MappedArguments", "a {name} b {numberEnum}");
+		setupMessage(INNER + "NumberEnum.ONE", "1");
 	}
 
 	private void setupMessage(String code, String msg) {
@@ -36,15 +36,15 @@ public class DefaultObjectMessageSourceTest {
 
 	@Test
 	public void shouldSupportMappedClasses() throws Exception {
-		assertThat(objectMessageSource.isSupported(Mapped.class), is(true));
-		assertThat(objectMessageSource.isSupported(NotMapped.class), is(false));
+		assertThat(objectMessageSource.containsMessage(Mapped.class), is(true));
+		assertThat(objectMessageSource.containsMessage(NotMapped.class), is(false));
 	}
 
 	@Test
 	public void shouldSupportMappedClassesWhenUsingCodeAsDefaultMessage() throws Exception {
 		messageSource.setUseCodeAsDefaultMessage(true);
-		assertThat(objectMessageSource.isSupported(Mapped.class), is(true));
-		assertThat(objectMessageSource.isSupported(NotMapped.class), is(false));
+		assertThat(objectMessageSource.containsMessage(Mapped.class), is(true));
+		assertThat(objectMessageSource.containsMessage(NotMapped.class), is(false));
 	}
 
 	@Test
@@ -61,13 +61,13 @@ public class DefaultObjectMessageSourceTest {
 
 	@Test
 	public void shouldGetWithExpandedArguments() throws Exception {
-		String actual = objectMessageSource.getMessage(new MappedArguments("x"), LOCALE);
-		assertThat(actual, is("a x b"));
+		String actual = objectMessageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), LOCALE);
+		assertThat(actual, is("a x b 1"));
 	}
 
 	@Test
 	public void shouldGetEnum() throws Exception {
-		String actual = objectMessageSource.getMessage(Enum.ONE, LOCALE);
+		String actual = objectMessageSource.getMessage(NumberEnum.ONE, LOCALE);
 		assertThat(actual, is("1"));
 	}
 
@@ -79,17 +79,23 @@ public class DefaultObjectMessageSourceTest {
 
 	static class MappedArguments {
 		private String name;
+		private NumberEnum numberEnum;
 
-		public MappedArguments(String name) {
+		public MappedArguments(String name, NumberEnum numberEnum) {
 			this.name = name;
+			this.numberEnum = numberEnum;
 		}
 
 		public String getName() {
 			return name;
 		}
+
+		public NumberEnum getNumberEnum() {
+			return numberEnum;
+		}
 	}
 
-	enum Enum {
+	enum NumberEnum {
 		ONE, TWO, THREE
 	}
 

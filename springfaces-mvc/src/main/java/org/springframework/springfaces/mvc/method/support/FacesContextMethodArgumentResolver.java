@@ -11,11 +11,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 
-import org.springframework.springfaces.messagesource.MessageArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 /**
- * {@link MessageArgumentResolver} that can resolve parameters using the current {@link FacesContext} instance. This
- * resolver supports the following parameter types:
+ * {@link HandlerMethodArgumentResolver} that can resolve parameters using the current {@link FacesContext} instance.
+ * This resolver supports the following parameter types:
  * <ul>
  * <li>{@link FacesContext}</li>
  * <li>{@link ExternalContext}</li>
