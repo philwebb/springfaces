@@ -42,7 +42,6 @@ public class BookmarkableRedirectViewTest {
 	@Test
 	@Ignore
 	public void shouldEncodePathVariables() throws Exception {
-		// FIXME SPR-8646 ?
 		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab/{cd}");
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "C D");

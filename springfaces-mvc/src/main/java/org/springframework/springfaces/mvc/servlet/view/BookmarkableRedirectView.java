@@ -2,8 +2,6 @@ package org.springframework.springfaces.mvc.servlet.view;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,9 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.util.UriTemplate;
-import org.springframework.web.util.UriUtils;
-import org.springframework.web.util.WebUtils;
 
 /**
  * A {@link BookmarkableView} version of {@link RedirectView} that also supports expansion of path variables using the
@@ -25,8 +20,6 @@ import org.springframework.web.util.WebUtils;
 public class BookmarkableRedirectView extends RedirectView implements BookmarkableView, FacesRenderedView {
 
 	private boolean http10Compatible;
-
-	private String encodingScheme;
 
 	public BookmarkableRedirectView() {
 		super();
@@ -74,37 +67,6 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 		if (model != null) {
 			mutableModel.putAll(model);
 		}
-
-		// FIXME replace this now SPR-8646 is fixed.
-		// Work around Spring encoding bug SPR-8646
-		String enc = this.encodingScheme;
-		if (enc == null) {
-			enc = request.getCharacterEncoding();
-		}
-		if (enc == null) {
-			enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
-		}
-		UriTemplate uriTemplate = createUriTemplate(getUrl(), enc);
-		for (String variable : uriTemplate.getVariableNames()) {
-			Object value = mutableModel.get(variable);
-			value = UriUtils.encodePath(value == null ? "" : value.toString(), enc);
-			mutableModel.put(variable, value);
-		}
-
 		return createTargetUrl(mutableModel, request);
-	}
-
-	@SuppressWarnings("serial")
-	private UriTemplate createUriTemplate(String targetUrl, final String encoding) {
-		return new UriTemplate(targetUrl.toString()) {
-			@Override
-			protected URI encodeUri(String uri) {
-				try {
-					return new URI(uri);
-				} catch (URISyntaxException ex) {
-					throw new IllegalArgumentException("Could not create URI from [" + uri + "]: " + ex, ex);
-				}
-			}
-		};
 	}
 }
