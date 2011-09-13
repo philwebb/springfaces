@@ -1,13 +1,13 @@
-package org.springframework.springfaces.message;
+package org.springframework.springfaces.message.resolver;
 
 import java.util.EnumSet;
 
 import org.springframework.context.MessageSource;
 
-public class EnumMessageCodeConverter implements MessageCodeConverter<Enum<?>> {
+public class EnumMessageCodeResolver implements MessageCodeResolver<Enum<?>> {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean canConvert(MessageSource messageSource, Class<?> type) {
+	public boolean canResolve(MessageSource messageSource, Class<?> type) {
 		if (Enum.class.isAssignableFrom(type)) {
 			EnumSet<?> enums = EnumSet.allOf((Class<Enum>) type);
 			for (Enum e : enums) {
@@ -19,7 +19,7 @@ public class EnumMessageCodeConverter implements MessageCodeConverter<Enum<?>> {
 		return false;
 	}
 
-	public String convert(MessageSource messageSource, Enum<?> object) {
+	public String resolve(MessageSource messageSource, Enum<?> object) {
 		return getCode(object);
 	}
 

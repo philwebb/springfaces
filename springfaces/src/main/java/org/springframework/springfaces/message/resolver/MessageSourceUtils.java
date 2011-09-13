@@ -1,4 +1,4 @@
-package org.springframework.springfaces.message;
+package org.springframework.springfaces.message.resolver;
 
 import java.util.Locale;
 

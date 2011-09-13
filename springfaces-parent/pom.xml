@@ -19,6 +19,7 @@
 		<org.springwebflow-version>2.2.1.RELEASE</org.springwebflow-version>
 	</properties>
 	<repositories>
+		<!-- FIXME check what repos we need -->
 		<repository>
 			<id>java.net</id>
 			<name>java.net</name>
@@ -49,8 +50,8 @@
 		</repository>
 		<repository>
 			<id>prime-repo</id>
-			<name>Prime Technology Maven Repository</name>
-			<url>http://repository.prime.com.tr</url>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
