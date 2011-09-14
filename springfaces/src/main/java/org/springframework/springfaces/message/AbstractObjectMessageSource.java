@@ -24,7 +24,11 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 
 	private static final Pattern PARAMTER_PATTERN = Pattern.compile("\\{([\\w]+?)\\}");
 
-	private Map<TypeAndLocale, Boolean> containsParamteres = new HashMap<TypeAndLocale, Boolean>();
+	private Map<TypeAndLocale, Boolean> containsParameter;
+
+	public AbstractObjectMessageSource() {
+		reset();
+	}
 
 	public abstract boolean containsMessage(Class<?> type);
 
@@ -35,6 +39,14 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 		Class<?> type = object.getClass();
 		Assert.isTrue(containsMessage(type), "The object type " + type.getName() + " is not supported");
 		return getFullyResolvedMessage(object, locale, false);
+	}
+
+	/**
+	 * Reset internal state, clearing all caches. This method should be called if calls to
+	 * {@link #resolveMessage(Object, Locale)} may now return a different result.
+	 */
+	protected void reset() {
+		containsParameter = new HashMap<TypeAndLocale, Boolean>();
 	}
 
 	/**
@@ -73,7 +85,7 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 
 		TypeAndLocale typeAndLocale = new TypeAndLocale(object.getClass(), locale);
 
-		Boolean containsParamters = this.containsParamteres.get(typeAndLocale);
+		Boolean containsParamters = this.containsParameter.get(typeAndLocale);
 		if (Boolean.FALSE.equals(containsParamters)) {
 			return resolvedMessage;
 		}
@@ -97,7 +109,7 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 		matcher.appendTail(sb);
 
 		if (containsParamters == null) {
-			this.containsParamteres.put(typeAndLocale, foundMatch);
+			this.containsParameter.put(typeAndLocale, foundMatch);
 		}
 
 		return sb.toString();

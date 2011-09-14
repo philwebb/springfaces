@@ -91,7 +91,7 @@ public class DefaultObjectMessageSource extends AbstractObjectMessageSource {
 
 	@Override
 	protected String resolveToString(Object object) {
-		if (!conversionService.canConvert(object.getClass(), String.class)) {
+		if (conversionService.canConvert(object.getClass(), String.class)) {
 			return conversionService.convert(object, String.class);
 		}
 		return super.resolveToString(object);
@@ -105,6 +105,7 @@ public class DefaultObjectMessageSource extends AbstractObjectMessageSource {
 	public void addMessageCodeResolver(MessageCodeResolver<?> messageCodeResolver) {
 		Assert.notNull(messageCodeResolver, "MessageCodeResolver must not be null");
 		conversionService.addConverter(MessageCodeResolverAdapter.newInstance(messageCodeResolver));
+		reset();
 	}
 
 	/**
@@ -115,6 +116,7 @@ public class DefaultObjectMessageSource extends AbstractObjectMessageSource {
 	public void setMessageCodeResolvers(Collection<? extends MessageCodeResolver<?>> messageCodeResolvers) {
 		Assert.notNull(messageCodeResolvers, "MessageCodeResolvers must not be null");
 		recreateConversionService();
+		reset();
 		for (MessageCodeResolver<?> messageCodeResolver : messageCodeResolvers) {
 			addMessageCodeResolver(messageCodeResolver);
 		}
