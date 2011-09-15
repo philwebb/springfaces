@@ -3,28 +3,39 @@ package org.springframework.springfaces.internal;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import javax.faces.render.RenderKit;
 import javax.faces.render.RenderKitFactory;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link SpringRenderKitFactory}.
  * 
  * @author Phillip Webb
  */
-@RunWith(MockitoJUnitRunner.class)
 public class SpringRenderKitFactoryTest {
 
 	@Mock
 	private RenderKitFactory delegate;
+
+	private SpringRenderKitFactory factory;
+
+	private String renderKitId = "renderKitId";
+
+	@Mock
+	private RenderKit renderKit;
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		factory = new SpringRenderKitFactory(delegate);
+	}
 
 	@Test
 	public void shouldWrapDelegate() throws Exception {
@@ -34,9 +45,6 @@ public class SpringRenderKitFactoryTest {
 
 	@Test
 	public void shouldWrapAddedRenderKit() throws Exception {
-		SpringRenderKitFactory factory = new SpringRenderKitFactory(delegate);
-		String renderKitId = "renderKitId";
-		RenderKit renderKit = mock(RenderKit.class);
 		factory.addRenderKit(renderKitId, renderKit);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(delegate).addRenderKit(eq(renderKitId), renderKitCaptor.capture());
@@ -44,5 +52,12 @@ public class SpringRenderKitFactoryTest {
 		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 
-	// FIXME test re-wraps
+	@Test
+	public void shouldNotDoubleWrapSpringRenderKits() throws Exception {
+		SpringRenderKit springRenderKit = new SpringRenderKit(renderKitId, renderKit);
+		factory.addRenderKit(renderKitId, springRenderKit);
+		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
+		verify(delegate).addRenderKit(eq(renderKitId), renderKitCaptor.capture());
+		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+	}
 }

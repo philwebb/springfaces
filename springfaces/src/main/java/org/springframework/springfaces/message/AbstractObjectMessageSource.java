@@ -15,14 +15,14 @@ import org.springframework.util.ObjectUtils;
 /**
  * Abstract implementation of the {@link ObjectMessageSource} interface. Subclasses must implement the
  * {@link #containsMessage(Class)} and {@link #resolveMessage(Object, Locale)} methods and can optionally override
- * {@link #resolveToString(Object)}. This class supports paramterized messaged (see
+ * {@link #resolveToString(Object)}. This class supports parameterized messaged (see
  * {@link #resolveMessage(Object, Locale)} for details.
  * 
  * @author Phillip Webb
  */
 public abstract class AbstractObjectMessageSource implements ObjectMessageSource {
 
-	private static final Pattern PARAMTER_PATTERN = Pattern.compile("\\{([\\w]+?)\\}");
+	private static final Pattern PARAMETER_PATTERN = Pattern.compile("\\{([\\w]+?)\\}");
 
 	private Map<TypeAndLocale, Boolean> containsParameter;
 
@@ -85,12 +85,12 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 
 		TypeAndLocale typeAndLocale = new TypeAndLocale(object.getClass(), locale);
 
-		Boolean containsParamters = this.containsParameter.get(typeAndLocale);
-		if (Boolean.FALSE.equals(containsParamters)) {
+		Boolean containsParameters = this.containsParameter.get(typeAndLocale);
+		if (Boolean.FALSE.equals(containsParameters)) {
 			return resolvedMessage;
 		}
 
-		Matcher matcher = PARAMTER_PATTERN.matcher(resolvedMessage);
+		Matcher matcher = PARAMETER_PATTERN.matcher(resolvedMessage);
 		StringBuffer sb = new StringBuffer();
 		BeanWrapper bean = new BeanWrapperImpl(object);
 		boolean foundMatch = false;
@@ -108,7 +108,7 @@ public abstract class AbstractObjectMessageSource implements ObjectMessageSource
 		}
 		matcher.appendTail(sb);
 
-		if (containsParamters == null) {
+		if (containsParameters == null) {
 			this.containsParameter.put(typeAndLocale, foundMatch);
 		}
 

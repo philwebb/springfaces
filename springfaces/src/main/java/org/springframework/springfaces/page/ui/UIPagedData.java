@@ -1,7 +1,6 @@
 package org.springframework.springfaces.page.ui;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -143,14 +142,17 @@ public class UIPagedData extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.sortColumn, sortColumn);
 	}
 
-	// FIXME test
+	/**
+	 * Returns the initial sort ascending values for the {@link PagedDataRows}.
+	 * @return the sort ascending values.
+	 */
 	public Boolean getSortAscending() {
 		return (Boolean) getStateHelper().eval(PropertyKeys.sortAscending);
 	}
 
 	/**
 	 * Set the initial sort ascending value for the {@link PagedDataRows}.
-	 * @param sortAscending the sort scending value
+	 * @param sortAscending the sort ascending value
 	 */
 	public void setSortAscending(Boolean sortAscending) {
 		getStateHelper().put(PropertyKeys.sortAscending, sortAscending);
@@ -245,6 +247,7 @@ public class UIPagedData extends UIComponentBase {
 		ValueExpression valueExpression = getValue();
 		ValueExpression rowCountExpression = getRowCount();
 		Object value = valueExpression.getValue(context);
+		Assert.state(value != null, "UIPageData value returned null result");
 		Object rowCount = (rowCountExpression == null ? null : rowCountExpression.getValue(context));
 		return getRowsFromExpressionResults(pageRequest, value, rowCount);
 	}
@@ -262,8 +265,6 @@ public class UIPagedData extends UIComponentBase {
 			rowCount = getRowCountFromValue(value);
 		}
 		value = getContentFromValue(value);
-		// FIXME should a null return throw an exception, it can mast EL errors
-		value = value == null ? Collections.emptyList() : value;
 		long totalRowCount = -1;
 		Assert.isInstanceOf(List.class, value);
 		if (rowCount != null) {

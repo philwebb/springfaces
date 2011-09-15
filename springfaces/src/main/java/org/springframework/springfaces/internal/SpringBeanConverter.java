@@ -38,13 +38,11 @@ public class SpringBeanConverter<T> extends
 	}
 
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		// FIXME type check
 		return getBean().getAsObject(context, component, value);
 	}
 
 	@SuppressWarnings("unchecked")
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		// FIXME type check
 		return getBean().getAsString(context, component, (T) value);
 	}
 

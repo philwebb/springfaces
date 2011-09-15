@@ -241,6 +241,36 @@ public class UIPagedDataTest {
 		assertThat(rows.getSortColumn(), is(equalTo("sort")));
 	}
 
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void shouldDefaultToNullSortAscending() throws Exception {
+		uiPagedData.encodeEnd(context);
+		PagedDataRows rows = (PagedDataRows) requestMap.get("pagedData");
+		assertThat(uiPagedData.getSortAscending(), is(nullValue()));
+		assertThat(rows.isSortAscending(), is(true));
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void shouldPassSortAscendingToDataRows() throws Exception {
+		uiPagedData.setSortAscending(false);
+		uiPagedData.encodeEnd(context);
+		PagedDataRows rows = (PagedDataRows) requestMap.get("pagedData");
+		assertThat(rows.isSortAscending(), is(false));
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void shouldFailIfNullReturnedFromValueExpression() throws Exception {
+		uiPagedData.setValueExpression("value", mockExpression(null));
+		uiPagedData.encodeEnd(context);
+		PagedDataRows rows = (PagedDataRows) requestMap.get("pagedData");
+		rows.setRowIndex(0);
+		thrown.expect(IllegalStateException.class);
+		thrown.expectMessage("UIPageData value returned null result");
+		rows.getRowData();
+	}
+
 	private ValueExpression mockExpression(final Object result) {
 		ValueExpression binding = mock(ValueExpression.class);
 		given(binding.getValue(any(ELContext.class))).willAnswer(new Answer<Object>() {

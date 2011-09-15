@@ -48,6 +48,10 @@ public class SpringBeanPartialStateHolderTest {
 	@Mock
 	private PartialStateHolder stateHolderBean;
 
+	private String integerBeanName = "integerBean";
+
+	private Integer integerBean = new Integer(5);
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -59,6 +63,7 @@ public class SpringBeanPartialStateHolderTest {
 		given(applicationContext.getBean(beanName)).willReturn(bean);
 		given(applicationContext.getBean(stateHolderBeanName)).willReturn(stateHolderBean);
 		given(applicationContext.isPrototype(stateHolderBeanName)).willReturn(true);
+		given(applicationContext.getBean(integerBeanName)).willReturn(integerBean);
 	}
 
 	@Test
@@ -142,5 +147,26 @@ public class SpringBeanPartialStateHolderTest {
 		verify(stateHolderBean).markInitialState();
 		holder.clearInitialState();
 		verify(stateHolderBean).clearInitialState();
+	}
+
+	@Test
+	public void shouldCheckBeanType() throws Exception {
+		new TypedToNumberHolder(context, integerBeanName);
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Unable to load bean 'integerBean' Object of class [java.lang.Integer] "
+				+ "must be an instance of class java.lang.Long");
+		new TypedToLongHolder(context, integerBeanName);
+	}
+
+	private static class TypedToNumberHolder extends SpringBeanPartialStateHolder<Number> {
+		public TypedToNumberHolder(FacesContext context, String beanName) {
+			super(context, beanName);
+		}
+	}
+
+	private static class TypedToLongHolder extends SpringBeanPartialStateHolder<Long> {
+		public TypedToLongHolder(FacesContext context, String beanName) {
+			super(context, beanName);
+		}
 	}
 }

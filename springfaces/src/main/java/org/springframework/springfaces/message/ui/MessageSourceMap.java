@@ -95,7 +95,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	}
 
 	@Override
-	public Set<java.util.Map.Entry<Object, Value>> entrySet() {
+	public Set<Map.Entry<Object, Value>> entrySet() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -165,7 +165,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		}
 
 		@Override
-		public Set<java.util.Map.Entry<Object, Value>> entrySet() {
+		public Set<Map.Entry<Object, Value>> entrySet() {
 			throw new UnsupportedOperationException();
 		}
 	}

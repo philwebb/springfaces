@@ -1,10 +1,10 @@
 package org.springframework.springfaces.convert;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.util.Locale;
 
@@ -13,19 +13,25 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.context.support.StaticMessageSource;
+import org.springframework.springfaces.message.ObjectMessageSource;
 
+/**
+ * Tests for {@link ObjectMessageConverter}.
+ * 
+ * @author Phillip Webb
+ */
 public class ObjectMessageConverterTest {
 
-	private static final String INNER = "org.springframework.springfaces.convert.ObjectMessageConverterTest$";
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
-	private StaticMessageSource messageSource;
-
-	private ObjectMessageConverter<Object> converter = new ObjectMessageConverter<Object>();
+	@Mock
+	private ObjectMessageSource messageSource;
 
 	@Mock
 	private FacesContext context;
@@ -33,74 +39,57 @@ public class ObjectMessageConverterTest {
 	@Mock
 	private UIComponent component;
 
+	private Locale locale = Locale.getDefault();
+
+	private ObjectMessageConverter converter;
+
 	@Before
 	public void setup() {
-		this.messageSource = new StaticMessageSource();
-		setupMessage(INNER + "Mapped", "mapped");
-		setupMessage(INNER + "MappedArguments", "a {name} b");
-		converter.setMessageSource(messageSource);
-		setupMocks();
-	}
-
-	private void setupMocks() {
 		MockitoAnnotations.initMocks(this);
+		this.converter = new ObjectMessageConverter(messageSource);
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
 		given(context.getViewRoot()).willReturn(viewRoot);
-		given(viewRoot.getLocale()).willReturn(Locale.getDefault());
-	}
-
-	private void setupMessage(String code, String msg) {
-		messageSource.addMessage(code, Locale.getDefault(), msg);
+		given(viewRoot.getLocale()).willReturn(locale);
 	}
 
 	@Test
-	public void shouldBeForMappedClass() throws Exception {
+	public void shouldRequireMessageSource() throws Exception {
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("MessageSource must not be null");
+		new ObjectMessageConverter(null);
+	}
+
+	@Test
+	public void shouldDelegateIsForClassToMessageSource() throws Exception {
+		given(messageSource.containsMessage(Mapped.class)).willReturn(true);
+		given(messageSource.containsMessage(NotMapped.class)).willReturn(false);
 		assertThat(converter.isForClass(Mapped.class), is(true));
 		assertThat(converter.isForClass(NotMapped.class), is(false));
+		verify(messageSource).containsMessage(Mapped.class);
+		verify(messageSource).containsMessage(NotMapped.class);
 	}
 
 	@Test
-	public void shouldBeForMappedClassWhenUsingDefaults() throws Exception {
-		messageSource.setUseCodeAsDefaultMessage(true);
-		assertThat(converter.isForClass(Mapped.class), is(true));
-		assertThat(converter.isForClass(NotMapped.class), is(false));
+	public void shouldDelegateGetAsStringToMessageSource() throws Exception {
+		Mapped mapped = new Mapped();
+		NotMapped notMapped = new NotMapped();
+		given(messageSource.getMessage(mapped, locale)).willReturn("mapped");
+		given(messageSource.getMessage(notMapped, locale)).willReturn("not mapped");
+		assertThat(converter.getAsString(context, component, mapped), is("mapped"));
+		assertThat(converter.getAsString(context, component, notMapped), is("not mapped"));
+		verify(messageSource).getMessage(mapped, locale);
+		verify(messageSource).getMessage(notMapped, locale);
 	}
 
 	@Test
-	public void shouldGetMappedAsString() throws Exception {
-		String actual = converter.getAsString(context, component, new Mapped());
-		assertThat(actual, is("mapped"));
+	public void shouldNotSupportGetAsObject() throws Exception {
+		thrown.expect(UnsupportedOperationException.class);
+		converter.getAsObject(context, component, "");
 	}
 
-	@Test
-	public void shouldConvertNullToNull() throws Exception {
-		String actual = converter.getAsString(context, component, null);
-		assertThat(actual, is(nullValue()));
+	private static class Mapped {
 	}
 
-	@Test
-	@Ignore
-	public void shouldGetWithExpandedArguments() throws Exception {
-		// FIXME
-		String actual = converter.getAsString(context, component, new MappedArguments("Phil"));
-		assertThat(actual, is("a Phil b"));
+	private static class NotMapped {
 	}
-
-	static class NotMapped {
-	}
-
-	static class Mapped {
-	}
-
-	static class MappedArguments {
-		private String name;
-
-		public MappedArguments(String name) {
-		}
-
-		public String getName() {
-			return name;
-		}
-	}
-
 }

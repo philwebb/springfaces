@@ -5,6 +5,7 @@ import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.GenericTypeResolver;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.jsf.FacesContextUtils;
@@ -82,6 +83,15 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 	private void loadBeanFromContext(FacesContext context) {
 		WebApplicationContext applicationContext = FacesContextUtils.getRequiredWebApplicationContext(context);
 		this.bean = (T) applicationContext.getBean(beanName);
+		Class<?> beanType = null;
+		try {
+			beanType = GenericTypeResolver.resolveTypeArgument(getClass(), SpringBeanPartialStateHolder.class);
+		} catch (Exception e) {
+			// Work around SPR-8698
+		}
+		if (beanType != null) {
+			Assert.isInstanceOf(beanType, bean, "Unable to load bean '" + beanName + "' ");
+		}
 		if (bean instanceof StateHolder) {
 			Assert.state(applicationContext.isPrototype(beanName), "StateHolders must be declared as protoype beans");
 		}
