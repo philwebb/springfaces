@@ -129,7 +129,7 @@ public class SpringFacesIntegrationTest {
 	public void shouldUpdateLastRefreshDateOnReload() throws Exception {
 		createSpringFacesIntegration();
 		Date initialDate = SpringFacesIntegration.getLastRefreshedDate(servletContext);
-		Thread.sleep(10);
+		Thread.sleep(100);
 		ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
 		springFacesIntegration.onApplicationEvent(event);
 		assertTrue(SpringFacesIntegration.getLastRefreshedDate(servletContext).after(initialDate));
