@@ -10,7 +10,7 @@ public class UIMessageSource extends UIComponentBase {
 	// FIXME
 	// source : the MessageSource, if not specified defaults to the WAC
 	// var : the name of that the MSM is exposed as (defaults to msg)
-	// prefix : a code prefix applied to the source
+	// prefix : a code prefix applied to the source, defaults to page.
 	// includeViewId
 	// hierarchical
 
