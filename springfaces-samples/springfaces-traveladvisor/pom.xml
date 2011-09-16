@@ -31,6 +31,9 @@
 					</additionalConfig>
 					<wtpversion>1.5</wtpversion>
 					<additionalProjectFacets>
+						<java>1.5</java>
+						<jst.web>2.5</jst.web>
+						<wst.jsdt.web>1.0</wst.jsdt.web>
 						<jst.jsf>2.0</jst.jsf>
 					</additionalProjectFacets>
 					<additionalProjectnatures>
