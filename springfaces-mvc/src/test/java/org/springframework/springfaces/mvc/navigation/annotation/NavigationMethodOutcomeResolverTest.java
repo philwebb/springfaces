@@ -375,14 +375,14 @@ public class NavigationMethodOutcomeResolverTest {
 	@Test
 	public void shouldResolveToNullWhenNotIsResolveView() throws Exception {
 		final Object view = new Object();
-		NavigationOutcome resolved = doCustomResolve(view, null, false);
+		NavigationOutcome resolved = doCustomResolve(view, null, true);
 		assertNull(resolved);
 	}
 
 	@Test
 	public void shouldNotWrapResolvedNavigationOutcome() throws Exception {
 		final NavigationOutcome view = new NavigationOutcome("");
-		NavigationOutcome resolved = doCustomResolve(view, null, true);
+		NavigationOutcome resolved = doCustomResolve(view, null, false);
 		assertSame(view, resolved);
 	}
 
@@ -390,7 +390,7 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldResolvedNavigationOutcomeWithModel() throws Exception {
 		final Object view = "";
 		final Map<String, ?> model = Collections.singletonMap("k", "v");
-		NavigationOutcome resolved = doCustomResolve(view, model, true);
+		NavigationOutcome resolved = doCustomResolve(view, model, false);
 		assertSame(view, resolved.getDestination());
 		assertEquals("v", resolved.getImplicitModel().get("k"));
 	}
