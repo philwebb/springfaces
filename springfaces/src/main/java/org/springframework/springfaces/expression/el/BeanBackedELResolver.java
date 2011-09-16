@@ -72,7 +72,7 @@ public abstract class BeanBackedELResolver extends AbstractELResolver {
 	}
 
 	protected Object get(String property) {
-		String beanProperty = (String) properties.get(property);
+		String beanProperty = properties.get(property);
 		if (beanProperty != null) {
 			ELContext elContext = new ELContext() {
 				@Override

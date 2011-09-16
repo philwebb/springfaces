@@ -17,7 +17,6 @@ import javax.faces.model.SelectItem;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.springframework.springfaces.model.SelectItems;
 
 /**
  * Tests for {@link SelectItems}.
@@ -139,12 +138,12 @@ public class SelectItemsTest {
 		new TestableSelectItems() {
 			@Override
 			public void test() throws Exception {
-				assertThat(getBooleanValue("false"), is((Boolean) false));
-				assertThat(getBooleanValue("true"), is((Boolean) true));
-				assertThat(getBooleanValue("xxx"), is((Boolean) false));
-				assertThat(getBooleanValue(Boolean.FALSE), is((Boolean) false));
-				assertThat(getBooleanValue(Boolean.TRUE), is((Boolean) true));
-				assertThat(getBooleanValue(null), is((Boolean) false));
+				assertThat(getBooleanValue("false"), is(false));
+				assertThat(getBooleanValue("true"), is(true));
+				assertThat(getBooleanValue("xxx"), is(false));
+				assertThat(getBooleanValue(Boolean.FALSE), is(false));
+				assertThat(getBooleanValue(Boolean.TRUE), is(true));
+				assertThat(getBooleanValue(null), is(false));
 			}
 		}.test();
 
@@ -155,13 +154,13 @@ public class SelectItemsTest {
 		new TestableSelectItems() {
 			@Override
 			public void test() throws Exception {
-				assertThat(getBooleanValue("false", Boolean.TRUE), is((Boolean) false));
-				assertThat(getBooleanValue("true", Boolean.FALSE), is((Boolean) true));
-				assertThat(getBooleanValue("xxx", Boolean.TRUE), is((Boolean) false));
-				assertThat(getBooleanValue(Boolean.FALSE, Boolean.TRUE), is((Boolean) false));
-				assertThat(getBooleanValue(Boolean.TRUE, Boolean.FALSE), is((Boolean) true));
-				assertThat(getBooleanValue(null, Boolean.TRUE), is((Boolean) true));
-				assertThat(getBooleanValue(null, Boolean.FALSE), is((Boolean) false));
+				assertThat(getBooleanValue("false", Boolean.TRUE), is(false));
+				assertThat(getBooleanValue("true", Boolean.FALSE), is(true));
+				assertThat(getBooleanValue("xxx", Boolean.TRUE), is(false));
+				assertThat(getBooleanValue(Boolean.FALSE, Boolean.TRUE), is(false));
+				assertThat(getBooleanValue(Boolean.TRUE, Boolean.FALSE), is(true));
+				assertThat(getBooleanValue(null, Boolean.TRUE), is(true));
+				assertThat(getBooleanValue(null, Boolean.FALSE), is(false));
 			}
 		}.test();
 	}

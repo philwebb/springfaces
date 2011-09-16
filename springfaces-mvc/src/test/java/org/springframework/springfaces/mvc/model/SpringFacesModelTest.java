@@ -39,6 +39,7 @@ public class SpringFacesModelTest {
 	}
 
 	@Test
+	@SuppressWarnings("cast")
 	public void shouldSupportSpringTypes() throws Exception {
 		SpringFacesModel model = new SpringFacesModel();
 		assertTrue(model instanceof ExtendedModelMap);

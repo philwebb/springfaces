@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.springframework.springfaces</groupId>
-	<artifactId>springfaces-build</artifactId>
+	<artifactId>springfaces-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
@@ -16,6 +16,22 @@
 		<dependency.springframework.version>3.1.0.BUILD-SNAPSHOT</dependency.springframework.version>
 		<dependency.jsf.version>2.0.3</dependency.jsf.version>
 	</properties>
+	<repositories>
+		<repository>
+			<id>primefaces</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>http://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://maven.springframework.org/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>

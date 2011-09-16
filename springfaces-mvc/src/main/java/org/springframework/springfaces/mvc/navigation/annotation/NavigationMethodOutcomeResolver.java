@@ -402,7 +402,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 				(HttpServletResponse) externalContext.getResponse());
 		ModelAndViewContainer modelAndViewContainer = new ModelAndViewContainer();
 		invocable.invokeAndHandle(request, modelAndViewContainer);
-		if (!modelAndViewContainer.isResolveView()) {
+		if (!modelAndViewContainer.isRequestHandled()) {
 			return null;
 		}
 		Object result = modelAndViewContainer.getView();

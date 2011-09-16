@@ -1,8 +1,8 @@
 package org.springframework.springfaces.mvc.navigation.annotation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -395,8 +395,8 @@ public class NavigationMethodOutcomeResolverTest {
 		assertEquals("v", resolved.getImplicitModel().get("k"));
 	}
 
-	private NavigationOutcome doCustomResolve(final Object view, final Map<String, ?> model, final boolean resolveView)
-			throws Exception {
+	private NavigationOutcome doCustomResolve(final Object view, final Map<String, ?> model,
+			final boolean requestHandled) throws Exception {
 		HandlerMethodReturnValueHandler customReturnValueHandler = new HandlerMethodReturnValueHandler() {
 			public boolean supportsReturnType(MethodParameter returnType) {
 				return true;
@@ -404,7 +404,7 @@ public class NavigationMethodOutcomeResolverTest {
 
 			public void handleReturnValue(Object returnValue, MethodParameter returnType,
 					ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
-				mavContainer.setResolveView(resolveView);
+				mavContainer.setRequestHandled(requestHandled);
 				mavContainer.setView(view);
 				mavContainer.addAllAttributes(model);
 			}

@@ -102,7 +102,7 @@ public class ComponentSelectItems implements Iterable<SelectItem> {
 						component.getItemDescription(), component.isItemDisabled(), component.isItemEscaped(),
 						component.isNoSelectionOption());
 			}
-			return Collections.singleton((SelectItem) value).iterator();
+			return Collections.singleton(value).iterator();
 		}
 
 		private Iterator<SelectItem> newSelectItemsIterator(final UISelectItems component) {

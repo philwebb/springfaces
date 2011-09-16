@@ -74,6 +74,7 @@ public class SelectItemsConverter implements Converter {
 		selectItems.add(new SelectItem(selectItem.getItemValue(), selectItem.getItemLabel()));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addSelectItems(FacesContext context, List<SelectItem> selectItems, UISelectItems uiSelectItems) {
 		Object value = uiSelectItems.getValue();
 		if (value instanceof SelectItem[]) {

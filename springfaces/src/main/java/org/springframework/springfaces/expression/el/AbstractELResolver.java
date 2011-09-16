@@ -126,7 +126,7 @@ public abstract class AbstractELResolver extends ELResolver {
 	}
 
 	public boolean isReadOnly(ELContext elContext, Object base, Object property) {
-		Boolean readOnly = (Boolean) handle(elContext, base, property, new ELOperation<Boolean>() {
+		Boolean readOnly = handle(elContext, base, property, new ELOperation<Boolean>() {
 			public Boolean execute(String property) {
 				return new Boolean(isReadOnly(property));
 			}
