@@ -8,7 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>springfaces-mvc</artifactId>
-	<packaging>jar</packaging>
 	<build>
 		<plugins>
 			<plugin>

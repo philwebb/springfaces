@@ -29,21 +29,36 @@
 							<location>../../eclipse/org.eclipse.jdt.core.prefs</location>
 						</file>
 					</additionalConfig>
-					<wtpversion>1.5</wtpversion>
-					<additionalProjectFacets>
-						<java>1.5</java>
-						<jst.web>2.5</jst.web>
-						<wst.jsdt.web>1.0</wst.jsdt.web>
-						<jst.jsf>2.0</jst.jsf>
-					</additionalProjectFacets>
-					<additionalProjectnatures>
-						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-					</additionalProjectnatures>
+					<!-- <wtpversion>1.5</wtpversion> <additionalProjectFacets> <java>1.5</java> 
+						<jst.web>2.5</jst.web> <wst.jsdt.web>1.0</wst.jsdt.web> <jst.jsf>2.0</jst.jsf> 
+						</additionalProjectFacets> <additionalProjectnatures> <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature> 
+						</additionalProjectnatures> -->
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<wait>false</wait>
+					<container>
+						<containerId>tomcat6x</containerId>
+						<zipUrlInstaller>
+							<url>http://archive.apache.org/dist/tomcat/tomcat-6/v6.0.33/bin/apache-tomcat-6.0.33.zip</url>
+						</zipUrlInstaller>
+					</container>
+					<configuration>
+						<deployables>
+							<deployable>
+								<properties>
+									<context>${project.artifactId}</context>
+								</properties>
+							</deployable>
+						</deployables>
+					</configuration>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 		<!-- Spring Faces -->
 		<dependency>
