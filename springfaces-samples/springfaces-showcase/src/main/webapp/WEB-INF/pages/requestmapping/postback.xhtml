@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:util="http://java.sun.com/jsf/composite/components/util"
+	xmlns:s="http://www.springframework.org/tags/springfaces">
+
+	<h:head>
+		<title>RequestMapping - Postback</title>
+	</h:head>
+
+	<h:body>
+		<h:form id="form">
+			<h:outputText value="Postback is supported with JSF @RequestMapping"/>
+			<p>
+				<h:outputText value="#{timeBean.currentTime}"/>
+			</p>
+			<h:commandButton id="postback" value="Click to trigger postback"/>
+		</h:form>
+	</h:body>
+</ui:composition>
+
+
+

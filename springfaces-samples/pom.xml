@@ -11,5 +11,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>springfaces-traveladvisor</module>
+		<module>springfaces-showcase</module>
 	</modules>
 </project>
