@@ -29,10 +29,19 @@
 							<location>../../eclipse/org.eclipse.jdt.core.prefs</location>
 						</file>
 					</additionalConfig>
-					<!-- <wtpversion>1.5</wtpversion> <additionalProjectFacets> <java>1.5</java> 
-						<jst.web>2.5</jst.web> <wst.jsdt.web>1.0</wst.jsdt.web> <jst.jsf>2.0</jst.jsf> 
-						</additionalProjectFacets> <additionalProjectnatures> <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature> 
-						</additionalProjectnatures> -->
+					<wtpversion>1.5</wtpversion>
+					<additionalProjectFacets>
+						<java>1.5</java>
+						<jst.web>2.5</jst.web>
+						<wst.jsdt.web>1.0</wst.jsdt.web>
+						<jst.jsf>2.0</jst.jsf>
+					</additionalProjectFacets>
+					<additionalProjectnatures>
+						<!-- 
+						<projectnature>org.eclipse.wst.common.project.facet.core.nature</projectnature>
+						 -->
+						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+					</additionalProjectnatures>
 				</configuration>
 			</plugin>
 			<plugin>
