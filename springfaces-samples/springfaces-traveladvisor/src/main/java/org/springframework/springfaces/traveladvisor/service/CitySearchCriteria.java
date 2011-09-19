@@ -1,8 +1,10 @@
 package org.springframework.springfaces.traveladvisor.service;
 
+import java.io.Serializable;
+
 import org.springframework.util.Assert;
 
-public class CitySearchCriteria {
+public class CitySearchCriteria implements Serializable {
 
 	private String name;
 

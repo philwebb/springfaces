@@ -1,5 +1,6 @@
 package org.springframework.springfaces.internal;
 
+import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 
 import javax.el.CompositeELResolver;
@@ -29,7 +30,7 @@ public class SpringELResolver extends ELResolver {
 	}
 
 	@Override
-	public Class getType(ELContext context, Object base, Object property) {
+	public Class<?> getType(ELContext context, Object base, Object property) {
 		return getDelegate().getType(context, base, property);
 	}
 
@@ -44,12 +45,12 @@ public class SpringELResolver extends ELResolver {
 	}
 
 	@Override
-	public Iterator getFeatureDescriptors(ELContext context, Object base) {
+	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
 		return getDelegate().getFeatureDescriptors(context, base);
 	}
 
 	@Override
-	public Class getCommonPropertyType(ELContext context, Object base) {
+	public Class<?> getCommonPropertyType(ELContext context, Object base) {
 		return getDelegate().getCommonPropertyType(context, base);
 	}
 

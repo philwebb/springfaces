@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 
 /**
  * Provides a simple implementation of {@link ConfigurableNavigationHandler} that can be subclassed by developers
- * wishing to provide specialised behaviour to an existing {@link ConfigurableNavigationHandler instance} . The default
+ * wishing to provide specialised behaviour to an existing {@link ConfigurableNavigationHandler instance}. The default
  * implementation of all methods is to call through to the wrapped {@link ConfigurableNavigationHandler}.
  * 
  * @author Phillip Webb

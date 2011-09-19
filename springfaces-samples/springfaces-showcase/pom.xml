@@ -7,7 +7,7 @@
 		<artifactId>springfaces-samples</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>springfaces-traveladvisor</artifactId>
+	<artifactId>springfaces-showcase</artifactId>
 	<packaging>war</packaging>
 	<build>
 		<plugins>
@@ -68,16 +68,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-
 		<!-- Core JSF -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
@@ -86,41 +76,6 @@
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
-		</dependency>
-
-		<!-- Primefaces -->
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-		</dependency>
-
-		<!-- JPA Domain -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>3.6.6.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.0.0</version>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- Test -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<profiles>
@@ -134,10 +89,12 @@
 				<dependency>
 					<groupId>javax.el</groupId>
 					<artifactId>el-api</artifactId>
+					<version>2.2</version>
 				</dependency>
 				<dependency>
 					<groupId>org.glassfish.web</groupId>
 					<artifactId>el-impl</artifactId>
+					<version>2.2</version>
 				</dependency>
 			</dependencies>
 		</profile>

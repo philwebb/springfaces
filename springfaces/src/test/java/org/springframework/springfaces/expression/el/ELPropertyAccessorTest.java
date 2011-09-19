@@ -62,8 +62,9 @@ public class ELPropertyAccessorTest {
 		};
 	}
 
+	@SuppressWarnings("unchecked")
 	private void willResolve(Object base, Object property, Object value) {
-		given(elResolver.getType(elContext, base, property)).willReturn(value.getClass());
+		given(elResolver.getType(elContext, base, property)).willReturn((Class) value.getClass());
 		given(elResolver.getValue(elContext, base, property)).willReturn(value);
 		given(elContext.isPropertyResolved()).willReturn(true);
 	}
