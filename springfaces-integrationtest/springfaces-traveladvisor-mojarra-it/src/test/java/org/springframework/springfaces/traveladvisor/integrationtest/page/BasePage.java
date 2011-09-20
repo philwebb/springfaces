@@ -2,6 +2,7 @@ package org.springframework.springfaces.traveladvisor.integrationtest.page;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.util.Assert;
 
 public abstract class BasePage extends PageObject {

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.traveladvisor.integrationtest.page;
+package org.springframework.springfaces.integrationtest.selenium.page;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
