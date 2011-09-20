@@ -8,6 +8,14 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>springfaces-selenium</artifactId>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>

@@ -5,14 +5,16 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.springfaces.integrationtest.selenium.Page;
-import org.springframework.springfaces.integrationtest.selenium.SeleniumTest;
+import org.springframework.springfaces.integrationtest.selenium.SeleniumJUnitRunner;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.CityPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.CitySearchPage;
 
-public class CitySearchIT extends SeleniumTest {
+@RunWith(SeleniumJUnitRunner.class)
+public class CitySearchIT {
 
-	@Page("/springfaces-traveladvisor/spring/advisor/cities/search")
+	@Page("http://localhost:8080/springfaces-traveladvisor/spring/advisor/cities/search")
 	CitySearchPage citySearchPage;
 
 	@Test

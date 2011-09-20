@@ -6,7 +6,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD})
+import org.openqa.selenium.WebDriver;
+import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
+
+/**
+ * Filed annotation to mark a page object that should be setup by the {@link SeleniumJUnitRunner}. The field type must
+ * have a constructor that accepts a single {@link WebDriver} argument.
+ * 
+ * @see PageObject
+ * @author Phillip Webb
+ */
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Page {
