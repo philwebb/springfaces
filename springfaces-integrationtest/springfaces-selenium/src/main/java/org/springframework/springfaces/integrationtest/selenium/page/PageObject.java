@@ -1,23 +1,18 @@
 package org.springframework.springfaces.integrationtest.selenium.page;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.springfaces.integrationtest.selenium.WebDriverUtils;
 import org.springframework.util.Assert;
 
-import com.thoughtworks.selenium.Wait;
-
 /**
- * Base class to help implement that "Page Object Design Pattern" as recommended by Selenium.
+ * Base class to help implement that <tt>Page Object</tt> Design Pattern as recommended by Selenium.
  * 
  * @author Phillip Webb
  */
-public abstract class PageObject {
+public abstract class PageObject implements Page {
 
 	private WebDriver webDriver;
 
@@ -70,46 +65,28 @@ public abstract class PageObject {
 	 * @param source the source element
 	 * @return a decorated {@link WebElement}
 	 * @see #waitOnUrlChange(String)
+	 * @see WebDriverUtils#waitOnUrlChange(WebDriver, WebElement)
 	 */
 	protected final WebElement waitOnUrlChange(final WebElement source) {
-		final String url = getWebDriver().getCurrentUrl();
-		Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[] { WebElement.class },
-				new InvocationHandler() {
-					public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-						try {
-							return method.invoke(source, args);
-						} finally {
-							waitOnUrlChange(url);
-						}
-					}
-				});
-		return (WebElement) proxy;
+		return WebDriverUtils.waitOnUrlChange(getWebDriver(), source);
 	}
 
 	/**
 	 * Wait until the current URL changes from the specified URL.
 	 * @param fromUrl the current URL that must change before this method continues
 	 * @see #waitOnUrlChange(WebElement)
+	 * @see WebDriverUtils#waitOnUrlChange(WebDriver, String)
 	 */
 	protected final void waitOnUrlChange(final String fromUrl) {
-		new Wait("Expected change of URL from " + fromUrl) {
-			@Override
-			public boolean until() {
-				return !getWebDriver().getCurrentUrl().equals(fromUrl);
-			}
-		};
+		WebDriverUtils.waitOnUrlChange(getWebDriver(), fromUrl);
 	}
 
 	/**
 	 * Create a new {@link PageObject} instance of the specified class.
-	 * @param pageObjectClass the page object class
+	 * @param pageClass the page object class
 	 * @return a new page object
 	 */
-	protected final <T extends PageObject> T newPage(Class<T> pageObjectClass) {
-		try {
-			return pageObjectClass.getConstructor(WebDriver.class).newInstance(getWebDriver());
-		} catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
+	protected final <P extends PageObject> P newPage(Class<P> pageClass) {
+		return WebDriverUtils.newPage(getWebDriver(), pageClass);
 	}
 }

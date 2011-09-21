@@ -2,7 +2,9 @@ package org.springframework.springfaces.traveladvisor.integrationtest.page;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
 
+@PageURL("/spring/advisor/cities/search")
 public class CitySearchPage extends BasePage {
 
 	public CitySearchPage(WebDriver webDriver) {
