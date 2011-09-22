@@ -39,7 +39,9 @@ public class RequestMappingExampleController {
 	}
 
 	@RequestMapping("/requestmapping/variables/{path}")
-	public ModelAndView variabled(@PathVariable String path, @RequestParam String argument) {
+	public ModelAndView variables(@PathVariable
+	String path, @RequestParam
+	String argument) {
 		// MVC Path variable and request parameters can be used, the model is availble from the page
 		return new ModelAndView("requestmapping/variables", "argument", argument);
 	}

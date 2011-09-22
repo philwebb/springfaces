@@ -89,4 +89,12 @@ public abstract class PageObject implements Page {
 	protected final <P extends PageObject> P newPage(Class<P> pageClass) {
 		return WebDriverUtils.newPage(getWebDriver(), pageClass);
 	}
+
+	/**
+	 * Returns the body text of the page.
+	 * @return the body text
+	 */
+	public String getBodyText() {
+		return getWebDriver().findElement(By.tagName("body")).getText();
+	}
 }

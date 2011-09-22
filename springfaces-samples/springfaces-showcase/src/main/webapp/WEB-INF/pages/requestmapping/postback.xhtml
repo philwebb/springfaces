@@ -14,8 +14,8 @@
 	<h:body>
 		<h:form id="form">
 			<h:outputText value="Postback is supported with JSF @RequestMapping"/>
-			<p>
-				<h:outputText value="#{timeBean.currentTime}"/>
+			<p id="dateText">
+				<h:outputText value="#{timeBean.currentTimeMillis}"/>
 			</p>
 			<h:commandButton id="postback" value="Click to trigger postback"/>
 		</h:form>

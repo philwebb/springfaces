@@ -12,6 +12,7 @@
 	<modules>
 		<module>springfaces-selenium</module>
 		<module>springfaces-traveladvisor-mojarra-it</module>
+		<module>springfaces-showcase-mojarra-it</module>
 	</modules>
 	<build>
 		<pluginManagement>
