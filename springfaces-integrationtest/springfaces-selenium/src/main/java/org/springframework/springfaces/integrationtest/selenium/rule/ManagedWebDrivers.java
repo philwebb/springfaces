@@ -8,6 +8,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.WebDriver;
 import org.springframework.springfaces.integrationtest.selenium.WebDriverFactory;
+import org.springframework.springfaces.integrationtest.selenium.WebDriverManager;
 import org.springframework.util.Assert;
 
 /**
@@ -16,26 +17,26 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class TrackedWebDrivers implements MethodRule {
+public class ManagedWebDrivers implements MethodRule {
 
 	private static ThreadLocal<WebDriverTrackingStatement> activeStatement = new ThreadLocal<WebDriverTrackingStatement>();
 
-	private WebDriverFactory webDriverFactory;
+	private WebDriverManager webDriverManager;
 
 	/**
-	 * Create a new {@link TrackedWebDrivers} instance. This constructor can be used by subclasses that implement
-	 * {@link #getWebDriverFactory()}.
+	 * Create a new {@link ManagedWebDrivers} instance. This constructor can be used by subclasses that implement
+	 * {@link #getWebDriverManager()}.
 	 */
-	protected TrackedWebDrivers() {
+	protected ManagedWebDrivers() {
 	}
 
 	/**
-	 * Create a new {@link TrackedWebDrivers} instance.
-	 * @param webDriverFactory the web driver factory used to obtain {@link WebDriver}s
+	 * Create a new {@link ManagedWebDrivers} instance.
+	 * @param webDriverManager the web driver manager used to obtain and release {@link WebDriver}s
 	 */
-	public TrackedWebDrivers(WebDriverFactory webDriverFactory) {
-		Assert.notNull(webDriverFactory, "WebDriverFactory must not be null");
-		this.webDriverFactory = webDriverFactory;
+	public ManagedWebDrivers(WebDriverManager webDriverManager) {
+		Assert.notNull(webDriverManager, "WebDriverManager must not be null");
+		this.webDriverManager = webDriverManager;
 	}
 
 	/**
@@ -43,20 +44,24 @@ public class TrackedWebDrivers implements MethodRule {
 	 * method can only be called from an active test method.
 	 * @return a new {@link WebDriver} instance.
 	 */
-	public WebDriver newWebDriver() {
+	public WebDriver getWebDriver() {
 		WebDriverTrackingStatement statement = activeStatement.get();
 		Assert.state(statement != null, "No active JUnit statement found, is an appropriate @Rule configured");
-		WebDriver webDriver = getWebDriverFactory().newWebDriver();
+		WebDriver webDriver = getWebDriverManager().getWebDriver();
 		statement.track(webDriver);
 		return webDriver;
+	}
+
+	protected void releaseWebDriver(WebDriver webDriver) {
+		getWebDriverManager().releaseWebDriver(webDriver);
 	}
 
 	/**
 	 * Returns the {@link WebDriverFactory} used to obtain the {@link WebDriver}.
 	 * @return the factory
 	 */
-	protected WebDriverFactory getWebDriverFactory() {
-		return webDriverFactory;
+	protected WebDriverManager getWebDriverManager() {
+		return webDriverManager;
 	}
 
 	public Statement apply(Statement base, FrameworkMethod method, Object target) {
@@ -90,7 +95,7 @@ public class TrackedWebDrivers implements MethodRule {
 
 		private void cleanupTrackedResources() {
 			for (WebDriver webDriver : tracked) {
-				webDriver.close();
+				releaseWebDriver(webDriver);
 			}
 		}
 	}

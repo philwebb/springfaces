@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.CityPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.CitySearchPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.rule.TravelAdvisorPages;
 
 public class CitySearchIT {
 

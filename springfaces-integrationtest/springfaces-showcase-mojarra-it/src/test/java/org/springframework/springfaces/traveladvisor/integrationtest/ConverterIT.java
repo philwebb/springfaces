@@ -9,6 +9,7 @@ import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.FacesConverterByIdPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.FacesConverterForClassPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
 public class ConverterIT {
 

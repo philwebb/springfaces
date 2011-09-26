@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.junit.rules.MethodRule;
 import org.openqa.selenium.WebDriver;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.springfaces.integrationtest.selenium.WebDriverFactory;
+import org.springframework.springfaces.integrationtest.selenium.WebDriverManager;
 import org.springframework.springfaces.integrationtest.selenium.WebDriverUtils;
 import org.springframework.springfaces.integrationtest.selenium.page.Page;
 import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class Pages extends TrackedWebDrivers {
+public class Pages extends ManagedWebDrivers {
 
 	private static final Pattern HTTP_PATTERN = Pattern.compile("^https?\\:\\/\\/", Pattern.CASE_INSENSITIVE);
 
@@ -25,18 +25,18 @@ public class Pages extends TrackedWebDrivers {
 
 	/**
 	 * Create a new {@link Pages} instance. This constructor can be used by subclasses that implement
-	 * {@link #getWebDriverFactory()} and {@link #getRootUrl()}.
+	 * {@link #getWebDriverManager()} and {@link #getRootUrl()}.
 	 */
 	protected Pages() {
 	}
 
 	/**
 	 * Create a new {@link Pages} instance.
-	 * @param webDriverFactory the web driver factory
+	 * @param webDriverManager the web driver manager
 	 * @param rootUrl the root URL
 	 */
-	public Pages(WebDriverFactory webDriverFactory, String rootUrl) {
-		super(webDriverFactory);
+	public Pages(WebDriverManager webDriverManager, String rootUrl) {
+		super(webDriverManager);
 		this.rootUrl = rootUrl;
 	}
 
@@ -74,7 +74,7 @@ public class Pages extends TrackedWebDrivers {
 		}
 		Assert.state(url != null, "No URL specified for page and unable to deduce a URL from @PageURL annotation");
 		url = prefixUrlIfRequired(url);
-		WebDriver webDriver = newWebDriver();
+		WebDriver webDriver = getWebDriver();
 		webDriver.get(url);
 		return WebDriverUtils.newPage(webDriver, pageClass);
 	}

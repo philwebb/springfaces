@@ -13,6 +13,7 @@ import org.springframework.springfaces.traveladvisor.integrationtest.page.reques
 import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.SimpleRequestMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.StringRequestMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.VariablesRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
 public class RequestMappingIT {
 
