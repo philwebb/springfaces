@@ -29,5 +29,4 @@ public class ShowcasePages extends Pages {
 	protected WebDriverFactory getWebDriverFactory() {
 		return FIREFOX_WEBDRIVER_FACTORY;
 	}
-
 }

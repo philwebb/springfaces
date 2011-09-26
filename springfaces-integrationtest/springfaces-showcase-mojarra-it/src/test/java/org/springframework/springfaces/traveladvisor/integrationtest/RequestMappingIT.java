@@ -8,11 +8,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.ModelAndViewRequestMappingPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.PostbackRequestMappingPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.SimpleRequestMappingPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.StringRequestMappingPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.VariablesRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.ModelAndViewRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.PostbackRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.SimpleRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.StringRequestMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.VariablesRequestMappingPage;
 
 public class RequestMappingIT {
 

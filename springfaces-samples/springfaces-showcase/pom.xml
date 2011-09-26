@@ -25,6 +25,7 @@
 							<location>../../eclipse/org.eclipse.jdt.core.prefs</location>
 						</file>
 					</additionalConfig>
+					<!-- 
 					<wtpversion>1.5</wtpversion>
 					<additionalProjectFacets>
 						<java>1.5</java>
@@ -34,6 +35,7 @@
 					<additionalProjectnatures>
 						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
 					</additionalProjectnatures>
+					 -->
 				</configuration>
 			</plugin>
 			<plugin>

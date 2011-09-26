@@ -1,4 +1,4 @@
-package org.springframework.springfaces.traveladvisor.integrationtest.page;
+package org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping;
 
 import org.openqa.selenium.WebDriver;
 import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
