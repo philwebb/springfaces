@@ -22,4 +22,9 @@ public class ConverterExampleController {
 		return new ExtendedModelMap().addAttribute("converted", value.toString());
 	}
 
+	@RequestMapping("/converter/springbean")
+	public Model springBean(@FacesConverterId("springBeanConverter") @RequestParam ConvertedObject value) {
+		// Any SpringBean that implements Converter is also available
+		return new ExtendedModelMap().addAttribute("converted", value.toString());
+	}
 }

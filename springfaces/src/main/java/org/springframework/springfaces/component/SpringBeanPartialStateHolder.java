@@ -6,9 +6,9 @@ import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.jsf.FacesContextUtils;
 
 /**
  * A {@link PartialStateHolder} that can be used to hold a reference to a Spring Bean. Using this class allows Spring
@@ -81,7 +81,8 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 	 */
 	@SuppressWarnings("unchecked")
 	private void loadBeanFromContext(FacesContext context) {
-		WebApplicationContext applicationContext = FacesContextUtils.getRequiredWebApplicationContext(context);
+		ApplicationContext applicationContext = SpringFacesIntegration.getCurrentInstance(context.getExternalContext())
+				.getApplicationContext();
 		this.bean = (T) applicationContext.getBean(beanName);
 		Class<?> beanType = null;
 		try {

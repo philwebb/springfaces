@@ -4,11 +4,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
+import org.springframework.springfaces.beans.factory.ConditionalForClass;
+
 /**
  * A variation of the JSF {@link javax.faces.convert.Converter} that support generic typing.
  * 
  * @param <T> The type the converter is for.
- * @See {@link ConditionalConverterForClass}
+ * @See {@link ConditionalForClass}
  * 
  * @author Phillip Webb
  */

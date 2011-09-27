@@ -6,16 +6,17 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
+import org.springframework.springfaces.beans.factory.ConditionalForClass;
 import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
 /**
- * A {@link ConditionalConverterForClass conditional} JSF {@link Converter} that converts objects to messages.
+ * A {@link ConditionalForClass conditional} JSF {@link Converter} that converts objects to messages.
  * 
  * @author Phillip Webb
  */
-public class ObjectMessageConverter implements Converter<Object>, ConditionalConverterForClass {
+public class ObjectMessageConverter implements Converter<Object>, ConditionalForClass {
 
 	private ObjectMessageSource messageSource;
 

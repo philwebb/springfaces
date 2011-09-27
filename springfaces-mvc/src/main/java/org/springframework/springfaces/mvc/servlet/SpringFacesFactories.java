@@ -27,6 +27,8 @@ import org.springframework.util.Assert;
 public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		ApplicationListener<PostConstructApplicationSpringFacesEvent> {
 
+	// FIXME rename this to MVC?
+
 	private FacesViewStateHandler facesViewStateHandler;
 	private DestinationViewResolver destinationViewResolver;
 	private NavigationOutcomeResolver navigationOutcomeResolver;

@@ -13,6 +13,8 @@
 	<mvc:annotation-driven conversion-service="conversionService" />
 
 	<bean name="genericFacesConverter" class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
+	
+	<bean class="org.springframework.springfaces.convert.SpringFacesConverterSupport"/>
 
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">

@@ -1,4 +1,4 @@
-package org.springframework.springfaces.internal;
+package org.springframework.springfaces.convert;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -11,21 +11,21 @@ import java.util.Map;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.springfaces.internal.SpringBeanFacesConverter;
+import org.springframework.springfaces.convert.Converter;
+import org.springframework.springfaces.convert.SpringBeanConverter;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Tests for {@link SpringBeanFacesConverter}.
+ * Tests for {@link SpringBeanConverter}.
  * 
  * @author Phillip Webb
  */
-public class SpringBeanFacesConverterTest {
+public class SpringBeanConverterTest {
 
 	@Mock
 	private FacesContext context;
@@ -36,12 +36,12 @@ public class SpringBeanFacesConverterTest {
 	private String beanName = "bean";
 
 	@Mock
-	private Converter bean;
+	private Converter<Object> bean;
 
 	@Mock
 	private UIComponent component;
 
-	private SpringBeanFacesConverter converter;
+	private SpringBeanConverter<Object> converter;
 
 	@Before
 	public void setup() {
@@ -52,7 +52,7 @@ public class SpringBeanFacesConverterTest {
 		given(context.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getApplicationMap()).willReturn(applicationMap);
 		given(applicationContext.getBean(beanName)).willReturn(bean);
-		converter = new SpringBeanFacesConverter(context, beanName);
+		converter = new SpringBeanConverter<Object>(context, beanName);
 	}
 
 	@Test

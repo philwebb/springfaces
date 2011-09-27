@@ -1,4 +1,4 @@
-package org.springframework.springfaces.internal;
+package org.springframework.springfaces.convert;
 
 import javax.faces.FacesWrapper;
 import javax.faces.component.StateHolder;
@@ -8,32 +8,28 @@ import javax.faces.context.FacesContext;
 import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 
 /**
- * A JSF {@link javax.faces.convert.Converter} that delegates to a
- * {@link org.springframework.springfaces.convert.Converter} Spring bean.
+ * A JSF {@link javax.faces.convert.Converter} that delegates to a Spring bean.
  * 
  * @author Phillip Webb
- * 
- * @param <T>
  */
-public class SpringBeanConverter<T> extends
-		SpringBeanPartialStateHolder<org.springframework.springfaces.convert.Converter<T>> implements
-		javax.faces.convert.Converter, FacesWrapper<org.springframework.springfaces.convert.Converter<T>> {
+public class SpringBeanFacesConverter extends SpringBeanPartialStateHolder<javax.faces.convert.Converter> implements
+		javax.faces.convert.Converter, FacesWrapper<javax.faces.convert.Converter> {
 
 	/**
 	 * Constructor to satisfy the {@link StateHolder}. This constructor should not be used directly.
 	 * @deprecated use alternative constructor
 	 */
 	@Deprecated
-	public SpringBeanConverter() {
+	public SpringBeanFacesConverter() {
 		super();
 	}
 
 	/**
-	 * Create a new {@link SpringBeanConverter} instance.
+	 * Create a new {@link SpringBeanFacesConverter} instance.
 	 * @param context the faces context
 	 * @param beanName the bean name
 	 */
-	public SpringBeanConverter(FacesContext context, String beanName) {
+	public SpringBeanFacesConverter(FacesContext context, String beanName) {
 		super(context, beanName);
 	}
 
@@ -41,12 +37,11 @@ public class SpringBeanConverter<T> extends
 		return getBean().getAsObject(context, component, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		return getBean().getAsString(context, component, (T) value);
+		return getBean().getAsString(context, component, value);
 	}
 
-	public org.springframework.springfaces.convert.Converter<T> getWrapped() {
+	public javax.faces.convert.Converter getWrapped() {
 		return getBean();
 	}
 }

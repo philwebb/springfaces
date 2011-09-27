@@ -41,13 +41,6 @@ class WrapperHandler<T> {
 	private final Log logger = LogFactory.getLog(getClass());
 
 	/**
-	 * Request attribute to hold the current web application context. This attribute is recreated here from
-	 * <tt>DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE</tt> to save a hard dependency to Spring MVC.
-	 */
-	static final String DISPATCHER_SERVLET_WEB_APPLICATION_CONTEXT_ATTRIBUTE = "org.springframework."
-			+ "web.servlet.DispatcherServlet.CONTEXT";
-
-	/**
 	 * The type of JSF object being managed.
 	 */
 	private Class<?> typeClass;
