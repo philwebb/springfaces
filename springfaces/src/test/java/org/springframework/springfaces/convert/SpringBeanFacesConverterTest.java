@@ -17,7 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.springfaces.convert.SpringBeanFacesConverter;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -47,8 +48,11 @@ public class SpringBeanFacesConverterTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		ExternalContext externalContext = mock(ExternalContext.class);
+		SpringFacesIntegration springFacesIntegration = new SpringFacesIntegration();
+		springFacesIntegration.setServletContext(new MockServletContext());
+		springFacesIntegration.setApplicationContext(applicationContext);
 		Map<String, Object> applicationMap = Collections.<String, Object> singletonMap(
-				WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, applicationContext);
+				SpringFacesIntegration.class.getName(), springFacesIntegration);
 		given(context.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getApplicationMap()).willReturn(applicationMap);
 		given(applicationContext.getBean(beanName)).willReturn(bean);
