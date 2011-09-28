@@ -8,11 +8,17 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Converter - Spring (by ID)</title>
+		<title>Converter - Generic Spring (by ID)</title>
 	</h:head>
 
 	<h:body>
-		<h:outputText value="Conversion by ID : #{converted}"/>
+		<h:form>
+			<h:inputText value="#{holder.value}">
+				<f:converter converterId="genericSpringBeanConverter"/>
+			</h:inputText><br/>
+			<h:commandButton value="submit"/><br/>
+			<h:outputText value="Conversion by ID : #{holder.value}"/>
+		</h:form>
 	</h:body>
 </ui:composition>
 

@@ -20,7 +20,7 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 		ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
 	private static final Class<?> FACES_CONVERTER_TYPE = javax.faces.convert.Converter.class;
-	private static final Class<?> CONVERTER_TYPE = org.springframework.core.convert.converter.Converter.class;
+	private static final Class<?> CONVERTER_TYPE = org.springframework.springfaces.convert.Converter.class;
 
 	private ApplicationContext applicationContext;
 

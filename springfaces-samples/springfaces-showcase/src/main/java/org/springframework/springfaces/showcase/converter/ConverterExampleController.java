@@ -24,7 +24,15 @@ public class ConverterExampleController {
 
 	@RequestMapping("/converter/springbean")
 	public Model springBean(@FacesConverterId("springBeanConverter") @RequestParam ConvertedObject value) {
-		// Any SpringBean that implements Converter is also available
+		// Any SpringBean that implements Converter is automatically available as a JSF converter
 		return new ExtendedModelMap().addAttribute("converted", value.toString());
+	}
+
+	@RequestMapping("/converter/genericspringbean")
+	public Model genericSpringBean() {
+		// An alternative Converter interface with generics can also be used with spring beans
+		// in this example the converter is bound directly to a component in the view
+		// (see /converter/genericspringbean.xhtml and GenericSpringBeanConverter)
+		return new ExtendedModelMap().addAttribute("holder", new ConvertedObjectHolder());
 	}
 }
