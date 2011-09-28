@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.springfaces.expression.el.BeanBackedELResolver;
 
 /**
  * Tests for {@link BeanBackedELResolver}.

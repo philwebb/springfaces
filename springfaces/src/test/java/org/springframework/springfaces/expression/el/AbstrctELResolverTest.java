@@ -18,7 +18,6 @@ import javax.el.PropertyNotWritableException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.springfaces.expression.el.AbstractELResolver;
 
 /**
  * Tests for {@link AbstractELResolver}.
