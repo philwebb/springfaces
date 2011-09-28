@@ -27,10 +27,7 @@ public class HotelController {
 	private HotelService hotelService;
 
 	@RequestMapping("/advisor/{country}/{city}/{name}")
-	public String hotel(@PathVariable
-	String country, @PathVariable
-	String city, @PathVariable
-	String name, Model model) {
+	public String hotel(@PathVariable String country, @PathVariable String city, @PathVariable String name, Model model) {
 		Hotel hotel = getHotel(country, city, name);
 		model.addAttribute(hotel);
 		model.addAttribute("reviewsSummary", toChartModel(hotelService.getReviewSummary(hotel)));
@@ -48,21 +45,16 @@ public class HotelController {
 	}
 
 	@RequestMapping("/advisor/{country}/{city}/{name}/review/{index}")
-	public String hotelReview(@PathVariable
-	String country, @PathVariable
-	String city, @PathVariable
-	String name, @PathVariable
-	int index, Model model) {
+	public String hotelReview(@PathVariable String country, @PathVariable String city, @PathVariable String name,
+			@PathVariable int index, Model model) {
 		Review review = hotelService.getReview(getHotel(country, city, name), index);
 		model.addAttribute(review);
 		return "review";
 	}
 
 	@RequestMapping("/advisor/{country}/{city}/{name}/write-review")
-	public String writeHotelReview(@PathVariable
-	String country, @PathVariable
-	String city, @PathVariable
-	String name, Model model) {
+	public String writeHotelReview(@PathVariable String country, @PathVariable String city, @PathVariable String name,
+			Model model) {
 		// FIXME is it wise that we can get here from a bookmark. Back button issues?
 		ReviewDetails review = new ReviewDetails();
 		model.addAttribute(getHotel(country, city, name)).addAttribute("review", review);
