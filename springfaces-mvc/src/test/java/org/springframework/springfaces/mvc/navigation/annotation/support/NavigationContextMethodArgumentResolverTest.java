@@ -69,8 +69,8 @@ public class NavigationContextMethodArgumentResolverTest {
 	public void shouldSupportNavigationContext() throws Exception {
 		assertTrue(resolver.supportsParameter(mockMethodParameter(NavigationContext.class)));
 		assertFalse(resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)));
-		assertSame(navigationContext, resolver.resolveArgument(mockMethodParameter(NavigationContext.class), mavContainer,
-				webRequest, binderFactory));
+		assertSame(navigationContext, resolver.resolveArgument(mockMethodParameter(NavigationContext.class),
+				mavContainer, webRequest, binderFactory));
 	}
 
 	@Test

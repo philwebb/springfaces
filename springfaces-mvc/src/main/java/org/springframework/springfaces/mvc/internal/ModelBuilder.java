@@ -123,8 +123,8 @@ public class ModelBuilder {
 	 * @param key the key to add to the model or <tt>null</tt> if the key should be generated from the value
 	 * @param value the value to add to the model. If the value is not specified then the model remains unchanged
 	 * @param resolveExpressions determines if values can contain <tt>String</tt> EL expression that should be resolved
-	 * @param expandModelHolder determines if values containing {@link SpringFacesModel} objects should have each member of
-	 * the holder added to the model as a separate item
+	 * @param expandModelHolder determines if values containing {@link SpringFacesModel} objects should have each member
+	 * of the holder added to the model as a separate item
 	 */
 	private void addIfNotInModel(String source, String key, Object value, boolean resolveExpressions,
 			boolean expandModelHolder) {

@@ -10,6 +10,7 @@
 		<module>springfaces</module>
 		<module>springfaces-mvc</module>
 		<module>springfaces-samples</module>
+		<module>springfaces-integrationtest</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -194,12 +195,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>integrationtest</id>
-			<modules>
-				<module>springfaces-integrationtest</module>
-			</modules>
-		</profile>
-	</profiles>
 </project>

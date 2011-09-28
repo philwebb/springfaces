@@ -6,7 +6,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.servlet.http.HttpServletRequest;
 
-
 public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 
 	private static final String ID = "org.springframework.springfaces.id";
@@ -17,8 +16,8 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 	}
 
 	private void writeHiddenInput(ResponseWriter writer, String id, String value) throws IOException {
-		//FIXME we should escape data
-		//FIXME we perhaps should encrypt or sign
+		// FIXME we should escape data
+		// FIXME we perhaps should encrypt or sign
 		writer.write("<input type=\"hidden\" name=\"");
 		writer.write(id);
 		writer.write("\" id=\"");

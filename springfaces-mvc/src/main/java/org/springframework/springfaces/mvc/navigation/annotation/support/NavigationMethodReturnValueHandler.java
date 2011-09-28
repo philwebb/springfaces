@@ -11,8 +11,8 @@ public class NavigationMethodReturnValueHandler implements HandlerMethodReturnVa
 		return true;
 	}
 
-	public void handleReturnValue(Object returnValue, MethodParameter returnType,
-			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+	public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
+			NativeWebRequest webRequest) throws Exception {
 		mavContainer.setView(returnValue);
 	}
 }
