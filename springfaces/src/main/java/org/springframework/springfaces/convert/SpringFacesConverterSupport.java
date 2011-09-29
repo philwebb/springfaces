@@ -61,6 +61,10 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 
 		@Override
 		public Converter createConverter(Class<?> targetClass) {
+			Converter converter = createConverterBean(targetClass);
+			if (converter != null) {
+				return converter;
+			}
 			return super.createConverter(targetClass);
 		}
 
@@ -71,6 +75,12 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 				return converter;
 			}
 			return super.createConverter(converterId);
+		}
+
+		private Converter createConverterBean(Class<?> targetClass) {
+
+			// TODO Auto-generated method stub
+			throw new UnsupportedOperationException("Auto-generated method stub");
 		}
 
 		private Converter createConverterBean(String converterId) {
