@@ -4,7 +4,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.ConverterException;
 
-import org.springframework.springfaces.beans.factory.ConditionalForClass;
+import org.springframework.springfaces.bean.ConditionalForClass;
 
 /**
  * A variation of the JSF {@link javax.faces.convert.Converter} that support generic typing.

@@ -28,4 +28,6 @@ public class ConverterIT {
 		assertThat(page.getBodyText(), is("Conversion by ID : 123 from byIdFacesConverter"));
 	}
 
+	// FIXME additional tests
+
 }
