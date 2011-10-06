@@ -14,9 +14,12 @@ import java.util.Map;
 import javax.faces.model.DataModelListener;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.primefaces.model.SortOrder;
 
 /**
  * Tests for {@link PrimeFacesPagedDataModel}
@@ -25,6 +28,9 @@ import org.mockito.MockitoAnnotations;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PrimeFacesPagedDataModelTest {
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	@Mock
 	private PagedDataModel delegate;
@@ -166,6 +172,13 @@ public class PrimeFacesPagedDataModelTest {
 	}
 
 	@Test
+	public void shouldNotSupportSetRowCount() throws Exception {
+		thrown.expect(UnsupportedOperationException.class);
+		thrown.expectMessage("Unable to set the row count for a PagedDataModel");
+		dataModel.setRowCount(1);
+	}
+
+	@Test
 	public void shouldSupportLazyPrimefacesLoad() throws Exception {
 		int first = 1;
 		int pageSize = 100;
@@ -181,4 +194,22 @@ public class PrimeFacesPagedDataModelTest {
 		verify(delegate).setSortAscending(sortOrder);
 		verify(delegate).setFilters(filters);
 	}
+
+	@Test
+	public void shouldSupportLazyPrimefacesLoadV3() throws Exception {
+		int first = 1;
+		int pageSize = 100;
+		String sortField = "sort";
+		SortOrder sortOrder = SortOrder.ASCENDING;
+		Map filters = Collections.singletonMap("a", "b");
+		Object rowData = new Object();
+		given(delegate.getRowData()).willReturn(rowData);
+		List loaded = dataModel.load(first, pageSize, sortField, sortOrder, filters);
+		assertThat(loaded, is((List) Collections.emptyList()));
+		verify(delegate).setPageSize(pageSize);
+		verify(delegate).setSortColumn(sortField);
+		verify(delegate).setSortAscending(true);
+		verify(delegate).setFilters(filters);
+	}
+
 }

@@ -3,15 +3,10 @@ package org.springframework.springfaces.component;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
-import java.util.Map;
-
 import javax.faces.component.PartialStateHolder;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.junit.Before;
@@ -20,8 +15,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.web.context.WebApplicationContext;
 
 /**
@@ -57,14 +50,7 @@ public class SpringBeanPartialStateHolderTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		ExternalContext externalContext = mock(ExternalContext.class);
-		SpringFacesIntegration springFacesIntegration = new SpringFacesIntegration();
-		springFacesIntegration.setServletContext(new MockServletContext());
-		springFacesIntegration.setApplicationContext(applicationContext);
-		Map<String, Object> applicationMap = Collections.<String, Object> singletonMap(
-				SpringFacesIntegration.class.getName(), springFacesIntegration);
-		given(context.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getApplicationMap()).willReturn(applicationMap);
+		SpringFacesMocks.setupSpringFacesIntegration(context, applicationContext);
 		given(applicationContext.getBean(beanName)).willReturn(bean);
 		given(applicationContext.getBean(stateHolderBeanName)).willReturn(stateHolderBean);
 		given(applicationContext.isPrototype(stateHolderBeanName)).willReturn(true);

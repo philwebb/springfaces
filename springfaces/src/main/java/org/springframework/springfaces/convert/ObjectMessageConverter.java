@@ -4,9 +4,10 @@ import java.util.Locale;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 
-import org.springframework.springfaces.beans.factory.ConditionalForClass;
+import org.springframework.springfaces.bean.ConditionalForClass;
 import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
@@ -16,7 +17,7 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class ObjectMessageConverter implements Converter<Object>, ConditionalForClass {
+public class ObjectMessageConverter implements Converter, ConditionalForClass {
 
 	private ObjectMessageSource messageSource;
 

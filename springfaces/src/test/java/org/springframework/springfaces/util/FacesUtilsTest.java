@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -199,6 +200,21 @@ public class FacesUtilsTest {
 		assertThat("old value not restored", requestMap.get("v"), is(initialRequestValue));
 		callable.assertCalled();
 		assertThat("value not replaced", callable.requestMapAtTimeOfCall.get("v"), is(valueAtTimeOfCall));
+	}
+
+	@Test
+	public void shouldWrapCheckedExceptionOnDoWithRequestScopeVariable() throws Exception {
+		try {
+			FacesUtils.doWithRequestScopeVariable(context, "v", "value", new Callable<String>() {
+				public String call() throws Exception {
+					throw new Exception("error");
+				}
+			});
+			fail("Did not throw");
+		} catch (RuntimeException e) {
+			assertThat(e.getCause(), is(Exception.class));
+			assertThat(e.getMessage(), is("error"));
+		}
 	}
 
 	private class MockCallable<V> implements Callable<V> {
