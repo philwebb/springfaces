@@ -19,7 +19,7 @@ public class ConverterIT {
 	@Test
 	public void shouldSupportFacesConverterForClass() throws Exception {
 		PageObject page = pages.get(FacesConverterForClassPage.class);
-		assertThat(page.getBodyText(), is("Conversion for class : 123 from forClassFacesConverter"));
+		assertThat(page.getBodyText(), is("Conversion for class : 123 from genericSpringBeanConverter"));
 	}
 
 	@Test
