@@ -16,7 +16,7 @@ import org.springframework.util.ObjectUtils;
  * Abstract implementation of the {@link ObjectMessageSource} interface. Subclasses must implement the
  * {@link #containsMessage(Class)} and {@link #resolveMessage(Object, Locale)} methods and can optionally override
  * {@link #resolveToString(Object)}. This class supports parameterized messaged (see
- * {@link #resolveMessage(Object, Locale)} for details.
+ * {@link #resolveMessage(Object, Locale)} for details).
  * 
  * @author Phillip Webb
  */
