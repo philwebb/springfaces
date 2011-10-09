@@ -37,4 +37,8 @@
 		<component-type>spring.faces.PagedData</component-type>
 		<component-class>org.springframework.springfaces.page.ui.UIPagedData</component-class>
 	</component>
+	<component>
+	<component-type>spring.faces.MessageSource</component-type>
+	<component-class>org.springframework.springfaces.message.ui.UIMessageSource</component-class>
+	</component>
 </faces-config>
