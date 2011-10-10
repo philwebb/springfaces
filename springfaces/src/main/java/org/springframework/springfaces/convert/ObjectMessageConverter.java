@@ -19,6 +19,9 @@ import org.springframework.util.Assert;
  */
 public class ObjectMessageConverter implements Converter, ConditionalForClass {
 
+	// FIXME this is fundamentally broken since output text does not call it. Probably needs to be pushed into
+	// UIMessageSource
+
 	private ObjectMessageSource messageSource;
 
 	/**
@@ -26,6 +29,7 @@ public class ObjectMessageConverter implements Converter, ConditionalForClass {
 	 * @param messageSource the message source used to obtain messages
 	 */
 	public ObjectMessageConverter(ObjectMessageSource messageSource) {
+		// FIXME consider change to setter
 		Assert.notNull(messageSource, "MessageSource must not be null");
 		this.messageSource = messageSource;
 	}

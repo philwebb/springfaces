@@ -8,24 +8,11 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Message - Example</title>
+		<title>Converter - Object Message</title>
 	</h:head>
 
 	<h:body>
-		<s:messageSource var="messages" />
-		<p>
-			<h:outputText value="#{messages.welcome}" />
-		</p>
-		
-		<p>
-			<h:outputText value="#{messages.expand['can']['parameters']}" />
-		</p>
-		
-		<p>
-			<h:outputText value="#{messages.missing}" />
-		</p>
-		
-		
+		<h:outputText value="Enum : #{holder.enumValue} and Object : #{holder}"/>
 	</h:body>
 </ui:composition>
 

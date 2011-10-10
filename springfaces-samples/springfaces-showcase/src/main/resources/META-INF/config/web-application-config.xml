@@ -96,4 +96,17 @@
 	<mvc:interceptors>
 		<bean name="facesInterceptor" class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor"/>
 	</mvc:interceptors>
+	
+	<bean id="objectMessageSource" class="org.springframework.springfaces.message.DefaultObjectMessageSource">
+		<constructor-arg>
+			<ref bean="messageSource"/>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="objectMessageConverter" class="org.springframework.springfaces.convert.ObjectMessageConverter">
+		<constructor-arg>
+			<ref bean="objectMessageSource"/>
+		</constructor-arg>
+	</bean>
+	
 </beans>

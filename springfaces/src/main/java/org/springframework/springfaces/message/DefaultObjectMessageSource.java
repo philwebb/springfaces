@@ -52,6 +52,7 @@ public class DefaultObjectMessageSource extends AbstractObjectMessageSource {
 	 * @param messageSource the underlying message source.
 	 */
 	public DefaultObjectMessageSource(MessageSource messageSource) {
+		// FIXME change to setter and use AC if null
 		Assert.notNull(messageSource, "MessageSource must not be null");
 		this.messageSource = messageSource;
 		recreateConversionService();

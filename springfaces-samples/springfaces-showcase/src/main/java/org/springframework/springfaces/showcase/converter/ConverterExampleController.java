@@ -38,7 +38,7 @@ public class ConverterExampleController {
 		// An alternative Converter interface with generics can also be used with spring beans
 		// in this example the converter is bound directly to a component in the view
 		// (see /converter/genericspringbean.xhtml and GenericSpringBeanConverter)
-		return new ExtendedModelMap().addAttribute("holder", new ConvertedObjectHolder());
+		return new ExtendedModelMap().addAttribute("holder", new ConverterObjectHolder());
 	}
 
 	@RequestMapping("/converter/springbeanforclass")
@@ -47,5 +47,10 @@ public class ConverterExampleController {
 		// In this example ForClassSpringConverter will be used as it is annotated with
 		// @ForClass and implements Converter<SpringConvertedObject>
 		return new ExtendedModelMap().addAttribute("converted", value.toString());
+	}
+
+	@RequestMapping("/converter/objectmessages")
+	public Model objectMessages() {
+		return new ExtendedModelMap().addAttribute("holder", new ConverterObjectHolder());
 	}
 }

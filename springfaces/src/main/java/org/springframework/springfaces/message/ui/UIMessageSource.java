@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.faces.FacesException;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,7 +66,7 @@ public class UIMessageSource extends UIComponentBase {
 		Assert.state(StringUtils.hasLength(var), "No 'var' attibute specified for UIMessageSource component");
 		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
 		Object previous = requestMap.put(var, messageSourceMap);
-		if (previous != null) {
+		if (previous != null && logger.isWarnEnabled()) {
 			logger.warn("The request scoped JSF variable '" + var + "' of type " + previous.getClass().getName()
 					+ " has been replaced by UIMessageSource");
 		}
@@ -173,7 +177,7 @@ public class UIMessageSource extends UIComponentBase {
 		source, var, prefix
 	}
 
-	private static class UIMessageSourceMap extends MessageSourceMap {
+	private class UIMessageSourceMap extends MessageSourceMap {
 
 		private FacesContext context;
 
@@ -189,14 +193,29 @@ public class UIMessageSource extends UIComponentBase {
 
 		@Override
 		protected Object resolveMessageArgument(Object argument) {
-			// FIXME
-			return super.resolveMessageArgument(argument);
+			if (argument != null) {
+				try {
+					Converter converter = context.getApplication().createConverter(argument.getClass());
+					if (converter != null) {
+						return converter.getAsString(context, UIMessageSource.this, argument);
+					}
+				} catch (FacesException e) {
+				}
+			}
+			return argument;
 		}
 
 		@Override
 		protected void handleNoSuchMessageException(NoSuchMessageException exception) {
-			// FIXME log if !context.isProjectStage(ProjectStage.Production)
-			super.handleNoSuchMessageException(exception);
+			if (context.isProjectStage(ProjectStage.Production)) {
+				throw exception;
+			}
+			if (logger.isWarnEnabled()) {
+				logger.warn(exception.getMessage(), exception);
+			}
+			FacesMessage message = new FacesMessage(exception.getMessage());
+			message.setSeverity(FacesMessage.SEVERITY_WARN);
+			context.addMessage(UIMessageSource.this.getClientId(context), message);
 		}
 	}
 }
