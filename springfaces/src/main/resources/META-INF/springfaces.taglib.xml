@@ -27,7 +27,7 @@
 		</component>
 	</tag>
 	<tag>
-		<tag-name>test</tag-name>
+		<tag-name>messageSource</tag-name>
 		<component>
 			<component-type>spring.faces.MessageSource</component-type>
 		</component>

@@ -12,8 +12,20 @@
 	</h:head>
 
 	<h:body>
-		<s:messageSource var="messages"/>
-		<h:outputText value="FIXME"/>
+		<s:messageSource var="messages" />
+		<p>
+			<h:outputText value="#{messages.welcome}" />
+		</p>
+		
+		<p>
+			<h:outputText value="#{messages.expand['can']['parameters']}" />
+		</p>
+		
+		<p>
+			<h:outputText value="#{messages.welcome}" />
+		</p>
+		
+		
 	</h:body>
 </ui:composition>
 

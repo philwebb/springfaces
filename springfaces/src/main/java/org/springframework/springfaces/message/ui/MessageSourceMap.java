@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.springfaces.message.ui.MessageSourceMap.Value;
 import org.springframework.util.Assert;
@@ -35,21 +36,10 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 	private static final String[] NO_PREFIX_CODES = {};
 
-	private static final LocaleProvider NULL_LOCALE = new LocaleProvider() {
-		public Locale getLocale() {
-			return null;
-		};
-	};
-
 	/**
 	 * The message source used to resolve messages.
 	 */
 	private MessageSource messageSource;
-
-	/**
-	 * The locale provider
-	 */
-	private LocaleProvider localeProvider;
 
 	/**
 	 * The prefix codes.
@@ -61,37 +51,44 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	 * @param messageSource a non-null message source
 	 * @param prefixCodes prefixes that should be applied to codes being resolved or <tt>null</tt> if no prefixes are
 	 * required. Prefixes should be specified in the order that they are tried
-	 * @param localeProvider provides access to the {@link Locale} that should be used when resolving messages. Both
-	 * this parameter and the return from the <tt>Callable</tt> can be <tt>null</tt>
 	 */
-	public MessageSourceMap(MessageSource messageSource, String[] prefixCodes, LocaleProvider localeProvider) {
+	public MessageSourceMap(MessageSource messageSource, String[] prefixCodes) {
 		Assert.notNull(messageSource, "MessageSource must not be null");
 		this.messageSource = messageSource;
 		this.prefixCodes = (prefixCodes == null ? NO_PREFIX_CODES : prefixCodes);
-		this.localeProvider = (localeProvider == null ? NULL_LOCALE : localeProvider);
 	}
 
+	/**
+	 * Returns the locale that should be used when resolving messages.
+	 * @return The locale
+	 */
+	protected Locale getLocale() {
+		return null;
+	}
+
+	/**
+	 * Resolve a single message argument to render as part of the message. The default behaviour returns the argument
+	 * unchanged, subclasses can override this method as required.
+	 * @param argument the argument to resolve
+	 * @return the resolved argument
+	 */
 	protected Object resolveMessageArgument(Object argument) {
 		return argument;
+	}
+
+	/**
+	 * Called to handle any {@link NoSuchMessageException} exceptions. The default behaviour throws the exception,
+	 * subclasses can override to handle exception differently.
+	 * @param exception the exception to handle
+	 */
+	protected void handleNoSuchMessageException(NoSuchMessageException exception) {
+		throw exception;
 	}
 
 	@Override
 	public Value get(Object key) {
 		Assert.state(key != null, "Unable to access MessageSourceMap value from null key");
-		String[] codes = buildPrefixedCodes(key.toString());
-		return new MessageSourceMapValueImpl(messageSource, codes, NO_ARGUMENTS);
-	}
-
-	private String[] buildPrefixedCodes(String code) {
-		if (prefixCodes.length == 0) {
-			return new String[] { code };
-		}
-		String[] codes = new String[prefixCodes.length];
-		System.arraycopy(prefixCodes, 0, codes, 0, prefixCodes.length);
-		for (int i = 0; i < codes.length; i++) {
-			codes[i] = codes[i] == null ? code : codes[i].concat(code);
-		}
-		return codes;
+		return new MessageSourceMapValueImpl(messageSource, key.toString(), NO_ARGUMENTS);
 	}
 
 	@Override
@@ -113,30 +110,32 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	}
 
 	/**
-	 * Strategy interface used to obtain the locale. Allows for the local to be obtained after the map has been created.
-	 */
-	public static interface LocaleProvider {
-
-		/**
-		 * Returns the Locale to use.
-		 * @return the Locale or <tt>null</tt>
-		 */
-		public Locale getLocale();
-	}
-
-	/**
 	 * Internal implementation of {@link MessageSourceResolvable}.
 	 */
 	private class MessageSourceMapValueImpl extends AbstractMap<Object, Value> implements Value {
 
 		private MessageSource messageSource;
+		private String code;
 		private String[] codes;
 		private Object[] arguments;
 
-		public MessageSourceMapValueImpl(MessageSource messageSource, String[] codes, Object[] arguments) {
+		public MessageSourceMapValueImpl(MessageSource messageSource, String code, Object[] arguments) {
 			this.messageSource = messageSource;
-			this.codes = codes;
+			this.code = code;
+			this.codes = buildPrefixedCodes(code);
 			this.arguments = arguments;
+		}
+
+		private String[] buildPrefixedCodes(String code) {
+			if (prefixCodes.length == 0) {
+				return new String[] { code };
+			}
+			String[] codes = new String[prefixCodes.length];
+			System.arraycopy(prefixCodes, 0, codes, 0, prefixCodes.length);
+			for (int i = 0; i < codes.length; i++) {
+				codes[i] = codes[i] == null ? code : codes[i].concat(code);
+			}
+			return codes;
 		}
 
 		@Override
@@ -144,7 +143,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 			Object[] childArguments = new Object[arguments.length + 1];
 			System.arraycopy(arguments, 0, childArguments, 0, arguments.length);
 			childArguments[childArguments.length - 1] = resolveMessageArgument(key);
-			return new MessageSourceMapValueImpl(messageSource, codes, childArguments);
+			return new MessageSourceMapValueImpl(messageSource, code, childArguments);
 		}
 
 		public String[] getCodes() {
@@ -161,7 +160,12 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 		@Override
 		public String toString() {
-			return messageSource.getMessage(this, localeProvider.getLocale());
+			try {
+				return messageSource.getMessage(this, getLocale());
+			} catch (NoSuchMessageException e) {
+				handleNoSuchMessageException(e);
+				return code;
+			}
 		}
 
 		@Override

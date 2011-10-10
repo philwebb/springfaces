@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -21,7 +20,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
-import org.springframework.springfaces.message.ui.MessageSourceMap.LocaleProvider;
 import org.springframework.springfaces.message.ui.MessageSourceMap.Value;
 
 /**
@@ -42,19 +40,19 @@ public class MessageSourceMapTest {
 	public void shouldNeedMessageSource() throws Exception {
 		thrown.expect(IllegalArgumentException.class);
 		thrown.expectMessage("MessageSource must not be null");
-		new MessageSourceMap(null, null, null);
+		new MessageSourceMap(null, null);
 	}
 
 	@Test
 	public void shouldThrowUnsupportedOperationExceptions() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		thrown.expect(UnsupportedOperationException.class);
 		map.size();
 	}
 
 	@Test
 	public void shouldThrowNestedUnsupportedOperationExceptions() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		Value value = map.get("x").get("y");
 		thrown.expect(UnsupportedOperationException.class);
 		value.size();
@@ -62,28 +60,28 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldNotAllowNullKeys() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		thrown.expect(IllegalStateException.class);
 		map.get(null);
 	}
 
 	@Test
 	public void shouldGetValue() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		Value value = map.get("x");
 		assertEquals("x", value.getCodes()[0]);
 	}
 
 	@Test
 	public void shouldUsePrefixCodes() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." }, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
 		Value value = map.get("x");
 		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
 	}
 
 	@Test
 	public void shouldResolveOnGetValueToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		Value value = map.get("x");
 		given(messageSource.getMessage(msr("x"), nullLocale())).willReturn("message");
 		assertEquals("message", value.toString());
@@ -91,7 +89,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldUsePrefixCodesOnGetValueToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." }, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
 		Value value = map.get("x");
 		given(messageSource.getMessage(msr("a.x", "b.x", "c.x"), nullLocale())).willReturn("message");
 		assertEquals("message", value.toString());
@@ -99,7 +97,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldAllowNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		Value value = map.get("x").get("y").get("z");
 		assertEquals("x", value.getCodes()[0]);
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -107,7 +105,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldUsePrefixCodesWhenNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." }, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
 		Value value = map.get("x").get("y").get("z");
 		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -115,7 +113,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldSupportNullPrefixCodesWhenNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", null, "c." }, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", null, "c." });
 		Value value = map.get("x").get("y").get("z");
 		assertEquals(Arrays.asList("a.x", "x", "c.x"), Arrays.asList(value.getCodes()));
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -123,17 +121,19 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldHaveToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." }, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
 		assertTrue(map.toString().contains(
 				"messageSource = messageSource, prefixCodes = array<String>['a.', 'b.', 'c.']]"));
 	}
 
 	@Test
 	public void shouldUseLocale() throws Exception {
-		LocaleProvider localeProvider = mock(LocaleProvider.class);
-		Locale locale = Locale.ITALY;
-		given(localeProvider.getLocale()).willReturn(locale);
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, localeProvider);
+		final Locale locale = Locale.ITALY;
+		MessageSourceMap map = new MessageSourceMap(messageSource, null) {
+			protected Locale getLocale() {
+				return locale;
+			};
+		};
 		Value value = map.get("x");
 		given(messageSource.getMessage(msr("x"), eq(locale))).willReturn("message");
 		assertEquals("message", value.toString());
@@ -141,7 +141,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldHaveNullDefaultMessage() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null, null);
+		MessageSourceMap map = new MessageSourceMap(messageSource, null);
 		Value value = map.get("x");
 		assertNull(value.getDefaultMessage());
 	}
