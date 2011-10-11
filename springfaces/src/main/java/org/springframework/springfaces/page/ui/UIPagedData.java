@@ -168,6 +168,7 @@ public class UIPagedData extends UIComponentBase {
 	@Override
 	public void encodeEnd(FacesContext context) throws IOException {
 		createPagedDataInRequestMap(context);
+		super.encodeEnd(context);
 	}
 
 	private void createPagedDataInRequestMap(FacesContext context) {

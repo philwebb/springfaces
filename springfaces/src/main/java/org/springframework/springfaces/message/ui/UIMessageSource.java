@@ -70,6 +70,7 @@ public class UIMessageSource extends UIComponentBase {
 			logger.warn("The request scoped JSF variable '" + var + "' of type " + previous.getClass().getName()
 					+ " has been replaced by UIMessageSource");
 		}
+		super.encodeEnd(context);
 	}
 
 	/**
