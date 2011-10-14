@@ -1,252 +1,172 @@
 package org.springframework.springfaces.message;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.core.GenericTypeResolver;
-import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.converter.ConditionalGenericConverter;
-import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.springfaces.message.code.resolver.EnumMessageCodeResolver;
-import org.springframework.springfaces.message.code.resolver.MessageCodeResolver;
-import org.springframework.springfaces.message.code.resolver.ObjectMessageCodeResolver;
+import org.springframework.context.support.DelegatingMessageSource;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
- * Default implementation of {@link ObjectMessageSource} that is backed by a Spring {@link MessageSource}. This
- * implementation uses {@link ObjectMessageCodeResolver}s to resolve the message codes used against the
- * {@link MessageSource}. By default {@link EnumMessageCodeResolver enum} and {@link ObjectMessageCodeResolver object}
- * resolves are included.Additional resolvers can be added using the
- * {@link #addMessageCodeResolver(MessageCodeResolver)} method.
+ * Default implementation of {@link ObjectMessageSource} that delegates to a parent {@link MessageSource}. Object
+ * messages are resolved using a generated {@link #resolveCode(Object, Locale) code}. T
  * <p>
- * Parameterized messages are supported by this resolver.
- * 
- * @author Phillip Webb
+ * Parameterized messages are supported by this resolver (see {@link #resolveMessage(Object, Locale)} for details).
  */
-public class DefaultObjectMessageSource extends AbstractObjectMessageSource {
+public class DefaultObjectMessageSource extends DelegatingMessageSource implements ObjectMessageSource {
 
-	/**
-	 * ThreadLocal used to expose the {@link Context} to the {@link MessageCodeResolverAdapter}.
-	 */
-	private static ThreadLocal<Context> contextHolder = new ThreadLocal<Context>();
-
-	/**
-	 * The message source used to obtain the messages.
-	 */
-	private MessageSource messageSource;
-
-	/**
-	 * A conversion service that is used to manage the {@link MessageCodeResolver}s. Resolvers are wrapped in
-	 * {@link MessageCodeResolverAdapter}s when they are added.
-	 */
-	private DefaultConversionService conversionService;
+	private static final Pattern PARAMETER_PATTERN = Pattern.compile("\\{([\\w]+?)\\}");
+	private static final Object[] NO_ARGUMENTS = {};
 
 	/**
 	 * Create a new {@link DefaultObjectMessageSource} instance.
-	 * @param messageSource the underlying message source.
 	 */
-	public DefaultObjectMessageSource(MessageSource messageSource) {
-		// FIXME change to setter and use AC if null
-		Assert.notNull(messageSource, "MessageSource must not be null");
-		this.messageSource = messageSource;
-		recreateConversionService();
-		addMessageCodeResolver(new ObjectMessageCodeResolver());
-		addMessageCodeResolver(new EnumMessageCodeResolver());
-	}
-
-	private void recreateConversionService() {
-		conversionService = new DefaultConversionService();
-		// Remove the ObjectToObject converter otherwise it will try to resolve MessageCodes.
-		conversionService.removeConvertible(Object.class, Object.class);
-	}
-
-	@Override
-	public boolean containsMessage(Class<?> type) {
-		Assert.notNull(type, "Type must not be null");
-		contextHolder.set(new Context(messageSource, null));
-		try {
-			return conversionService.canConvert(type, MessageCode.class);
-		} finally {
-			contextHolder.set(null);
-		}
-	}
-
-	protected String resolveMessage(Object object, Locale locale) {
-		contextHolder.set(new Context(messageSource, locale));
-		try {
-			if (!conversionService.canConvert(object.getClass(), MessageCode.class)) {
-				return null;
-			}
-			MessageCode code = conversionService.convert(object, MessageCode.class);
-			return messageSource.getMessage(new DefaultMessageSourceResolvable(code.toString()), locale);
-		} finally {
-			contextHolder.set(null);
-		}
-	}
-
-	@Override
-	protected String resolveToString(Object object) {
-		if (conversionService.canConvert(object.getClass(), String.class)) {
-			return conversionService.convert(object, String.class);
-		}
-		return super.resolveToString(object);
+	public DefaultObjectMessageSource() {
 	}
 
 	/**
-	 * Add a message source resolver this source.
-	 * @param messageCodeResolver the message source resolver
-	 * @see #setMessageCodeResolvers(Collection)
+	 * Create a new {@link DefaultObjectMessageSource} instance with the specified parent.
+	 * @param parent the parent message source.
 	 */
-	public void addMessageCodeResolver(MessageCodeResolver<?> messageCodeResolver) {
-		Assert.notNull(messageCodeResolver, "MessageCodeResolver must not be null");
-		conversionService.addConverter(MessageCodeResolverAdapter.newInstance(messageCodeResolver));
-		reset();
+	public DefaultObjectMessageSource(MessageSource parent) {
+		Assert.notNull("Parent must not be null");
+		setParentMessageSource(parent);
+	}
+
+	public String getMessage(Object object, Locale locale) throws NoSuchObjectMessageException {
+		String message = getFullyResolvedMessage(object, locale, false);
+		if (message == null && object != null) {
+			throw new NoSuchObjectMessageException(object, locale);
+		}
+		return message;
 	}
 
 	/**
-	 * Set the message code resolvers that should be used with this source. This method will replace any existing
-	 * resolvers (including the default resolvers).
-	 * @param messageCodeResolvers the resolvers to used
+	 * Returns a fully resolved message, includes resolving any message parameters.
+	 * @param object the object to resolve. Can be <tt>null</tt>
+	 * @param locale the locale
+	 * @param allowResolveToString if the {@link #resolveToString(Object)} can be used to create the result
+	 * @return a fully resolved message
 	 */
-	public void setMessageCodeResolvers(Collection<? extends MessageCodeResolver<?>> messageCodeResolvers) {
-		Assert.notNull(messageCodeResolvers, "MessageCodeResolvers must not be null");
-		recreateConversionService();
-		reset();
-		for (MessageCodeResolver<?> messageCodeResolver : messageCodeResolvers) {
-			addMessageCodeResolver(messageCodeResolver);
-		}
-	}
-
-	/**
-	 * An internal context used to expose details to the {@link MessageCodeResolverAdapter}. This allows us to reuse the
-	 * logic from the {@link DefaultConversionService}.
-	 */
-	private static class Context {
-
-		private MessageSource messageSource;
-		private Locale locale;
-
-		public Context(MessageSource messageSource, Locale locale) {
-			this.messageSource = messageSource;
-			this.locale = locale;
-		}
-
-		public MessageSource getMessageSource() {
-			return messageSource;
-		}
-
-		public Locale getLocale() {
-			return locale;
-		}
-	}
-
-	/**
-	 * Represents a message code. Used rather than Strings to ensure only relevant {@link MessageCodeResolverAdapter}s
-	 * are used.
-	 */
-	private static class MessageCode {
-		private String code;
-
-		public MessageCode(String code) {
-			this.code = code;
-		}
-
-		@Override
-		public String toString() {
-			return code;
-		}
-	}
-
-	/**
-	 * Adapter class used to convert a {@link MessageCodeResolver} into a {@link ConditionalGenericConverter}. The
-	 * adapter uses the contextHolder thread local to pass relevant details though to the {@link MessageCodeResolver}.
-	 * @param <T> the source type
-	 */
-	private static class MessageCodeResolverAdapter<T> implements ConditionalGenericConverter {
-
-		private static final Object[] NO_ARGUMENTS = {};
-
-		private MessageCodeResolver<T> messageCodeResolver;
-
-		private Set<ConvertiblePair> convertibleTypes;
-
-		public MessageCodeResolverAdapter(MessageCodeResolver<T> messageConverter) {
-			this.messageCodeResolver = messageConverter;
-			Class<?> sourceType = GenericTypeResolver.resolveTypeArgument(messageConverter.getClass(),
-					MessageCodeResolver.class);
-			this.convertibleTypes = Collections.singleton(new ConvertiblePair(sourceType, MessageCode.class));
-		}
-
-		public static <T> MessageCodeResolverAdapter<T> newInstance(MessageCodeResolver<T> messageConverter) {
-			return new MessageCodeResolverAdapter<T>(messageConverter);
-		}
-
-		public Set<ConvertiblePair> getConvertibleTypes() {
-			return convertibleTypes;
-		}
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public boolean matches(TypeDescriptor sourceType, TypeDescriptor targetType) {
-			Context context = contextHolder.get();
-			if (context == null) {
-				return false;
-			}
-			List<String> codes = messageCodeResolver.getMessageCodesForType((Class) sourceType.getType());
-			return findMessageCode(codes) != null;
-		}
-
-		@SuppressWarnings("unchecked")
-		public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
-			List<String> codes = messageCodeResolver.getMessageCodesForObject((T) source);
-			return findMessageCode(codes);
-		}
-
-		/**
-		 * Returns the first code from the list that is contained within the {@link MessageSource}.
-		 * @param codes a list of codes in the order that they should be tried
-		 * @return a {@link MessageCode} or <tt>null</tt> if not match is found.
-		 */
-		private MessageCode findMessageCode(List<String> codes) {
-			Context context = contextHolder.get();
-			if (codes != null) {
-				MessageSource messageSource = context.getMessageSource();
-				Locale locale = context.getLocale();
-				for (String code : codes) {
-					if (containsCode(messageSource, code, locale)) {
-						return new MessageCode(code);
-					}
-				}
-			}
+	private String getFullyResolvedMessage(Object object, Locale locale, boolean allowResolveToString) {
+		if (object == null) {
 			return null;
 		}
-
-		/**
-		 * Determines of the given {@link MessageSource} contains the specified code.
-		 * @param messageSource the messages source
-		 * @param code the code to find
-		 * @param locale the locale (or <tt>null</tt> to used the default locale)
-		 * @return <tt>true</tt> if the {@link MessageSource} contains the code.
-		 */
-		public static boolean containsCode(MessageSource messageSource, String code, Locale locale) {
-			if (locale == null) {
-				locale = Locale.getDefault();
+		try {
+			String resolvedMessage = resolveMessage(object, locale);
+			if (resolvedMessage != null) {
+				return expandParameters(resolvedMessage, object, locale);
 			}
+			if (allowResolveToString) {
+				return resolveToString(object, locale);
+			}
+			return null;
+		} catch (NoSuchObjectMessageException e) {
+			throw new NoSuchObjectMessageException(object, locale, e);
+		}
+	}
+
+	/**
+	 * Resolve a message for the given object. The resolved message can include parameters of the form <tt>{name}</tt>
+	 * that will be resolved using properties of the object. For example given following class: <code>
+	 * public interface Name {
+	 *   String getFirst();
+	 *   String getLast();
+	 * }
+	 * </code> The message <tt>"Welcome back {first} {last}"</tt> could be used to construct a message containing the a
+	 * persons full name.
+	 * <p>
+	 * By default this method will use the result of {@link #resolveCode(Object, Locale)} to obtain the message.
+	 * 
+	 * @param object the object to resolve (never <tt>null</tt>)
+	 * @param locale the locale
+	 * @return the resolved message or <tt>null</tt> if the object cannot be resolved
+	 * @see #resolveToString(Object, Locale)
+	 */
+	protected String resolveMessage(Object object, Locale locale) {
+		String code = resolveCode(object, locale);
+		if (code != null) {
 			try {
-				String message = messageSource.getMessage(code, NO_ARGUMENTS, locale);
-				// if useCodeAsDefaultMessage is set then an exception will not be thrown
-				if (message.equals(code)) {
-					return false;
+				String message = getMessage(code, NO_ARGUMENTS, locale);
+				if (!code.equals(message)) {
+					return message;
 				}
 			} catch (NoSuchMessageException e) {
-				return false;
 			}
-			return true;
 		}
+		return null;
+	}
+
+	/**
+	 * Resolve the message code for the given object. Objects that are {@link Enum} instances will use the fully
+	 * qualified class name along with the enum name as the code. All other objects will use the fully qualified class
+	 * name. Subclasses can override this method to support additional types.
+	 * @param object the object to resolve (never <tt>null</tt>)
+	 * @param locale the locale
+	 * @return the message code for the object or <tt>null</tt> if the object cannot be resolved
+	 */
+	protected String resolveCode(Object object, Locale locale) {
+		if (Enum.class.isInstance(object)) {
+			return object.getClass().getName() + "." + ((Enum) object).name();
+		}
+		return object.getClass().getName();
+	}
+
+	/**
+	 * Expand any parameters contained in the message by inspecting object properties.
+	 * @param resolvedMessage the message to expand
+	 * @param object the source object
+	 * @param locale the locale
+	 * @return a message with all supported parameters expanded
+	 */
+	private String expandParameters(String resolvedMessage, Object object, Locale locale) {
+		Matcher matcher = PARAMETER_PATTERN.matcher(resolvedMessage);
+		StringBuffer sb = new StringBuffer();
+		BeanWrapper bean = new BeanWrapperImpl(object);
+		while (matcher.find()) {
+			String propertyName = matcher.group(1);
+			if (bean.isReadableProperty(propertyName)) {
+				Object propertyValue = bean.getPropertyValue(propertyName);
+				String replacement = (propertyValue == null ? "" : getFullyResolvedMessage(propertyValue, locale, true));
+				matcher.appendReplacement(sb, replacement);
+			} else {
+				// No property, leave the {variable} intact
+				matcher.appendReplacement(sb, matcher.group(0));
+			}
+		}
+		matcher.appendTail(sb);
+		return sb.toString();
+	}
+
+	/**
+	 * Resolve the given object to a <tt>String</tt> value. This method can be called if
+	 * {@link #resolveMessage(Object, Locale)} returns <tt>null</tt>. By default the {@link Object#toString()
+	 * toString()} method of the <tt>object</tt> will be used. Override this method if a specific string conversion
+	 * strategy is required.
+	 * @param object the object to resolve (never <tt>null</tt>)
+	 * @param locale the locale
+	 * @return the resolved string value.
+	 */
+	protected String resolveToString(Object object, Locale locale) {
+		if (object.getClass().isArray()) {
+			object = CollectionUtils.arrayToList(object);
+		}
+		if (object instanceof Collection) {
+			List<String> resolvedCollection = new ArrayList<String>();
+			for (Object element : (Collection<?>) object) {
+				resolvedCollection.add(getFullyResolvedMessage(element, locale, true));
+			}
+			return StringUtils.collectionToCommaDelimitedString(resolvedCollection);
+		}
+		return object.toString();
 	}
 }
