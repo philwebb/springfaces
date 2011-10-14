@@ -21,7 +21,7 @@ import org.springframework.context.support.StaticMessageSource;
  */
 public class DefaultObjectMessageSourceTest {
 
-	private static final Locale LOCALE = Locale.getDefault();
+	private static final Locale LOCALE = Locale.UK;
 
 	private static final String INNER = DefaultObjectMessageSourceTest.class.getName() + "$";
 
