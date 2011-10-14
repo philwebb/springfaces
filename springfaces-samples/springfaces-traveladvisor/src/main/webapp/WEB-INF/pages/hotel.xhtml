@@ -15,7 +15,7 @@
 				<ui:define name="context">
 					<p:graphicImage value="/images/flags/24/#{hotel.city.country}.png" width="24" height="24"/>
 					<h:outputText value="#{hotel.city.country}"/>,
-					<h:link value="#{hotel.city.name}" outcome="spring:@showCity">
+					<h:link value="#{hotel.city.name}" outcome="spring:@cityController.showCity">
 						<f:param name="country" value="#{hotel.city.country}"/>
 						<f:param name="name" value="#{hotel.city.name}"/>
 					</h:link>
