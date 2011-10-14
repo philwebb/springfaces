@@ -34,8 +34,16 @@ public class DefaultDataModelRowSetTest {
 	}
 
 	@Test
-	public void shouldContainRowsWhenEmpty() throws Exception {
-		assertThat(empty.contains(0), is(true));
+	public void shouldContainRowWhenEmpty() throws Exception {
+		assertThat(empty.contains(-1), is(true));
+	}
+
+	@Test
+	public void shouldContainSpecificRowWhenEmpty() throws Exception {
+		empty = DefaultDataModelRowSet.emptySet(2);
+		assertThat(empty.contains(1), is(false));
+		assertThat(empty.contains(2), is(true));
+		assertThat(empty.contains(3), is(false));
 	}
 
 	@Test

@@ -13,6 +13,8 @@ public class LazyDataModelState implements Serializable {
 
 	private int rowIndex = -1;
 
+	private Long lastLoadedTotalRowCount;
+
 	/**
 	 * Returns the row index.
 	 * @return the row index
@@ -29,5 +31,13 @@ public class LazyDataModelState implements Serializable {
 	 */
 	public void setRowIndex(int rowIndex) {
 		this.rowIndex = rowIndex;
+	}
+
+	public Long getLastLoadedTotalRowCount() {
+		return lastLoadedTotalRowCount;
+	}
+
+	public void setLastLoadedTotalRowCount(Long lastLoadedTotalRowCount) {
+		this.lastLoadedTotalRowCount = lastLoadedTotalRowCount;
 	}
 }

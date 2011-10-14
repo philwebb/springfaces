@@ -12,6 +12,8 @@ import java.util.List;
  */
 public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 
+	private static final DataModelRowSet<?> EMPTY = emptySet(-1);
+
 	private int offset;
 	private int size;
 	private List<E> contents;
@@ -61,7 +63,12 @@ public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 		return rowIndex - offset;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <E> DataModelRowSet<E> emptySet() {
+		return (DataModelRowSet<E>) EMPTY;
+	}
+
 	public static <E> DataModelRowSet<E> emptySet(int rowIndex) {
-		return new DefaultDataModelRowSet<E>(0, Collections.<E> emptyList(), 1, UNKNOWN_TOTAL_ROW_COUNT);
+		return new DefaultDataModelRowSet<E>(rowIndex, Collections.<E> emptyList(), 1, UNKNOWN_TOTAL_ROW_COUNT);
 	}
 }

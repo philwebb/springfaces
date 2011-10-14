@@ -100,10 +100,15 @@ public class LazyDataModelTest {
 	}
 
 	@Test
-	public void shouldGetRowCountFromProviderRowIsSelected() throws Exception {
+	public void shouldUpdateRowCountFromProviderWhenRowIsSelected() throws Exception {
 		assertThat(dataModel.getRowCount(), is(1000));
 		totalNumberOfRows = 1001;
 		dataModel.setRowIndex(11);
+		// At this point we have not triggered a load so the previous row count is used
+		assertThat(dataModel.getRowCount(), is(1000));
+		// trigger load
+		dataModel.getRowData();
+		// The updated row count is now used
 		assertThat(dataModel.getRowCount(), is(1001));
 	}
 
@@ -219,6 +224,14 @@ public class LazyDataModelTest {
 		dataModel.setRowIndex(0);
 		dataModel.getRowData();
 		verify(loader).getRows(state);
+	}
+
+	@Test
+	public void shouldCachRowCount() throws Exception {
+		assertThat(dataModel.getRowCount(), is(1000));
+		dataModel.setRowIndex(11);
+		assertThat(dataModel.getRowCount(), is(1000));
+		verify(loader, times(1)).getRows(state);
 	}
 
 	private class MockLoader implements LazyDataLoader<String, LazyDataModelState> {

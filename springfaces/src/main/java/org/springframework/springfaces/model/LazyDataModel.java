@@ -65,12 +65,16 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	@Override
 	public int getRowCount() {
-		long rowCount = getAnyNonEmptyRowSet().getTotalRowCount();
+		Long rowCount = state.getLastLoadedTotalRowCount();
+		if (rowCount == null) {
+			rowCount = getAnyNonEmptyRowSet().getTotalRowCount();
+		}
+		Assert.state(rowCount != null, "The row count must not be null");
 		Assert.state(rowCount >= -1, "The row count must be -1 or higher");
 		if (rowCount > Integer.MAX_VALUE) {
 			return -1;
 		}
-		return (int) rowCount;
+		return rowCount.intValue();
 	}
 
 	@Override
@@ -141,12 +145,20 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	 * @return the page for the specified row or an empty page
 	 */
 	private DataModelRowSet<E> getRowSet(int rowIndex) {
+		if (rowIndex == -1) {
+			return DefaultDataModelRowSet.<E> emptySet();
+		}
+		if (rowSet != null && rowSet.contains(rowIndex)) {
+			return rowSet;
+		}
+		rowSet = loader.getRows(getState());
+		if (rowSet != null) {
+			state.setLastLoadedTotalRowCount(rowSet.getTotalRowCount());
+		}
 		if (rowSet == null || !rowSet.contains(rowIndex)) {
-			rowSet = (rowIndex == -1 ? DefaultDataModelRowSet.<E> emptySet(-1) : loader.getRows(getState()));
-			if (rowSet == null || !rowSet.contains(rowIndex)) {
-				rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
-			}
+			rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
 		}
 		return rowSet;
 	}
+
 }
