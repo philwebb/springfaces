@@ -21,6 +21,8 @@ import org.springframework.util.Assert;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedDataRows {
 
+	// FIXME check status of http://code.google.com/p/primefaces/issues/detail?id=2642 when PF 3 final is released
+
 	private static final long serialVersionUID = 1L;
 
 	private PagedDataModel delegate;
@@ -118,6 +120,7 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 			setSortAscending(sortOrder);
 		}
 		setFilters(filters);
+		delegate.clearCachedRowCount(first);
 		return Collections.emptyList();
 	}
 

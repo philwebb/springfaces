@@ -227,11 +227,33 @@ public class LazyDataModelTest {
 	}
 
 	@Test
-	public void shouldCachRowCount() throws Exception {
+	public void shouldCacheRowCount() throws Exception {
 		assertThat(dataModel.getRowCount(), is(1000));
 		dataModel.setRowIndex(11);
 		assertThat(dataModel.getRowCount(), is(1000));
 		verify(loader, times(1)).getRows(state);
+	}
+
+	@Test
+	public void shouldClearCachedRowCount() throws Exception {
+		assertThat(dataModel.getRowCount(), is(1000));
+		dataModel.reset();
+		dataModel.clearCachedRowCount();
+		assertThat(dataModel.getRowCount(), is(1000));
+		dataModel.setRowIndex(11);
+		assertThat(dataModel.getRowData(), is("Data 11"));
+		verify(loader, times(3)).getRows(state);
+	}
+
+	@Test
+	public void shouldClearCachedRowCountWithNextRow() throws Exception {
+		assertThat(dataModel.getRowCount(), is(1000));
+		dataModel.reset();
+		dataModel.clearCachedRowCount(11);
+		assertThat(dataModel.getRowCount(), is(1000));
+		dataModel.setRowIndex(11);
+		assertThat(dataModel.getRowData(), is("Data 11"));
+		verify(loader, times(2)).getRows(state);
 	}
 
 	private class MockLoader implements LazyDataLoader<String, LazyDataModelState> {

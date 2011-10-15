@@ -31,6 +31,11 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	private DataModelRowSet<E> rowSet;
 
 	/**
+	 * The next row index that is likely to be read.
+	 */
+	private int nextRowIndex = 0;
+
+	/**
 	 * Create a new {@link LazyDataModel} instance.
 	 * @param loader the loader used to access {@link DataModelRowSet row data}
 	 * @param state the state information associated with the data model
@@ -77,6 +82,23 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		return rowCount.intValue();
 	}
 
+	/**
+	 * Reset any cached rowCount value.
+	 */
+	public void clearCachedRowCount() {
+		clearCachedRowCount(0);
+	}
+
+	/**
+	 * Reset any cached rowCount value and indicate the row index that will be next read. Providing the next row index
+	 * allows the model to optimize data loads when {@link #getRowCount()} is called before {@link #setRowIndex(int)}.
+	 * @param nextRowIndex the next row index that will be read or <tt>0</tt> if the next index is not know.
+	 */
+	public void clearCachedRowCount(int nextRowIndex) {
+		state.setLastLoadedTotalRowCount(null);
+		this.nextRowIndex = nextRowIndex;
+	}
+
 	@Override
 	public E getRowData() {
 		return getRowSet().getRowData(getRowIndex());
@@ -84,14 +106,14 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	@Override
 	public int getRowIndex() {
-		return this.getState().getRowIndex();
+		return state.getRowIndex();
 	}
 
 	@Override
 	public void setRowIndex(int rowIndex) {
 		if (getRowIndex() != rowIndex) {
 			Assert.isTrue(rowIndex >= -1, "RowIndex must not be less than -1");
-			getState().setRowIndex(rowIndex);
+			state.setRowIndex(rowIndex);
 			fireDataModelListeners();
 		}
 	}
@@ -135,7 +157,21 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	 * @return a non-empty row set
 	 */
 	private DataModelRowSet<E> getAnyNonEmptyRowSet() {
-		return getRowSet(getRowIndex() == -1 ? 0 : getRowIndex());
+
+		// If we are already on a row index we can use that to get the row set
+		if (getRowIndex() != -1) {
+			return getRowSet(getRowIndex());
+		}
+
+		// Attempt to get the row set for the next likely row index
+		DataModelRowSet<E> rowSet = getRowSet(nextRowIndex);
+
+		// If that fails, fall back to row 0
+		if (nextRowIndex != 0 && !rowSet.isRowAvailable(nextRowIndex)) {
+			rowSet = getRowSet(0);
+		}
+
+		return rowSet;
 	}
 
 	/**
@@ -151,7 +187,7 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		if (rowSet != null && rowSet.contains(rowIndex)) {
 			return rowSet;
 		}
-		rowSet = loader.getRows(getState());
+		rowSet = loadRowSet(rowIndex);
 		if (rowSet != null) {
 			state.setLastLoadedTotalRowCount(rowSet.getTotalRowCount());
 		}
@@ -159,6 +195,24 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 			rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
 		}
 		return rowSet;
+	}
+
+	/**
+	 * Load a row set using the underlying loader.
+	 * @param rowIndex the index to load
+	 * @return a row data set
+	 */
+	private DataModelRowSet<E> loadRowSet(int rowIndex) {
+		if (state.getRowIndex() == rowIndex) {
+			return loader.getRows(state);
+		}
+		int previousRowIndex = state.getRowIndex();
+		try {
+			state.setRowIndex(rowIndex);
+			return loader.getRows(state);
+		} finally {
+			state.setRowIndex(previousRowIndex);
+		}
 	}
 
 }

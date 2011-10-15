@@ -45,7 +45,9 @@ public class PrimeFacesPagedDataModelTest {
 
 	@Test
 	public void shouldNeedDelegate() throws Exception {
-		// FIXME
+		thrown.expect(IllegalArgumentException.class);
+		thrown.expectMessage("Delegate must not be null");
+		new PrimeFacesPagedDataModel(null);
 	}
 
 	@Test
@@ -193,6 +195,7 @@ public class PrimeFacesPagedDataModelTest {
 		verify(delegate).setSortColumn(sortField);
 		verify(delegate).setSortAscending(sortOrder);
 		verify(delegate).setFilters(filters);
+		verify(delegate).clearCachedRowCount(first);
 	}
 
 	@Test
@@ -210,6 +213,6 @@ public class PrimeFacesPagedDataModelTest {
 		verify(delegate).setSortColumn(sortField);
 		verify(delegate).setSortAscending(true);
 		verify(delegate).setFilters(filters);
+		verify(delegate).clearCachedRowCount(first);
 	}
-
 }
