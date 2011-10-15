@@ -43,7 +43,7 @@ public class DefaultObjectMessageSourceTest {
 		addMessageToParent(INNER + "MappedArray", "numbers {numbers}");
 		addMessageToParent(INNER + "MappedCollection", "collection {collection}");
 		addMessageToParent(INNER + "MappedWithMissingParameters", "mapped {missing}");
-
+		addMessageToParent(INNER + "MappedWithArguments", "mapped args {1} {0}");
 	}
 
 	private void addMessageToParent(String code, String msg) {
@@ -52,49 +52,49 @@ public class DefaultObjectMessageSourceTest {
 
 	@Test
 	public void shouldGetMappedMessage() throws Exception {
-		String actual = messageSource.getMessage(new Mapped(), LOCALE);
+		String actual = messageSource.getMessage(new Mapped(), null, LOCALE);
 		assertThat(actual, is("mapped"));
 	}
 
 	@Test
 	public void shouldGetNullMessageForNullObject() throws Exception {
-		String actual = messageSource.getMessage((Object) null, LOCALE);
+		String actual = messageSource.getMessage((Object) null, null, LOCALE);
 		assertThat(actual, is(nullValue()));
 	}
 
 	@Test
 	public void shouldGetMessageForEnum() throws Exception {
-		String actual = messageSource.getMessage(NumberEnum.ONE, LOCALE);
+		String actual = messageSource.getMessage(NumberEnum.ONE, null, LOCALE);
 		assertThat(actual, is("1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), LOCALE);
+		String actual = messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), null, LOCALE);
 		assertThat(actual, is("a x b 1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedNullArgument() throws Exception {
-		String actual = messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE), LOCALE);
+		String actual = messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE), null, LOCALE);
 		assertThat(actual, is("a  b 1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedArrayArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedArray(1, 2, 3, 4), LOCALE);
+		String actual = messageSource.getMessage(new MappedArray(1, 2, 3, 4), null, LOCALE);
 		assertThat(actual, is("numbers 1,2,3,4"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedCollectionArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedCollection(NumberEnum.ONE, 2, 3, 4), LOCALE);
+		String actual = messageSource.getMessage(new MappedCollection(NumberEnum.ONE, 2, 3, 4), null, LOCALE);
 		assertThat(actual, is("collection 1,2,3,4"));
 	}
 
 	@Test
 	public void shouldLeaveUnmachedParameters() throws Exception {
-		String actual = messageSource.getMessage(new MappedWithMissingParameters(), LOCALE);
+		String actual = messageSource.getMessage(new MappedWithMissingParameters(), null, LOCALE);
 		assertThat(actual, is("mapped {missing}"));
 	}
 
@@ -102,7 +102,13 @@ public class DefaultObjectMessageSourceTest {
 	public void shouldThrowNoSuchObjectExceptionIfNotMapped() throws Exception {
 		thrown.expect(NoSuchObjectMessageException.class);
 		thrown.expectMessage("Unable to convert object of type " + INNER + "NotMapped to a message for locale en_GB");
-		messageSource.getMessage(new NotMapped(), LOCALE);
+		messageSource.getMessage(new NotMapped(), null, LOCALE);
+	}
+
+	@Test
+	public void shouldResolveMessageWithArguments() throws Exception {
+		String actual = messageSource.getMessage(new MappedWithArguments(), new Object[] { 1, 2 }, LOCALE);
+		assertThat(actual, is("mapped args 2 1"));
 	}
 
 	static class NotMapped {
@@ -154,6 +160,9 @@ public class DefaultObjectMessageSourceTest {
 	}
 
 	static class MappedWithMissingParameters {
+	}
+
+	static class MappedWithArguments {
 	}
 
 	enum NumberEnum {

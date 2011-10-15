@@ -20,12 +20,12 @@ import org.springframework.util.StringUtils;
  * Default implementation of {@link ObjectMessageSource} that delegates to a parent {@link MessageSource}. Object
  * messages are resolved using a generated {@link #resolveCode(Object, Locale) code}. T
  * <p>
- * Parameterized messages are supported by this resolver (see {@link #resolveMessage(Object, Locale)} for details).
+ * Parameterized messages are supported by this resolver (see {@link #resolveMessage(Object, Object[], Locale)} for
+ * details).
  */
 public class DefaultObjectMessageSource extends DelegatingMessageSource implements ObjectMessageSource {
 
 	private static final Pattern PARAMETER_PATTERN = Pattern.compile("\\{([\\w]+?)\\}");
-	private static final Object[] NO_ARGUMENTS = {};
 
 	/**
 	 * Create a new {@link DefaultObjectMessageSource} instance.
@@ -42,8 +42,8 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 		setParentMessageSource(parent);
 	}
 
-	public String getMessage(Object object, Locale locale) throws NoSuchObjectMessageException {
-		String message = getFullyResolvedMessage(object, locale, false);
+	public String getMessage(Object object, Object[] args, Locale locale) throws NoSuchObjectMessageException {
+		String message = getFullyResolvedMessage(object, args, locale, false);
 		if (message == null && object != null) {
 			throw new NoSuchObjectMessageException(object, locale);
 		}
@@ -53,21 +53,22 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 	/**
 	 * Returns a fully resolved message, includes resolving any message parameters.
 	 * @param object the object to resolve. Can be <tt>null</tt>
+	 * @param args the message arguments
 	 * @param locale the locale
 	 * @param allowResolveToString if the {@link #resolveToString(Object)} can be used to create the result
 	 * @return a fully resolved message
 	 */
-	private String getFullyResolvedMessage(Object object, Locale locale, boolean allowResolveToString) {
+	private String getFullyResolvedMessage(Object object, Object[] args, Locale locale, boolean allowResolveToString) {
 		if (object == null) {
 			return null;
 		}
 		try {
-			String resolvedMessage = resolveMessage(object, locale);
+			String resolvedMessage = resolveMessage(object, args, locale);
 			if (resolvedMessage != null) {
-				return expandParameters(resolvedMessage, object, locale);
+				return expandParameters(resolvedMessage, object, args, locale);
 			}
 			if (allowResolveToString) {
-				return resolveToString(object, locale);
+				return resolveToString(object, args, locale);
 			}
 			return null;
 		} catch (NoSuchObjectMessageException e) {
@@ -88,15 +89,16 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 	 * By default this method will use the result of {@link #resolveCode(Object, Locale)} to obtain the message.
 	 * 
 	 * @param object the object to resolve (never <tt>null</tt>)
+	 * @param args the message arguments
 	 * @param locale the locale
 	 * @return the resolved message or <tt>null</tt> if the object cannot be resolved
-	 * @see #resolveToString(Object, Locale)
+	 * @see #resolveToString(Object, Object[], Locale)
 	 */
-	protected String resolveMessage(Object object, Locale locale) {
+	protected String resolveMessage(Object object, Object[] args, Locale locale) {
 		String code = resolveCode(object, locale);
 		if (code != null) {
 			try {
-				String message = getMessage(code, NO_ARGUMENTS, locale);
+				String message = getMessage(code, args, locale);
 				if (!code.equals(message)) {
 					return message;
 				}
@@ -125,10 +127,11 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 	 * Expand any parameters contained in the message by inspecting object properties.
 	 * @param resolvedMessage the message to expand
 	 * @param object the source object
+	 * @param args the message arguments
 	 * @param locale the locale
 	 * @return a message with all supported parameters expanded
 	 */
-	private String expandParameters(String resolvedMessage, Object object, Locale locale) {
+	private String expandParameters(String resolvedMessage, Object object, Object[] args, Locale locale) {
 		Matcher matcher = PARAMETER_PATTERN.matcher(resolvedMessage);
 		StringBuffer sb = new StringBuffer();
 		BeanWrapper bean = new BeanWrapperImpl(object);
@@ -136,7 +139,8 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 			String propertyName = matcher.group(1);
 			if (bean.isReadableProperty(propertyName)) {
 				Object propertyValue = bean.getPropertyValue(propertyName);
-				String replacement = (propertyValue == null ? "" : getFullyResolvedMessage(propertyValue, locale, true));
+				String replacement = (propertyValue == null ? "" : getFullyResolvedMessage(propertyValue, args, locale,
+						true));
 				matcher.appendReplacement(sb, replacement);
 			} else {
 				// No property, leave the {variable} intact
@@ -149,21 +153,22 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 
 	/**
 	 * Resolve the given object to a <tt>String</tt> value. This method can be called if
-	 * {@link #resolveMessage(Object, Locale)} returns <tt>null</tt>. By default the {@link Object#toString()
+	 * {@link #resolveMessage(Object, Object[], Locale)} returns <tt>null</tt>. By default the {@link Object#toString()
 	 * toString()} method of the <tt>object</tt> will be used. Override this method if a specific string conversion
 	 * strategy is required.
 	 * @param object the object to resolve (never <tt>null</tt>)
+	 * @param args the message arguments
 	 * @param locale the locale
 	 * @return the resolved string value.
 	 */
-	protected String resolveToString(Object object, Locale locale) {
+	protected String resolveToString(Object object, Object[] args, Locale locale) {
 		if (object.getClass().isArray()) {
 			object = CollectionUtils.arrayToList(object);
 		}
 		if (object instanceof Collection) {
 			List<String> resolvedCollection = new ArrayList<String>();
 			for (Object element : (Collection<?>) object) {
-				resolvedCollection.add(getFullyResolvedMessage(element, locale, true));
+				resolvedCollection.add(getFullyResolvedMessage(element, args, locale, true));
 			}
 			return StringUtils.collectionToCommaDelimitedString(resolvedCollection);
 		}
