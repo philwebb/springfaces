@@ -103,10 +103,4 @@
 		</constructor-arg>
 	</bean>
 	
-	<bean id="objectMessageConverter" class="org.springframework.springfaces.convert.ObjectMessageConverter">
-		<constructor-arg>
-			<ref bean="objectMessageSource"/>
-		</constructor-arg>
-	</bean>
-	
 </beans>
