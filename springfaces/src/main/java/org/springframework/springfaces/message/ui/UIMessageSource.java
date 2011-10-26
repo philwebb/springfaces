@@ -44,13 +44,11 @@ import org.springframework.util.StringUtils;
  */
 public class UIMessageSource extends UIComponentBase {
 
-	// FIXME how to deal with missing messages? exception? warning? FacesMessage?
-
-	private static final String SLASH = "/";
-
 	private final Log logger = LogFactory.getLog(getClass());
 
 	public static final String COMPONENT_FAMILY = "spring.faces.MessageSource";
+
+	private static final String SLASH = "/";
 
 	private static final String WEB_INF = "WEB-INF";
 

@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.springfaces.SpringFacesMocks;
 import org.springframework.web.context.WebApplicationContext;
 
 /**

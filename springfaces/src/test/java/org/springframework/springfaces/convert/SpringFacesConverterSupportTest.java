@@ -22,8 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.springfaces.FacesContextSetter;
+import org.springframework.springfaces.SpringFacesMocks;
 import org.springframework.springfaces.bean.ForClass;
-import org.springframework.springfaces.component.SpringFacesMocks;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
 /**

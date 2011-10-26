@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.springfaces.component.SpringFacesMocks;
+import org.springframework.springfaces.SpringFacesMocks;
 import org.springframework.web.context.WebApplicationContext;
 
 /**

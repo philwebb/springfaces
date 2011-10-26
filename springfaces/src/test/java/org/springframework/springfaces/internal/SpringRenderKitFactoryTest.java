@@ -20,7 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.springfaces.FacesContextSetter;
-import org.springframework.springfaces.component.SpringFacesMocks;
+import org.springframework.springfaces.SpringFacesMocks;
 import org.springframework.web.context.WebApplicationContext;
 
 /**

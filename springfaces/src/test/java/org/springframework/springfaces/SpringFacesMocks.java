@@ -1,4 +1,4 @@
-package org.springframework.springfaces.component;
+package org.springframework.springfaces;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
