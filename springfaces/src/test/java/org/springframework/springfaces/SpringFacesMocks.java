@@ -12,7 +12,6 @@ import javax.faces.context.FacesContext;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.MockServletContext;
-import org.springframework.springfaces.SpringFacesIntegration;
 
 /**
  * Tests utilities that can be used to setup mocks.
@@ -20,6 +19,9 @@ import org.springframework.springfaces.SpringFacesIntegration;
  * @author Phillip Webb
  */
 public class SpringFacesMocks {
+
+	private static final String SPRING_FACES_ATTR = SpringFacesIntegration.class.getName();
+	private static final String SPRING_FACES_DATE_ATTR = SpringFacesIntegration.class.getName() + ".DATE";
 
 	/**
 	 * Update the mock FacesContext to include support for {@link SpringFacesIntegration}.
@@ -33,9 +35,18 @@ public class SpringFacesMocks {
 		springFacesIntegration.setServletContext(new MockServletContext());
 		springFacesIntegration.setApplicationContext(applicationContext);
 		Map<String, Object> applicationMap = new HashMap<String, Object>();
-		applicationMap.put(SpringFacesIntegration.class.getName(), springFacesIntegration);
-		applicationMap.put(SpringFacesIntegration.class.getName() + ".DATE", new Date());
+		applicationMap.put(SPRING_FACES_ATTR, springFacesIntegration);
+		applicationMap.put(SPRING_FACES_DATE_ATTR, new Date());
 		given(facesContext.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getApplicationMap()).willReturn(applicationMap);
+	}
+
+	/**
+	 * Remove previously {@link #setupSpringFacesIntegration(FacesContext, ApplicationContext) setup} support for
+	 * {@link SpringFacesIntegration}.
+	 * @param facesContext the faces context previously setup
+	 */
+	public static void removeSpringFacesIntegration(FacesContext facesContext) {
+		facesContext.getExternalContext().getApplicationMap().remove(SPRING_FACES_ATTR);
 	}
 }

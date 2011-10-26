@@ -1,6 +1,8 @@
 package org.springframework.springfaces.message.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -110,9 +112,19 @@ public class UIMessageSource extends UIComponentBase {
 	private String[] getPrefixCodes(FacesContext context) {
 		String definedPrefix = getPrefix();
 		if (definedPrefix != null) {
-			return StringUtils.commaDelimitedListToStringArray(definedPrefix);
+			return getDefinedPrefixCodes(definedPrefix);
 		}
 		return new String[] { buildPrefixCodeFromViewRoot(context) };
+	}
+
+	private String[] getDefinedPrefixCodes(String definedPrefix) {
+		List<String> codes = new ArrayList<String>();
+		for (String code : StringUtils.commaDelimitedListToStringArray(definedPrefix)) {
+			if (StringUtils.hasLength(code)) {
+				codes.add(ensureEndsWithDot(code.trim()));
+			}
+		}
+		return codes.toArray(new String[codes.size()]);
 	}
 
 	/**
@@ -121,12 +133,19 @@ public class UIMessageSource extends UIComponentBase {
 	 * @return a prefix code
 	 */
 	private String buildPrefixCodeFromViewRoot(FacesContext context) {
+		Assert.state(context.getViewRoot() != null, "Unable to build message prefix from null viewRoot");
+		Assert.state(context.getViewRoot().getViewId() != null, "Unable to build message prefix from null viewRoot ID");
 		String code = context.getViewRoot().getViewId();
 		code = removePrefix(code, SLASH);
 		code = removePrefix(code, WEB_INF);
 		code = removePrefix(code, SLASH);
 		code = removeExtension(code);
 		code = code.replaceAll("\\/", ".");
+		code = ensureEndsWithDot(code);
+		return code.toLowerCase();
+	}
+
+	private String ensureEndsWithDot(String code) {
 		if (!code.endsWith(".")) {
 			code = code + ".";
 		}
