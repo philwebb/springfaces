@@ -15,6 +15,11 @@ import org.springframework.springfaces.traveladvisor.integrationtest.page.reques
 import org.springframework.springfaces.traveladvisor.integrationtest.page.requestmapping.VariablesRequestMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
+/**
+ * Integration tests for request mappings.
+ * 
+ * @author Phillip Web
+ */
 public class RequestMappingIT {
 
 	@Rule

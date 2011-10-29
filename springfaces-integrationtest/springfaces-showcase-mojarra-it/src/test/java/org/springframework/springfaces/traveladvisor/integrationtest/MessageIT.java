@@ -16,6 +16,11 @@ import org.springframework.springfaces.traveladvisor.integrationtest.page.messag
 import org.springframework.springfaces.traveladvisor.integrationtest.page.message.SimpleMessagePage;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
+/**
+ * Integration tests for messages.
+ * 
+ * @author Phillip Web
+ */
 public class MessageIT {
 
 	@Rule

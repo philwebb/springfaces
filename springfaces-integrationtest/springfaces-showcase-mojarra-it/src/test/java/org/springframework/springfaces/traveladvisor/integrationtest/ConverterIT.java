@@ -14,6 +14,11 @@ import org.springframework.springfaces.traveladvisor.integrationtest.page.conver
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.SpringConverterPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
+/**
+ * Integration tests for converters.
+ * 
+ * @author Phillip Web
+ */
 public class ConverterIT {
 
 	@Rule
