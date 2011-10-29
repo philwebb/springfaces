@@ -25,17 +25,10 @@
 							<location>../../eclipse/org.eclipse.jdt.core.prefs</location>
 						</file>
 					</additionalConfig>
-					<!-- 
-					<wtpversion>1.5</wtpversion>
-					<additionalProjectFacets>
-						<java>1.5</java>
-						<jst.web>2.5</jst.web>
-						<jst.jsf>2.0</jst.jsf>
-					</additionalProjectFacets>
-					<additionalProjectnatures>
-						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
-					</additionalProjectnatures>
-					 -->
+					<!-- <wtpversion>1.5</wtpversion> <additionalProjectFacets> <java>1.5</java> 
+						<jst.web>2.5</jst.web> <jst.jsf>2.0</jst.jsf> </additionalProjectFacets> 
+						<additionalProjectnatures> <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature> 
+						</additionalProjectnatures> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -78,6 +71,12 @@
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
+		</dependency>
+
+		<!-- Other -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
 		</dependency>
 	</dependencies>
 	<profiles>

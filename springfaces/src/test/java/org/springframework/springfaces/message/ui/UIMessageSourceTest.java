@@ -18,12 +18,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -166,20 +164,6 @@ public class UIMessageSourceTest {
 	}
 
 	@Test
-	public void shouldResolveArgumentsUsingConverter() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		MessageSourceMap messageSourceMap = callEncodeEnd();
-		Convertable convertable = new Convertable();
-		Converter converter = mock(Converter.class);
-		Application application = mock(Application.class);
-		given(facesContext.getApplication()).willReturn(application);
-		given(application.createConverter(Convertable.class)).willReturn(converter);
-		given(converter.getAsString(facesContext, uiMessageSource, convertable)).willReturn("converted");
-		MessageSourceResolvable resolvable = (MessageSourceResolvable) messageSourceMap.get("test").get(convertable);
-		assertThat(resolvable.getArguments()[0], is(equalTo((Object) "converted")));
-	}
-
-	@Test
 	public void shouldThrowOnMissingMessageWhenInProduction() throws Exception {
 		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		given(facesContext.isProjectStage(ProjectStage.Production)).willReturn(true);
@@ -201,6 +185,18 @@ public class UIMessageSourceTest {
 		verify(facesContext).addMessage(anyString(), messageCaptor.capture());
 		assertThat(messageCaptor.getValue().getDetail(), is("No message found under code 'test' for locale '"
 				+ Locale.getDefault().toString() + "'."));
+	}
+
+	@Test
+	public void shouldWrapWithDefaultObjectMessageSource() throws Exception {
+		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		MessageSourceMap messageSourceMap = callEncodeEnd();
+		Convertable convertable = new Convertable();
+		given(
+				applicationContext.getMessage("org.springframework.springfaces.message.ui."
+						+ "UIMessageSourceTest$Convertable", new Object[] {}, null)).willReturn("test");
+		String actual = messageSourceMap.get(convertable).toString();
+		assertThat(actual, is("test"));
 	}
 
 	private MessageSourceMap callEncodeEnd() throws IOException {

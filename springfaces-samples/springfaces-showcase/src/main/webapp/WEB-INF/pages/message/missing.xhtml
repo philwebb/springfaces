@@ -8,24 +8,14 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Message - Example</title>
+		<title>Message - Missing</title>
 	</h:head>
 
 	<h:body>
-		<s:messageSource var="messages" />
+		<s:messageSource var="messages"/>
 		<p>
-			<h:outputText value="#{messages.welcome}" />
+			<h:outputText value="#{messages.idontexist}"/>
 		</p>
-		
-		<p>
-			<h:outputText value="#{messages.expand['can']['parameters']}" />
-		</p>
-		
-		<p>
-			<h:outputText value="#{messages.missing}" />
-		</p>
-		
-		
 	</h:body>
 </ui:composition>
 

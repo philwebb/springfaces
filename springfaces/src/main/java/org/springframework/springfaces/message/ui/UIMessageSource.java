@@ -6,20 +6,20 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.springfaces.SpringFacesIntegration;
+import org.springframework.springfaces.message.DefaultObjectMessageSource;
+import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -79,13 +79,26 @@ public class UIMessageSource extends UIComponentBase {
 	 * @return a {@link MessageSourceMap} instance
 	 */
 	private MessageSourceMap createMessageSourceMap(final FacesContext context) {
-		MessageSource messageSource = getMessageSource(context);
 		String[] prefixCodes = getPrefixCodes(context);
-		return new UIMessageSourceMap(context, messageSource, prefixCodes);
+		MessageSource messageSource = getMessageSource(context);
+		ObjectMessageSource objectMessageSource = getObjectMessageSource(messageSource);
+		return new UIMessageSourceMap(context, objectMessageSource, prefixCodes);
 	}
 
 	/**
-	 * Obtain a {@link MessageSourceMap} by using the specified {@link #getSource()} or falling back to the current
+	 * Returns an {@link ObjectMessageSource} from the specified message source.
+	 * @param messageSource the message source
+	 * @return an object message source
+	 */
+	private ObjectMessageSource getObjectMessageSource(MessageSource messageSource) {
+		if (messageSource instanceof ObjectMessageSource) {
+			return (ObjectMessageSource) messageSource;
+		}
+		return new DefaultObjectMessageSource(messageSource);
+	}
+
+	/**
+	 * Return a message source by calling {@link #getSource()} or falling back to the current
 	 * {@link SpringFacesIntegration#getApplicationContext() ApplicationContext}.
 	 * @param context the faces context
 	 * @return a {@link MessageSource} instance
@@ -168,7 +181,7 @@ public class UIMessageSource extends UIComponentBase {
 	}
 
 	public String getVar() {
-		return (String) getStateHelper().get(PropertyKeys.var);
+		return (String) getStateHelper().eval(PropertyKeys.var);
 	}
 
 	public void setVar(String var) {
@@ -176,7 +189,7 @@ public class UIMessageSource extends UIComponentBase {
 	}
 
 	public MessageSource getSource() {
-		return (MessageSource) getStateHelper().get(PropertyKeys.source);
+		return (MessageSource) getStateHelper().eval(PropertyKeys.source);
 	}
 
 	public void setSource(MessageSource source) {
@@ -184,7 +197,7 @@ public class UIMessageSource extends UIComponentBase {
 	}
 
 	public String getPrefix() {
-		return (String) getStateHelper().put(PropertyKeys.prefix, null);
+		return (String) getStateHelper().eval(PropertyKeys.prefix, null);
 	}
 
 	public void setPrefix(String prefix) {
@@ -207,20 +220,6 @@ public class UIMessageSource extends UIComponentBase {
 		@Override
 		protected Locale getLocale() {
 			return FacesUtils.getLocale(context);
-		}
-
-		@Override
-		protected Object resolveMessageArgument(Object argument) {
-			if (argument != null) {
-				try {
-					Converter converter = context.getApplication().createConverter(argument.getClass());
-					if (converter != null) {
-						return converter.getAsString(context, UIMessageSource.this, argument);
-					}
-				} catch (FacesException e) {
-				}
-			}
-			return argument;
 		}
 
 		@Override
