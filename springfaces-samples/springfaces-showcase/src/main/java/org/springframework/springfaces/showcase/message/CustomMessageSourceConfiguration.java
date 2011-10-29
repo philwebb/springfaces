@@ -12,7 +12,7 @@ public class CustomMessageSourceConfiguration {
 	@Bean
 	public MessageSource exampleMessageSource() {
 		StaticMessageSource source = new StaticMessageSource();
-		source.addMessage("pages.message.definedsource.hello", Locale.getDefault(), "Hello Defined Source");
+		source.addMessage("pages.message.definedsource.hello", Locale.getDefault(), "Defined Source Hello");
 		return source;
 	}
 }
