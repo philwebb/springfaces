@@ -12,12 +12,14 @@
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:inputText value="#{holder.value}">
+		<h:form id="form">
+			<h:inputText id="input" value="#{holder.value}">
 				<f:converter converterId="genericSpringBeanConverter"/>
 			</h:inputText><br/>
-			<h:commandButton value="submit"/><br/>
-			<h:outputText value="Conversion by ID : #{holder.value}"/>
+			<h:commandButton id="submit" value="submit"/><br/>
+			<div id="output">
+				<h:outputText value="Conversion by ID : #{holder.value}"/>
+			</div>
 		</h:form>
 	</h:body>
 </ui:composition>
