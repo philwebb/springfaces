@@ -6,6 +6,8 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
+//FIXME DC
+
 public class BookmarkableRedirectViewIdResolver extends UrlBasedViewResolver {
 
 	public BookmarkableRedirectViewIdResolver() {

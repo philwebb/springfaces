@@ -7,8 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.StaticMessageSource;
 
+/**
+ * Defines a single {@link StaticMessageSource} for use by {@link MessageExampleController}.
+ * 
+ * @author Phillip Webb
+ */
 @Configuration
 public class CustomMessageSourceConfiguration {
+
 	@Bean
 	public MessageSource exampleMessageSource() {
 		StaticMessageSource source = new StaticMessageSource();

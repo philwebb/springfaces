@@ -3,6 +3,11 @@ package org.springframework.springfaces.showcase.message;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * MVC Controller to demonstrate messages.
+ * 
+ * @author Phillip Webb
+ */
 @Controller
 public class MessageExampleController {
 

@@ -3,6 +3,11 @@ package org.springframework.springfaces.showcase.message;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Simple bean used to demonstrate messages.
+ * 
+ * @author Phillip Webb
+ */
 @Component
 @Scope("request")
 public class ExampleMessageBean {

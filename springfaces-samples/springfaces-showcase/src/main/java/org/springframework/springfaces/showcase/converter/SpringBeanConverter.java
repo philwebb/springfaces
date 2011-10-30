@@ -6,6 +6,11 @@ import javax.faces.convert.Converter;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Example Faces Converter for {@link ConvertedObject} values.
+ * 
+ * @author Phillip Webb
+ */
 @Component
 public class SpringBeanConverter implements Converter {
 

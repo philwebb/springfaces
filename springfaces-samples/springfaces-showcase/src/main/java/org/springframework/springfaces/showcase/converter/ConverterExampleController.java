@@ -7,6 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * MVC Controller to demonstrate conversion.
+ * 
+ * @author Phillip Webb
+ */
 @Controller
 public class ConverterExampleController {
 
