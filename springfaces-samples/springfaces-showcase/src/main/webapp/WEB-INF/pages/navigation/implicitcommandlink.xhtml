@@ -13,7 +13,7 @@
 
 	<h:body>
 		<h:form id="form">
-			<h:commandLink value="implicit command link" action="spring:@destination">
+			<h:commandLink id="commandlink" value="implicit command link" action="spring:@destination">
 				<f:param name="s" value="from the implicit command link" />
 			</h:commandLink>
 		</h:form>
