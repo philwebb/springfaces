@@ -17,8 +17,8 @@ public class NavigationBean implements Serializable {
 		this.destination = destination;
 	}
 
-	public Date getDate() {
-		return date;
+	public String getDate() {
+		return String.valueOf(date);
 	}
 
 	public void setDate(Date date) {

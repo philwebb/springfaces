@@ -13,9 +13,14 @@ public class ShowcasePages extends Pages {
 
 	private static final WebDriverFactory FACTORY = new WebDriverFactory() {
 		public WebDriver newWebDriver() {
-			FirefoxDriver webDriver = new FirefoxDriver();
-			webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-			return webDriver;
+			try {
+				FirefoxDriver webDriver = new FirefoxDriver();
+				webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+				return webDriver;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new IllegalStateException(e);
+			}
 		}
 	};
 

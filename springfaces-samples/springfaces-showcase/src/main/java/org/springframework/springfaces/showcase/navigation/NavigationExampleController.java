@@ -129,9 +129,8 @@ public class NavigationExampleController {
 
 	@NavigationMapping
 	public void onAnnotationStream(FacesContext context, HttpServletResponse response) throws IOException {
-		response.setContentType("binary/octet-stream");
+		response.setContentType("text/plain");
 		response.setContentLength(5);
-		response.setHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
 		response.getWriter().write("hello");
 		response.flushBuffer();
 		context.responseComplete();
@@ -156,7 +155,7 @@ public class NavigationExampleController {
 	@NavigationMapping
 	public HttpEntity<String> onAnnotationHttpEntity() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Content-Disposition", "attachment; filename=\"test.txt\"");
+		headers.set("Content-Length", "4");
 		return new HttpEntity<String>("test", headers);
 	}
 

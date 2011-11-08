@@ -1,11 +1,18 @@
 package org.springframework.springfaces.traveladvisor.integrationtest;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationHttpEntityPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationLinkPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationRerenderPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationResponseBodyPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationStreamingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateAnnotationWithValuePage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateDirectPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateImplicitButtonPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.navigate.NavigateImplicitCommandButtonPage;
@@ -22,7 +29,7 @@ import org.springframework.springfaces.traveladvisor.integrationtest.rule.Showca
 /**
  * Integration tests for navigation.
  * 
- * @author Phillip Web
+ * @author Phillip Webb
  */
 public class NavigationIT {
 
@@ -101,31 +108,42 @@ public class NavigationIT {
 
 	@Test
 	public void shouldNavigateAnnotationLink() throws Exception {
-		// FIXME
+		NavigateAnnotationLinkPage page = pages.get(NavigateAnnotationLinkPage.class);
+		NavigationDestinationPage destination = page.click();
+		assertThat(destination.getBodyText(), is("Navigation Destination from : from annotation"));
 	}
 
 	@Test
 	public void shouldNavigateAnnotationWithValue() throws Exception {
-		// FIXME
+		NavigateAnnotationWithValuePage page = pages.get(NavigateAnnotationWithValuePage.class);
+		page.setInputText("/spring/navigation/destination?s=valuetest");
+		NavigationDestinationPage destination = page.click();
+		assertThat(destination.getBodyText(), is("Navigation Destination from : valuetest"));
 	}
 
 	@Test
 	public void shouldNavigateAnnotationReRender() throws Exception {
-		// FIXME
+		NavigateAnnotationRerenderPage page = pages.get(NavigateAnnotationRerenderPage.class);
+		assertThat(page.getText(), is("null"));
+		NavigateAnnotationRerenderPage destination = page.click();
+		assertThat(destination.getText(), is(not("")));
 	}
 
 	@Test
 	public void shouldNavigateAnnotationStreaming() throws Exception {
-		// FIXME
+		NavigateAnnotationStreamingPage page = pages.get(NavigateAnnotationStreamingPage.class);
+		assertThat(page.click(), is("hello"));
 	}
 
 	@Test
 	public void shouldNavigateAnnotationResponseBody() throws Exception {
-		// FIXME
+		NavigateAnnotationResponseBodyPage page = pages.get(NavigateAnnotationResponseBodyPage.class);
+		assertThat(page.click(), is("responsebody"));
 	}
 
 	@Test
 	public void shouldNavigateAnnotationHttpEntity() throws Exception {
-		// FIXME
+		NavigateAnnotationHttpEntityPage page = pages.get(NavigateAnnotationHttpEntityPage.class);
+		assertThat(page.click(), is("test"));
 	}
 }
