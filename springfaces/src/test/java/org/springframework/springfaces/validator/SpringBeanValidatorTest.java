@@ -48,6 +48,6 @@ public class SpringBeanValidatorTest {
 	public void shouldDelegateValidate() throws Exception {
 		Object value = new Object();
 		validator.validate(facesContext, component, value);
-		verify(validator).validate(facesContext, component, value);
+		verify(bean).validate(facesContext, component, value);
 	}
 }
