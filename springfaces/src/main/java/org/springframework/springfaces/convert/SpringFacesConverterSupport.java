@@ -22,7 +22,7 @@ import org.springframework.springfaces.util.ForClassFilter;
 
 /**
  * {@link FacesWrapperFactory} for JSF {@link Application}s that offers extended Spring converter support. All Spring
- * beans that implement {@link javax.faces.convert.Converter} or
+ * Beans that implement {@link javax.faces.convert.Converter} or
  * {@link org.springframework.springfaces.convert.Converter} are made available as JSF converters (the ID of the bean is
  * used as the converter name). The {@link ForClass @ForClass} annotation and {@link ConditionalForClass} interface are
  * also supported to return default converters for a class.
@@ -76,6 +76,42 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 	}
 
 	/**
+	 * Creates a converter from a Spring bean for the given target class or returns <tt>null</tt> if no suitable bean is
+	 * found.
+	 * @param targetClass the target class
+	 * @return a converter or <tt>null</tt>
+	 */
+	private Converter createConverterBean(Class<?> targetClass) {
+		Set<String> beanIds = FOR_CLASS_FILTER.apply(converters, targetClass).keySet();
+		if (beanIds.isEmpty()) {
+			return null;
+		}
+		if (beanIds.size() != 1) {
+			throw new IllegalStateException("Multiple JSF converters registered with Spring for "
+					+ targetClass.getName() + " : " + beanIds);
+		}
+		return createConverterBean(beanIds.iterator().next());
+	}
+
+	/**
+	 * Creates a converter from a Spring bean for the given bean ID or returns <tt>null</tt> if no bean is found.
+	 * @param beanId the bean ID
+	 * @return a converter or <tt>null</tt>
+	 */
+	private Converter createConverterBean(String beanId) {
+		Object bean = converters.get(beanId);
+		if (bean != null) {
+			if (CONVERTER_TYPE.isInstance(bean)) {
+				return new SpringBeanConverter(FacesContext.getCurrentInstance(), beanId);
+			}
+			if (FACES_CONVERTER_TYPE.isInstance(bean)) {
+				return new SpringBeanFacesConverter(FacesContext.getCurrentInstance(), beanId);
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * {@link Application} wrapper that offers extended Spring converter support.
 	 */
 	public class ConverterApplication extends ApplicationWrapper {
@@ -107,42 +143,6 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 				return converter;
 			}
 			return super.createConverter(converterId);
-		}
-
-		/**
-		 * Creates a converter from a Spring bean for the given target class or returns <tt>null</tt> if no suitable
-		 * bean is found.
-		 * @param targetClass the target class
-		 * @return a converter or <tt>null</tt>
-		 */
-		private Converter createConverterBean(Class<?> targetClass) {
-			Set<String> beanIds = FOR_CLASS_FILTER.apply(converters, targetClass).keySet();
-			if (beanIds.isEmpty()) {
-				return null;
-			}
-			if (beanIds.size() != 1) {
-				throw new IllegalStateException("Multiple JSF converters registered with Spring for "
-						+ targetClass.getName() + " : " + beanIds);
-			}
-			return createConverterBean(beanIds.iterator().next());
-		}
-
-		/**
-		 * Creates a converter from a Spring bean for the given bean ID or returns <tt>null</tt> if no bean is found.
-		 * @param beanId the bean ID
-		 * @return a converter or <tt>null</tt>
-		 */
-		private Converter createConverterBean(String beanId) {
-			Object bean = converters.get(beanId);
-			if (bean != null) {
-				if (CONVERTER_TYPE.isInstance(bean)) {
-					return new SpringBeanConverter(FacesContext.getCurrentInstance(), beanId);
-				}
-				if (FACES_CONVERTER_TYPE.isInstance(bean)) {
-					return new SpringBeanFacesConverter(FacesContext.getCurrentInstance(), beanId);
-				}
-			}
-			return null;
 		}
 	}
 }

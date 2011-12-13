@@ -8,7 +8,7 @@ import javax.faces.context.FacesContext;
 import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 
 /**
- * A JSF {@link javax.faces.convert.Converter} that delegates to a Spring bean.
+ * A JSF {@link javax.faces.convert.Converter} that delegates to a Spring Bean.
  * 
  * @author Phillip Webb
  */
