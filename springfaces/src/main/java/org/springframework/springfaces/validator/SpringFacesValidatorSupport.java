@@ -14,6 +14,7 @@ import javax.faces.validator.ValidatorException;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
@@ -21,6 +22,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.bean.ConditionalForClass;
 import org.springframework.springfaces.bean.ForClass;
+import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 import org.springframework.springfaces.util.ForClassFilter;
 
 /**
@@ -33,7 +35,7 @@ import org.springframework.springfaces.util.ForClassFilter;
  * @author Phillip Webb
  */
 public class SpringFacesValidatorSupport implements FacesWrapperFactory<Application>,
-		ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
+		ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware, BeanNameAware {
 
 	private static final Class<?> FACES_VALIDATOR_TYPE = javax.faces.validator.Validator.class;
 	private static final Class<?> VALIDATOR_TYPE = org.springframework.springfaces.validator.Validator.class;
@@ -42,10 +44,16 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 
 	private ApplicationContext applicationContext;
 
+	private String beanName;
+
 	private HashMap<String, Object> validators;
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public void setBeanName(String name) {
+		this.beanName = name;
 	}
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -74,7 +82,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		return BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, type, true, true);
 	}
 
-	private Validator createValidatorBean(Class<?> targetClass) {
+	Validator createValidatorBean(Class<?> targetClass) {
 		Set<String> beanIds = FOR_CLASS_FILTER.apply(validators, targetClass).keySet();
 		if (beanIds.isEmpty()) {
 			return null;
@@ -134,14 +142,25 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		}
 	}
 
-	private class DefaultValidator implements Validator {
+	public static class DefaultValidator extends SpringBeanPartialStateHolder<SpringFacesValidatorSupport> implements
+			Validator {
+
+		@Deprecated
+		public DefaultValidator() {
+			super();
+		}
+
+		public DefaultValidator(FacesContext context, String beanName) {
+			super(context, beanName);
+		}
+
 		public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 			// FIXME do we allow validation of null value
 			if (value == null) {
 				return;
 			}
 			Class<?> targetClass = value.getClass();
-			Validator validatorBean = createValidatorBean(targetClass);
+			Validator validatorBean = getBean().createValidatorBean(targetClass);
 			if (validatorBean != null) {
 				validatorBean.validate(context, component, value);
 			}

@@ -14,7 +14,7 @@
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dependency.springframework.version>3.1.0.BUILD-SNAPSHOT</dependency.springframework.version>
+		<dependency.springframework.version>3.1.0.RELEASE</dependency.springframework.version>
 		<dependency.jsf.version>2.0.3</dependency.jsf.version>
 		<dependency.selenium.version>2.12.0</dependency.selenium.version>
 	</properties>
@@ -129,7 +129,7 @@
 			<dependency>
 				<groupId>org.primefaces</groupId>
 				<artifactId>primefaces</artifactId>
-				<version>3.0.M3</version>
+				<version>3.0.RC1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>

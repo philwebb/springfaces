@@ -51,11 +51,11 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.HandlerMethodSelector;
-import org.springframework.web.method.annotation.support.ExpressionValueMethodArgumentResolver;
-import org.springframework.web.method.annotation.support.RequestHeaderMapMethodArgumentResolver;
-import org.springframework.web.method.annotation.support.RequestHeaderMethodArgumentResolver;
-import org.springframework.web.method.annotation.support.RequestParamMapMethodArgumentResolver;
-import org.springframework.web.method.annotation.support.RequestParamMethodArgumentResolver;
+import org.springframework.web.method.annotation.ExpressionValueMethodArgumentResolver;
+import org.springframework.web.method.annotation.RequestHeaderMapMethodArgumentResolver;
+import org.springframework.web.method.annotation.RequestHeaderMethodArgumentResolver;
+import org.springframework.web.method.annotation.RequestParamMapMethodArgumentResolver;
+import org.springframework.web.method.annotation.RequestParamMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolverComposite;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -63,17 +63,17 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandlerCom
 import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
+import org.springframework.web.servlet.mvc.method.annotation.HttpEntityMethodProcessor;
+import org.springframework.web.servlet.mvc.method.annotation.ModelAndViewMethodReturnValueHandler;
+import org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
+import org.springframework.web.servlet.mvc.method.annotation.ServletCookieValueMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod;
 import org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory;
-import org.springframework.web.servlet.mvc.method.annotation.support.HttpEntityMethodProcessor;
-import org.springframework.web.servlet.mvc.method.annotation.support.ModelAndViewMethodReturnValueHandler;
-import org.springframework.web.servlet.mvc.method.annotation.support.PathVariableMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.method.annotation.support.RequestResponseBodyMethodProcessor;
-import org.springframework.web.servlet.mvc.method.annotation.support.ServletCookieValueMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.method.annotation.support.ServletRequestMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.method.annotation.support.ServletResponseMethodArgumentResolver;
-import org.springframework.web.servlet.mvc.method.annotation.support.ServletWebArgumentResolverAdapter;
+import org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ServletResponseMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentResolverAdapter;
 
 /**
  * {@link NavigationOutcomeResolver} that resolves JSF navigation outcomes using methods annotated with
