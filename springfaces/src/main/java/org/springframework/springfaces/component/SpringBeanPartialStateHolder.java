@@ -1,5 +1,7 @@
 package org.springframework.springfaces.component;
 
+import java.io.Serializable;
+
 import javax.faces.component.PartialStateHolder;
 import javax.faces.component.StateHolder;
 import javax.faces.context.FacesContext;
@@ -59,19 +61,27 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 	}
 
 	public Object saveState(FacesContext context) {
+		Object beanState = null;
 		if (bean instanceof StateHolder) {
 			StateHolder stateHolder = (StateHolder) bean;
-			return new Object[] { beanName, stateHolder.saveState(context) };
+			beanState = stateHolder.saveState(context);
 		}
-		return new Object[] { beanName };
+		if (initialState) {
+			return beanState;
+		}
+		return new SavedBeanState(beanName, beanState);
 	}
 
 	public void restoreState(FacesContext context, Object state) {
-		Object[] stateArray = (Object[]) state;
-		beanName = (String) stateArray[0];
-		loadBeanFromContext(context);
-		if (stateArray.length > 1) {
-			((StateHolder) bean).restoreState(context, stateArray[1]);
+		Object beanState = state;
+		if (state instanceof SavedBeanState) {
+			SavedBeanState savedBeanState = (SavedBeanState) state;
+			beanName = savedBeanState.getBeanName();
+			loadBeanFromContext(context);
+			beanState = savedBeanState.getBeanState();
+		}
+		if (beanState != null) {
+			((StateHolder) bean).restoreState(context, beanState);
 		}
 	}
 
@@ -125,5 +135,24 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 			((PartialStateHolder) bean).clearInitialState();
 		}
 		initialState = false;
+	}
+
+	static class SavedBeanState implements Serializable {
+
+		private String beanName;
+		private Object beanState;
+
+		public SavedBeanState(String beanName, Object beanState) {
+			this.beanName = beanName;
+			this.beanState = beanState;
+		}
+
+		public String getBeanName() {
+			return beanName;
+		}
+
+		public Object getBeanState() {
+			return beanState;
+		}
 	}
 }

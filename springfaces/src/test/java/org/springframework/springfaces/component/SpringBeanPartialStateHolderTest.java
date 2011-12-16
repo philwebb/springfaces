@@ -1,6 +1,8 @@
 package org.springframework.springfaces.component;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
@@ -148,6 +150,27 @@ public class SpringBeanPartialStateHolderTest {
 		thrown.expectMessage("Unable to load bean 'integerBean' Object of class [java.lang.Integer] "
 				+ "must be an instance of class java.lang.Long");
 		new TypedToLongHolder(context, integerBeanName);
+	}
+
+	@Test
+	public void shouldNotHaveNullStateIfMakeInitialStateAndNotStateHolderBean() throws Exception {
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
+		holder.markInitialState();
+		Object state = holder.saveState(context);
+		assertThat(state, is(nullValue()));
+	}
+
+	@Test
+	public void shouldNotHaveDirectStateIfMakeInitialStateAndStateHolderBean() throws Exception {
+		Object beanState = new Object();
+		given(stateHolderBean.saveState(context)).willReturn(beanState);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context,
+				stateHolderBeanName);
+		holder.markInitialState();
+		Object state = holder.saveState(context);
+		holder.restoreState(context, state);
+		assertThat(state, is(sameInstance(beanState)));
+		verify(stateHolderBean).restoreState(context, beanState);
 	}
 
 	private static class TypedToNumberHolder extends SpringBeanPartialStateHolder<Number> {
