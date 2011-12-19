@@ -94,12 +94,7 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 		ApplicationContext applicationContext = SpringFacesIntegration.getCurrentInstance(context.getExternalContext())
 				.getApplicationContext();
 		this.bean = (T) applicationContext.getBean(beanName);
-		Class<?> beanType = null;
-		try {
-			beanType = GenericTypeResolver.resolveTypeArgument(getClass(), SpringBeanPartialStateHolder.class);
-		} catch (Exception e) {
-			// Work around SPR-8698
-		}
+		Class<?> beanType = GenericTypeResolver.resolveTypeArgument(getClass(), SpringBeanPartialStateHolder.class);
 		if (beanType != null) {
 			Assert.isInstanceOf(beanType, bean, "Unable to load bean '" + beanName + "' ");
 		}

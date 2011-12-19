@@ -1,12 +1,17 @@
 package org.springframework.springfaces.validator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.faces.FacesException;
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationWrapper;
+import javax.faces.component.StateHolder;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.Validator;
@@ -24,6 +29,7 @@ import org.springframework.springfaces.bean.ConditionalForClass;
 import org.springframework.springfaces.bean.ForClass;
 import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 import org.springframework.springfaces.util.ForClassFilter;
+import org.springframework.springfaces.util.StateHolders;
 
 /**
  * {@link FacesWrapperFactory} for JSF {@link Application}s that offers extended Spring validator support. All Spring
@@ -38,6 +44,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware, BeanNameAware {
 
 	private static final Class<?> FACES_VALIDATOR_TYPE = javax.faces.validator.Validator.class;
+
 	private static final Class<?> VALIDATOR_TYPE = org.springframework.springfaces.validator.Validator.class;
 
 	private static final ForClassFilter FOR_CLASS_FILTER = new ForClassFilter(VALIDATOR_TYPE);
@@ -82,16 +89,13 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		return BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, type, true, true);
 	}
 
-	Validator createValidatorBean(Class<?> targetClass) {
+	protected final Collection<Validator> createValidatorBeans(Class<?> targetClass) {
 		Set<String> beanIds = FOR_CLASS_FILTER.apply(validators, targetClass).keySet();
-		if (beanIds.isEmpty()) {
-			return null;
+		List<Validator> validators = new ArrayList<Validator>();
+		for (String beanId : beanIds) {
+			validators.add(createValidatorBean(beanId));
 		}
-		if (beanIds.size() != 1) {
-			throw new IllegalStateException("Multiple JSF converters registered with Spring for "
-					+ targetClass.getName() + " : " + beanIds);
-		}
-		return createValidatorBean(beanIds.iterator().next());
+		return Collections.unmodifiableList(validators);
 	}
 
 	private Validator createValidatorBean(String beanId) {
@@ -120,15 +124,15 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 
 		public ValidatorApplication(Application wrapped) {
 			this.wrapped = wrapped;
-		}
-
-		@Override
-		public Map<String, String> getDefaultValidatorInfo() {
-			return super.getDefaultValidatorInfo();
+			wrapped.addValidator(DefaultValidator.VALIDATOR_ID, DefaultValidator.class.getName());
+			wrapped.addDefaultValidatorId(DefaultValidator.VALIDATOR_ID);
 		}
 
 		@Override
 		public Validator createValidator(String validatorId) throws FacesException {
+			if (DefaultValidator.VALIDATOR_ID.equals(validatorId)) {
+				return new DefaultValidator(FacesContext.getCurrentInstance(), beanName);
+			}
 			Validator validator = createValidatorBean(validatorId);
 			if (validator != null) {
 				return validator;
@@ -142,30 +146,61 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		}
 	}
 
+	/**
+	 * A {@link Application#addDefaultValidatorId(String) default} {@link Validator} that supports {@link ForClass} and
+	 * {@link ConditionalForClass} beans.
+	 */
 	public static class DefaultValidator extends SpringBeanPartialStateHolder<SpringFacesValidatorSupport> implements
 			Validator {
 
+		static String VALIDATOR_ID = "org.springframework.validator.default";
+
+		private StateHolders<StateHolder> validators;
+
+		/**
+		 * Constructor to satisfy the {@link StateHolder}. This constructor should not be used directly.
+		 * @deprecated use alternative constructor
+		 */
 		@Deprecated
 		public DefaultValidator() {
 			super();
 		}
 
-		public DefaultValidator(FacesContext context, String beanName) {
-			super(context, beanName);
+		/**
+		 * Create a new {@link DefaultValidator} implementation.
+		 * @param context the faces context
+		 * @param springFacesValidatorSupportBeanName the name of the {@link SpringFacesValidatorSupport} bean
+		 */
+		public DefaultValidator(FacesContext context, String springFacesValidatorSupportBeanName) {
+			super(context, springFacesValidatorSupportBeanName);
 		}
 
 		public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-			// FIXME do we allow validation of null value
 			if (value == null) {
 				return;
 			}
 			Class<?> targetClass = value.getClass();
-			Validator validatorBean = getBean().createValidatorBean(targetClass);
-			if (validatorBean != null) {
-				validatorBean.validate(context, component, value);
+			Collection<Validator> validators = getValidators(targetClass);
+			for (Validator validator : validators) {
+				validator.validate(context, component, value);
 			}
 		}
 
+		private Collection<Validator> getValidators(Class<?> targetClass) {
+			if (validators == null) {
+				validators = new StateHolders<StateHolder>();
+				Collection<Validator> validatorBeans = getBean().createValidatorBeans(targetClass);
+				for (Validator validator : validatorBeans) {
+					validators.add((StateHolder) validator);
+				}
+			}
+			return asValidators(validators.asList());
+		}
+
+		@SuppressWarnings("unchecked")
+		private List<Validator> asValidators(List<StateHolder> stateHolders) {
+			return (List) stateHolders;
+		}
 	}
 
 }

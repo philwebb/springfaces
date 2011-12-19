@@ -23,7 +23,9 @@
 	<bean name="genericFacesConverter" class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
 	
 	<bean class="org.springframework.springfaces.convert.SpringFacesConverterSupport"/>
-
+	
+	<bean class="org.springframework.springfaces.validator.SpringFacesValidatorSupport"/>
+	
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
