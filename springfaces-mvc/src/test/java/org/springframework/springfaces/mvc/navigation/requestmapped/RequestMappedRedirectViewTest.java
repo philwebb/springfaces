@@ -63,14 +63,14 @@ public class RequestMappedRedirectViewTest {
 	public void setup() {
 		this.handler = new Handler();
 		this.handlerMethod = ReflectionUtils.findMethod(Handler.class, "method");
-		given(request.getContextPath()).willReturn("/context");
-		given(request.getServletPath()).willReturn("/dispatcher");
-		given(request.getPathInfo()).willReturn("/pathinfo");
+		given(this.request.getContextPath()).willReturn("/context");
+		given(this.request.getServletPath()).willReturn("/dispatcher");
+		given(this.request.getPathInfo()).willReturn("/pathinfo");
 		FacesContext facesContext = mock(FacesContext.class);
 		ExternalContext externalContext = mock(ExternalContext.class);
 		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getRequest()).willReturn(request);
-		given(externalContext.getResponse()).willReturn(response);
+		given(externalContext.getRequest()).willReturn(this.request);
+		given(externalContext.getResponse()).willReturn(this.response);
 		FacesContextSetter.setCurrentInstance(facesContext);
 	}
 
@@ -81,115 +81,125 @@ public class RequestMappedRedirectViewTest {
 
 	@Test
 	public void shouldNeedContext() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Context must not be null");
-		new RequestMappedRedirectViewSpy(null, handler, handlerMethod);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Context must not be null");
+		new RequestMappedRedirectViewSpy(null, this.handler, this.handlerMethod);
 	}
 
 	@Test
 	public void shoulcNeedHandler() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Handler must not be null");
-		new RequestMappedRedirectViewSpy(context, null, handlerMethod);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Handler must not be null");
+		new RequestMappedRedirectViewSpy(this.context, null, this.handlerMethod);
 	}
 
 	@Test
 	public void shouldNeedHandlerMethod() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("HandlerMethod must not be null");
-		new RequestMappedRedirectViewSpy(context, handler, null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("HandlerMethod must not be null");
+		new RequestMappedRedirectViewSpy(this.context, this.handler, null);
 	}
 
 	@Test
 	public void shouldReturnDefaultContentType() throws Exception {
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
 		assertEquals(AbstractView.DEFAULT_CONTENT_TYPE, view.getContentType());
 	}
 
 	@Test
 	public void shouldRenderMethodMapping() throws Exception {
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		view.render(model, request, response);
-		assertEquals("/context/dispatcher/method", url);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		view.render(this.model, this.request, this.response);
+		assertEquals("/context/dispatcher/method", this.url);
 	}
 
 	@Test
 	public void shouldRenderHandlerMapping() throws Exception {
-		handler = new TypeMappedHandler();
-		handlerMethod = ReflectionUtils.findMethod(TypeMappedHandler.class, "method");
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		view.render(model, request, response);
-		assertEquals("/context/dispatcher/type/method", url);
+		this.handler = new TypeMappedHandler();
+		this.handlerMethod = ReflectionUtils.findMethod(TypeMappedHandler.class, "method");
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		view.render(this.model, this.request, this.response);
+		assertEquals("/context/dispatcher/type/method", this.url);
 	}
 
 	@Test
 	public void shouldRenderSpecificDispatcherPath() throws Exception {
-		given(context.getDispatcherServletPath()).willReturn("customdispatcher");
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		view.render(model, request, response);
-		assertEquals("/context/customdispatcher/method", url);
+		given(this.context.getDispatcherServletPath()).willReturn("customdispatcher");
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		view.render(this.model, this.request, this.response);
+		assertEquals("/context/customdispatcher/method", this.url);
 	}
 
 	@Test
 	public void shouldRequireMethodMapping() throws Exception {
-		handlerMethod = ReflectionUtils.findMethod(Handler.class, "notMapped");
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("The handler method must declare @RequestMapping annotation");
-		view.render(model, request, response);
+		this.handlerMethod = ReflectionUtils.findMethod(Handler.class, "notMapped");
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("The handler method must declare @RequestMapping annotation");
+		view.render(this.model, this.request, this.response);
 	}
 
 	@Test
 	public void shouldRequireSingleValueInMethodMapping() throws Exception {
-		handlerMethod = ReflectionUtils.findMethod(Handler.class, "multiple");
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("@RequestMapping must have a single value to be mapped to a URL");
-		view.render(model, request, response);
+		this.handlerMethod = ReflectionUtils.findMethod(Handler.class, "multiple");
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("@RequestMapping must have a single value to be mapped to a URL");
+		view.render(this.model, this.request, this.response);
 	}
 
 	@Test
 	public void shouldRequireSingleValueInHandlerMapping() throws Exception {
-		handler = new MultiTypeMappedHandler();
-		handlerMethod = ReflectionUtils.findMethod(MultiTypeMappedHandler.class, "method");
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("@RequestMapping on handler class must have a single value to be mapped to a URL");
-		view.render(model, request, response);
+		this.handler = new MultiTypeMappedHandler();
+		this.handlerMethod = ReflectionUtils.findMethod(MultiTypeMappedHandler.class, "method");
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("@RequestMapping on handler class must have a single value to be mapped to a URL");
+		view.render(this.model, this.request, this.response);
 	}
 
 	@Test
 	public void shouldRespectPathVariables() throws Exception {
-		handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
-		model.put("one", 1);
-		model.put("two", 2);
-		model.put("three", 3);
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		view.render(model, request, response);
-		assertEquals("/context/dispatcher/method/1/2/3", url);
+		this.handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
+		this.model.put("one", 1);
+		this.model.put("two", 2);
+		this.model.put("three", 3);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		view.render(this.model, this.request, this.response);
+		assertEquals("/context/dispatcher/method/1/2/3", this.url);
 	}
 
 	@Test
 	public void shouldFailIfMissingPathVariable() throws Exception {
-		handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
-		model.put("one", 1);
-		model.put("three", 3);
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to find URL template variable 'two' in source model");
-		view.render(model, request, response);
+		this.handlerMethod = ReflectionUtils.findMethod(Handler.class, "withPathVariables");
+		this.model.put("one", 1);
+		this.model.put("three", 3);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to find URL template variable 'two' in source model");
+		view.render(this.model, this.request, this.response);
 	}
 
 	@Test
 	public void shouldBookmarkMethodMapping() throws Exception {
-		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(context, handler, handlerMethod);
-		String url = view.getBookmarkUrl(model, request);
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		String url = view.getBookmarkUrl(this.model, this.request);
 		assertEquals("/context/dispatcher/method", url);
 	}
 
 	@Test
 	public void shouldCreateBookmarkableRedirectViewDelegate() throws Exception {
-		RequestMappedRedirectView view = new RequestMappedRedirectView(context, handler, handlerMethod);
+		RequestMappedRedirectView view = new RequestMappedRedirectView(this.context, this.handler, this.handlerMethod);
 		BookmarkableView delegatge = view.createDelegateRedirector("/url");
 		assertTrue(delegatge instanceof BookmarkableRedirectView);
 	}

@@ -19,7 +19,7 @@ public class FacesStandardEvaluationContextPostProcessorTest {
 	@Test
 	public void shouldApplyFacesPropertyAccessor() throws Exception {
 		StandardEvaluationContext evaluationContext = mock(StandardEvaluationContext.class);
-		postProcessor.postProcessStandardEvaluationContext(evaluationContext);
+		this.postProcessor.postProcessStandardEvaluationContext(evaluationContext);
 		verify(evaluationContext).addPropertyAccessor(isA(FacesPropertyAccessor.class));
 	}
 }

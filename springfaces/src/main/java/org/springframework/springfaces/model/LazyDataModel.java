@@ -52,7 +52,7 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	 * @return the data model state
 	 */
 	protected final S getState() {
-		return state;
+		return this.state;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	@Override
 	public int getRowCount() {
-		Long rowCount = state.getLastLoadedTotalRowCount();
+		Long rowCount = this.state.getLastLoadedTotalRowCount();
 		if (rowCount == null) {
 			rowCount = getAnyNonEmptyRowSet().getTotalRowCount();
 		}
@@ -95,7 +95,7 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	 * @param nextRowIndex the next row index that will be read or <tt>0</tt> if the next index is not know.
 	 */
 	public void clearCachedRowCount(int nextRowIndex) {
-		state.setLastLoadedTotalRowCount(null);
+		this.state.setLastLoadedTotalRowCount(null);
 		this.nextRowIndex = nextRowIndex;
 	}
 
@@ -106,14 +106,14 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 
 	@Override
 	public int getRowIndex() {
-		return state.getRowIndex();
+		return this.state.getRowIndex();
 	}
 
 	@Override
 	public void setRowIndex(int rowIndex) {
 		if (getRowIndex() != rowIndex) {
 			Assert.isTrue(rowIndex >= -1, "RowIndex must not be less than -1");
-			state.setRowIndex(rowIndex);
+			this.state.setRowIndex(rowIndex);
 			fireDataModelListeners();
 		}
 	}
@@ -164,10 +164,10 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		}
 
 		// Attempt to get the row set for the next likely row index
-		DataModelRowSet<E> rowSet = getRowSet(nextRowIndex);
+		DataModelRowSet<E> rowSet = getRowSet(this.nextRowIndex);
 
 		// If that fails, fall back to row 0
-		if (nextRowIndex != 0 && !rowSet.isRowAvailable(nextRowIndex)) {
+		if (this.nextRowIndex != 0 && !rowSet.isRowAvailable(this.nextRowIndex)) {
 			rowSet = getRowSet(0);
 		}
 
@@ -184,17 +184,17 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 		if (rowIndex == -1) {
 			return DefaultDataModelRowSet.<E> emptySet();
 		}
-		if (rowSet != null && rowSet.contains(rowIndex)) {
-			return rowSet;
+		if (this.rowSet != null && this.rowSet.contains(rowIndex)) {
+			return this.rowSet;
 		}
-		rowSet = loadRowSet(rowIndex);
-		if (rowSet != null) {
-			state.setLastLoadedTotalRowCount(rowSet.getTotalRowCount());
+		this.rowSet = loadRowSet(rowIndex);
+		if (this.rowSet != null) {
+			this.state.setLastLoadedTotalRowCount(this.rowSet.getTotalRowCount());
 		}
-		if (rowSet == null || !rowSet.contains(rowIndex)) {
-			rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
+		if (this.rowSet == null || !this.rowSet.contains(rowIndex)) {
+			this.rowSet = DefaultDataModelRowSet.emptySet(rowIndex);
 		}
-		return rowSet;
+		return this.rowSet;
 	}
 
 	/**
@@ -203,15 +203,15 @@ public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E>
 	 * @return a row data set
 	 */
 	private DataModelRowSet<E> loadRowSet(int rowIndex) {
-		if (state.getRowIndex() == rowIndex) {
-			return loader.getRows(state);
+		if (this.state.getRowIndex() == rowIndex) {
+			return this.loader.getRows(this.state);
 		}
-		int previousRowIndex = state.getRowIndex();
+		int previousRowIndex = this.state.getRowIndex();
 		try {
-			state.setRowIndex(rowIndex);
-			return loader.getRows(state);
+			this.state.setRowIndex(rowIndex);
+			return this.loader.getRows(this.state);
 		} finally {
-			state.setRowIndex(previousRowIndex);
+			this.state.setRowIndex(previousRowIndex);
 		}
 	}
 

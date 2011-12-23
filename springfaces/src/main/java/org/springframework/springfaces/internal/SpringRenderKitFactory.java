@@ -22,8 +22,9 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 	private RenderKitFactory delegate;
 
 	public SpringRenderKitFactory(RenderKitFactory delegate) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Wrapping RenderKitFactory " + delegate.getClass() + " to provide integration with Spring");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Wrapping RenderKitFactory " + delegate.getClass()
+					+ " to provide integration with Spring");
 		}
 		this.delegate = delegate;
 		reloadRenderKits();
@@ -45,7 +46,7 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 
 	@Override
 	public RenderKitFactory getWrapped() {
-		return delegate;
+		return this.delegate;
 	}
 
 	@Override

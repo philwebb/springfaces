@@ -32,58 +32,58 @@ public class SpringDataPageRequestTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		request = new SpringDataPageRequest(delegate);
+		this.request = new SpringDataPageRequest(this.delegate);
 	}
 
 	@Test
 	public void shouldDelegateGetPageNumber() throws Exception {
 		Integer pageNumber = 10;
-		given(delegate.getPageNumber()).willReturn(pageNumber);
-		assertThat(request.getPageNumber(), is(pageNumber));
+		given(this.delegate.getPageNumber()).willReturn(pageNumber);
+		assertThat(this.request.getPageNumber(), is(pageNumber));
 	}
 
 	@Test
 	public void shouldDelegateGetPageSize() throws Exception {
 		Integer pageSize = 10;
-		given(delegate.getPageSize()).willReturn(pageSize);
-		assertThat(request.getPageSize(), is(pageSize));
+		given(this.delegate.getPageSize()).willReturn(pageSize);
+		assertThat(this.request.getPageSize(), is(pageSize));
 	}
 
 	@Test
 	public void shouldDelegateGetOffset() throws Exception {
 		Integer offset = 10;
-		given(delegate.getOffset()).willReturn(offset);
-		assertThat(request.getOffset(), is(offset));
+		given(this.delegate.getOffset()).willReturn(offset);
+		assertThat(this.request.getOffset(), is(offset));
 	}
 
 	@Test
 	public void shouldDelegateGetSortColumn() throws Exception {
 		String sortColumn = "column";
-		given(delegate.getSortColumn()).willReturn(sortColumn);
-		assertThat(request.getSortColumn(), is(sortColumn));
+		given(this.delegate.getSortColumn()).willReturn(sortColumn);
+		assertThat(this.request.getSortColumn(), is(sortColumn));
 	}
 
 	@Test
 	public void shouldDelegateIsSortAscending() throws Exception {
 		boolean sortAscending = false;
-		given(delegate.isSortAscending()).willReturn(sortAscending);
-		assertThat(request.isSortAscending(), is(sortAscending));
+		given(this.delegate.isSortAscending()).willReturn(sortAscending);
+		assertThat(this.request.isSortAscending(), is(sortAscending));
 
 	}
 
 	@Test
 	public void shouldDelegateGetFilters() throws Exception {
 		Map<String, String> filters = Collections.singletonMap("a", "b");
-		given(delegate.getFilters()).willReturn(filters);
-		assertThat(request.getFilters(), is(filters));
+		given(this.delegate.getFilters()).willReturn(filters);
+		assertThat(this.request.getFilters(), is(filters));
 
 	}
 
 	@Test
 	public void shouldBuildSpringDataSortFromSortColumnAndSortAscending() throws Exception {
-		given(delegate.getSortColumn()).willReturn("column");
-		given(delegate.isSortAscending()).willReturn(true);
-		Sort sort = request.getSort();
+		given(this.delegate.getSortColumn()).willReturn("column");
+		given(this.delegate.isSortAscending()).willReturn(true);
+		Sort sort = this.request.getSort();
 		Iterator<Order> orderIterator = sort.iterator();
 		Order order = orderIterator.next();
 		assertFalse("Sort should only conain a single item", orderIterator.hasNext());
@@ -93,12 +93,12 @@ public class SpringDataPageRequestTest {
 
 	@Test
 	public void shouldReturnNullSortForEmptySortColumn() throws Exception {
-		given(delegate.getSortColumn()).willReturn("");
-		assertThat(request.getSort(), is(nullValue()));
+		given(this.delegate.getSortColumn()).willReturn("");
+		assertThat(this.request.getSort(), is(nullValue()));
 	}
 
 	@Test
 	public void shouldReturnNullSortForNullSortColumn() throws Exception {
-		assertThat(request.getSort(), is(nullValue()));
+		assertThat(this.request.getSort(), is(nullValue()));
 	}
 }

@@ -80,13 +80,13 @@ public class ReverseDataBinder {
 	 * @throws IllegalStateException if the target object values cannot be bound
 	 */
 	public PropertyValues reverseBind() {
-		Assert.notNull(dataBinder.getTarget(),
+		Assert.notNull(this.dataBinder.getTarget(),
 				"ReverseDataBinder.reverseBind can only be used with a DataBinder that has a target object");
 
 		MutablePropertyValues rtn = new MutablePropertyValues();
-		BeanWrapper target = PropertyAccessorFactory.forBeanPropertyAccess(dataBinder.getTarget());
+		BeanWrapper target = PropertyAccessorFactory.forBeanPropertyAccess(this.dataBinder.getTarget());
 
-		ConversionService conversionService = dataBinder.getConversionService();
+		ConversionService conversionService = this.dataBinder.getConversionService();
 		if (conversionService != null) {
 			target.setConversionService(conversionService);
 		}
@@ -94,8 +94,8 @@ public class ReverseDataBinder {
 		PropertyDescriptor[] propertyDescriptors = target.getPropertyDescriptors();
 
 		BeanWrapper defaultValues = null;
-		if (skipDefaultValues) {
-			defaultValues = newDefaultTargetValues(dataBinder.getTarget());
+		if (this.skipDefaultValues) {
+			defaultValues = newDefaultTargetValues(this.dataBinder.getTarget());
 		}
 
 		for (int i = 0; i < propertyDescriptors.length; i++) {
@@ -108,16 +108,16 @@ public class ReverseDataBinder {
 			}
 
 			if (!isMutableProperty(property)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Ignoring '" + propertyName + "' due to missing read/write methods");
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Ignoring '" + propertyName + "' due to missing read/write methods");
 				}
 				continue;
 			}
 
 			if (defaultValues != null
 					&& ObjectUtils.nullSafeEquals(defaultValues.getPropertyValue(propertyName), propertyValue)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Skipping '" + propertyName + "' as property contains default value");
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Skipping '" + propertyName + "' as property contains default value");
 				}
 				continue;
 			}
@@ -139,10 +139,10 @@ public class ReverseDataBinder {
 			}
 		}
 
-		dataBinder.bind(rtn);
-		BindingResult bindingResult = dataBinder.getBindingResult();
+		this.dataBinder.bind(rtn);
+		BindingResult bindingResult = this.dataBinder.getBindingResult();
 		if (bindingResult.hasErrors()) {
-			throw new IllegalStateException("Unable to reverse bind from target '" + dataBinder.getObjectName()
+			throw new IllegalStateException("Unable to reverse bind from target '" + this.dataBinder.getObjectName()
 					+ "', the properties '" + rtn + "' will result in binding errors when re-bound "
 					+ bindingResult.getAllErrors());
 		}
@@ -168,13 +168,13 @@ public class ReverseDataBinder {
 		Assert.notNull(typeDescriptor, "TypeDescription must not be null");
 
 		// Use the custom editor if there is one
-		PropertyEditor editor = dataBinder.findCustomEditor(requiredType, propertyName);
+		PropertyEditor editor = this.dataBinder.findCustomEditor(requiredType, propertyName);
 		if (editor != null) {
 			return editor;
 		}
 
 		// Use the conversion service
-		ConversionService conversionService = dataBinder.getConversionService();
+		ConversionService conversionService = this.dataBinder.getConversionService();
 		if (conversionService != null) {
 			if (conversionService.canConvert(TypeDescriptor.valueOf(String.class), typeDescriptor)) {
 				return new ConvertingPropertyEditorAdapter(conversionService, typeDescriptor);
@@ -193,10 +193,10 @@ public class ReverseDataBinder {
 	 * @return the simple type converter
 	 */
 	protected SimpleTypeConverter getSimpleTypeConverter() {
-		if (simpleTypeConverter == null) {
-			simpleTypeConverter = new SimpleTypeConverter();
+		if (this.simpleTypeConverter == null) {
+			this.simpleTypeConverter = new SimpleTypeConverter();
 		}
-		return simpleTypeConverter;
+		return this.simpleTypeConverter;
 	}
 
 	/**
@@ -252,7 +252,7 @@ public class ReverseDataBinder {
 			Object defaultValues = target.getClass().newInstance();
 			return PropertyAccessorFactory.forBeanPropertyAccess(defaultValues);
 		} catch (Exception e) {
-			logger.warn("Unable to construct default values target instance for class " + target.getClass()
+			this.logger.warn("Unable to construct default values target instance for class " + target.getClass()
 					+ ", default values will not be skipped");
 			return null;
 		}

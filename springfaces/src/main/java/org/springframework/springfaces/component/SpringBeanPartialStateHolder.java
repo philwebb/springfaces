@@ -57,31 +57,31 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 	 * @return the bean instance
 	 */
 	protected final T getBean() {
-		return bean;
+		return this.bean;
 	}
 
 	public Object saveState(FacesContext context) {
 		Object beanState = null;
-		if (bean instanceof StateHolder) {
-			StateHolder stateHolder = (StateHolder) bean;
+		if (this.bean instanceof StateHolder) {
+			StateHolder stateHolder = (StateHolder) this.bean;
 			beanState = stateHolder.saveState(context);
 		}
-		if (initialState) {
+		if (this.initialState) {
 			return beanState;
 		}
-		return new SavedBeanState(beanName, beanState);
+		return new SavedBeanState(this.beanName, beanState);
 	}
 
 	public void restoreState(FacesContext context, Object state) {
 		Object beanState = state;
 		if (state instanceof SavedBeanState) {
 			SavedBeanState savedBeanState = (SavedBeanState) state;
-			beanName = savedBeanState.getBeanName();
+			this.beanName = savedBeanState.getBeanName();
 			loadBeanFromContext(context);
 			beanState = savedBeanState.getBeanState();
 		}
 		if (beanState != null) {
-			((StateHolder) bean).restoreState(context, beanState);
+			((StateHolder) this.bean).restoreState(context, beanState);
 		}
 	}
 
@@ -93,43 +93,44 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 	private void loadBeanFromContext(FacesContext context) {
 		ApplicationContext applicationContext = SpringFacesIntegration.getCurrentInstance(context.getExternalContext())
 				.getApplicationContext();
-		this.bean = (T) applicationContext.getBean(beanName);
+		this.bean = (T) applicationContext.getBean(this.beanName);
 		Class<?> beanType = GenericTypeResolver.resolveTypeArgument(getClass(), SpringBeanPartialStateHolder.class);
 		if (beanType != null) {
-			Assert.isInstanceOf(beanType, bean, "Unable to load bean '" + beanName + "' ");
+			Assert.isInstanceOf(beanType, this.bean, "Unable to load bean '" + this.beanName + "' ");
 		}
-		if (bean instanceof StateHolder) {
-			Assert.state(applicationContext.isPrototype(beanName), "StateHolders must be declared as protoype beans");
+		if (this.bean instanceof StateHolder) {
+			Assert.state(applicationContext.isPrototype(this.beanName),
+					"StateHolders must be declared as protoype beans");
 		}
 	}
 
 	public boolean isTransient() {
-		return transientValue;
+		return this.transientValue;
 	}
 
 	public void setTransient(boolean newTransientValue) {
-		transientValue = newTransientValue;
+		this.transientValue = newTransientValue;
 	}
 
 	public void markInitialState() {
-		if (bean instanceof PartialStateHolder) {
-			((PartialStateHolder) bean).markInitialState();
+		if (this.bean instanceof PartialStateHolder) {
+			((PartialStateHolder) this.bean).markInitialState();
 		}
-		initialState = true;
+		this.initialState = true;
 	}
 
 	public boolean initialStateMarked() {
-		if (bean instanceof PartialStateHolder) {
-			return ((PartialStateHolder) bean).initialStateMarked();
+		if (this.bean instanceof PartialStateHolder) {
+			return ((PartialStateHolder) this.bean).initialStateMarked();
 		}
-		return initialState;
+		return this.initialState;
 	}
 
 	public void clearInitialState() {
-		if (bean instanceof PartialStateHolder) {
-			((PartialStateHolder) bean).clearInitialState();
+		if (this.bean instanceof PartialStateHolder) {
+			((PartialStateHolder) this.bean).clearInitialState();
 		}
-		initialState = false;
+		this.initialState = false;
 	}
 
 	static class SavedBeanState implements Serializable {
@@ -143,11 +144,11 @@ public class SpringBeanPartialStateHolder<T> implements PartialStateHolder {
 		}
 
 		public String getBeanName() {
-			return beanName;
+			return this.beanName;
 		}
 
 		public Object getBeanState() {
-			return beanState;
+			return this.beanState;
 		}
 	}
 }

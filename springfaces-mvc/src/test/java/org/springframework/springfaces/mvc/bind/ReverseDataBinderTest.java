@@ -44,9 +44,9 @@ public class ReverseDataBinderTest {
 
 	@Before
 	public void setup() {
-		conversionService = new FormattingConversionService();
-		conversionService.addConverter(new CustomTypeToStringConverter());
-		conversionService.addConverter(new StringToCustomTypeConverter());
+		this.conversionService = new FormattingConversionService();
+		this.conversionService.addConverter(new CustomTypeToStringConverter());
+		this.conversionService.addConverter(new StringToCustomTypeConverter());
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ReverseDataBinderTest {
 		DateFormat df = new SimpleDateFormat("yyyy/dd/MM");
 		df.setLenient(false);
 		dataBinder.registerCustomEditor(Date.class, new CustomDateEditor(df, false));
-		dataBinder.setConversionService(conversionService);
+		dataBinder.setConversionService(this.conversionService);
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class ReverseDataBinderTest {
 		PropertyValues result = reverseDataBinder.reverseBind();
 		for (int i = 0; i < result.getPropertyValues().length; i++) {
 			PropertyValue pv = result.getPropertyValues()[i];
-			logger.info(pv.getName() + "=" + pv.getValue());
+			this.logger.info(pv.getName() + "=" + pv.getValue());
 		}
 		assertEquals(pvs, result);
 	}
@@ -176,7 +176,7 @@ public class ReverseDataBinderTest {
 		private CustomType customTypeValue;
 
 		public Date getDateValue() {
-			return dateValue;
+			return this.dateValue;
 		}
 
 		public void setDateValue(Date dateValue) {
@@ -184,7 +184,7 @@ public class ReverseDataBinderTest {
 		}
 
 		public Integer getIntegerValue() {
-			return integerValue;
+			return this.integerValue;
 		}
 
 		public void setIntegerValue(Integer integerValue) {
@@ -192,7 +192,7 @@ public class ReverseDataBinderTest {
 		}
 
 		public String getStringValue() {
-			return stringValue;
+			return this.stringValue;
 		}
 
 		public void setStringValue(String stringValue) {
@@ -204,7 +204,7 @@ public class ReverseDataBinderTest {
 		}
 
 		public CustomType getCustomTypeValue() {
-			return customTypeValue;
+			return this.customTypeValue;
 		}
 
 		public void setCustomTypeValue(CustomType customTypeValue) {
@@ -219,6 +219,7 @@ public class ReverseDataBinderTest {
 	}
 
 	public static class ThrowingPropertyEditor extends PropertyEditorSupport {
+		@Override
 		public String getAsText() {
 			throw new RuntimeException("test error");
 		}
@@ -233,18 +234,18 @@ public class ReverseDataBinderTest {
 
 		@Override
 		public String toString() {
-			return value;
+			return this.value;
 		}
 
 		@Override
 		public int hashCode() {
-			return value.hashCode();
+			return this.value.hashCode();
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof CustomType) {
-				return value.equals(((CustomType) obj).value);
+				return this.value.equals(((CustomType) obj).value);
 			}
 			return super.equals(obj);
 		}

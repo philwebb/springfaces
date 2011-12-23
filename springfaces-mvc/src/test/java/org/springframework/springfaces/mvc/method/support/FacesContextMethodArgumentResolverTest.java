@@ -61,7 +61,7 @@ public class FacesContextMethodArgumentResolverTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		setupMocks(true);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -72,90 +72,90 @@ public class FacesContextMethodArgumentResolverTest {
 	@Test
 	public void shouldNotSupportWhenNoFacesContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(null);
-		assertFalse(resolver.supportsParameter(mockMethodParameter(FacesContext.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(ExternalContext.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(PartialViewContext.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(Application.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(ResourceHandler.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(ExceptionHandler.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(Locale.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(FacesContext.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExternalContext.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(PartialViewContext.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Application.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ResourceHandler.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExceptionHandler.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Locale.class)));
 	}
 
 	@Test
 	public void shouldResolveFacesContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(FacesContext.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(facesContext, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.facesContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveExternalContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExternalContext.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(externalContext, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.externalContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolvePartialViewContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(PartialViewContext.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(partialViewContext, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.partialViewContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveApplication() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Application.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(application, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.application, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveResourceHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ResourceHandler.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(resourceHandler, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.resourceHandler, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveExceptionHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExceptionHandler.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(exceptionHandler, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.exceptionHandler, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveUIViewRoot() throws Exception {
 		MethodParameter parameter = mockMethodParameter(UIViewRoot.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(viewRoot, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.viewRoot, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveLocale() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Locale.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(locale, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.locale, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldNotSupportWhenNoViewRoot() throws Exception {
 		setupMocks(false);
-		assertFalse(resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(Locale.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Locale.class)));
 	}
 
 	private void setupMocks(boolean hasViewRoot) {
-		reset(facesContext, application, viewRoot);
-		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(facesContext.getPartialViewContext()).willReturn(partialViewContext);
-		given(facesContext.getApplication()).willReturn(application);
-		given(facesContext.getExceptionHandler()).willReturn(exceptionHandler);
+		reset(this.facesContext, this.application, this.viewRoot);
+		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
+		given(this.facesContext.getPartialViewContext()).willReturn(this.partialViewContext);
+		given(this.facesContext.getApplication()).willReturn(this.application);
+		given(this.facesContext.getExceptionHandler()).willReturn(this.exceptionHandler);
 		if (hasViewRoot) {
-			given(facesContext.getViewRoot()).willReturn(viewRoot);
+			given(this.facesContext.getViewRoot()).willReturn(this.viewRoot);
 		}
-		given(application.getResourceHandler()).willReturn(resourceHandler);
-		given(viewRoot.getLocale()).willReturn(locale);
+		given(this.application.getResourceHandler()).willReturn(this.resourceHandler);
+		given(this.viewRoot.getLocale()).willReturn(this.locale);
 	}
 
 }

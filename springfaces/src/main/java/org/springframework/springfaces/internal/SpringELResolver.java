@@ -21,7 +21,7 @@ public class SpringELResolver extends ELResolver {
 			CompositeELResolver.class, new CompositeELResolverFactory());
 
 	protected CompositeELResolver getDelegate() {
-		return wrapperHandler.getWrapped();
+		return this.wrapperHandler.getWrapped();
 	}
 
 	@Override

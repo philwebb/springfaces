@@ -40,6 +40,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		this.servletContext = servletContext;
 	}
 
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		obtainFacesObjects();
 		if (handler instanceof Postback) {
@@ -53,20 +54,21 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	 * Obtain any JSF objects that have not yet been acquired.
 	 */
 	private void obtainFacesObjects() {
-		if (facesContextFactory == null) {
-			facesContextFactory = (FacesContextFactory) FactoryFinder.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
+		if (this.facesContextFactory == null) {
+			this.facesContextFactory = (FacesContextFactory) FactoryFinder
+					.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
 		}
-		if (lifecycle == null) {
-			String lifecycleIdToUse = lifecycleId;
+		if (this.lifecycle == null) {
+			String lifecycleIdToUse = this.lifecycleId;
 			LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
 					.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
 			if (lifecycleIdToUse == null) {
-				lifecycleIdToUse = servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
+				lifecycleIdToUse = this.servletContext.getInitParameter(FacesServlet.LIFECYCLE_ID_ATTR);
 			}
 			if (lifecycleIdToUse == null) {
 				lifecycleIdToUse = LifecycleFactory.DEFAULT_LIFECYCLE;
 			}
-			lifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
+			this.lifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
 		}
 	}
 
@@ -121,20 +123,21 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			this.request = request;
 			this.response = response;
 			this.handler = handler;
-			this.webApplicationContext = RequestContextUtils.getWebApplicationContext(request, servletContext);
+			this.webApplicationContext = RequestContextUtils.getWebApplicationContext(request,
+					FacesHandlerInterceptor.this.servletContext);
 			setCurrentInstance(this);
 		}
 
 		public void release() {
-			released = true;
-			facesContext.releaseDelegate();
+			this.released = true;
+			this.facesContext.releaseDelegate();
 			setCurrentInstance(null);
 		}
 
 		@Override
 		public Object getHandler() {
 			checkNotRelased();
-			return handler;
+			return this.handler;
 		}
 
 		@Override
@@ -149,28 +152,28 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		@Override
 		public FacesContext getFacesContext() {
 			checkNotRelased();
-			facesContext.addReference();
-			return facesContext;
+			this.facesContext.addReference();
+			return this.facesContext;
 		}
 
 		@Override
 		public WebApplicationContext getWebApplicationContext() {
-			return webApplicationContext;
+			return this.webApplicationContext;
 		}
 
 		@Override
 		public void render(ModelAndViewArtifact modelAndViewArtifact) {
 			checkNotRelased();
-			if (rendering != null) {
+			if (this.rendering != null) {
 				throw new IllegalStateException("Unable to render " + modelAndViewArtifact.getViewArtifact()
-						+ "  as the SpringFacesContext is already rendering " + rendering.getViewArtifact());
+						+ "  as the SpringFacesContext is already rendering " + this.rendering.getViewArtifact());
 			}
 			this.rendering = modelAndViewArtifact;
 			try {
 				FacesContext facesContext = getFacesContext();
 				try {
-					lifecycle.execute(facesContext);
-					lifecycle.render(facesContext);
+					FacesHandlerInterceptor.this.lifecycle.execute(facesContext);
+					FacesHandlerInterceptor.this.lifecycle.render(facesContext);
 				} finally {
 					facesContext.release();
 				}
@@ -181,11 +184,11 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 		@Override
 		public ModelAndViewArtifact getRendering() {
-			return rendering;
+			return this.rendering;
 		}
 
 		private void checkNotRelased() {
-			Assert.state(!released, "The SpringFacesContext has been released");
+			Assert.state(!this.released, "The SpringFacesContext has been released");
 		}
 
 		/**
@@ -202,28 +205,30 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 
 			@Override
 			public FacesContext getWrapped() {
-				if (delegate == null) {
-					delegate = facesContextFactory.getFacesContext(servletContext, request, response, lifecycle);
+				if (this.delegate == null) {
+					this.delegate = FacesHandlerInterceptor.this.facesContextFactory.getFacesContext(
+							FacesHandlerInterceptor.this.servletContext, SpringFacesContextImpl.this.request,
+							SpringFacesContextImpl.this.response, FacesHandlerInterceptor.this.lifecycle);
 				}
-				return delegate;
+				return this.delegate;
 			}
 
 			public void addReference() {
-				referenceCount++;
+				this.referenceCount++;
 			}
 
 			@Override
 			public void release() {
-				referenceCount--;
-				if (referenceCount == 0) {
+				this.referenceCount--;
+				if (this.referenceCount == 0) {
 					releaseDelegate();
 				}
 			}
 
 			public void releaseDelegate() {
-				if (delegate != null) {
-					delegate.release();
-					delegate = null;
+				if (this.delegate != null) {
+					this.delegate.release();
+					this.delegate = null;
 				}
 			}
 		}

@@ -44,9 +44,9 @@ public class SpringFacesModelMethodArgumentResolverTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
-		given(facesContext.getViewRoot()).willReturn(viewRoot);
-		model = SpringFacesModelHolder.attach(facesContext, viewRoot, new HashMap<String, Object>());
-		FacesContextSetter.setCurrentInstance(facesContext);
+		given(this.facesContext.getViewRoot()).willReturn(viewRoot);
+		this.model = SpringFacesModelHolder.attach(this.facesContext, viewRoot, new HashMap<String, Object>());
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -57,69 +57,69 @@ public class SpringFacesModelMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportSpringFacesModel() throws Exception {
 		MethodParameter parameter = mockMethodParameter(SpringFacesModel.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(model, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportExtendedModelMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExtendedModelMap.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(model, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportModelMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ModelMap.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(model, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportModel() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Model.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(model, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Map.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(model, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldNotResolveWithoutFacesContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(null);
 		MethodParameter parameter = mockMethodParameter(Map.class);
-		assertFalse(resolver.supportsParameter(parameter));
+		assertFalse(this.resolver.supportsParameter(parameter));
 	}
 
 	@Test
 	public void shouldResolveSingleModelValue() throws Exception {
 		ComplexType v = new ComplexType();
-		model.put("k", v);
+		this.model.put("k", v);
 		MethodParameter parameter = mockMethodParameter(ComplexType.class);
-		assertTrue(resolver.supportsParameter(parameter));
-		assertSame(v, resolver.resolveArgument(parameter, null, null, null));
+		assertTrue(this.resolver.supportsParameter(parameter));
+		assertSame(v, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldNotResolveIfMultipleValues() throws Exception {
 		ComplexType v1 = new ComplexType();
 		ComplexType v2 = new ComplexType();
-		model.put("k1", v1);
-		model.put("k2", v2);
+		this.model.put("k1", v1);
+		this.model.put("k2", v2);
 		MethodParameter parameter = mockMethodParameter(ComplexType.class);
-		assertFalse(resolver.supportsParameter(parameter));
+		assertFalse(this.resolver.supportsParameter(parameter));
 	}
 
 	@Test
 	public void shouldNotResolveSimpleTypes() throws Exception {
-		model.put("k", "v");
+		this.model.put("k", "v");
 		MethodParameter parameter = mockMethodParameter(String.class);
-		assertFalse(resolver.supportsParameter(parameter));
+		assertFalse(this.resolver.supportsParameter(parameter));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

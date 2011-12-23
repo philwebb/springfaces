@@ -49,9 +49,9 @@ public class SpringRenderKitFactoryTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		factory = new SpringRenderKitFactory(delegate);
-		FacesContextSetter.setCurrentInstance(facesContext);
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
+		this.factory = new SpringRenderKitFactory(this.delegate);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
 	}
 
 	@After
@@ -61,37 +61,37 @@ public class SpringRenderKitFactoryTest {
 
 	@Test
 	public void shouldWrapDelegate() throws Exception {
-		SpringRenderKitFactory factory = new SpringRenderKitFactory(delegate);
-		assertSame(delegate, factory.getWrapped());
+		SpringRenderKitFactory factory = new SpringRenderKitFactory(this.delegate);
+		assertSame(this.delegate, factory.getWrapped());
 	}
 
 	@Test
 	public void shouldWrapExistingRenderKit() throws Exception {
 		List<String> renderKitIds = Arrays.asList("a", "b");
-		given(delegate.getRenderKitIds()).willReturn(renderKitIds.iterator());
-		given(delegate.getRenderKit(facesContext, "b")).willReturn(renderKit);
-		new SpringRenderKitFactory(delegate);
+		given(this.delegate.getRenderKitIds()).willReturn(renderKitIds.iterator());
+		given(this.delegate.getRenderKit(this.facesContext, "b")).willReturn(this.renderKit);
+		new SpringRenderKitFactory(this.delegate);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
-		verify(delegate).addRenderKit(eq("b"), renderKitCaptor.capture());
+		verify(this.delegate).addRenderKit(eq("b"), renderKitCaptor.capture());
 		assertTrue(renderKitCaptor.getValue() instanceof SpringRenderKit);
-		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 
 	@Test
 	public void shouldWrapAddedRenderKit() throws Exception {
-		factory.addRenderKit(renderKitId, renderKit);
+		this.factory.addRenderKit(this.renderKitId, this.renderKit);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
-		verify(delegate).addRenderKit(eq(renderKitId), renderKitCaptor.capture());
+		verify(this.delegate).addRenderKit(eq(this.renderKitId), renderKitCaptor.capture());
 		assertTrue(renderKitCaptor.getValue() instanceof SpringRenderKit);
-		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 
 	@Test
 	public void shouldNotDoubleWrapSpringRenderKits() throws Exception {
-		SpringRenderKit springRenderKit = new SpringRenderKit(renderKitId, renderKit);
-		factory.addRenderKit(renderKitId, springRenderKit);
+		SpringRenderKit springRenderKit = new SpringRenderKit(this.renderKitId, this.renderKit);
+		this.factory.addRenderKit(this.renderKitId, springRenderKit);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
-		verify(delegate).addRenderKit(eq(renderKitId), renderKitCaptor.capture());
-		assertSame(renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		verify(this.delegate).addRenderKit(eq(this.renderKitId), renderKitCaptor.capture());
+		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 }

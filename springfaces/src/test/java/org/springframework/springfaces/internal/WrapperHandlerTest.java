@@ -74,11 +74,12 @@ public class WrapperHandlerTest {
 
 	@Before
 	public void setup() {
-		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getApplicationMap()).willReturn(applicationMap);
-		given(applicationContext.getBeansOfType(FacesWrapperFactory.class)).willReturn(facesWrapperFactoryBeans);
+		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
+		given(this.externalContext.getApplicationMap()).willReturn(this.applicationMap);
+		given(this.applicationContext.getBeansOfType(FacesWrapperFactory.class)).willReturn(
+				this.facesWrapperFactoryBeans);
 		this.delegate = new Object();
-		this.wrapperHandler = WrapperHandler.get(Object.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(Object.class, this.delegate);
 	}
 
 	@After
@@ -94,68 +95,68 @@ public class WrapperHandlerTest {
 		SpringFacesIntegration integration = new SpringFacesIntegration();
 		integration.setServletContext(mock(ServletContext.class));
 		integration.setApplicationContext(webContext);
-		applicationMap.put(SPRING_FACES_INTEGRATION_ATTRIBUTE, integration);
-		applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, new Date());
+		this.applicationMap.put(SPRING_FACES_INTEGRATION_ATTRIBUTE, integration);
+		this.applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, new Date());
 	}
 
 	private Object setupWrapperFactory() {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext);
-		facesWrapperFactoryBeans.put("bean", factory);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		setupApplicationContext(this.applicationContext);
+		this.facesWrapperFactoryBeans.put("bean", this.factory);
 		Object wrapped = new Object();
-		given(factory.newWrapper(Object.class, delegate)).willReturn(wrapped);
+		given(this.factory.newWrapper(Object.class, this.delegate)).willReturn(wrapped);
 		return wrapped;
 	}
 
 	@Test
 	public void shouldNeedTypeClass() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("TypeClass must not be null");
-		new WrapperHandler<Object>(null, delegate);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("TypeClass must not be null");
+		new WrapperHandler<Object>(null, this.delegate);
 	}
 
 	@Test
 	public void shouldNeedDelegate() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Delegate must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Delegate must not be null");
 		new WrapperHandler<Object>(Object.class, null);
 	}
 
 	@Test
 	public void shouldReturnDelegateWithoutApplicationContext() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		Object actual = wrapperHandler.getWrapped();
-		assertSame(delegate, actual);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		Object actual = this.wrapperHandler.getWrapped();
+		assertSame(this.delegate, actual);
 	}
 
 	@Test
 	public void shouldReturnDelegateWithoutFacesContext() throws Exception {
 		cleanupFacesContext();
-		Object actual = wrapperHandler.getWrapped();
-		assertSame(delegate, actual);
+		Object actual = this.wrapperHandler.getWrapped();
+		assertSame(this.delegate, actual);
 	}
 
 	@Test
 	public void shouldWrap() throws Exception {
 		Object wrapped = setupWrapperFactory();
-		Object actual = wrapperHandler.getWrapped();
+		Object actual = this.wrapperHandler.getWrapped();
 		assertSame(wrapped, actual);
 	}
 
 	@Test
 	public void shouldCacheWrapped() throws Exception {
 		setupWrapperFactory();
-		wrapperHandler.getWrapped();
-		wrapperHandler.getWrapped();
-		verify(factory).newWrapper(Object.class, delegate);
-		verifyNoMoreInteractions(factory);
+		this.wrapperHandler.getWrapped();
+		this.wrapperHandler.getWrapped();
+		verify(this.factory).newWrapper(Object.class, this.delegate);
+		verifyNoMoreInteractions(this.factory);
 	}
 
 	@Test
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void shouldWrapInOrder() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		setupApplicationContext(this.applicationContext);
 
 		FacesWrapperFactory f1 = mock(FacesWrapperFactory.class, withSettings().extraInterfaces(Ordered.class));
 		FacesWrapperFactory f2 = mock(FacesWrapperFactory.class, withSettings().extraInterfaces(Ordered.class));
@@ -165,11 +166,11 @@ public class WrapperHandlerTest {
 		given(((Ordered) f3).getOrder()).willReturn(3);
 
 		// Insert in reverse order
-		facesWrapperFactoryBeans.put("f3", f3);
-		facesWrapperFactoryBeans.put("f2", f2);
-		facesWrapperFactoryBeans.put("f1", f1);
+		this.facesWrapperFactoryBeans.put("f3", f3);
+		this.facesWrapperFactoryBeans.put("f2", f2);
+		this.facesWrapperFactoryBeans.put("f1", f1);
 
-		wrapperHandler.getWrapped();
+		this.wrapperHandler.getWrapped();
 
 		InOrder inOrder = Mockito.inOrder(f1, f2, f3);
 		inOrder.verify(f1).newWrapper(any(Class.class), any());
@@ -179,10 +180,10 @@ public class WrapperHandlerTest {
 
 	@Test
 	public void shouldFilterByGenerics() throws Exception {
-		FacesContextSetter.setCurrentInstance(facesContext);
-		setupApplicationContext(applicationContext);
-		facesWrapperFactoryBeans.put("long", new LongFacesWrapperFactory());
-		facesWrapperFactoryBeans.put("integer", new IntegerFacesWrapperFactory());
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		setupApplicationContext(this.applicationContext);
+		this.facesWrapperFactoryBeans.put("long", new LongFacesWrapperFactory());
+		this.facesWrapperFactoryBeans.put("integer", new IntegerFacesWrapperFactory());
 
 		WrapperHandler<Integer> wrapperHandler = WrapperHandler.get(Integer.class, 0);
 		Integer actual = wrapperHandler.getWrapped();
@@ -193,7 +194,7 @@ public class WrapperHandlerTest {
 	@Test
 	public void shouldPostProcessWrapper() throws Exception {
 		Object wrapped = setupWrapperFactory();
-		WrapperHandler<Object> spy = spy(wrapperHandler);
+		WrapperHandler<Object> spy = spy(this.wrapperHandler);
 		spy.getWrapped();
 		verify(spy).postProcessWrapper(wrapped);
 	}
@@ -201,12 +202,12 @@ public class WrapperHandlerTest {
 	@Test
 	public void shouldRewrapIfAppicationContextRefreshed() throws Exception {
 		setupWrapperFactory();
-		wrapperHandler.getWrapped();
+		this.wrapperHandler.getWrapped();
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.SECOND, 1);
-		applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, c.getTime());
-		wrapperHandler.getWrapped();
-		verify(factory, times(2)).newWrapper(Object.class, delegate);
+		this.applicationMap.put(LAST_REFRESHED_DATE_ATTRIBUTE, c.getTime());
+		this.wrapperHandler.getWrapped();
+		verify(this.factory, times(2)).newWrapper(Object.class, this.delegate);
 	}
 
 	private static class LongFacesWrapperFactory implements FacesWrapperFactory<Long> {

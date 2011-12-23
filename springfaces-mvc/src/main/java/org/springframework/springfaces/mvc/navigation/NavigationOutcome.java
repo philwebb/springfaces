@@ -69,6 +69,6 @@ public final class NavigationOutcome implements Serializable {
 	 * @return the implicit model or <tt>null</tt>
 	 */
 	public Map<String, Object> getImplicitModel() {
-		return implicitModel;
+		return this.implicitModel;
 	}
 }

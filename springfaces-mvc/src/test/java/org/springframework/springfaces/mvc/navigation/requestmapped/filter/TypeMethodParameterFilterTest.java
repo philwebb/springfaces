@@ -31,8 +31,8 @@ public class TypeMethodParameterFilterTest {
 
 	@Test
 	public void shouldRequireIgnoredTypes() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("IgnoredTypes must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("IgnoredTypes must not be null");
 		new TypeMethodParameterFilter((Class<?>[]) null);
 	}
 
@@ -40,10 +40,10 @@ public class TypeMethodParameterFilterTest {
 	public void shouldIgnoreTypes() throws Exception {
 		Method method = getMethod();
 		TypeMethodParameterFilter f = new TypeMethodParameterFilter(T1.class, T2.class);
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 0)));
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 1)));
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 2)));
-		assertFalse(f.isFiltered(request, new MethodParameter(method, 3)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 0)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 1)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 2)));
+		assertFalse(f.isFiltered(this.request, new MethodParameter(method, 3)));
 	}
 
 	private Method getMethod() {

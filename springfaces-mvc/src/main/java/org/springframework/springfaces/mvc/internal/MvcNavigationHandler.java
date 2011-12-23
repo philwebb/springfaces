@@ -40,7 +40,7 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 
 	@Override
 	public ConfigurableNavigationHandler getWrapped() {
-		return delegate;
+		return this.delegate;
 	}
 
 	@Override
@@ -52,14 +52,15 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, true, component,
 					defaultDestinationViewId);
-			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
+			if (this.navigationOutcomeResolver.canResolve(context, navigationContext)) {
 				try {
-					NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(context, navigationContext);
+					NavigationOutcome navigationOutcome = this.navigationOutcomeResolver.resolve(context,
+							navigationContext);
 					Assert.state(navigationOutcome != null, "Unable to resolve required navigation outcome '" + outcome
 							+ "'");
 					UIViewRoot root = context.getViewRoot();
 					String fromViewId = (root != null ? root.getViewId() : null);
-					String toViewId = destinationAndModelRegistry.put(context, new DestinationAndModel(
+					String toViewId = this.destinationAndModelRegistry.put(context, new DestinationAndModel(
 							navigationOutcome, preRenderComponentEvent));
 					return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
 				} catch (Exception e) {
@@ -79,11 +80,12 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 			String defaultDestinationViewId = getDefaultDestinationViewId(context, fromAction, outcome);
 			NavigationContext navigationContext = new NavigationContextImpl(fromAction, outcome, false, component,
 					defaultDestinationViewId);
-			if (navigationOutcomeResolver.canResolve(context, navigationContext)) {
+			if (this.navigationOutcomeResolver.canResolve(context, navigationContext)) {
 				try {
-					NavigationOutcome navigationOutcome = navigationOutcomeResolver.resolve(context, navigationContext);
+					NavigationOutcome navigationOutcome = this.navigationOutcomeResolver.resolve(context,
+							navigationContext);
 					if (navigationOutcome != null) {
-						String viewId = destinationAndModelRegistry.put(context, new DestinationAndModel(
+						String viewId = this.destinationAndModelRegistry.put(context, new DestinationAndModel(
 								navigationOutcome, actionEvent));
 						UIViewRoot newRoot = context.getApplication().getViewHandler().createView(context, viewId);
 						context.setViewRoot(newRoot);
@@ -159,23 +161,23 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 		}
 
 		public String getFromAction() {
-			return fromAction;
+			return this.fromAction;
 		}
 
 		public String getOutcome() {
-			return outcome;
+			return this.outcome;
 		}
 
 		public boolean isPreemptive() {
-			return preEmptive;
+			return this.preEmptive;
 		}
 
 		public UIComponent getComponent() {
-			return component;
+			return this.component;
 		}
 
 		public String getDefaultDestinationViewId() {
-			return defaultDestinationViewId;
+			return this.defaultDestinationViewId;
 		}
 	}
 }

@@ -29,30 +29,30 @@ public abstract class FilteredIterator<E> implements Iterator<E> {
 
 	public boolean hasNext() {
 		ensureNextHasBeenFetched();
-		return next != null;
+		return this.next != null;
 	}
 
 	public E next() {
 		try {
 			ensureNextHasBeenFetched();
-			if (next == null) {
+			if (this.next == null) {
 				throw new NoSuchElementException();
 			}
-			return next;
+			return this.next;
 		} finally {
-			next = null;
+			this.next = null;
 		}
 	}
 
 	public void remove() {
-		sourceIterator.remove();
+		this.sourceIterator.remove();
 	}
 
 	private void ensureNextHasBeenFetched() {
-		while (next == null && sourceIterator.hasNext()) {
-			E candidate = sourceIterator.next();
+		while (this.next == null && this.sourceIterator.hasNext()) {
+			E candidate = this.sourceIterator.next();
 			if (!isElementFiltered(candidate)) {
-				next = candidate;
+				this.next = candidate;
 			}
 		}
 	}

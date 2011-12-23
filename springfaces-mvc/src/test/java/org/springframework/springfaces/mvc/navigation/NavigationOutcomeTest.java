@@ -26,27 +26,27 @@ public class NavigationOutcomeTest {
 
 	@Test
 	public void shouldSetDestination() throws Exception {
-		NavigationOutcome outcome = new NavigationOutcome(destination);
-		assertEquals(destination, outcome.getDestination());
+		NavigationOutcome outcome = new NavigationOutcome(this.destination);
+		assertEquals(this.destination, outcome.getDestination());
 	}
 
 	@Test
 	public void shouldSetDestinationAndModel() throws Exception {
-		NavigationOutcome outcome = new NavigationOutcome(destination, implicitModel);
-		assertEquals(destination, outcome.getDestination());
-		assertEquals(implicitModel, outcome.getImplicitModel());
+		NavigationOutcome outcome = new NavigationOutcome(this.destination, this.implicitModel);
+		assertEquals(this.destination, outcome.getDestination());
+		assertEquals(this.implicitModel, outcome.getImplicitModel());
 	}
 
 	@Test
 	public void shouldRequireDestination() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		new NavigationOutcome(null, implicitModel);
+		this.thrown.expect(IllegalArgumentException.class);
+		new NavigationOutcome(null, this.implicitModel);
 	}
 
 	@Test
 	public void shouldSupportNullModel() throws Exception {
-		NavigationOutcome outcome = new NavigationOutcome(destination, null);
-		assertEquals(destination, outcome.getDestination());
+		NavigationOutcome outcome = new NavigationOutcome(this.destination, null);
+		assertEquals(this.destination, outcome.getDestination());
 		assertNull(outcome.getImplicitModel());
 	}
 }

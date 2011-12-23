@@ -23,16 +23,16 @@ public class UIAspectGroupTest {
 
 	@Test
 	public void shouldGetChildAspects() throws Exception {
-		aspectGroup.getChildren().add(aspect);
-		assertThat(aspectGroup.getAllAspects(), is(Collections.singletonList(aspect)));
+		this.aspectGroup.getChildren().add(this.aspect);
+		assertThat(this.aspectGroup.getAllAspects(), is(Collections.singletonList(this.aspect)));
 	}
 
 	@Test
 	public void shouldGetNestedChildAspects() throws Exception {
 		UIPanel parent = new UIPanel();
-		aspectGroup.getChildren().add(parent);
-		parent.getChildren().add(aspect);
-		assertThat(aspectGroup.getAllAspects(), is(Collections.singletonList(aspect)));
+		this.aspectGroup.getChildren().add(parent);
+		parent.getChildren().add(this.aspect);
+		assertThat(this.aspectGroup.getAllAspects(), is(Collections.singletonList(this.aspect)));
 	}
 
 	@Test
@@ -40,9 +40,9 @@ public class UIAspectGroupTest {
 		UIAspect parentAspect = new UIAspect();
 		UIAspectGroup parentAspectGroup = new UIAspectGroup();
 		parentAspectGroup.getChildren().add(parentAspect);
-		parentAspectGroup.getChildren().add(aspectGroup);
-		aspectGroup.getChildren().add(aspect);
-		assertThat(aspectGroup.getAllAspects(), is(Arrays.asList(parentAspect, aspect)));
+		parentAspectGroup.getChildren().add(this.aspectGroup);
+		this.aspectGroup.getChildren().add(this.aspect);
+		assertThat(this.aspectGroup.getAllAspects(), is(Arrays.asList(parentAspect, this.aspect)));
 
 	}
 }

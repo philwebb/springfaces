@@ -36,25 +36,27 @@ public class ELPropertyAccessorTest {
 
 	@Before
 	public void setup() {
-		elContext = mock(ELContext.class);
-		elResolver = mock(ELResolver.class);
-		given(elContext.getELResolver()).willReturn(elResolver);
-		elPropertyAccessor = new ELPropertyAccessor() {
+		this.elContext = mock(ELContext.class);
+		this.elResolver = mock(ELResolver.class);
+		given(this.elContext.getELResolver()).willReturn(this.elResolver);
+		this.elPropertyAccessor = new ELPropertyAccessor() {
 			@Override
 			protected ELContext getElContext(EvaluationContext context, Object target) {
-				return elContext;
+				return ELPropertyAccessorTest.this.elContext;
 			}
 
+			@Override
 			protected Object getResolveBase(EvaluationContext context, Object target, String name) {
-				if (resolveBase != null) {
-					return resolveBase;
+				if (ELPropertyAccessorTest.this.resolveBase != null) {
+					return ELPropertyAccessorTest.this.resolveBase;
 				}
 				return super.getResolveBase(context, target, name);
 			};
 
+			@Override
 			protected Object getResolveProperty(EvaluationContext context, Object target, String name) {
-				if (resolveProperty != null) {
-					return resolveProperty;
+				if (ELPropertyAccessorTest.this.resolveProperty != null) {
+					return ELPropertyAccessorTest.this.resolveProperty;
 				}
 				return super.getResolveProperty(context, target, name);
 
@@ -64,51 +66,51 @@ public class ELPropertyAccessorTest {
 
 	@SuppressWarnings("unchecked")
 	private void willResolve(Object base, Object property, Object value) {
-		given(elResolver.getType(elContext, base, property)).willReturn((Class) value.getClass());
-		given(elResolver.getValue(elContext, base, property)).willReturn(value);
-		given(elContext.isPropertyResolved()).willReturn(true);
+		given(this.elResolver.getType(this.elContext, base, property)).willReturn((Class) value.getClass());
+		given(this.elResolver.getValue(this.elContext, base, property)).willReturn(value);
+		given(this.elContext.isPropertyResolved()).willReturn(true);
 	}
 
 	@Test
 	public void shouldNotReadIfNotInEl() throws Exception {
-		assertFalse(elPropertyAccessor.canRead(context, target, name));
-		assertNull(elPropertyAccessor.read(context, target, name));
+		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertNull(this.elPropertyAccessor.read(this.context, this.target, this.name));
 	}
 
 	@Test
 	public void shouldReadIfInEl() throws Exception {
-		willResolve(null, name, value);
-		assertTrue(elPropertyAccessor.canRead(context, target, name));
-		assertSame(value, elPropertyAccessor.read(context, target, name).getValue());
+		willResolve(null, this.name, this.value);
+		assertTrue(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertSame(this.value, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
 	}
 
 	@Test
 	public void shouldNotWrite() throws Exception {
-		assertFalse(elPropertyAccessor.canWrite(context, target, name));
-		elPropertyAccessor.write(context, target, name, value);
+		assertFalse(this.elPropertyAccessor.canWrite(this.context, this.target, this.name));
+		this.elPropertyAccessor.write(this.context, this.target, this.name, this.value);
 	}
 
 	@Test
 	public void shouldDefaultToBeanExpressionContext() throws Exception {
 		assertTrue(Arrays.equals(new Class<?>[] { BeanExpressionContext.class },
-				elPropertyAccessor.getSpecificTargetClasses()));
+				this.elPropertyAccessor.getSpecificTargetClasses()));
 	}
 
 	@Test
 	public void shouldSupportResolveOverrides() throws Exception {
-		resolveBase = new Object();
-		resolveProperty = "changed";
+		this.resolveBase = new Object();
+		this.resolveProperty = "changed";
 		Object expected = new Object();
-		willResolve(null, name, value);
-		willResolve(resolveBase, resolveProperty, expected);
-		assertTrue(elPropertyAccessor.canRead(context, target, name));
-		assertSame(expected, elPropertyAccessor.read(context, target, name).getValue());
+		willResolve(null, this.name, this.value);
+		willResolve(this.resolveBase, this.resolveProperty, expected);
+		assertTrue(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertSame(expected, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
 	}
 
 	@Test
 	public void shouldWorkWithoutElContext() throws Exception {
-		elContext = null;
-		assertFalse(elPropertyAccessor.canRead(context, target, name));
-		assertNull(elPropertyAccessor.read(context, target, name));
+		this.elContext = null;
+		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertNull(this.elPropertyAccessor.read(this.context, this.target, this.name));
 	}
 }

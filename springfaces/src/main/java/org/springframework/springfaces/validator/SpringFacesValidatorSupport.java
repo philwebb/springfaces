@@ -75,8 +75,8 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 	 */
 	private void collectValidatorBeans() {
 		this.validators = new HashMap<String, Object>();
-		this.validators.putAll(beansOfType(applicationContext, FACES_VALIDATOR_TYPE));
-		this.validators.putAll(beansOfType(applicationContext, VALIDATOR_TYPE));
+		this.validators.putAll(beansOfType(this.applicationContext, FACES_VALIDATOR_TYPE));
+		this.validators.putAll(beansOfType(this.applicationContext, VALIDATOR_TYPE));
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 	}
 
 	protected final Collection<Validator> createValidatorBeans(Class<?> targetClass) {
-		Set<String> beanIds = FOR_CLASS_FILTER.apply(validators, targetClass).keySet();
+		Set<String> beanIds = FOR_CLASS_FILTER.apply(this.validators, targetClass).keySet();
 		List<Validator> validators = new ArrayList<Validator>();
 		for (String beanId : beanIds) {
 			validators.add(createValidatorBean(beanId));
@@ -99,7 +99,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 	}
 
 	private Validator createValidatorBean(String beanId) {
-		Object bean = validators.get(beanId);
+		Object bean = this.validators.get(beanId);
 		if (bean != null) {
 			if (VALIDATOR_TYPE.isInstance(bean)) {
 				return new SpringBeanValidator(FacesContext.getCurrentInstance(), beanId);
@@ -131,7 +131,8 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		@Override
 		public Validator createValidator(String validatorId) throws FacesException {
 			if (DefaultValidator.VALIDATOR_ID.equals(validatorId)) {
-				return new DefaultValidator(FacesContext.getCurrentInstance(), beanName);
+				return new DefaultValidator(FacesContext.getCurrentInstance(),
+						SpringFacesValidatorSupport.this.beanName);
 			}
 			Validator validator = createValidatorBean(validatorId);
 			if (validator != null) {
@@ -142,7 +143,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 
 		@Override
 		public Application getWrapped() {
-			return wrapped;
+			return this.wrapped;
 		}
 	}
 
@@ -187,14 +188,14 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		}
 
 		private Collection<Validator> getValidators(Class<?> targetClass) {
-			if (validators == null) {
-				validators = new StateHolders<StateHolder>();
+			if (this.validators == null) {
+				this.validators = new StateHolders<StateHolder>();
 				Collection<Validator> validatorBeans = getBean().createValidatorBeans(targetClass);
 				for (Validator validator : validatorBeans) {
-					validators.add((StateHolder) validator);
+					this.validators.add((StateHolder) validator);
 				}
 			}
-			return asValidators(validators.asList());
+			return asValidators(this.validators.asList());
 		}
 
 		@SuppressWarnings("unchecked")

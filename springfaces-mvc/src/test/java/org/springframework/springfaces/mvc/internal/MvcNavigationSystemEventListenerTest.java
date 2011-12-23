@@ -36,10 +36,10 @@ public class MvcNavigationSystemEventListenerTest {
 
 	@Before
 	public void setup() {
-		context = mock(FacesContext.class);
+		this.context = mock(FacesContext.class);
 		Map<Object, Object> attributes = new HashMap<Object, Object>();
-		given(context.getAttributes()).willReturn(attributes);
-		FacesContextSetter.setCurrentInstance(context);
+		given(this.context.getAttributes()).willReturn(attributes);
+		FacesContextSetter.setCurrentInstance(this.context);
 	}
 
 	@After
@@ -50,22 +50,22 @@ public class MvcNavigationSystemEventListenerTest {
 	@Test
 	public void shouldListenForAllSources() throws Exception {
 		Object source = new Object();
-		assertTrue(listener.isListenerForSource(source));
+		assertTrue(this.listener.isListenerForSource(source));
 	}
 
 	@Test
 	public void shouldCapturePreRenderComponentEvent() throws Exception {
 		UIComponent component = mock(UIComponent.class);
 		SystemEvent event = new PreRenderComponentEvent(component);
-		listener.processEvent(event);
-		assertSame(event, MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(context));
+		this.listener.processEvent(event);
+		assertSame(event, MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context));
 	}
 
 	@Test
 	public void shouldNotCaptureOtherEvent() throws Exception {
 		UIComponent component = mock(UIComponent.class);
 		SystemEvent event = new PreRemoveFromViewEvent(component);
-		listener.processEvent(event);
-		assertNull(MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(context));
+		this.listener.processEvent(event);
+		assertNull(MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context));
 	}
 }

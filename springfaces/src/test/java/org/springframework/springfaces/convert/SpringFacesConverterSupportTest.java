@@ -49,8 +49,8 @@ public class SpringFacesConverterSupportTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -59,30 +59,30 @@ public class SpringFacesConverterSupportTest {
 	}
 
 	private Application createWrappedApplication() {
-		converterSupport.setApplicationContext(applicationContext);
-		converterSupport.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
-		return converterSupport.newWrapper(Application.class, delegateApplication);
+		this.converterSupport.setApplicationContext(this.applicationContext);
+		this.converterSupport.onApplicationEvent(new ContextRefreshedEvent(this.applicationContext));
+		return this.converterSupport.newWrapper(Application.class, this.delegateApplication);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void shouldGetWrapped() throws Exception {
 		Application application = createWrappedApplication();
-		assertThat(((FacesWrapper<Application>) application).getWrapped(), is(delegateApplication));
+		assertThat(((FacesWrapper<Application>) application).getWrapped(), is(this.delegateApplication));
 	}
 
 	@Test
 	public void shouldDelegateCreateConverterById() throws Exception {
 		Application application = createWrappedApplication();
 		Converter converter = mock(Converter.class);
-		given(delegateApplication.createConverter("id")).willReturn(converter);
+		given(this.delegateApplication.createConverter("id")).willReturn(converter);
 		Converter actual = application.createConverter("id");
 		assertThat(actual, is(sameInstance(converter)));
 	}
 
 	@Test
 	public void shouldCreateConverterByIdFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockConverter.class);
+		this.applicationContext.registerSingleton("bean", MockConverter.class);
 		Application application = createWrappedApplication();
 		Converter converter = application.createConverter("bean");
 		assertThat(converter, is(instanceOf(SpringBeanConverter.class)));
@@ -91,7 +91,7 @@ public class SpringFacesConverterSupportTest {
 
 	@Test
 	public void shouldCreateFacesConverterByIdFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockFacesConverter.class);
+		this.applicationContext.registerSingleton("bean", MockFacesConverter.class);
 		Application application = createWrappedApplication();
 		Converter converter = application.createConverter("bean");
 		assertThat(converter, is(instanceOf(SpringBeanFacesConverter.class)));
@@ -100,7 +100,7 @@ public class SpringFacesConverterSupportTest {
 
 	@Test
 	public void shouldCreateConverterByClassFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockConverterForClass.class);
+		this.applicationContext.registerSingleton("bean", MockConverterForClass.class);
 		Application application = createWrappedApplication();
 		Converter converter = application.createConverter(Example.class);
 		assertThat(converter, is(instanceOf(SpringBeanConverter.class)));
@@ -109,7 +109,7 @@ public class SpringFacesConverterSupportTest {
 
 	@Test
 	public void shouldCreateFacesConverterByClassFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockFacesConverterForClass.class);
+		this.applicationContext.registerSingleton("bean", MockFacesConverterForClass.class);
 		Application application = createWrappedApplication();
 		Converter converter = application.createConverter(Example.class);
 		assertThat(converter, is(instanceOf(SpringBeanFacesConverter.class)));
@@ -120,18 +120,18 @@ public class SpringFacesConverterSupportTest {
 	public void shouldDelegateCreateConverterByClass() throws Exception {
 		Application application = createWrappedApplication();
 		Converter converter = mock(Converter.class);
-		given(delegateApplication.createConverter(Example.class)).willReturn(converter);
+		given(this.delegateApplication.createConverter(Example.class)).willReturn(converter);
 		Converter actual = application.createConverter(Example.class);
 		assertThat(actual, is(sameInstance(converter)));
 	}
 
 	@Test
 	public void shouldFailIfMultipleConvertersRegisteredForClass() throws Exception {
-		applicationContext.registerSingleton("bean1", MockConverterForClass.class);
-		applicationContext.registerSingleton("bean2", MockFacesConverterForClass.class);
+		this.applicationContext.registerSingleton("bean1", MockConverterForClass.class);
+		this.applicationContext.registerSingleton("bean2", MockFacesConverterForClass.class);
 		Application application = createWrappedApplication();
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Multiple JSF converters registered with Spring for " + Example.class.getName()
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Multiple JSF converters registered with Spring for " + Example.class.getName()
 				+ " : [bean1, bean2]");
 		application.createConverter(Example.class);
 	}

@@ -43,9 +43,9 @@ public class MvcNavigationActionListenerTest {
 
 	@Before
 	public void setup() {
-		listener = new MvcNavigationActionListener(delegate);
-		given(facesContext.getAttributes()).willReturn(attributes);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		this.listener = new MvcNavigationActionListener(this.delegate);
+		given(this.facesContext.getAttributes()).willReturn(this.attributes);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -55,14 +55,14 @@ public class MvcNavigationActionListenerTest {
 
 	@Test
 	public void shouldStoreActionEvent() throws Exception {
-		listener.processAction(event);
-		assertTrue(attributes.size() == 1);
-		assertSame(event, MvcNavigationActionListener.getLastActionEvent(facesContext));
+		this.listener.processAction(this.event);
+		assertTrue(this.attributes.size() == 1);
+		assertSame(this.event, MvcNavigationActionListener.getLastActionEvent(this.facesContext));
 	}
 
 	@Test
 	public void shouldCallDelegate() throws Exception {
-		listener.processAction(event);
-		verify(delegate).processAction(event);
+		this.listener.processAction(this.event);
+		verify(this.delegate).processAction(this.event);
 	}
 }

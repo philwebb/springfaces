@@ -53,68 +53,71 @@ public class SpringBeanPartialStateHolderTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(context, applicationContext);
-		given(applicationContext.getBean(beanName)).willReturn(bean);
-		given(applicationContext.getBean(stateHolderBeanName)).willReturn(stateHolderBean);
-		given(applicationContext.isPrototype(stateHolderBeanName)).willReturn(true);
-		given(applicationContext.getBean(integerBeanName)).willReturn(integerBean);
+		SpringFacesMocks.setupSpringFacesIntegration(this.context, this.applicationContext);
+		given(this.applicationContext.getBean(this.beanName)).willReturn(this.bean);
+		given(this.applicationContext.getBean(this.stateHolderBeanName)).willReturn(this.stateHolderBean);
+		given(this.applicationContext.isPrototype(this.stateHolderBeanName)).willReturn(true);
+		given(this.applicationContext.getBean(this.integerBeanName)).willReturn(this.integerBean);
 	}
 
 	@Test
 	public void shouldNeedFacesContext() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Context must not be null");
-		new SpringBeanPartialStateHolder<Object>(null, beanName);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Context must not be null");
+		new SpringBeanPartialStateHolder<Object>(null, this.beanName);
 	}
 
 	@Test
 	public void shouldNeedBeanName() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("BeanName must not be null");
-		new SpringBeanPartialStateHolder<Object>(context, null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("BeanName must not be null");
+		new SpringBeanPartialStateHolder<Object>(this.context, null);
 	}
 
 	@Test
 	public void shouldObtainBeanOnConstruct() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
-		assertThat(holder.getBean(), is(bean));
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.beanName);
+		assertThat(holder.getBean(), is(this.bean));
 	}
 
 	@Test
 	public void shouldOnlySupportStateHolderBeansIfPrototype() throws Exception {
-		reset(applicationContext);
-		given(applicationContext.getBean(stateHolderBeanName)).willReturn(stateHolderBean);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("StateHolders must be declared as protoype beans");
-		new SpringBeanPartialStateHolder<Object>(context, stateHolderBeanName);
+		reset(this.applicationContext);
+		given(this.applicationContext.getBean(this.stateHolderBeanName)).willReturn(this.stateHolderBean);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("StateHolders must be declared as protoype beans");
+		new SpringBeanPartialStateHolder<Object>(this.context, this.stateHolderBeanName);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldSaveAndRestore() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
-		Object state = holder.saveState(context);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.beanName);
+		Object state = holder.saveState(this.context);
 		holder = SpringBeanPartialStateHolder.class.newInstance();
-		holder.restoreState(context, state);
-		assertThat(holder.getBean(), is(bean));
+		holder.restoreState(this.context, state);
+		assertThat(holder.getBean(), is(this.bean));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void shouldSaveAndRestoreBeansIfStateHolders() throws Exception {
 		Object beanState = new Object();
-		given(stateHolderBean.saveState(context)).willReturn(beanState);
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context,
-				stateHolderBeanName);
-		Object state = holder.saveState(context);
+		given(this.stateHolderBean.saveState(this.context)).willReturn(beanState);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.stateHolderBeanName);
+		Object state = holder.saveState(this.context);
 		holder = SpringBeanPartialStateHolder.class.newInstance();
-		holder.restoreState(context, state);
-		verify(stateHolderBean).restoreState(context, beanState);
+		holder.restoreState(this.context, state);
+		verify(this.stateHolderBean).restoreState(this.context, beanState);
 	}
 
 	@Test
 	public void shouldSupportTransient() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.beanName);
 		assertThat(holder.isTransient(), is(false));
 		holder.setTransient(true);
 		assertThat(holder.isTransient(), is(true));
@@ -122,7 +125,8 @@ public class SpringBeanPartialStateHolderTest {
 
 	@Test
 	public void shouldSupportInitialState() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.beanName);
 		assertThat(holder.initialStateMarked(), is(false));
 		holder.markInitialState();
 		assertThat(holder.initialStateMarked(), is(true));
@@ -132,45 +136,46 @@ public class SpringBeanPartialStateHolderTest {
 
 	@Test
 	public void shouldDelegateInitialStateToBeanWhenPossible() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context,
-				stateHolderBeanName);
-		given(stateHolderBean.initialStateMarked()).willReturn(true);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.stateHolderBeanName);
+		given(this.stateHolderBean.initialStateMarked()).willReturn(true);
 		assertThat(holder.initialStateMarked(), is(true));
-		verify(stateHolderBean).initialStateMarked();
+		verify(this.stateHolderBean).initialStateMarked();
 		holder.markInitialState();
-		verify(stateHolderBean).markInitialState();
+		verify(this.stateHolderBean).markInitialState();
 		holder.clearInitialState();
-		verify(stateHolderBean).clearInitialState();
+		verify(this.stateHolderBean).clearInitialState();
 	}
 
 	@Test
 	public void shouldCheckBeanType() throws Exception {
-		new TypedToNumberHolder(context, integerBeanName);
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Unable to load bean 'integerBean' Object of class [java.lang.Integer] "
+		new TypedToNumberHolder(this.context, this.integerBeanName);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Unable to load bean 'integerBean' Object of class [java.lang.Integer] "
 				+ "must be an instance of class java.lang.Long");
-		new TypedToLongHolder(context, integerBeanName);
+		new TypedToLongHolder(this.context, this.integerBeanName);
 	}
 
 	@Test
 	public void shouldNotHaveNullStateIfMakeInitialStateAndNotStateHolderBean() throws Exception {
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context, beanName);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.beanName);
 		holder.markInitialState();
-		Object state = holder.saveState(context);
+		Object state = holder.saveState(this.context);
 		assertThat(state, is(nullValue()));
 	}
 
 	@Test
 	public void shouldNotHaveDirectStateIfMakeInitialStateAndStateHolderBean() throws Exception {
 		Object beanState = new Object();
-		given(stateHolderBean.saveState(context)).willReturn(beanState);
-		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(context,
-				stateHolderBeanName);
+		given(this.stateHolderBean.saveState(this.context)).willReturn(beanState);
+		SpringBeanPartialStateHolder<Object> holder = new SpringBeanPartialStateHolder<Object>(this.context,
+				this.stateHolderBeanName);
 		holder.markInitialState();
-		Object state = holder.saveState(context);
-		holder.restoreState(context, state);
+		Object state = holder.saveState(this.context);
+		holder.restoreState(this.context, state);
 		assertThat(state, is(sameInstance(beanState)));
-		verify(stateHolderBean).restoreState(context, beanState);
+		verify(this.stateHolderBean).restoreState(this.context, beanState);
 	}
 
 	private static class TypedToNumberHolder extends SpringBeanPartialStateHolder<Number> {

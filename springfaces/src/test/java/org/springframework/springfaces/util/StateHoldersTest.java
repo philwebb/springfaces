@@ -44,111 +44,111 @@ public class StateHoldersTest {
 
 	@Test
 	public void shouldNotAddNull() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("StateHolder must not be null");
-		stateHolders.add(null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("StateHolder must not be null");
+		this.stateHolders.add(null);
 	}
 
 	@Test
 	public void shouldAdd() throws Exception {
-		stateHolders.add(stateHolder);
-		assertThat(stateHolders.asList().get(0), is(sameInstance(stateHolder)));
+		this.stateHolders.add(this.stateHolder);
+		assertThat(this.stateHolders.asList().get(0), is(sameInstance(this.stateHolder)));
 	}
 
 	@Test
 	public void shouldClearInitialStateOnAdd() throws Exception {
-		stateHolders.markInitialState();
-		stateHolders.add(stateHolder);
-		assertThat(stateHolders.initialStateMarked(), is(false));
+		this.stateHolders.markInitialState();
+		this.stateHolders.add(this.stateHolder);
+		assertThat(this.stateHolders.initialStateMarked(), is(false));
 	}
 
 	@Test
 	public void shouldNotRemoveNull() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("StateHolder must not be null");
-		stateHolders.remove(null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("StateHolder must not be null");
+		this.stateHolders.remove(null);
 	}
 
 	@Test
 	public void shouldRemove() throws Exception {
-		stateHolders.add(stateHolder);
-		boolean removed = stateHolders.remove(stateHolder);
+		this.stateHolders.add(this.stateHolder);
+		boolean removed = this.stateHolders.remove(this.stateHolder);
 		assertThat(removed, is(true));
-		assertThat(stateHolders.asList().isEmpty(), is(true));
+		assertThat(this.stateHolders.asList().isEmpty(), is(true));
 	}
 
 	@Test
 	public void shouldClearInitialStateOnRemove() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.markInitialState();
-		stateHolders.remove(stateHolder);
-		assertThat(stateHolders.initialStateMarked(), is(false));
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.markInitialState();
+		this.stateHolders.remove(this.stateHolder);
+		assertThat(this.stateHolders.initialStateMarked(), is(false));
 	}
 
 	@Test
 	public void shouldSetTransient() throws Exception {
-		assertThat(stateHolders.isTransient(), is(false));
-		stateHolders.setTransient(true);
-		assertThat(stateHolders.isTransient(), is(true));
+		assertThat(this.stateHolders.isTransient(), is(false));
+		this.stateHolders.setTransient(true);
+		assertThat(this.stateHolders.isTransient(), is(true));
 	}
 
 	@Test
 	public void shouldPropagateTransient() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.setTransient(true);
-		verify(stateHolder).setTransient(true);
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.setTransient(true);
+		verify(this.stateHolder).setTransient(true);
 	}
 
 	@Test
 	public void shouldMarkInitialState() throws Exception {
-		assertThat(stateHolders.initialStateMarked(), is(false));
-		stateHolders.markInitialState();
-		assertThat(stateHolders.initialStateMarked(), is(true));
+		assertThat(this.stateHolders.initialStateMarked(), is(false));
+		this.stateHolders.markInitialState();
+		assertThat(this.stateHolders.initialStateMarked(), is(true));
 	}
 
 	@Test
 	public void shouldPropagateMarkInitialState() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.add(partialStateHolder);
-		stateHolders.markInitialState();
-		verify(partialStateHolder).markInitialState();
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.add(this.partialStateHolder);
+		this.stateHolders.markInitialState();
+		verify(this.partialStateHolder).markInitialState();
 	}
 
 	@Test
 	public void shouldClearInitialState() throws Exception {
-		stateHolders.markInitialState();
-		assertThat(stateHolders.initialStateMarked(), is(true));
-		stateHolders.clearInitialState();
-		assertThat(stateHolders.initialStateMarked(), is(false));
+		this.stateHolders.markInitialState();
+		assertThat(this.stateHolders.initialStateMarked(), is(true));
+		this.stateHolders.clearInitialState();
+		assertThat(this.stateHolders.initialStateMarked(), is(false));
 	}
 
 	@Test
 	public void shouldPropagateClearInitialState() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.add(partialStateHolder);
-		stateHolders.clearInitialState();
-		verify(partialStateHolder).clearInitialState();
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.add(this.partialStateHolder);
+		this.stateHolders.clearInitialState();
+		verify(this.partialStateHolder).clearInitialState();
 	}
 
 	@Test
 	public void shouldSaveAndRestoreWhenInitialState() throws Exception {
-		stateHolders.add(partialStateHolder);
+		this.stateHolders.add(this.partialStateHolder);
 		Object state = new Object();
-		given(partialStateHolder.saveState(context)).willReturn(state);
-		stateHolders.markInitialState();
-		Object saved = stateHolders.saveState(context);
-		stateHolders.restoreState(context, saved);
-		verify(partialStateHolder).restoreState(context, state);
+		given(this.partialStateHolder.saveState(this.context)).willReturn(state);
+		this.stateHolders.markInitialState();
+		Object saved = this.stateHolders.saveState(this.context);
+		this.stateHolders.restoreState(this.context, saved);
+		verify(this.partialStateHolder).restoreState(this.context, state);
 	}
 
 	@Test
 	public void shouldNotSaveTransientStateHolder() throws Exception {
-		stateHolders.add(partialStateHolder);
-		given(partialStateHolder.isTransient()).willReturn(true);
-		stateHolders.markInitialState();
-		Object saved = stateHolders.saveState(context);
+		this.stateHolders.add(this.partialStateHolder);
+		given(this.partialStateHolder.isTransient()).willReturn(true);
+		this.stateHolders.markInitialState();
+		Object saved = this.stateHolders.saveState(this.context);
 		assertThat(saved, is(nullValue()));
-		verify(partialStateHolder, never()).saveState(context);
+		verify(this.partialStateHolder, never()).saveState(this.context);
 	}
 
 	@Test
@@ -156,40 +156,40 @@ public class StateHoldersTest {
 		RealStateHolder realStateHolder = new RealStateHolder();
 		Object state = new Integer(1);
 		realStateHolder.setState(state);
-		stateHolders.add(realStateHolder);
-		Object saved = stateHolders.saveState(context);
-		stateHolders = new StateHolders<StateHolder>();
-		stateHolders.restoreState(context, saved);
-		RealStateHolder restored = (RealStateHolder) stateHolders.asList().get(0);
+		this.stateHolders.add(realStateHolder);
+		Object saved = this.stateHolders.saveState(this.context);
+		this.stateHolders = new StateHolders<StateHolder>();
+		this.stateHolders.restoreState(this.context, saved);
+		RealStateHolder restored = (RealStateHolder) this.stateHolders.asList().get(0);
 		assertThat(restored, is(not(sameInstance(realStateHolder))));
 		assertThat(restored.getState(), is(equalTo(state)));
 	}
 
 	@Test
 	public void shouldRestoreNull() throws Exception {
-		stateHolders.restoreState(context, null);
-		assertThat(stateHolders.asList().isEmpty(), is(true));
+		this.stateHolders.restoreState(this.context, null);
+		assertThat(this.stateHolders.asList().isEmpty(), is(true));
 
 	}
 
 	@Test
 	public void shouldIterate() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.add(partialStateHolder);
-		Iterator<StateHolder> iterator = stateHolders.iterator();
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.add(this.partialStateHolder);
+		Iterator<StateHolder> iterator = this.stateHolders.iterator();
 		assertThat(iterator.hasNext(), is(true));
-		assertThat(iterator.next(), is(stateHolder));
+		assertThat(iterator.next(), is(this.stateHolder));
 		assertThat(iterator.hasNext(), is(true));
-		assertThat(iterator.next(), is((StateHolder) partialStateHolder));
+		assertThat(iterator.next(), is((StateHolder) this.partialStateHolder));
 		assertThat(iterator.hasNext(), is(false));
 	}
 
 	@Test
 	public void shouldGetAsList() throws Exception {
-		stateHolders.add(stateHolder);
-		stateHolders.add(partialStateHolder);
-		List<StateHolder> asList = stateHolders.asList();
-		assertThat(asList, is(equalTo(Arrays.asList(stateHolder, partialStateHolder))));
+		this.stateHolders.add(this.stateHolder);
+		this.stateHolders.add(this.partialStateHolder);
+		List<StateHolder> asList = this.stateHolders.asList();
+		assertThat(asList, is(equalTo(Arrays.asList(this.stateHolder, this.partialStateHolder))));
 	}
 
 	public static class RealStateHolder implements StateHolder {
@@ -198,7 +198,7 @@ public class StateHoldersTest {
 		private Object state;
 
 		public Object getState() {
-			return state;
+			return this.state;
 		}
 
 		public void setState(Object state) {
@@ -206,7 +206,7 @@ public class StateHoldersTest {
 		}
 
 		public Object saveState(FacesContext context) {
-			return state;
+			return this.state;
 		}
 
 		public void restoreState(FacesContext context, Object state) {
@@ -214,11 +214,11 @@ public class StateHoldersTest {
 		}
 
 		public boolean isTransient() {
-			return transientValue;
+			return this.transientValue;
 		}
 
 		public void setTransient(boolean newTransientValue) {
-			transientValue = newTransientValue;
+			this.transientValue = newTransientValue;
 		}
 	}
 }

@@ -20,18 +20,18 @@ public class AspectInvocationWrapperTest {
 
 	private AspectInvocation wrapped = mock(AspectInvocation.class);
 
-	private AspectInvocationWrapper wrapper = new AspectInvocationWrapper(wrapped);
+	private AspectInvocationWrapper wrapper = new AspectInvocationWrapper(this.wrapped);
 
 	@Test
 	public void shouldWrapGetComponent() throws Exception {
 		UIComponent component = mock(UIComponent.class);
-		given(wrapped.getComponent()).willReturn(component);
-		assertThat(wrapper.getComponent(), is(sameInstance(component)));
+		given(this.wrapped.getComponent()).willReturn(component);
+		assertThat(this.wrapper.getComponent(), is(sameInstance(component)));
 	}
 
 	@Test
 	public void shouldWrapProceed() throws Exception {
-		wrapper.proceed();
-		verify(wrapped).proceed();
+		this.wrapper.proceed();
+		verify(this.wrapped).proceed();
 	}
 }

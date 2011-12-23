@@ -67,7 +67,7 @@ public class SpringFacesModelMethodArgumentResolver implements HandlerMethodArgu
 		if (parameter.getParameterType().isInstance(model)) {
 			return true;
 		}
-		return ((resolveModelItems) && (findModelValue(model, parameter) != null));
+		return ((this.resolveModelItems) && (findModelValue(model, parameter) != null));
 	}
 
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,

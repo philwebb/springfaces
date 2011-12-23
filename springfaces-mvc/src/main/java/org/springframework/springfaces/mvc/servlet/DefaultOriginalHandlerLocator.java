@@ -18,11 +18,11 @@ public class DefaultOriginalHandlerLocator implements OriginalHandlerLocator,
 	private DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		delegate.onApplicationEvent(event);
+		this.delegate.onApplicationEvent(event);
 	}
 
 	public HandlerExecutionChain getOriginalHandler(HttpServletRequest request) throws Exception {
-		return delegate.getHandler(request);
+		return this.delegate.getHandler(request);
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet {

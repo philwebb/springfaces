@@ -53,41 +53,41 @@ public class NavigationContextMethodArgumentResolverTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		resolver = new NavigationContextMethodArgumentResolver(navigationContext);
-		given(navigationContext.getComponent()).willReturn(component);
-		given(navigationContext.getOutcome()).willReturn("outcome");
+		this.resolver = new NavigationContextMethodArgumentResolver(this.navigationContext);
+		given(this.navigationContext.getComponent()).willReturn(this.component);
+		given(this.navigationContext.getOutcome()).willReturn("outcome");
 	}
 
 	@Test
 	public void shouldNeedNavigationContext() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("NavigationContext must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("NavigationContext must not be null");
 		new NavigationContextMethodArgumentResolver(null);
 	}
 
 	@Test
 	public void shouldSupportNavigationContext() throws Exception {
-		assertTrue(resolver.supportsParameter(mockMethodParameter(NavigationContext.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)));
-		assertSame(navigationContext, resolver.resolveArgument(mockMethodParameter(NavigationContext.class),
-				mavContainer, webRequest, binderFactory));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(NavigationContext.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)));
+		assertSame(this.navigationContext, this.resolver.resolveArgument(mockMethodParameter(NavigationContext.class),
+				this.mavContainer, this.webRequest, this.binderFactory));
 	}
 
 	@Test
 	public void shouldSupportComponent() throws Exception {
-		assertTrue(resolver.supportsParameter(mockMethodParameter(HtmlCommandButton.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(UICommand.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(UIComponent.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(HtmlCommandLink.class)));
-		assertSame(component,
-				resolver.resolveArgument(mockMethodParameter(UICommand.class), mavContainer, webRequest, binderFactory));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandButton.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(UICommand.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(UIComponent.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandLink.class)));
+		assertSame(this.component, this.resolver.resolveArgument(mockMethodParameter(UICommand.class),
+				this.mavContainer, this.webRequest, this.binderFactory));
 	}
 
 	@Test
 	public void shouldSupportOutcome() throws Exception {
-		assertTrue(resolver.supportsParameter(mockMethodParameter(String.class)));
-		assertEquals("outcome",
-				resolver.resolveArgument(mockMethodParameter(String.class), mavContainer, webRequest, binderFactory));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(String.class)));
+		assertEquals("outcome", this.resolver.resolveArgument(mockMethodParameter(String.class), this.mavContainer,
+				this.webRequest, this.binderFactory));
 	}
 
 	private static interface ExtendsNavigationContext extends NavigationContext {

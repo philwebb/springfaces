@@ -66,8 +66,8 @@ public class UIMessageSource extends UIComponentBase {
 		Assert.state(StringUtils.hasLength(var), "No 'var' attibute specified for UIMessageSource component");
 		Map<String, Object> requestMap = context.getExternalContext().getRequestMap();
 		Object previous = requestMap.put(var, messageSourceMap);
-		if (previous != null && logger.isWarnEnabled()) {
-			logger.warn("The request scoped JSF variable '" + var + "' of type " + previous.getClass().getName()
+		if (previous != null && this.logger.isWarnEnabled()) {
+			this.logger.warn("The request scoped JSF variable '" + var + "' of type " + previous.getClass().getName()
 					+ " has been replaced by UIMessageSource");
 		}
 		super.encodeEnd(context);
@@ -219,20 +219,20 @@ public class UIMessageSource extends UIComponentBase {
 
 		@Override
 		protected Locale getLocale() {
-			return FacesUtils.getLocale(context);
+			return FacesUtils.getLocale(this.context);
 		}
 
 		@Override
 		protected void handleNoSuchMessageException(NoSuchMessageException exception) {
-			if (context.isProjectStage(ProjectStage.Production)) {
+			if (this.context.isProjectStage(ProjectStage.Production)) {
 				throw exception;
 			}
-			if (logger.isWarnEnabled()) {
-				logger.warn(exception.getMessage(), exception);
+			if (UIMessageSource.this.logger.isWarnEnabled()) {
+				UIMessageSource.this.logger.warn(exception.getMessage(), exception);
 			}
 			FacesMessage message = new FacesMessage(exception.getMessage());
 			message.setSeverity(FacesMessage.SEVERITY_WARN);
-			context.addMessage(UIMessageSource.this.getClientId(context), message);
+			this.context.addMessage(UIMessageSource.this.getClientId(this.context), message);
 		}
 	}
 }

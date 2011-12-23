@@ -49,67 +49,67 @@ public class UIApplyAspectsTest {
 	@Test
 	public void shouldRenderChildren() throws Exception {
 		UIApplyAspects applyAspects = new UIApplyAspects();
-		applyAspects.getChildren().add(child);
+		applyAspects.getChildren().add(this.child);
 		assertThat(applyAspects.getRendersChildren(), is(true));
 	}
 
 	@Test
 	public void shouldApplyUsingAspectGroup() throws Exception {
-		applyAspects.getChildren().add(child);
-		aspectGroup.getChildren().add(applyAspects);
-		applyAspects.encodeChildren(context);
-		InOrder ordered = inOrder(aspectGroup, child);
-		ordered.verify(aspectGroup).applyAspects(eq(context), invocation.capture());
-		ordered.verify(child).encodeAll(context);
+		this.applyAspects.getChildren().add(this.child);
+		this.aspectGroup.getChildren().add(this.applyAspects);
+		this.applyAspects.encodeChildren(this.context);
+		InOrder ordered = inOrder(this.aspectGroup, this.child);
+		ordered.verify(this.aspectGroup).applyAspects(eq(this.context), this.invocation.capture());
+		ordered.verify(this.child).encodeAll(this.context);
 	}
 
 	@Test
 	public void shouldNeedAspectGroupParent() throws Exception {
-		applyAspects.getChildren().add(child);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to locate parent UIAspectGroup");
-		applyAspects.encodeChildren(context);
+		this.applyAspects.getChildren().add(this.child);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to locate parent UIAspectGroup");
+		this.applyAspects.encodeChildren(this.context);
 	}
 
 	@Test
 	public void shouldFindAspectGroupGrandParent() throws Exception {
 		UIPanel parent = new UIPanel();
-		applyAspects.getChildren().add(child);
-		aspectGroup.getChildren().add(parent);
-		parent.getChildren().add(applyAspects);
-		applyAspects.encodeChildren(context);
-		verify(aspectGroup).applyAspects(eq(context), invocation.capture());
+		this.applyAspects.getChildren().add(this.child);
+		this.aspectGroup.getChildren().add(parent);
+		parent.getChildren().add(this.applyAspects);
+		this.applyAspects.encodeChildren(this.context);
+		verify(this.aspectGroup).applyAspects(eq(this.context), this.invocation.capture());
 	}
 
 	@Test
 	public void shouldAllowAccessToChildComponent() throws Exception {
-		applyAspects.getChildren().add(child);
-		aspectGroup.getChildren().add(applyAspects);
-		applyAspects.encodeChildren(context);
-		verify(aspectGroup).applyAspects(eq(context), invocation.capture());
-		assertThat(invocation.getValue().getComponent(), is(child));
+		this.applyAspects.getChildren().add(this.child);
+		this.aspectGroup.getChildren().add(this.applyAspects);
+		this.applyAspects.encodeChildren(this.context);
+		verify(this.aspectGroup).applyAspects(eq(this.context), this.invocation.capture());
+		assertThat(this.invocation.getValue().getComponent(), is(this.child));
 	}
 
 	@Test
 	public void shouldThrowWithTwoOrMoreChildren() throws Exception {
 		UIComponent secondChild = mock(UIComponent.class);
-		applyAspects.getChildren().add(child);
-		applyAspects.getChildren().add(secondChild);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Aspects can only be applied to a single child");
-		applyAspects.encodeChildren(context);
+		this.applyAspects.getChildren().add(this.child);
+		this.applyAspects.getChildren().add(secondChild);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Aspects can only be applied to a single child");
+		this.applyAspects.encodeChildren(this.context);
 	}
 
 	@Test
 	public void shouldThrowWithZeroChildren() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Aspects can only be applied to a single child");
-		applyAspects.encodeChildren(context);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Aspects can only be applied to a single child");
+		this.applyAspects.encodeChildren(this.context);
 	}
 
 	@Test
 	public void shouldBeInAspectFamily() throws Exception {
-		String family = applyAspects.getFamily();
+		String family = this.applyAspects.getFamily();
 		assertThat(family, is("spring.faces.Aspect"));
 	}
 }

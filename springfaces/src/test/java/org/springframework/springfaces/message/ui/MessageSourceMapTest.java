@@ -47,66 +47,66 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldNeedMessageSource() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("MessageSource must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("MessageSource must not be null");
 		new MessageSourceMap(null, null);
 	}
 
 	@Test
 	public void shouldThrowUnsupportedOperationExceptions() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null);
-		thrown.expect(UnsupportedOperationException.class);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
+		this.thrown.expect(UnsupportedOperationException.class);
 		map.size();
 	}
 
 	@Test
 	public void shouldThrowNestedUnsupportedOperationExceptions() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		Value value = map.get("x").get("y");
-		thrown.expect(UnsupportedOperationException.class);
+		this.thrown.expect(UnsupportedOperationException.class);
 		value.size();
 	}
 
 	@Test
 	public void shouldAllowNullKeys() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		Value actual = map.get(null);
 		assertThat(actual, is(nullValue()));
 	}
 
 	@Test
 	public void shouldGetValue() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
 		assertEquals("x", value.getCodes()[0]);
 	}
 
 	@Test
 	public void shouldUsePrefixCodes() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
 		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
 	}
 
 	@Test
 	public void shouldResolveOnGetValueToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, null);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		Value value = map.get("x");
-		given(messageSource.getMessage(msr("x"), nullLocale())).willReturn("message");
+		given(this.messageSource.getMessage(msr("x"), nullLocale())).willReturn("message");
 		assertEquals("message", value.toString());
 	}
 
 	@Test
 	public void shouldUsePrefixCodesOnGetValueToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		Value value = map.get("x");
-		given(messageSource.getMessage(msr("a.x", "b.x", "c.x"), nullLocale())).willReturn("message");
+		given(this.messageSource.getMessage(msr("a.x", "b.x", "c.x"), nullLocale())).willReturn("message");
 		assertEquals("message", value.toString());
 	}
 
 	@Test
 	public void shouldAllowNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
 		assertEquals("x", value.getCodes()[0]);
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -114,7 +114,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldUsePrefixCodesWhenNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
 		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -122,7 +122,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldSupportNullPrefixCodesWhenNesting() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", null, "c." });
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", null, "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
 		assertEquals(Arrays.asList("a.x", "x", "c.x"), Arrays.asList(value.getCodes()));
 		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
@@ -130,7 +130,7 @@ public class MessageSourceMapTest {
 
 	@Test
 	public void shouldHaveToString() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource, new String[] { "a.", "b.", "c." });
+		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		assertTrue(map.toString().contains(
 				"messageSource = messageSource, prefixCodes = array<String>['a.', 'b.', 'c.']]"));
 	}
@@ -138,63 +138,66 @@ public class MessageSourceMapTest {
 	@Test
 	public void shouldUseLocale() throws Exception {
 		final Locale locale = Locale.ITALY;
-		MessageSourceMap map = new MessageSourceMap(messageSource) {
+		MessageSourceMap map = new MessageSourceMap(this.messageSource) {
+			@Override
 			protected Locale getLocale() {
 				return locale;
 			};
 		};
 		Value value = map.get("x");
-		given(messageSource.getMessage(msr("x"), eq(locale))).willReturn("message");
+		given(this.messageSource.getMessage(msr("x"), eq(locale))).willReturn("message");
 		assertEquals("message", value.toString());
 	}
 
 	@Test
 	public void shouldHaveNullDefaultMessage() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
 		assertNull(value.getDefaultMessage());
 	}
 
 	@Test
 	public void shouldSupportTopLevelObjectWhenBackedWithObjectMessageSource() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(objectMessageSource);
+		MessageSourceMap map = new MessageSourceMap(this.objectMessageSource);
 		ObjectResolvable resolvable = new ObjectResolvable();
 		String expected = "test";
-		given(objectMessageSource.getMessage(eq(resolvable), emptyObjectArray(), nullLocale())).willReturn(expected);
+		given(this.objectMessageSource.getMessage(eq(resolvable), emptyObjectArray(), nullLocale())).willReturn(
+				expected);
 		String actual = map.get(resolvable).toString();
 		assertThat(actual, is(equalTo(expected)));
 	}
 
 	@Test
 	public void shouldSupportTopLevelObjectWithArgumentsWhenBackedWithObjectMessageSource() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(objectMessageSource);
+		MessageSourceMap map = new MessageSourceMap(this.objectMessageSource);
 		ObjectResolvable resolvable = new ObjectResolvable();
 		String expected = "test";
-		given(objectMessageSource.getMessage((Object) eq("y"), emptyObjectArray(), nullLocale())).willReturn("y2");
-		given(objectMessageSource.getMessage((Object) eq("z"), emptyObjectArray(), nullLocale())).willThrow(
+		given(this.objectMessageSource.getMessage((Object) eq("y"), emptyObjectArray(), nullLocale())).willReturn("y2");
+		given(this.objectMessageSource.getMessage((Object) eq("z"), emptyObjectArray(), nullLocale())).willThrow(
 				new NoSuchObjectMessageException("z", null));
-		given(objectMessageSource.getMessage(eq(resolvable), eq(new Object[] { "y2", "z" }), nullLocale())).willReturn(
-				expected);
+		given(this.objectMessageSource.getMessage(eq(resolvable), eq(new Object[] { "y2", "z" }), nullLocale()))
+				.willReturn(expected);
 		String actual = map.get(resolvable).get("y").get("z").toString();
 		assertThat(actual, is(equalTo(expected)));
 	}
 
 	@Test
 	public void shouldResolveParamtersUsingObjectMessageSource() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(objectMessageSource);
+		MessageSourceMap map = new MessageSourceMap(this.objectMessageSource);
 		ObjectResolvable resolvable = new ObjectResolvable();
 		String expected = "test";
-		given(objectMessageSource.getMessage(eq(resolvable), emptyObjectArray(), nullLocale())).willReturn(expected);
+		given(this.objectMessageSource.getMessage(eq(resolvable), emptyObjectArray(), nullLocale())).willReturn(
+				expected);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get(resolvable);
 		assertThat((String) value.getArguments()[0], is(equalTo(expected)));
 	}
 
 	@Test
 	public void shouldNotResolveTopLevelObjectIfNotBackedWithObjectMessageSource() throws Exception {
-		MessageSourceMap map = new MessageSourceMap(messageSource);
+		MessageSourceMap map = new MessageSourceMap(this.messageSource);
 		ObjectResolvable resolvable = new ObjectResolvable();
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Unable to resolve " + ObjectResolvable.class.getName()
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Unable to resolve " + ObjectResolvable.class.getName()
 				+ " messages when not using an ObjectMessageSource.");
 		map.get(resolvable);
 	}
@@ -225,7 +228,7 @@ public class MessageSourceMapTest {
 				return false;
 			}
 			MessageSourceResolvable resolvable = (MessageSourceResolvable) argument;
-			return Arrays.equals(codes, resolvable.getCodes());
+			return Arrays.equals(this.codes, resolvable.getCodes());
 		}
 	}
 

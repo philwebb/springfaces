@@ -51,8 +51,8 @@ public class ModelBuilder {
 	 */
 	public void addFromComponent(UIComponent component) {
 		if (component != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Exposing UIParameter children of component " + component.getClientId(context)
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exposing UIParameter children of component " + component.getClientId(this.context)
 						+ " to MVC model");
 			}
 			for (UIComponent child : component.getChildren()) {
@@ -69,11 +69,11 @@ public class ModelBuilder {
 	 * @param parameter the parameter to add
 	 */
 	private void addUIParam(UIParameter parameter) {
-		String source = parameter.getClientId(context)
+		String source = parameter.getClientId(this.context)
 				+ (parameter.getName() == null ? "" : " ('" + parameter.getName() + "')");
 		if (parameter.isDisable()) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Skipping disabled parameter " + source);
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Skipping disabled parameter " + source);
 			}
 			return;
 		}
@@ -108,8 +108,8 @@ public class ModelBuilder {
 				if (parameter.getValue().size() == 1) {
 					addIfNotInModel(parameter.getKey(), parameter.getKey(), parameter.getValue().get(0), true, false);
 				} else {
-					if (logger.isWarnEnabled()) {
-						logger.warn("Unable to expose multi-value parameter '" + parameter.getKey()
+					if (this.logger.isWarnEnabled()) {
+						this.logger.warn("Unable to expose multi-value parameter '" + parameter.getKey()
 								+ "' to bookmark model");
 					}
 				}
@@ -129,17 +129,17 @@ public class ModelBuilder {
 	private void addIfNotInModel(String source, String key, Object value, boolean resolveExpressions,
 			boolean expandModelHolder) {
 		if (value == null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Skipping parameter " + source + " due to null value");
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Skipping parameter " + source + " due to null value");
 			}
 			return;
 		}
 		if (key == null) {
 			key = Conventions.getVariableName(value);
 		}
-		if (model.containsKey(key)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Skipping parameter " + source + " due to exsting value in model");
+		if (this.model.containsKey(key)) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Skipping parameter " + source + " due to exsting value in model");
 			}
 			return;
 		}
@@ -152,7 +152,7 @@ public class ModelBuilder {
 				addIfNotInModel(source, modelEntry.getKey(), modelEntry.getValue(), false, false);
 			}
 		} else {
-			model.put(key, value);
+			this.model.put(key, value);
 		}
 	}
 
@@ -163,7 +163,7 @@ public class ModelBuilder {
 	 */
 	private Object resolveExpressionIfNecessary(Object value) {
 		if (isExpression(value)) {
-			return context.getApplication().evaluateExpressionGet(context, value.toString(), Object.class);
+			return this.context.getApplication().evaluateExpressionGet(this.context, value.toString(), Object.class);
 		}
 		return value;
 	}
@@ -184,6 +184,6 @@ public class ModelBuilder {
 	}
 
 	public Map<String, Object> getModel() {
-		return model;
+		return this.model;
 	}
 }

@@ -73,9 +73,9 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	private String prefix = "@";
 
 	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
-		if ((destination instanceof String) && ((String) destination).startsWith(prefix)) {
+		if ((destination instanceof String) && ((String) destination).startsWith(this.prefix)) {
 			try {
-				return resolvePrefixedDestination(((String) destination).substring(prefix.length()), locale, model);
+				return resolvePrefixedDestination(((String) destination).substring(this.prefix.length()), locale, model);
 			} catch (RuntimeException e) {
 				throw new IllegalStateException("Unable to resolve @RequestMapped view from destination '"
 						+ destination + "' : " + e.getMessage(), e);
@@ -95,10 +95,10 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	private ModelAndView resolvePrefixedDestination(String destination, Locale locale, SpringFacesModel model)
 			throws Exception {
 		Object handler = resolveDestinationHandler(destination);
-		Method method = cachedDestinationMethods.get(destination);
+		Method method = this.cachedDestinationMethods.get(destination);
 		if (method == null) {
 			method = resolveDestinationMethod(handler, destination);
-			cachedDestinationMethods.put(destination, method);
+			this.cachedDestinationMethods.put(destination, method);
 		}
 		View view = createView(this, handler, method);
 		return new ModelAndView(view, getPropagatedModel(view, model));
@@ -134,7 +134,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 			Assert.state(handler != null, "Unable to locate SpringFaces MVC Controller");
 			return handler;
 		}
-		return applicationContext.getBean(destination.substring(0, lastDot));
+		return this.applicationContext.getBean(destination.substring(0, lastDot));
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 	}
 
 	public String getDispatcherServletPath() {
-		return dispatcherServletPath;
+		return this.dispatcherServletPath;
 	}
 
 	/**

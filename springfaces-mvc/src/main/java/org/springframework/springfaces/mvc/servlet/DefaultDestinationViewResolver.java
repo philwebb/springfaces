@@ -25,11 +25,11 @@ public class DefaultDestinationViewResolver implements DestinationViewResolver,
 	private DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
-		delegate.onApplicationEvent(event);
+		this.delegate.onApplicationEvent(event);
 	}
 
 	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
-		return new ModelAndView(delegate.resolveViewId(destination.toString(), locale));
+		return new ModelAndView(this.delegate.resolveViewId(destination.toString(), locale));
 	}
 
 	private static class DelegateDispatcherServlet extends DispatcherServlet {

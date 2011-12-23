@@ -31,32 +31,32 @@ public class PagedDataModelStateTest {
 
 	@Test
 	public void shouldHaveSensibleDefaults() throws Exception {
-		assertThat(state.getPageSize(), is(10));
-		assertThat(state.getRowIndex(), is(-1));
-		assertThat(state.getSortColumn(), is(nullValue()));
-		assertThat(state.isSortAscending(), is(true));
-		assertThat(state.getFilters(), is(Collections.<String, String> emptyMap()));
+		assertThat(this.state.getPageSize(), is(10));
+		assertThat(this.state.getRowIndex(), is(-1));
+		assertThat(this.state.getSortColumn(), is(nullValue()));
+		assertThat(this.state.isSortAscending(), is(true));
+		assertThat(this.state.getFilters(), is(Collections.<String, String> emptyMap()));
 	}
 
 	@Test
 	public void shouldNeedAPositivePageSizeOnCreate() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("PageSize must be a positive number");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("PageSize must be a positive number");
 		new PagedDataModelState(-2);
 	}
 
 	@Test
 	public void shouldNeedAPositivePageSize() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("PageSize must be a positive number");
-		state.setPageSize(-2);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("PageSize must be a positive number");
+		this.state.setPageSize(-2);
 	}
 
 	@Test
 	public void shouldSerialize() throws Exception {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(state);
+		oos.writeObject(this.state);
 		oos.flush();
 		ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bos.toByteArray()));
 		Object object = ois.readObject();
@@ -66,36 +66,36 @@ public class PagedDataModelStateTest {
 	@Test
 	public void shouldGetSetPageSize() throws Exception {
 		int pageSize = 100;
-		state.setPageSize(pageSize);
-		assertThat(state.getPageSize(), is(equalTo(pageSize)));
+		this.state.setPageSize(pageSize);
+		assertThat(this.state.getPageSize(), is(equalTo(pageSize)));
 	}
 
 	@Test
 	public void shouldGetSetRowIndex() throws Exception {
 		int rowIndex = 100;
-		state.setRowIndex(rowIndex);
-		assertThat(state.getRowIndex(), is(equalTo(rowIndex)));
+		this.state.setRowIndex(rowIndex);
+		assertThat(this.state.getRowIndex(), is(equalTo(rowIndex)));
 	}
 
 	@Test
 	public void shouldGetSetSortColumn() throws Exception {
 		String sortColumn = "column";
-		state.setSortColumn(sortColumn);
-		assertThat(state.getSortColumn(), is(equalTo(sortColumn)));
+		this.state.setSortColumn(sortColumn);
+		assertThat(this.state.getSortColumn(), is(equalTo(sortColumn)));
 	}
 
 	@Test
 	public void shouldGetSetSortAscending() throws Exception {
-		boolean sortAscending = !state.isSortAscending();
-		state.setSortAscending(sortAscending);
-		assertThat(state.isSortAscending(), is(equalTo(sortAscending)));
+		boolean sortAscending = !this.state.isSortAscending();
+		this.state.setSortAscending(sortAscending);
+		assertThat(this.state.isSortAscending(), is(equalTo(sortAscending)));
 	}
 
 	@Test
 	public void shouldGetSetFilter() throws Exception {
 		Map<String, String> filters = Collections.singletonMap("a", "b");
-		state.setFilters(filters);
-		assertThat(state.getFilters(), is(equalTo(filters)));
+		this.state.setFilters(filters);
+		assertThat(this.state.getFilters(), is(equalTo(filters)));
 	}
 
 }

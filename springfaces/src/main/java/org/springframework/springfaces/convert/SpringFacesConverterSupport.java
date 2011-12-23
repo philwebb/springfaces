@@ -57,8 +57,8 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 	 */
 	private void collectConverterBeans() {
 		this.converters = new HashMap<String, Object>();
-		this.converters.putAll(beansOfType(applicationContext, FACES_CONVERTER_TYPE));
-		this.converters.putAll(beansOfType(applicationContext, CONVERTER_TYPE));
+		this.converters.putAll(beansOfType(this.applicationContext, FACES_CONVERTER_TYPE));
+		this.converters.putAll(beansOfType(this.applicationContext, CONVERTER_TYPE));
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 	 * @return a converter or <tt>null</tt>
 	 */
 	private Converter createConverterBean(Class<?> targetClass) {
-		Set<String> beanIds = FOR_CLASS_FILTER.apply(converters, targetClass).keySet();
+		Set<String> beanIds = FOR_CLASS_FILTER.apply(this.converters, targetClass).keySet();
 		if (beanIds.isEmpty()) {
 			return null;
 		}
@@ -99,7 +99,7 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 	 * @return a converter or <tt>null</tt>
 	 */
 	private Converter createConverterBean(String beanId) {
-		Object bean = converters.get(beanId);
+		Object bean = this.converters.get(beanId);
 		if (bean != null) {
 			if (CONVERTER_TYPE.isInstance(bean)) {
 				return new SpringBeanConverter(FacesContext.getCurrentInstance(), beanId);
@@ -124,7 +124,7 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 
 		@Override
 		public Application getWrapped() {
-			return wrapped;
+			return this.wrapped;
 		}
 
 		@Override

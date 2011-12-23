@@ -112,13 +112,13 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * @return a model containing items relevant to the handler method parameters.
 	 */
 	public Map<String, Object> build(NativeWebRequest request, Map<String, ?> source) {
-		ParameterNameDiscoverer parameterNameDiscoverer = context.getParameterNameDiscoverer();
+		ParameterNameDiscoverer parameterNameDiscoverer = this.context.getParameterNameDiscoverer();
 		if (parameterNameDiscoverer == null) {
 			parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 		}
 		Map<String, Object> model = new HashMap<String, Object>();
-		for (int i = 0; i < handlerMethod.getParameterTypes().length; i++) {
-			MethodParameter methodParameter = new MethodParameter(handlerMethod, i);
+		for (int i = 0; i < this.handlerMethod.getParameterTypes().length; i++) {
+			MethodParameter methodParameter = new MethodParameter(this.handlerMethod, i);
 			if (!isIgnored(request, methodParameter)) {
 				methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
 				PathVariable pathVariable = methodParameter.getParameterAnnotation(PathVariable.class);
@@ -140,7 +140,7 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * @return <tt>true</tt> if the parameter should be ignored.
 	 */
 	protected boolean isIgnored(NativeWebRequest request, MethodParameter methodParameter) {
-		return methodParameterFilter.isFiltered(request, methodParameter);
+		return this.methodParameterFilter.isFiltered(request, methodParameter);
 	}
 
 	/**
@@ -191,8 +191,8 @@ public class RequestMappedRedirectViewModelBuilder {
 		} else {
 			WebDataBinder binder = new WebRequestDataBinder(value);
 			WebRequest request = new FacesWebRequest(FacesContext.getCurrentInstance());
-			if (context.getWebBindingInitializer() != null) {
-				context.getWebBindingInitializer().initBinder(binder, request);
+			if (this.context.getWebBindingInitializer() != null) {
+				this.context.getWebBindingInitializer().initBinder(binder, request);
 			}
 			ReverseDataBinder reverseBinder = new ReverseDataBinder(binder);
 			PropertyValues propertyValues = reverseBinder.reverseBind();

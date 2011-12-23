@@ -50,7 +50,7 @@ public abstract class BeanBackedELResolver extends AbstractELResolver {
 	 * @see #map(String)
 	 */
 	protected void map(String elProperty, String beanProperty) {
-		properties.put(elProperty, beanProperty);
+		this.properties.put(elProperty, beanProperty);
 	}
 
 	/**
@@ -63,16 +63,19 @@ public abstract class BeanBackedELResolver extends AbstractELResolver {
 		map(property, property);
 	}
 
+	@Override
 	protected boolean isAvailable() {
 		return getBean() != null;
 	}
 
+	@Override
 	protected boolean handles(String property) {
-		return properties.containsKey(property);
+		return this.properties.containsKey(property);
 	}
 
+	@Override
 	protected Object get(String property) {
-		String beanProperty = properties.get(property);
+		String beanProperty = this.properties.get(property);
 		if (beanProperty != null) {
 			ELContext elContext = new ELContext() {
 				@Override

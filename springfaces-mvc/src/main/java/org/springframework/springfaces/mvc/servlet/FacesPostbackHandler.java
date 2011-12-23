@@ -61,7 +61,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	@Override
 	protected void initInterceptors() {
 		super.initInterceptors();
-		facesHandlerInterceptor = findFacesHandlerInterceptor();
+		this.facesHandlerInterceptor = findFacesHandlerInterceptor();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 				getApplicationContext(), MappedInterceptor.class, true, false);
 		for (MappedInterceptor mappedInterceptor : mappedInterceptors.values()) {
 			if (mappedInterceptor.getInterceptor() instanceof FacesHandlerInterceptor) {
-				Assert.state(facesHandlerInterceptor == null,
+				Assert.state(this.facesHandlerInterceptor == null,
 						"Multiple " + FacesHandlerInterceptor.class.getSimpleName()
 								+ " registered within the web context");
 				return mappedInterceptor.getInterceptor();
@@ -89,7 +89,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	 * @return the interceptors to apply
 	 */
 	protected HandlerInterceptor[] getHandlerInterceptors() {
-		return new HandlerInterceptor[] { facesHandlerInterceptor };
+		return new HandlerInterceptor[] { this.facesHandlerInterceptor };
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		if (request.getAttribute(DISABLE_ATTRIBUTE) != null) {
 			return null;
 		}
-		ViewArtifact viewArtifact = stateHandler.read(request);
+		ViewArtifact viewArtifact = this.stateHandler.read(request);
 		if (viewArtifact == null) {
 			return null;
 		}
@@ -115,11 +115,12 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 		try {
 			// Change the method to GET to mimic the original request
 			request = new HttpServletRequestWrapper(request) {
+				@Override
 				public String getMethod() {
 					return METHOD_GET;
 				}
 			};
-			HandlerExecutionChain chain = originalHandlerLocator.getOriginalHandler(request);
+			HandlerExecutionChain chain = this.originalHandlerLocator.getOriginalHandler(request);
 			return chain.getHandler();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

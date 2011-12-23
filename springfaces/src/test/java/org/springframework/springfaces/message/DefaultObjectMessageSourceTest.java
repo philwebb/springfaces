@@ -36,7 +36,7 @@ public class DefaultObjectMessageSourceTest {
 	public void setup() {
 		this.parent = new StaticMessageSource();
 		this.messageSource = new DefaultObjectMessageSource();
-		this.messageSource.setParentMessageSource(parent);
+		this.messageSource.setParentMessageSource(this.parent);
 		addMessageToParent(INNER + "Mapped", "mapped");
 		addMessageToParent(INNER + "MappedArguments", "a {name} b {numberEnum}");
 		addMessageToParent(INNER + "NumberEnum.ONE", "1");
@@ -47,67 +47,68 @@ public class DefaultObjectMessageSourceTest {
 	}
 
 	private void addMessageToParent(String code, String msg) {
-		parent.addMessage(code, LOCALE, msg);
+		this.parent.addMessage(code, LOCALE, msg);
 	}
 
 	@Test
 	public void shouldGetMappedMessage() throws Exception {
-		String actual = messageSource.getMessage(new Mapped(), null, LOCALE);
+		String actual = this.messageSource.getMessage(new Mapped(), null, LOCALE);
 		assertThat(actual, is("mapped"));
 	}
 
 	@Test
 	public void shouldGetNullMessageForNullObject() throws Exception {
-		String actual = messageSource.getMessage((Object) null, null, LOCALE);
+		String actual = this.messageSource.getMessage((Object) null, null, LOCALE);
 		assertThat(actual, is(nullValue()));
 	}
 
 	@Test
 	public void shouldGetMessageForEnum() throws Exception {
-		String actual = messageSource.getMessage(NumberEnum.ONE, null, LOCALE);
+		String actual = this.messageSource.getMessage(NumberEnum.ONE, null, LOCALE);
 		assertThat(actual, is("1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), null, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), null, LOCALE);
 		assertThat(actual, is("a x b 1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedNullArgument() throws Exception {
-		String actual = messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE), null, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE), null, LOCALE);
 		assertThat(actual, is("a  b 1"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedArrayArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedArray(1, 2, 3, 4), null, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedArray(1, 2, 3, 4), null, LOCALE);
 		assertThat(actual, is("numbers 1,2,3,4"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedCollectionArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedCollection(NumberEnum.ONE, 2, 3, 4), null, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedCollection(NumberEnum.ONE, 2, 3, 4), null, LOCALE);
 		assertThat(actual, is("collection 1,2,3,4"));
 	}
 
 	@Test
 	public void shouldLeaveUnmachedParameters() throws Exception {
-		String actual = messageSource.getMessage(new MappedWithMissingParameters(), null, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedWithMissingParameters(), null, LOCALE);
 		assertThat(actual, is("mapped {missing}"));
 	}
 
 	@Test
 	public void shouldThrowNoSuchObjectExceptionIfNotMapped() throws Exception {
-		thrown.expect(NoSuchObjectMessageException.class);
-		thrown.expectMessage("Unable to convert object of type " + INNER + "NotMapped to a message for locale en_GB");
-		messageSource.getMessage(new NotMapped(), null, LOCALE);
+		this.thrown.expect(NoSuchObjectMessageException.class);
+		this.thrown.expectMessage("Unable to convert object of type " + INNER
+				+ "NotMapped to a message for locale en_GB");
+		this.messageSource.getMessage(new NotMapped(), null, LOCALE);
 	}
 
 	@Test
 	public void shouldResolveMessageWithArguments() throws Exception {
-		String actual = messageSource.getMessage(new MappedWithArguments(), new Object[] { 1, 2 }, LOCALE);
+		String actual = this.messageSource.getMessage(new MappedWithArguments(), new Object[] { 1, 2 }, LOCALE);
 		assertThat(actual, is("mapped args 2 1"));
 	}
 
@@ -127,11 +128,11 @@ public class DefaultObjectMessageSourceTest {
 		}
 
 		public String getName() {
-			return name;
+			return this.name;
 		}
 
 		public NumberEnum getNumberEnum() {
-			return numberEnum;
+			return this.numberEnum;
 		}
 	}
 
@@ -143,7 +144,7 @@ public class DefaultObjectMessageSourceTest {
 		}
 
 		public int[] getNumbers() {
-			return numbers;
+			return this.numbers;
 		}
 	}
 
@@ -155,7 +156,7 @@ public class DefaultObjectMessageSourceTest {
 		}
 
 		public List<Object> getCollection() {
-			return collection;
+			return this.collection;
 		}
 	}
 

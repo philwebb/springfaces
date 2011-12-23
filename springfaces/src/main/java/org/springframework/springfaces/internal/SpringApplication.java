@@ -18,14 +18,14 @@ public class SpringApplication extends ApplicationWrapper {
 	private WrapperHandler<Application> wrapperHandler;
 
 	public SpringApplication(Application delegate) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Wrapping Application " + delegate.getClass() + " to provide integration with Spring");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Wrapping Application " + delegate.getClass() + " to provide integration with Spring");
 		}
-		wrapperHandler = WrapperHandler.get(Application.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(Application.class, delegate);
 	}
 
 	@Override
 	public Application getWrapped() {
-		return wrapperHandler.getWrapped();
+		return this.wrapperHandler.getWrapped();
 	}
 }

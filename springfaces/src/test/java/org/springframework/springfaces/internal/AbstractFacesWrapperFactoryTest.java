@@ -36,9 +36,10 @@ public abstract class AbstractFacesWrapperFactoryTest {
 
 	@Before
 	public void setup() {
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
-		FacesContextSetter.setCurrentInstance(facesContext);
-		given(applicationContext.getBeansOfType(FacesWrapperFactory.class)).willReturn(facesWrapperFactoryBeans);
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		given(this.applicationContext.getBeansOfType(FacesWrapperFactory.class)).willReturn(
+				this.facesWrapperFactoryBeans);
 	}
 
 	@After
@@ -47,6 +48,6 @@ public abstract class AbstractFacesWrapperFactoryTest {
 	}
 
 	protected void addFactoryWrapper(String beanName, FacesWrapperFactory<?> wrapperFactory) {
-		facesWrapperFactoryBeans.put(beanName, wrapperFactory);
+		this.facesWrapperFactoryBeans.put(beanName, wrapperFactory);
 	}
 }

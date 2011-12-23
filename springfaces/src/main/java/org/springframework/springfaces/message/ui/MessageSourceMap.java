@@ -85,9 +85,9 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	 * @return the resolved argument
 	 */
 	protected Object resolveMessageArgument(Object argument) {
-		if (messageSource instanceof ObjectMessageSource) {
+		if (this.messageSource instanceof ObjectMessageSource) {
 			try {
-				return ((ObjectMessageSource) messageSource).getMessage(argument, NO_ARGUMENTS, getLocale());
+				return ((ObjectMessageSource) this.messageSource).getMessage(argument, NO_ARGUMENTS, getLocale());
 			} catch (NoSuchObjectMessageException e) {
 			}
 		}
@@ -111,7 +111,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		if (key instanceof String) {
 			return new MessageCodeValue((String) key, NO_ARGUMENTS);
 		}
-		if (messageSource instanceof ObjectMessageSource) {
+		if (this.messageSource instanceof ObjectMessageSource) {
 			return new ObjectMessageValue(key, NO_ARGUMENTS);
 		}
 		throw new IllegalArgumentException("Unable to resolve " + key.getClass().getName()
@@ -125,8 +125,8 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("messageSource", messageSource).append("prefixCodes", prefixCodes)
-				.toString();
+		return new ToStringCreator(this).append("messageSource", this.messageSource)
+				.append("prefixCodes", this.prefixCodes).toString();
 	}
 
 	/**
@@ -151,8 +151,8 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 		@Override
 		public Value get(Object key) {
-			Object[] childArguments = new Object[arguments.length + 1];
-			System.arraycopy(arguments, 0, childArguments, 0, arguments.length);
+			Object[] childArguments = new Object[this.arguments.length + 1];
+			System.arraycopy(this.arguments, 0, childArguments, 0, this.arguments.length);
 			childArguments[childArguments.length - 1] = resolveMessageArgument(key);
 			return createNestedValue(childArguments);
 		}
@@ -160,7 +160,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		protected abstract Value createNestedValue(Object[] arguments);
 
 		protected Object[] getArguments() {
-			return arguments;
+			return this.arguments;
 		}
 	}
 
@@ -179,11 +179,11 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		}
 
 		private String[] buildPrefixedCodes(String code) {
-			if (prefixCodes.length == 0) {
+			if (MessageSourceMap.this.prefixCodes.length == 0) {
 				return new String[] { code };
 			}
-			String[] codes = new String[prefixCodes.length];
-			System.arraycopy(prefixCodes, 0, codes, 0, prefixCodes.length);
+			String[] codes = new String[MessageSourceMap.this.prefixCodes.length];
+			System.arraycopy(MessageSourceMap.this.prefixCodes, 0, codes, 0, MessageSourceMap.this.prefixCodes.length);
 			for (int i = 0; i < codes.length; i++) {
 				codes[i] = codes[i] == null ? code : codes[i].concat(code);
 			}
@@ -192,13 +192,14 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 		@Override
 		protected Value createNestedValue(Object[] childArguments) {
-			return new MessageCodeValue(code, childArguments);
+			return new MessageCodeValue(this.code, childArguments);
 		}
 
 		public String[] getCodes() {
-			return codes;
+			return this.codes;
 		}
 
+		@Override
 		public Object[] getArguments() {
 			return super.getArguments();
 		}
@@ -210,10 +211,10 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		@Override
 		public String toString() {
 			try {
-				return messageSource.getMessage(this, getLocale());
+				return MessageSourceMap.this.messageSource.getMessage(this, getLocale());
 			} catch (NoSuchMessageException e) {
 				handleNoSuchMessageException(e);
-				return code;
+				return this.code;
 			}
 		}
 
@@ -230,16 +231,17 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 
 		@Override
 		protected Value createNestedValue(Object[] childArguments) {
-			return new ObjectMessageValue(object, childArguments);
+			return new ObjectMessageValue(this.object, childArguments);
 		}
 
 		@Override
 		public String toString() {
 			try {
-				return ((ObjectMessageSource) messageSource).getMessage(object, getArguments(), getLocale());
+				return ((ObjectMessageSource) MessageSourceMap.this.messageSource).getMessage(this.object,
+						getArguments(), getLocale());
 			} catch (NoSuchMessageException e) {
 				handleNoSuchMessageException(e);
-				return String.valueOf(object);
+				return String.valueOf(this.object);
 			}
 		}
 	}

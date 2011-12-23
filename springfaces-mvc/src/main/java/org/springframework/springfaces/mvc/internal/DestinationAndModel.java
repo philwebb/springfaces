@@ -33,7 +33,7 @@ class DestinationAndModel {
 		Assert.notNull(navigationOutcome, "NavigationOutcome must not be null");
 		this.navigationOutcome = navigationOutcome;
 		if (preRenderComponentEvent != null) {
-			component = preRenderComponentEvent.getComponent();
+			this.component = preRenderComponentEvent.getComponent();
 		}
 	}
 
@@ -46,7 +46,7 @@ class DestinationAndModel {
 		Assert.notNull(navigationOutcome, "NavigationOutcome must not be null");
 		this.navigationOutcome = navigationOutcome;
 		if (actionEvent != null) {
-			component = actionEvent.getComponent();
+			this.component = actionEvent.getComponent();
 		}
 	}
 
@@ -55,7 +55,7 @@ class DestinationAndModel {
 	 * @return The component or <tt>null</tt>.
 	 */
 	protected UIComponent getComponent() {
-		return component;
+		return this.component;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class DestinationAndModel {
 	 * @return the destination
 	 */
 	public Object getDestination() {
-		return navigationOutcome.getDestination();
+		return this.navigationOutcome.getDestination();
 	}
 
 	/**
@@ -81,7 +81,7 @@ class DestinationAndModel {
 			Map<String, Object> resolvedViewModel) {
 		ModelBuilder modelBuilder = newModelBuilder(context);
 		modelBuilder.addFromComponent(getComponent());
-		modelBuilder.add(navigationOutcome.getImplicitModel(), true);
+		modelBuilder.add(this.navigationOutcome.getImplicitModel(), true);
 		modelBuilder.addFromParameterList(parameters);
 		modelBuilder.add(resolvedViewModel, false);
 		return modelBuilder.getModel();

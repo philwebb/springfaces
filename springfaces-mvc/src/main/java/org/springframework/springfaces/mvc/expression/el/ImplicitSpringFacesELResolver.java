@@ -35,6 +35,7 @@ public class ImplicitSpringFacesELResolver extends CompositeELResolver {
 			map("controller");
 		}
 
+		@Override
 		protected Object getBean() {
 			return SpringFacesContext.getCurrentInstance();
 		}

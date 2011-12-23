@@ -45,7 +45,7 @@ public class MvcResponseStateManagerTest {
 
 	@Before
 	public void setup() {
-		stateManager = new MvcResponseStateManager(delegate, stateHandler);
+		this.stateManager = new MvcResponseStateManager(this.delegate, this.stateHandler);
 	}
 
 	@After
@@ -55,19 +55,19 @@ public class MvcResponseStateManagerTest {
 
 	@Test
 	public void shouldDelegateWriteState() throws Exception {
-		stateManager.writeState(context, state);
-		verify(delegate).writeState(context, state);
+		this.stateManager.writeState(this.context, this.state);
+		verify(this.delegate).writeState(this.context, this.state);
 	}
 
 	@Test
 	public void shouldCallStateHandler() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		ViewArtifact viewArtifact = new ViewArtifact("page.xhtml");
 		ModelAndViewArtifact rendering = new ModelAndViewArtifact(viewArtifact, null);
-		given(springFacesContext.getRendering()).willReturn(rendering);
-		stateManager.setRenderKitId("HTML_BASIC");
-		stateManager.writeState(context, state);
-		verify(stateHandler).write(context, viewArtifact);
-		verify(delegate).writeState(context, state);
+		given(this.springFacesContext.getRendering()).willReturn(rendering);
+		this.stateManager.setRenderKitId("HTML_BASIC");
+		this.stateManager.writeState(this.context, this.state);
+		verify(this.stateHandler).write(this.context, viewArtifact);
+		verify(this.delegate).writeState(this.context, this.state);
 	}
 }

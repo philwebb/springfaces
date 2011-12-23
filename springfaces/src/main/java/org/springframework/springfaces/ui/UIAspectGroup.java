@@ -35,19 +35,19 @@ public class UIAspectGroup extends UIComponentBase implements ComponentSystemEve
 	}
 
 	void addAspect(UIAspect aspect) {
-		aspects.add(aspect);
+		this.aspects.add(aspect);
 	}
 
 	void removeAspect(UIAspect aspect) {
-		aspects.remove(aspect);
+		this.aspects.remove(aspect);
 	}
 
 	public List<UIAspect> getAllAspects() {
-		List<UIAspect> allAspects = aspects;
+		List<UIAspect> allAspects = this.aspects;
 		UIAspectGroup parentAspectGroup = getParentAspectGroup(getParent());
 		if (parentAspectGroup != null) {
 			allAspects = new ArrayList<UIAspect>(parentAspectGroup.getAllAspects());
-			allAspects.addAll(aspects);
+			allAspects.addAll(this.aspects);
 		}
 		return Collections.unmodifiableList(allAspects);
 	}
@@ -62,6 +62,7 @@ public class UIAspectGroup extends UIComponentBase implements ComponentSystemEve
 	public void applyAspects(final FacesContext context, AspectInvocation invocation) throws IOException {
 		final Iterator<UIAspect> iterator = getAllAspects().iterator();
 		new AspectInvocationWrapper(invocation) {
+			@Override
 			public void proceed() throws IOException {
 				if (iterator.hasNext()) {
 					UIAspect aspect = iterator.next();

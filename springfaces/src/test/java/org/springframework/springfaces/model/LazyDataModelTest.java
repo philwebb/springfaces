@@ -50,7 +50,7 @@ public class LazyDataModelTest {
 
 	@Before
 	public void setup() {
-		dataModel = newLazyDataModel(loader, state);
+		this.dataModel = newLazyDataModel(this.loader, this.state);
 	}
 
 	protected LazyDataModelState newLazyDataModelState() {
@@ -64,196 +64,196 @@ public class LazyDataModelTest {
 	}
 
 	protected LazyDataModel<String, ? extends LazyDataModelState> getDataModel() {
-		return dataModel;
+		return this.dataModel;
 	}
 
 	@Test
 	public void shouldNeedLoader() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Loader must not be null");
-		newLazyDataModel(null, state);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Loader must not be null");
+		newLazyDataModel(null, this.state);
 	}
 
 	@Test
 	public void shouldNeedState() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("State must not be null");
-		new LazyDataModel<String, LazyDataModelState>(loader, null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("State must not be null");
+		new LazyDataModel<String, LazyDataModelState>(this.loader, null);
 	}
 
 	@Test
 	public void shouldHaveNoRowAvailableWhenNotOnARow() throws Exception {
-		dataModel.setRowIndex(-1);
-		assertThat(dataModel.isRowAvailable(), is(false));
-		verifyZeroInteractions(loader);
+		this.dataModel.setRowIndex(-1);
+		assertThat(this.dataModel.isRowAvailable(), is(false));
+		verifyZeroInteractions(this.loader);
 	}
 
 	@Test
 	public void shouldHaveRowAvailableWhenOnARow() throws Exception {
-		dataModel.setRowIndex(0);
-		assertThat(dataModel.isRowAvailable(), is(true));
+		this.dataModel.setRowIndex(0);
+		assertThat(this.dataModel.isRowAvailable(), is(true));
 	}
 
 	@Test
 	public void shouldGetRowCountFromProvider() throws Exception {
-		assertThat(dataModel.getRowCount(), is(1000));
+		assertThat(this.dataModel.getRowCount(), is(1000));
 	}
 
 	@Test
 	public void shouldUpdateRowCountFromProviderWhenRowIsSelected() throws Exception {
-		assertThat(dataModel.getRowCount(), is(1000));
-		totalNumberOfRows = 1001;
-		dataModel.setRowIndex(11);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.totalNumberOfRows = 1001;
+		this.dataModel.setRowIndex(11);
 		// At this point we have not triggered a load so the previous row count is used
-		assertThat(dataModel.getRowCount(), is(1000));
+		assertThat(this.dataModel.getRowCount(), is(1000));
 		// trigger load
-		dataModel.getRowData();
+		this.dataModel.getRowData();
 		// The updated row count is now used
-		assertThat(dataModel.getRowCount(), is(1001));
+		assertThat(this.dataModel.getRowCount(), is(1001));
 	}
 
 	@Test
 	public void shouldNotReturnARowCountIfThePageIsTooBig() throws Exception {
-		totalNumberOfRows = Integer.MAX_VALUE + 1L;
-		dataModel.setRowIndex(0);
-		assertThat(dataModel.getRowCount(), is(-1));
+		this.totalNumberOfRows = Integer.MAX_VALUE + 1L;
+		this.dataModel.setRowIndex(0);
+		assertThat(this.dataModel.getRowCount(), is(-1));
 	}
 
 	@Test
 	public void shouldGetRowDataFromProvider() throws Exception {
-		dataModel.setRowIndex(0);
-		assertThat(dataModel.getRowData(), is("Data 0"));
+		this.dataModel.setRowIndex(0);
+		assertThat(this.dataModel.getRowData(), is("Data 0"));
 	}
 
 	@Test
 	public void shouldThrowIfNoData() throws Exception {
-		thrown.expect(NoRowAvailableException.class);
-		dataModel.getRowData();
+		this.thrown.expect(NoRowAvailableException.class);
+		this.dataModel.getRowData();
 	}
 
 	@Test
 	public void shouldDefaultToNoRowIndex() throws Exception {
-		assertThat(dataModel.getRowIndex(), is(-1));
+		assertThat(this.dataModel.getRowIndex(), is(-1));
 	}
 
 	@Test
 	public void shouldSupportChageOfRowIndex() throws Exception {
-		dataModel.setRowIndex(-1);
-		dataModel.setRowIndex(0);
-		dataModel.setRowIndex(100);
-		assertThat(dataModel.getRowIndex(), is(100));
+		this.dataModel.setRowIndex(-1);
+		this.dataModel.setRowIndex(0);
+		this.dataModel.setRowIndex(100);
+		assertThat(this.dataModel.getRowIndex(), is(100));
 	}
 
 	@Test
 	public void shouldNotSupportRowIndexLessThanMinusOne() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("RowIndex must not be less than -1");
-		dataModel.setRowIndex(-2);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("RowIndex must not be less than -1");
+		this.dataModel.setRowIndex(-2);
 	}
 
 	@Test
 	public void shouldFireDataModelListners() throws Exception {
 		DataModelListener listener = mock(DataModelListener.class);
-		dataModel.addDataModelListener(listener);
-		dataModel.setRowIndex(0);
-		verify(listener).rowSelected(dataModelEvent.capture());
-		assertThat(dataModelEvent.getValue().getRowIndex(), is(0));
-		assertThat(dataModelEvent.getValue().getRowData(), is((Object) "Data 0"));
+		this.dataModel.addDataModelListener(listener);
+		this.dataModel.setRowIndex(0);
+		verify(listener).rowSelected(this.dataModelEvent.capture());
+		assertThat(this.dataModelEvent.getValue().getRowIndex(), is(0));
+		assertThat(this.dataModelEvent.getValue().getRowData(), is((Object) "Data 0"));
 	}
 
 	@Test
 	public void shouldFireListenerOnChangeToNoRow() throws Exception {
-		dataModel.setRowIndex(0);
+		this.dataModel.setRowIndex(0);
 		DataModelListener listener = mock(DataModelListener.class);
-		dataModel.addDataModelListener(listener);
-		dataModel.setRowIndex(-1);
-		verify(listener).rowSelected(dataModelEvent.capture());
-		assertThat(dataModelEvent.getValue().getRowIndex(), is(-1));
-		assertThat(dataModelEvent.getValue().getRowData(), is(nullValue()));
+		this.dataModel.addDataModelListener(listener);
+		this.dataModel.setRowIndex(-1);
+		verify(listener).rowSelected(this.dataModelEvent.capture());
+		assertThat(this.dataModelEvent.getValue().getRowIndex(), is(-1));
+		assertThat(this.dataModelEvent.getValue().getRowData(), is(nullValue()));
 	}
 
 	@Test
 	public void shouldNotDoubleFireListeners() throws Exception {
 		DataModelListener listener = mock(DataModelListener.class);
-		dataModel.addDataModelListener(listener);
-		dataModel.setRowIndex(0);
-		dataModel.setRowIndex(0);
-		verify(listener).rowSelected(dataModelEvent.capture());
+		this.dataModel.addDataModelListener(listener);
+		this.dataModel.setRowIndex(0);
+		this.dataModel.setRowIndex(0);
+		verify(listener).rowSelected(this.dataModelEvent.capture());
 		verifyNoMoreInteractions(listener);
 	}
 
 	@Test
 	public void shouldReturnPageAsWrappedData() throws Exception {
-		dataModel.setRowIndex(0);
-		assertThat(dataModel.getWrappedData(), is(DataModelRowSet.class));
+		this.dataModel.setRowIndex(0);
+		assertThat(this.dataModel.getWrappedData(), is(DataModelRowSet.class));
 	}
 
 	@Test
 	public void shouldNotAllowSetOfWrappedData() throws Exception {
-		thrown.expect(UnsupportedOperationException.class);
-		dataModel.setWrappedData(new Object());
+		this.thrown.expect(UnsupportedOperationException.class);
+		this.dataModel.setWrappedData(new Object());
 	}
 
 	@Test
 	public void shouldUseMinimalProviderCalls() throws Exception {
 		for (int i = 0; i < 20; i++) {
-			dataModel.setRowIndex(i);
-			dataModel.getRowData();
+			this.dataModel.setRowIndex(i);
+			this.dataModel.getRowData();
 		}
-		verify(loader, times(2)).getRows(state);
+		verify(this.loader, times(2)).getRows(this.state);
 	}
 
 	@Test
 	public void shouldCacheEmptyLoad() throws Exception {
 		@SuppressWarnings("unchecked")
 		LazyDataLoader<String, LazyDataModelState> emptyLoader = mock(LazyDataLoader.class);
-		dataModel = new LazyDataModel<String, LazyDataModelState>(emptyLoader, state);
-		dataModel.setRowIndex(0);
-		dataModel.isRowAvailable();
-		dataModel.isRowAvailable();
-		verify(emptyLoader, times(1)).getRows(state);
+		this.dataModel = new LazyDataModel<String, LazyDataModelState>(emptyLoader, this.state);
+		this.dataModel.setRowIndex(0);
+		this.dataModel.isRowAvailable();
+		this.dataModel.isRowAvailable();
+		verify(emptyLoader, times(1)).getRows(this.state);
 	}
 
 	@Test
 	public void resetShouldSetRowIndexAndRequireAFreshDataFetch() throws Exception {
-		dataModel.setRowIndex(0);
-		dataModel.getRowData();
-		reset(loader);
-		dataModel.reset();
-		assertThat(dataModel.getRowIndex(), is(-1));
-		dataModel.setRowIndex(0);
-		dataModel.getRowData();
-		verify(loader).getRows(state);
+		this.dataModel.setRowIndex(0);
+		this.dataModel.getRowData();
+		reset(this.loader);
+		this.dataModel.reset();
+		assertThat(this.dataModel.getRowIndex(), is(-1));
+		this.dataModel.setRowIndex(0);
+		this.dataModel.getRowData();
+		verify(this.loader).getRows(this.state);
 	}
 
 	@Test
 	public void shouldCacheRowCount() throws Exception {
-		assertThat(dataModel.getRowCount(), is(1000));
-		dataModel.setRowIndex(11);
-		assertThat(dataModel.getRowCount(), is(1000));
-		verify(loader, times(1)).getRows(state);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.dataModel.setRowIndex(11);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		verify(this.loader, times(1)).getRows(this.state);
 	}
 
 	@Test
 	public void shouldClearCachedRowCount() throws Exception {
-		assertThat(dataModel.getRowCount(), is(1000));
-		dataModel.reset();
-		dataModel.clearCachedRowCount();
-		assertThat(dataModel.getRowCount(), is(1000));
-		dataModel.setRowIndex(11);
-		assertThat(dataModel.getRowData(), is("Data 11"));
-		verify(loader, times(3)).getRows(state);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.dataModel.reset();
+		this.dataModel.clearCachedRowCount();
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.dataModel.setRowIndex(11);
+		assertThat(this.dataModel.getRowData(), is("Data 11"));
+		verify(this.loader, times(3)).getRows(this.state);
 	}
 
 	@Test
 	public void shouldClearCachedRowCountWithNextRow() throws Exception {
-		assertThat(dataModel.getRowCount(), is(1000));
-		dataModel.reset();
-		dataModel.clearCachedRowCount(11);
-		assertThat(dataModel.getRowCount(), is(1000));
-		dataModel.setRowIndex(11);
-		assertThat(dataModel.getRowData(), is("Data 11"));
-		verify(loader, times(2)).getRows(state);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.dataModel.reset();
+		this.dataModel.clearCachedRowCount(11);
+		assertThat(this.dataModel.getRowCount(), is(1000));
+		this.dataModel.setRowIndex(11);
+		assertThat(this.dataModel.getRowData(), is("Data 11"));
+		verify(this.loader, times(2)).getRows(this.state);
 	}
 
 	private class MockLoader implements LazyDataLoader<String, LazyDataModelState> {
@@ -262,7 +262,8 @@ public class LazyDataModelTest {
 			for (int i = 0; i < 10; i++) {
 				contents.add("Data " + (state.getRowIndex() + i));
 			}
-			return new DefaultDataModelRowSet<String>(state.getRowIndex(), contents, totalNumberOfRows);
+			return new DefaultDataModelRowSet<String>(state.getRowIndex(), contents,
+					LazyDataModelTest.this.totalNumberOfRows);
 		}
 	}
 }

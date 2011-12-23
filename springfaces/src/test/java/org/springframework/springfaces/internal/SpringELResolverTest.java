@@ -36,39 +36,39 @@ public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {
 
 	@Test
 	public void shouldDelegateGetValue() throws Exception {
-		el.getValue(context, base, property);
-		el.verify().getValue(context, base, property);
+		this.el.getValue(this.context, this.base, this.property);
+		this.el.verify().getValue(this.context, this.base, this.property);
 	}
 
 	@Test
 	public void shouldDelegateGetType() throws Exception {
-		el.getType(context, base, property);
-		el.verify().getType(context, base, property);
+		this.el.getType(this.context, this.base, this.property);
+		this.el.verify().getType(this.context, this.base, this.property);
 	}
 
 	@Test
 	public void shouldDelegateSetValue() throws Exception {
 		Object value = new Object();
-		el.setValue(context, base, property, value);
-		el.verify().setValue(context, base, property, value);
+		this.el.setValue(this.context, this.base, this.property, value);
+		this.el.verify().setValue(this.context, this.base, this.property, value);
 	}
 
 	@Test
 	public void shouldDelegateIsReadOnly() throws Exception {
-		el.isReadOnly(context, base, property);
-		el.verify().isReadOnly(context, base, property);
+		this.el.isReadOnly(this.context, this.base, this.property);
+		this.el.verify().isReadOnly(this.context, this.base, this.property);
 	}
 
 	@Test
 	public void shouldDelegateGetFeatureDescriptors() throws Exception {
-		el.getFeatureDescriptors(context, base);
-		el.verify().getFeatureDescriptors(context, base);
+		this.el.getFeatureDescriptors(this.context, this.base);
+		this.el.verify().getFeatureDescriptors(this.context, this.base);
 	}
 
 	@Test
 	public void shouldDelegateGetCommonPropertyType() throws Exception {
-		el.getCommonPropertyType(context, base);
-		el.verify().getCommonPropertyType(context, base);
+		this.el.getCommonPropertyType(this.context, this.base);
+		this.el.verify().getCommonPropertyType(this.context, this.base);
 	}
 
 	/**
@@ -80,11 +80,11 @@ public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {
 
 		@Override
 		protected CompositeELResolver getDelegate() {
-			return delegate;
+			return this.delegate;
 		}
 
 		public CompositeELResolver verify() {
-			return Mockito.verify(delegate);
+			return Mockito.verify(this.delegate);
 		}
 	}
 }

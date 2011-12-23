@@ -46,11 +46,12 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@InjectMocks
 	private RequestMappedRedirectDestinationViewResolver resolver = new RequestMappedRedirectDestinationViewResolver() {
+		@Override
 		protected View createView(RequestMappedRedirectViewContext context, Object handler, Method handlerMethod) {
-			createdViewContext = context;
-			createdViewHandler = handler;
-			createdViewHandlerMethod = handlerMethod;
-			return resolvedView;
+			RequestMappedRedirectDestinationViewResolverTest.this.createdViewContext = context;
+			RequestMappedRedirectDestinationViewResolverTest.this.createdViewHandler = handler;
+			RequestMappedRedirectDestinationViewResolverTest.this.createdViewHandlerMethod = handlerMethod;
+			return RequestMappedRedirectDestinationViewResolverTest.this.resolvedView;
 		};
 	};
 
@@ -74,11 +75,11 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		given(springFacesContext.getController()).willReturn(controllerBean);
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(applicationContext.getBean("bean")).willReturn(controllerBean);
-		given(applicationContext.getBean("exotic@be.an")).willReturn(controllerBean);
-		given(applicationContext.getBean("missing")).willThrow(new NoSuchBeanDefinitionException("missing"));
+		given(this.springFacesContext.getController()).willReturn(this.controllerBean);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		given(this.applicationContext.getBean("bean")).willReturn(this.controllerBean);
+		given(this.applicationContext.getBean("exotic@be.an")).willReturn(this.controllerBean);
+		given(this.applicationContext.getBean("missing")).willThrow(new NoSuchBeanDefinitionException("missing"));
 	}
 
 	@After
@@ -88,83 +89,83 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@Test
 	public void shouldOnlyResolveStrings() throws Exception {
-		assertNull(resolver.resolveDestination(new Object(), Locale.UK, null));
-		assertNull(resolver.resolveDestination(new Integer(4), Locale.US, null));
+		assertNull(this.resolver.resolveDestination(new Object(), Locale.UK, null));
+		assertNull(this.resolver.resolveDestination(new Integer(4), Locale.US, null));
 	}
 
 	@Test
 	public void shouldNotResolveIfNotPrefixedString() throws Exception {
-		assertNull(resolver.resolveDestination("bean.method", Locale.UK, null));
+		assertNull(this.resolver.resolveDestination("bean.method", Locale.UK, null));
 	}
 
 	@Test
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
-		resolver.resolveDestination("@method", Locale.UK, null);
-		assertEquals(controllerBean, createdViewHandler);
-		assertTrue(createdViewHandlerMethod.getName().equals("method"));
+		this.resolver.resolveDestination("@method", Locale.UK, null);
+		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldFailIfCurrentHandlerIsNull() throws Exception {
-		reset(springFacesContext);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@method' : "
+		reset(this.springFacesContext);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@method' : "
 				+ "Unable to locate SpringFaces MVC Controller");
-		resolver.resolveDestination("@method", Locale.UK, null);
+		this.resolver.resolveDestination("@method", Locale.UK, null);
 	}
 
 	@Test
 	public void shouldResolveAgainstSpecificBean() throws Exception {
-		resolver.resolveDestination("@bean.method", Locale.UK, null);
-		assertEquals(controllerBean, createdViewHandler);
-		assertTrue(createdViewHandlerMethod.getName().equals("method"));
+		this.resolver.resolveDestination("@bean.method", Locale.UK, null);
+		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldSupportCustomPrefix() throws Exception {
-		resolver.setPrefix("resove:");
-		resolver.resolveDestination("resove:bean.method", Locale.UK, null);
-		assertEquals(controllerBean, createdViewHandler);
-		assertTrue(createdViewHandlerMethod.getName().equals("method"));
+		this.resolver.setPrefix("resove:");
+		this.resolver.resolveDestination("resove:bean.method", Locale.UK, null);
+		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldResolveWithExoticBeanNames() throws Exception {
-		resolver.resolveDestination("@exotic@be.an.method", Locale.UK, null);
-		assertEquals(controllerBean, createdViewHandler);
-		assertTrue(createdViewHandlerMethod.getName().equals("method"));
+		this.resolver.resolveDestination("@exotic@be.an.method", Locale.UK, null);
+		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldFailIfMethodIsNotRequestMapped() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@notMapped' : "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@notMapped' : "
 				+ "Unable to find @RequestMapping annotated method 'notMapped'");
-		resolver.resolveDestination("@notMapped", Locale.UK, null);
+		this.resolver.resolveDestination("@notMapped", Locale.UK, null);
 	}
 
 	@Test
 	public void shouldFailIfMethodIsMissing() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@doesNotExist' : "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@doesNotExist' : "
 				+ "Unable to find @RequestMapping annotated method 'doesNotExist'");
-		resolver.resolveDestination("@doesNotExist", Locale.UK, null);
+		this.resolver.resolveDestination("@doesNotExist", Locale.UK, null);
 	}
 
 	@Test
 	public void shouldFailWithOverloadedMethods() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@overloaded' : "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@overloaded' : "
 				+ "More than one @RequestMapping annotated method with the name 'overloaded' exists");
-		resolver.resolveDestination("@overloaded", Locale.UK, null);
+		this.resolver.resolveDestination("@overloaded", Locale.UK, null);
 	}
 
 	@Test
 	public void shouldFailIfBeanIsMissing() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@missing.method' : "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@missing.method' : "
 				+ "No bean named 'missing' is defined");
-		resolver.resolveDestination("@missing.method", Locale.UK, null);
+		this.resolver.resolveDestination("@missing.method", Locale.UK, null);
 	}
 
 	@Test
@@ -174,24 +175,24 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		PathMatcher pathMatcher = mock(PathMatcher.class);
 		WebBindingInitializer webBindingInitializer = mock(WebBindingInitializer.class);
 		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
-		resolver.setCustomArgumentResolvers(customArgumentResolvers);
-		resolver.setPathMatcher(pathMatcher);
-		resolver.setWebBindingInitializer(webBindingInitializer);
-		resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
-		resolver.setDispatcherServletPath("/cdp");
-		resolver.resolveDestination("@method", Locale.UK, null);
-		assertSame(customArgumentResolvers, createdViewContext.getCustomArgumentResolvers());
-		assertSame(pathMatcher, createdViewContext.getPathMatcher());
-		assertSame(webBindingInitializer, createdViewContext.getWebBindingInitializer());
-		assertSame(parameterNameDiscoverer, createdViewContext.getParameterNameDiscoverer());
-		assertEquals("/cdp", createdViewContext.getDispatcherServletPath());
+		this.resolver.setCustomArgumentResolvers(customArgumentResolvers);
+		this.resolver.setPathMatcher(pathMatcher);
+		this.resolver.setWebBindingInitializer(webBindingInitializer);
+		this.resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
+		this.resolver.setDispatcherServletPath("/cdp");
+		this.resolver.resolveDestination("@method", Locale.UK, null);
+		assertSame(customArgumentResolvers, this.createdViewContext.getCustomArgumentResolvers());
+		assertSame(pathMatcher, this.createdViewContext.getPathMatcher());
+		assertSame(webBindingInitializer, this.createdViewContext.getWebBindingInitializer());
+		assertSame(parameterNameDiscoverer, this.createdViewContext.getParameterNameDiscoverer());
+		assertEquals("/cdp", this.createdViewContext.getDispatcherServletPath());
 	}
 
 	@Test
 	public void shouldPropagateMap() throws Exception {
 		SpringFacesModel model = new SpringFacesModel(Collections.singletonMap("k", "v"));
-		ModelAndView resolved = resolver.resolveDestination("@method", Locale.UK, model);
-		assertSame(resolvedView, resolved.getView());
+		ModelAndView resolved = this.resolver.resolveDestination("@method", Locale.UK, model);
+		assertSame(this.resolvedView, resolved.getView());
 		assertEquals("v", resolved.getModel().get("k"));
 	}
 

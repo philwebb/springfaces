@@ -23,7 +23,7 @@ public class MvcNavigationActionListener implements ActionListener {
 	public void processAction(ActionEvent event) throws AbortProcessingException {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.getAttributes().put(KEY, event);
-		delegate.processAction(event);
+		this.delegate.processAction(event);
 	}
 
 	/**

@@ -25,7 +25,7 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 	}
 
 	private boolean canResolve(String value) {
-		return (StringUtils.hasLength(value) && value.startsWith(prefix));
+		return (StringUtils.hasLength(value) && value.startsWith(this.prefix));
 	}
 
 	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext navigationContext) throws Exception {
@@ -40,9 +40,9 @@ public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResol
 	}
 
 	private String resolve(String value) {
-		String destination = value.substring(prefix.length());
+		String destination = value.substring(this.prefix.length());
 		Assert.state(StringUtils.hasLength(destination),
-				"The destination must be specified for an implicit MVC navigation prefixed '" + prefix + "'");
+				"The destination must be specified for an implicit MVC navigation prefixed '" + this.prefix + "'");
 		return destination;
 	}
 

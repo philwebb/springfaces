@@ -39,7 +39,7 @@ public class PagedDataModelState extends LazyDataModelState {
 	 * @see PagedDataRows#getPageSize()
 	 */
 	public int getPageSize() {
-		return pageSize;
+		return this.pageSize;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class PagedDataModelState extends LazyDataModelState {
 	 * @see PagedDataRows#isSortAscending()
 	 */
 	public boolean isSortAscending() {
-		return sortAscending;
+		return this.sortAscending;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class PagedDataModelState extends LazyDataModelState {
 	 * @see PagedDataRows#getSortColumn()
 	 */
 	public String getSortColumn() {
-		return sortColumn;
+		return this.sortColumn;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class PagedDataModelState extends LazyDataModelState {
 	 * @see PagedDataRows#getFilters()
 	 */
 	public Map<String, String> getFilters() {
-		return filters;
+		return this.filters;
 	}
 
 	/**

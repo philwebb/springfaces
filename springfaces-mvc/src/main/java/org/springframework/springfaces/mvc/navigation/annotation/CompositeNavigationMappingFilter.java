@@ -23,7 +23,7 @@ public class CompositeNavigationMappingFilter implements NavigationMappingFilter
 	}
 
 	public boolean matches(NavigationContext context) {
-		for (NavigationMappingFilter filter : filters) {
+		for (NavigationMappingFilter filter : this.filters) {
 			if (!filter.matches(context)) {
 				return false;
 			}

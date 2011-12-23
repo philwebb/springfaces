@@ -36,7 +36,7 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		ApplicationContext ctx = event.getApplicationContext();
-		postProcessors = BeanFactoryUtils.beansOfTypeIncludingAncestors(ctx,
+		this.postProcessors = BeanFactoryUtils.beansOfTypeIncludingAncestors(ctx,
 				StandardEvaluationContextPostProcessor.class).values();
 	}
 
@@ -55,8 +55,8 @@ public class StandardEvaluationContextPostProcessorSupport implements BeanFactor
 		@Override
 		protected void customizeEvaluationContext(StandardEvaluationContext evalContext) {
 			super.customizeEvaluationContext(evalContext);
-			if (postProcessors != null) {
-				for (StandardEvaluationContextPostProcessor postProcessor : postProcessors) {
+			if (StandardEvaluationContextPostProcessorSupport.this.postProcessors != null) {
+				for (StandardEvaluationContextPostProcessor postProcessor : StandardEvaluationContextPostProcessorSupport.this.postProcessors) {
 					postProcessor.postProcessStandardEvaluationContext(evalContext);
 				}
 			}

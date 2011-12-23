@@ -39,28 +39,28 @@ public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 	}
 
 	public long getTotalRowCount() {
-		return totalRowCount;
+		return this.totalRowCount;
 	}
 
 	public boolean contains(int rowIndex) {
 		int ci = getContentsIndex(rowIndex);
-		return (ci >= 0) && (ci < size);
+		return (ci >= 0) && (ci < this.size);
 	}
 
 	public boolean isRowAvailable(int rowIndex) {
 		int ci = getContentsIndex(rowIndex);
-		return contains(rowIndex) && (ci >= 0) && (ci < contents.size());
+		return contains(rowIndex) && (ci >= 0) && (ci < this.contents.size());
 	}
 
 	public E getRowData(int rowIndex) throws NoRowAvailableException {
 		if (!isRowAvailable(rowIndex)) {
 			throw new NoRowAvailableException();
 		}
-		return contents.get(getContentsIndex(rowIndex));
+		return this.contents.get(getContentsIndex(rowIndex));
 	}
 
 	private int getContentsIndex(int rowIndex) {
-		return rowIndex - offset;
+		return rowIndex - this.offset;
 	}
 
 	@SuppressWarnings("unchecked")

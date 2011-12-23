@@ -53,8 +53,8 @@ public class SpringFacesValidatorSupportTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -63,32 +63,32 @@ public class SpringFacesValidatorSupportTest {
 	}
 
 	private Application createWrappedApplication() {
-		applicationContext.registerSingleton(VALIDATOR_SUPPORT_BEAN, SpringFacesValidatorSupport.class);
-		validatorSupport = applicationContext.getBean(SpringFacesValidatorSupport.class);
-		validatorSupport.setApplicationContext(applicationContext);
-		validatorSupport.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
-		return validatorSupport.newWrapper(Application.class, delegateApplication);
+		this.applicationContext.registerSingleton(VALIDATOR_SUPPORT_BEAN, SpringFacesValidatorSupport.class);
+		this.validatorSupport = this.applicationContext.getBean(SpringFacesValidatorSupport.class);
+		this.validatorSupport.setApplicationContext(this.applicationContext);
+		this.validatorSupport.onApplicationEvent(new ContextRefreshedEvent(this.applicationContext));
+		return this.validatorSupport.newWrapper(Application.class, this.delegateApplication);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void shouldGetWrapped() throws Exception {
 		Application application = createWrappedApplication();
-		assertThat(((FacesWrapper<Application>) application).getWrapped(), is(delegateApplication));
+		assertThat(((FacesWrapper<Application>) application).getWrapped(), is(this.delegateApplication));
 	}
 
 	@Test
 	public void shouldDelegateCreateValidatorById() throws Exception {
 		Application application = createWrappedApplication();
 		Validator validator = mock(Validator.class);
-		given(delegateApplication.createValidator("id")).willReturn(validator);
+		given(this.delegateApplication.createValidator("id")).willReturn(validator);
 		Validator actual = application.createValidator("id");
 		assertThat(actual, is(sameInstance(validator)));
 	}
 
 	@Test
 	public void shouldCreateValidatorByIdFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockValidator.class);
+		this.applicationContext.registerSingleton("bean", MockValidator.class);
 		Application application = createWrappedApplication();
 		Validator validator = application.createValidator("bean");
 		assertThat(validator, is(instanceOf(SpringBeanValidator.class)));
@@ -97,7 +97,7 @@ public class SpringFacesValidatorSupportTest {
 
 	@Test
 	public void shouldCreateFacesValidatorByIdFromSpring() throws Exception {
-		applicationContext.registerSingleton("bean", MockFacesValidator.class);
+		this.applicationContext.registerSingleton("bean", MockFacesValidator.class);
 		Application application = createWrappedApplication();
 		Validator validator = application.createValidator("bean");
 		assertThat(validator, is(instanceOf(SpringBeanFacesValidator.class)));
@@ -107,9 +107,10 @@ public class SpringFacesValidatorSupportTest {
 	@Test
 	public void shouldRegisterDefaultValidator() throws Exception {
 		createWrappedApplication();
-		verify(delegateApplication).addValidator(SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID,
+		verify(this.delegateApplication).addValidator(SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID,
 				SpringFacesValidatorSupport.DefaultValidator.class.getName());
-		verify(delegateApplication).addDefaultValidatorId(SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID);
+		verify(this.delegateApplication).addDefaultValidatorId(
+				SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID);
 	}
 
 	@Test
@@ -121,15 +122,15 @@ public class SpringFacesValidatorSupportTest {
 
 	@Test
 	public void shouldUseForClassValidators() throws Exception {
-		applicationContext.registerSingleton("b1", MockValidatorForClass.class);
-		applicationContext.registerSingleton("b2", MockFacesValidatorForClass.class);
+		this.applicationContext.registerSingleton("b1", MockValidatorForClass.class);
+		this.applicationContext.registerSingleton("b2", MockFacesValidatorForClass.class);
 		Application application = createWrappedApplication();
 		Validator validator = application.createValidator(SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID);
 		UIComponent component = mock(UIComponent.class);
 		Object value = new Example();
-		validator.validate(facesContext, component, value);
-		assertThat(((MockValidatorForClass) applicationContext.getBean("b1")).isValidated(), is(true));
-		assertThat(((MockFacesValidatorForClass) applicationContext.getBean("b2")).isValidated(), is(true));
+		validator.validate(this.facesContext, component, value);
+		assertThat(((MockValidatorForClass) this.applicationContext.getBean("b1")).isValidated(), is(true));
+		assertThat(((MockFacesValidatorForClass) this.applicationContext.getBean("b2")).isValidated(), is(true));
 	}
 
 	@Test
@@ -138,7 +139,7 @@ public class SpringFacesValidatorSupportTest {
 		Validator validator = application.createValidator(SpringFacesValidatorSupport.DefaultValidator.VALIDATOR_ID);
 		UIComponent component = mock(UIComponent.class);
 		Object value = null;
-		validator.validate(facesContext, component, value);
+		validator.validate(this.facesContext, component, value);
 	}
 
 	private Object getWrapped(Validator validator) {
@@ -156,7 +157,7 @@ public class SpringFacesValidatorSupportTest {
 		}
 
 		public boolean isValidated() {
-			return validated;
+			return this.validated;
 		}
 	}
 
@@ -168,7 +169,7 @@ public class SpringFacesValidatorSupportTest {
 		}
 
 		public boolean isValidated() {
-			return validated;
+			return this.validated;
 		}
 	}
 

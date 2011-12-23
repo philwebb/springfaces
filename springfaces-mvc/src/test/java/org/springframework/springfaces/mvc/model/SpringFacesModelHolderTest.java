@@ -48,41 +48,41 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldHaveStaticComponentId() throws Exception {
-		String componentId = h.getId();
-		h.setId("madeup");
-		assertEquals(componentId, h.getId());
+		String componentId = this.h.getId();
+		this.h.setId("madeup");
+		assertEquals(componentId, this.h.getId());
 	}
 
 	@Test
 	public void shouldHaveSameClientIdAsComponentId() throws Exception {
-		assertEquals(h.getId(), h.getClientId());
+		assertEquals(this.h.getId(), this.h.getClientId());
 	}
 
 	@Test
 	public void shouldBeParameterFamily() throws Exception {
-		assertEquals("javax.faces.Parameter", h.getFamily());
+		assertEquals("javax.faces.Parameter", this.h.getFamily());
 	}
 
 	@Test
 	public void shouldHaveNullRenderer() throws Exception {
-		assertNull(h.getRenderer());
+		assertNull(this.h.getRenderer());
 	}
 
 	@Test
 	public void shouldSupportTransient() throws Exception {
-		assertFalse(h.isTransient());
-		h.setTransient(true);
-		assertTrue(h.isTransient());
+		assertFalse(this.h.isTransient());
+		this.h.setTransient(true);
+		assertTrue(this.h.isTransient());
 	}
 
 	@Test
 	public void shouldSaveAndRestoreState() throws Exception {
 		Map<String, String> m = Collections.singletonMap("k", "v");
 		SpringFacesModelHolder h1 = new SpringFacesModelHolder(m);
-		Object state = h1.saveState(context);
+		Object state = h1.saveState(this.context);
 		// Restore : Note default constructor is required
 		SpringFacesModelHolder h2 = SpringFacesModelHolder.class.newInstance();
-		h2.restoreState(context, state);
+		h2.restoreState(this.context, state);
 		assertEquals("v", h2.getModel().get("k"));
 	}
 
@@ -92,7 +92,7 @@ public class SpringFacesModelHolderTest {
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
 		List<UIComponent> children = new ArrayList<UIComponent>();
 		given(viewRoot.getChildren()).willReturn(children);
-		SpringFacesModelHolder.attach(context, viewRoot, m);
+		SpringFacesModelHolder.attach(this.context, viewRoot, m);
 		assertEquals("v", ((SpringFacesModelHolder) children.get(0)).getModel().get("k"));
 	}
 
@@ -111,7 +111,7 @@ public class SpringFacesModelHolderTest {
 	public void shouldGetModelWhenAttached() throws Exception {
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		Map<String, String> m = Collections.singletonMap("k", "v");
-		SpringFacesModelHolder.attach(context, viewRoot, m);
+		SpringFacesModelHolder.attach(this.context, viewRoot, m);
 		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("k"));
 	}
 }

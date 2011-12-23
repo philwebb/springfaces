@@ -30,12 +30,12 @@ public class FacesResponseCompleteReturnValueHandler implements HandlerMethodRet
 	}
 
 	public boolean supportsReturnType(MethodParameter returnType) {
-		return handler.supportsReturnType(returnType);
+		return this.handler.supportsReturnType(returnType);
 	}
 
 	public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest) throws Exception {
-		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
+		this.handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context != null) {
 			context.responseComplete();

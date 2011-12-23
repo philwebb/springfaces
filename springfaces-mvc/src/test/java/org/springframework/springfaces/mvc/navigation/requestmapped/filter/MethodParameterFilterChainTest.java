@@ -32,7 +32,7 @@ public class MethodParameterFilterChainTest {
 	@Test
 	public void shouldWorkWithNullChain() throws Exception {
 		MethodParameterFilterChain c = new MethodParameterFilterChain((MethodParameterFilter[]) null);
-		assertFalse(c.isFiltered(request, methodParameter));
+		assertFalse(c.isFiltered(this.request, this.methodParameter));
 	}
 
 	@Test
@@ -41,12 +41,12 @@ public class MethodParameterFilterChainTest {
 		MethodParameterFilter f1 = mock(MethodParameterFilter.class);
 		MethodParameterFilter f2 = mock(MethodParameterFilter.class);
 		MethodParameterFilter f3 = mock(MethodParameterFilter.class);
-		given(f2.isFiltered(request, methodParameter)).willReturn(true);
+		given(f2.isFiltered(this.request, this.methodParameter)).willReturn(true);
 		MethodParameterFilterChain c = new MethodParameterFilterChain(f1, f2, f3);
-		assertTrue(c.isFiltered(request, methodParameter));
+		assertTrue(c.isFiltered(this.request, this.methodParameter));
 		InOrder ordered = inOrder(f1, f2, f3);
-		ordered.verify(f1).isFiltered(request, methodParameter);
-		ordered.verify(f2).isFiltered(request, methodParameter);
-		ordered.verify(f3, never()).isFiltered(request, methodParameter);
+		ordered.verify(f1).isFiltered(this.request, this.methodParameter);
+		ordered.verify(f2).isFiltered(this.request, this.methodParameter);
+		ordered.verify(f3, never()).isFiltered(this.request, this.methodParameter);
 	}
 }

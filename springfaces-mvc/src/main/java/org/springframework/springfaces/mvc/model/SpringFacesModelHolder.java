@@ -41,19 +41,23 @@ public class SpringFacesModelHolder extends UIComponentBase {
 		this.model = model == null ? null : new SpringFacesModel(model);
 	}
 
+	@Override
 	public String getId() {
 		return COMPONENT_ID;
 	}
 
+	@Override
 	public void setId(String id) {
 		// Do nothing so as to ensure the id never gets overwritten.
 		return;
 	}
 
+	@Override
 	public String getClientId(FacesContext context) {
 		return COMPONENT_ID;
 	}
 
+	@Override
 	public String getFamily() {
 		return COMPONENT_FAMILY;
 	}
@@ -63,27 +67,31 @@ public class SpringFacesModelHolder extends UIComponentBase {
 		return null;
 	}
 
+	@Override
 	public boolean isTransient() {
-		return transientValue;
+		return this.transientValue;
 	}
 
+	@Override
 	public void setTransient(boolean transientValue) {
 		this.transientValue = transientValue;
 	}
 
+	@Override
 	public void restoreState(FacesContext context, Object state) {
 		Object values[] = (Object[]) state;
-		model = (SpringFacesModel) values[0];
+		this.model = (SpringFacesModel) values[0];
 	}
 
+	@Override
 	public Object saveState(FacesContext context) {
 		Object values[] = new Object[1];
-		values[0] = model;
+		values[0] = this.model;
 		return values;
 	}
 
 	public SpringFacesModel getModel() {
-		return model;
+		return this.model;
 	}
 
 	/**

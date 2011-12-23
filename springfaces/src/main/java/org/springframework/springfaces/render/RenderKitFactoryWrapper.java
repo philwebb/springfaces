@@ -16,6 +16,7 @@ import javax.faces.render.RenderKitFactory;
  */
 public abstract class RenderKitFactoryWrapper extends RenderKitFactory implements FacesWrapper<RenderKitFactory> {
 
+	@Override
 	public abstract RenderKitFactory getWrapped();
 
 	@Override

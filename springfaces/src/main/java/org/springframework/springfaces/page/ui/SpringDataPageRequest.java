@@ -21,27 +21,27 @@ public class SpringDataPageRequest implements PageRequest, Pageable {
 	}
 
 	public int getPageNumber() {
-		return pageRequest.getPageNumber();
+		return this.pageRequest.getPageNumber();
 	}
 
 	public int getPageSize() {
-		return pageRequest.getPageSize();
+		return this.pageRequest.getPageSize();
 	}
 
 	public int getOffset() {
-		return pageRequest.getOffset();
+		return this.pageRequest.getOffset();
 	}
 
 	public String getSortColumn() {
-		return pageRequest.getSortColumn();
+		return this.pageRequest.getSortColumn();
 	}
 
 	public boolean isSortAscending() {
-		return pageRequest.isSortAscending();
+		return this.pageRequest.isSortAscending();
 	}
 
 	public Map<String, String> getFilters() {
-		return pageRequest.getFilters();
+		return this.pageRequest.getFilters();
 	}
 
 	public Sort getSort() {

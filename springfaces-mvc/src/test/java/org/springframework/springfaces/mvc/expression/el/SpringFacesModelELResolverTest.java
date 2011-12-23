@@ -38,13 +38,13 @@ public class SpringFacesModelELResolverTest {
 
 	@Test
 	public void shouldReturnNullWhenNoFacesContext() throws Exception {
-		assertNull(resolver.get("key"));
+		assertNull(this.resolver.get("key"));
 	}
 
 	@Test
 	public void shouldReturnNullWhenNoModel() throws Exception {
 		setupFacesContext();
-		assertNull(resolver.get("key"));
+		assertNull(this.resolver.get("key"));
 	}
 
 	@Test
@@ -54,6 +54,6 @@ public class SpringFacesModelELResolverTest {
 		model.put("key", "value");
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		SpringFacesModelHolder.attach(facesContext, facesContext.getViewRoot(), model);
-		assertEquals("value", resolver.get("key"));
+		assertEquals("value", this.resolver.get("key"));
 	}
 }

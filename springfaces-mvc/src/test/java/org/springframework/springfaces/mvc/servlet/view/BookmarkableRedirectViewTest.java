@@ -26,7 +26,7 @@ public class BookmarkableRedirectViewTest {
 
 	@Before
 	public void setupMocks() {
-		given(request.getContextPath()).willReturn("/context");
+		given(this.request.getContextPath()).willReturn("/context");
 	}
 
 	@Test
@@ -35,7 +35,7 @@ public class BookmarkableRedirectViewTest {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "CD");
 		model.put("gh", "GH");
-		String actual = view.getBookmarkUrl(model, request);
+		String actual = view.getBookmarkUrl(model, this.request);
 		assertEquals("/ab/CD/ef/GH", actual);
 	}
 
@@ -45,7 +45,7 @@ public class BookmarkableRedirectViewTest {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab/{cd}");
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "C D");
-		String actual = view.getBookmarkUrl(model, request);
+		String actual = view.getBookmarkUrl(model, this.request);
 		assertEquals("/ab/C%20D", actual);
 	}
 
@@ -55,7 +55,7 @@ public class BookmarkableRedirectViewTest {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "CD");
 		model.put("gh", "GH");
-		String actual = view.getBookmarkUrl(model, request);
+		String actual = view.getBookmarkUrl(model, this.request);
 		assertEquals("/ab/CD?gh=GH", actual);
 	}
 
@@ -67,14 +67,14 @@ public class BookmarkableRedirectViewTest {
 	@Test
 	public void shouldAddContextPath() throws Exception {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab", true);
-		String actual = view.getBookmarkUrl(null, request);
+		String actual = view.getBookmarkUrl(null, this.request);
 		assertEquals("/context/ab", actual);
 	}
 
 	@Test
 	public void shouldNotAddContextPathIfNotSlashPrefixed() throws Exception {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("ab", true);
-		String actual = view.getBookmarkUrl(null, request);
+		String actual = view.getBookmarkUrl(null, this.request);
 		assertEquals("ab", actual);
 	}
 
@@ -86,7 +86,7 @@ public class BookmarkableRedirectViewTest {
 		String expected = "/ab/CD";
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		given(response.encodeRedirectURL(expected)).willReturn(expected);
-		view.render(model, request, response);
+		view.render(model, this.request, response);
 		verify(response).sendRedirect(expected);
 	}
 

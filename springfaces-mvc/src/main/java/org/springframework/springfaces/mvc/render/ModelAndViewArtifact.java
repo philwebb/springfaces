@@ -25,10 +25,10 @@ public final class ModelAndViewArtifact {
 	}
 
 	public ViewArtifact getViewArtifact() {
-		return viewArtifact;
+		return this.viewArtifact;
 	}
 
 	public Map<String, Object> getModel() {
-		return model;
+		return this.model;
 	}
 }

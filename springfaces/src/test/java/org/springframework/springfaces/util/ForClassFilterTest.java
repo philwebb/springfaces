@@ -35,7 +35,7 @@ public class ForClassFilterTest {
 
 	@Before
 	public void setup() throws Exception {
-		beans = new HashMap<String, Object>();
+		this.beans = new HashMap<String, Object>();
 		addBeans(ForAnimals.class);
 		addBeans(ForDog.class);
 		addBeans(ForCat.class);
@@ -95,64 +95,64 @@ public class ForClassFilterTest {
 
 	@Test
 	public void shouldNeedGenericTypeOnConstructor() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("GenericType must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("GenericType must not be null");
 		new ForClassFilter((Class) null);
 	}
 
 	@Test
 	public void shouldNeedDeducerOnConstructor() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Deducer must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Deducer must not be null");
 		new ForClassFilter((ForClassFilter.Deducer) null);
 	}
 
 	@Test
 	public void shouldNeedCollection() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Collection must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Collection must not be null");
 		new ForClassFilter().apply((Collection<?>) null, Dog.class);
 	}
 
 	@Test
 	public void shouldNeedTargetOnCollection() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("TargetClass must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("TargetClass must not be null");
 		new ForClassFilter().apply(Collections.emptySet(), null);
 	}
 
 	@Test
 	public void shouldNeedMap() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Map must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Map must not be null");
 		new ForClassFilter().apply((Map<?, ?>) null, Dog.class);
 	}
 
 	@Test
 	public void shouldNeedTargetOnMap() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("TargetClass must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("TargetClass must not be null");
 		new ForClassFilter().apply(Collections.emptyMap(), null);
 	}
 
 	@Test
 	public void shouldNeedIterator() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Iterator must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Iterator must not be null");
 		new ForClassFilter().apply((Iterator<?>) null, Dog.class);
 	}
 
 	@Test
 	public void shouldNeedTargetOnIterator() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("TargetClass must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("TargetClass must not be null");
 		new ForClassFilter().apply(Collections.emptySet().iterator(), null);
 	}
 
 	@Test
 	public void shouldNeedTargetOnBean() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("TargetClass must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("TargetClass must not be null");
 		new ForClassFilter().match(new Object(), null);
 	}
 
@@ -166,7 +166,7 @@ public class ForClassFilterTest {
 	}
 
 	private void testFilterCollection(ForClassFilter filter, Class<?> targetClass, String... expected) {
-		Collection<Object> actual = filter.apply(beans.values(), targetClass);
+		Collection<Object> actual = filter.apply(this.beans.values(), targetClass);
 		Set<String> actualNames = new HashSet<String>();
 		for (Object bean : actual) {
 			actualNames.add(getName(bean));
@@ -175,7 +175,7 @@ public class ForClassFilterTest {
 	}
 
 	private void testFilterCollectionOfMapEntry(ForClassFilter filter, Class<?> targetClass, String... expected) {
-		Collection<Map.Entry<String, Object>> actual = filter.apply(beans.entrySet(), targetClass);
+		Collection<Map.Entry<String, Object>> actual = filter.apply(this.beans.entrySet(), targetClass);
 		Set<String> actualNames = new HashSet<String>();
 		for (Map.Entry<String, Object> entry : actual) {
 			actualNames.add(entry.getKey());
@@ -184,12 +184,12 @@ public class ForClassFilterTest {
 	}
 
 	private void testFilterMap(ForClassFilter filter, Class<?> targetClass, String... expected) {
-		Map<String, Object> actual = filter.apply(beans, targetClass);
+		Map<String, Object> actual = filter.apply(this.beans, targetClass);
 		assertThat(actual.keySet(), is(equalToSetOf(expected)));
 	}
 
 	private void testFilterIterator(ForClassFilter filter, Class<?> targetClass, String... expected) {
-		Iterator<Object> actual = filter.apply(beans.values().iterator(), targetClass);
+		Iterator<Object> actual = filter.apply(this.beans.values().iterator(), targetClass);
 		Set<String> actualNames = new HashSet<String>();
 		while (actual.hasNext()) {
 			actualNames.add(getName(actual.next()));
@@ -198,7 +198,7 @@ public class ForClassFilterTest {
 	}
 
 	private void testFilterIteratorOfMapEntry(ForClassFilter filter, Class<?> targetClass, String... expected) {
-		Iterator<Map.Entry<String, Object>> actual = filter.apply(beans.entrySet().iterator(), targetClass);
+		Iterator<Map.Entry<String, Object>> actual = filter.apply(this.beans.entrySet().iterator(), targetClass);
 		Set<String> actualNames = new HashSet<String>();
 		while (actual.hasNext()) {
 			actualNames.add(actual.next().getKey());
@@ -208,7 +208,7 @@ public class ForClassFilterTest {
 
 	private void testFilterObject(ForClassFilter filter, Class<?> targetClass, String... expected) {
 		Set<String> actualNames = new HashSet<String>();
-		for (Map.Entry<String, Object> entry : beans.entrySet()) {
+		for (Map.Entry<String, Object> entry : this.beans.entrySet()) {
 			if (filter.match(entry.getValue(), targetClass)) {
 				actualNames.add(entry.getKey());
 			}
@@ -217,7 +217,7 @@ public class ForClassFilterTest {
 	}
 
 	private void addBeans(Class<?> beanClass) throws Exception {
-		beans.put(getName(beanClass), beanClass.newInstance());
+		this.beans.put(getName(beanClass), beanClass.newInstance());
 	}
 
 	private String getName(Object bean) {

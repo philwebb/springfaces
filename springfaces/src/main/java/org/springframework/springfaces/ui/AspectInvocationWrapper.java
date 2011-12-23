@@ -25,10 +25,10 @@ public class AspectInvocationWrapper implements AspectInvocation {
 	}
 
 	public UIComponent getComponent() {
-		return aspectInvocation.getComponent();
+		return this.aspectInvocation.getComponent();
 	}
 
 	public void proceed() throws IOException {
-		aspectInvocation.proceed();
+		this.aspectInvocation.proceed();
 	}
 }

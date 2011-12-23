@@ -136,6 +136,7 @@ public class ForClassFilter {
 		Assert.notNull(iterator, "Iterator must not be null");
 		Assert.notNull(targetClass, "TargetClass must not be null");
 		return new FilteredIterator<E>(iterator) {
+			@Override
 			protected boolean isElementFiltered(E element) {
 				Object object = element;
 				if (object instanceof Map.Entry) {
@@ -181,7 +182,7 @@ public class ForClassFilter {
 	private Set<Class<?>> getForClasses(Object object) {
 		Set<Class<?>> forClasses = new HashSet<Class<?>>();
 
-		Class<?> deduced = deducer.getForClass(object);
+		Class<?> deduced = this.deducer.getForClass(object);
 		if (deduced != null) {
 			forClasses.add(deduced);
 		}
@@ -245,9 +246,9 @@ public class ForClassFilter {
 
 		public Class<?> getForClass(Object bean) {
 			try {
-				Class[] arguments = GenericTypeResolver.resolveTypeArguments(bean.getClass(), genericType);
-				if (parameterIndex < arguments.length) {
-					return arguments[parameterIndex];
+				Class[] arguments = GenericTypeResolver.resolveTypeArguments(bean.getClass(), this.genericType);
+				if (this.parameterIndex < arguments.length) {
+					return arguments[this.parameterIndex];
 				}
 				return null;
 			} catch (Exception e) {

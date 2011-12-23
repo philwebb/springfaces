@@ -24,21 +24,24 @@ public class PagedDataModelTest extends LazyDataModelTest {
 
 	private boolean reset;
 
+	@Override
 	protected LazyDataModelState newLazyDataModelState() {
 		return new PagedDataModelState(10);
 	}
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected LazyDataModel newLazyDataModel(LazyDataLoader loader, LazyDataModelState state) {
 		return new PagedDataModel(loader, (PagedDataModelState) state) {
 			@Override
 			protected void reset() {
 				super.reset();
-				reset = true;
+				PagedDataModelTest.this.reset = true;
 			}
 		};
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	protected PagedDataModel<String> getDataModel() {
 		return (PagedDataModel<String>) super.getDataModel();
@@ -48,7 +51,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 	public void shouldGetAndSetPageSize() throws Exception {
 		getDataModel().setPageSize(100);
 		assertThat(getDataModel().getPageSize(), is(100));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
@@ -56,7 +59,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		getDataModel().setRowIndex(0);
 		getDataModel().setPageSize(99);
 		assertThat(getDataModel().getRowIndex(), is(-1));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
@@ -70,14 +73,14 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		getDataModel().setRowIndex(0);
 		getDataModel().setSortAscending(false);
 		assertThat(getDataModel().getRowIndex(), is(-1));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
 	public void shouldGetAndSetSortColumn() throws Exception {
 		getDataModel().setSortColumn("column");
 		assertThat(getDataModel().getSortColumn(), is("column"));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
@@ -115,7 +118,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		getDataModel().setRowIndex(0);
 		getDataModel().setSortColumn("column");
 		assertThat(getDataModel().getRowIndex(), is(-1));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
@@ -123,7 +126,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		Map<String, String> filters = Collections.singletonMap("a", "b");
 		getDataModel().setFilters(filters);
 		assertThat(getDataModel().getFilters(), is(filters));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	@Test
@@ -131,7 +134,7 @@ public class PagedDataModelTest extends LazyDataModelTest {
 		getDataModel().setRowIndex(0);
 		getDataModel().setFilters(Collections.singletonMap("a", "b"));
 		assertThat(getDataModel().getRowIndex(), is(-1));
-		assertThat(reset, is(true));
+		assertThat(this.reset, is(true));
 	}
 
 	// FIXME v3 test

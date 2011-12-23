@@ -37,136 +37,136 @@ public class NavigationMappingMethodTest {
 
 	@Test
 	public void shouldNeedBeanName() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("BeanName must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("BeanName must not be null");
 		new NavigationMappingMethod(null, Bean.class, Bean.defaults, true);
 	}
 
 	@Test
 	public void shouldNeedBeanType() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("BeanType must not be null");
-		new NavigationMappingMethod(beanName, null, Bean.defaults, true);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("BeanType must not be null");
+		new NavigationMappingMethod(this.beanName, null, Bean.defaults, true);
 	}
 
 	@Test
 	public void shouldNeedMethod() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Method must not be null");
-		new NavigationMappingMethod(beanName, Bean.class, null, true);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Method must not be null");
+		new NavigationMappingMethod(this.beanName, Bean.class, null, true);
 	}
 
 	@Test
 	public void shouldNeedAnnotationOnMethod() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to find @NavigationMapping annotation on method Bean.noAnnotation");
-		new NavigationMappingMethod(beanName, Bean.class, Bean.noAnnotation, true);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to find @NavigationMapping annotation on method Bean.noAnnotation");
+		new NavigationMappingMethod(this.beanName, Bean.class, Bean.noAnnotation, true);
 	}
 
 	@Test
 	public void shouldGetDetails() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
-		assertEquals(beanName, o.getBeanName());
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
+		assertEquals(this.beanName, o.getBeanName());
 		assertEquals(Bean.class, o.getBeanType());
 		assertSame(Bean.defaults, o.getMethod());
 	}
 
 	@Test
 	public void shouldMatchMethodWhenNoOutcome() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("noMatch", "defaults");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("noMatch", "defaults");
+		assertFalse(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldIgnoreMethodPrefixes() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("noMatch", "defaults");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.onDefaults, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("noMatch", "defaults");
+		assertFalse(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldIgnoreMethodPrefixOnOwn() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.on, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("noMatch", "on");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.on, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("noMatch", "on");
+		assertFalse(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldSupportSpecifiedOutcomes() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.specified, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("zero", "one", "two", "three", "four");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertFalse(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.specified, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("zero", "one", "two", "three", "four");
+		assertFalse(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
+		assertFalse(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldIgnoreFromActionWhenNotSpecified() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.onDefaults, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("defaults");
-		given(context.getFromAction()).willReturn("doesnotmatter");
-		assertTrue(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.onDefaults, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("defaults");
+		given(this.context.getFromAction()).willReturn("doesnotmatter");
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldSupportFromAction() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.fromAction, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("fromAction");
-		given(context.getFromAction()).willReturn("noMatch", "#{action}");
-		assertFalse(o.canResolve(context));
-		assertTrue(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.fromAction, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("fromAction");
+		given(this.context.getFromAction()).willReturn("noMatch", "#{action}");
+		assertFalse(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldOnlyMatchControllerBean() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, true);
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
 		Object h1 = new Object();
 		Object h2 = new Object();
-		given(context.getController()).willReturn(bean, h1, h2);
-		given(context.getOutcome()).willReturn("defaults");
-		assertTrue(o.canResolve(context));
-		assertFalse(o.canResolve(context));
-		assertFalse(o.canResolve(context));
+		given(this.context.getController()).willReturn(this.bean, h1, h2);
+		given(this.context.getOutcome()).willReturn("defaults");
+		assertTrue(o.canResolve(this.context));
+		assertFalse(o.canResolve(this.context));
+		assertFalse(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldMatchAllBeans() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.defaults, false);
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, false);
 		Object h1 = new Object();
 		Object h2 = new Object();
-		given(context.getController()).willReturn(bean, h1, h2);
-		given(context.getOutcome()).willReturn("defaults");
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
-		assertTrue(o.canResolve(context));
+		given(this.context.getController()).willReturn(this.bean, h1, h2);
+		given(this.context.getOutcome()).willReturn("defaults");
+		assertTrue(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
+		assertTrue(o.canResolve(this.context));
 	}
 
 	@Test
 	public void shouldFailFastOnFilterCreateErrors() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to create filter from class");
-		new NavigationMappingMethod(beanName, Bean.class, Bean.malformedFilter, true);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to create filter from class");
+		new NavigationMappingMethod(this.beanName, Bean.class, Bean.malformedFilter, true);
 	}
 
 	@Test
 	public void shouldFilterContext() throws Exception {
-		NavigationMappingMethod o = new NavigationMappingMethod(beanName, Bean.class, Bean.filter, true);
-		given(context.getController()).willReturn(bean);
-		given(context.getOutcome()).willReturn("filter");
-		assertTrue(o.canResolve(context));
-		assertFalse(o.canResolve(context));
+		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.filter, true);
+		given(this.context.getController()).willReturn(this.bean);
+		given(this.context.getOutcome()).willReturn("filter");
+		assertTrue(o.canResolve(this.context));
+		assertFalse(o.canResolve(this.context));
 	}
 
 	public static abstract class AbstractFilter implements NavigationMappingFilter {
@@ -176,8 +176,8 @@ public class NavigationMappingMethodTest {
 		public boolean filtered = true;
 
 		public boolean matches(NavigationContext context) {
-			boolean rtn = filtered;
-			filtered = !filtered;
+			boolean rtn = this.filtered;
+			this.filtered = !this.filtered;
 			return rtn;
 		}
 	}

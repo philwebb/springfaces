@@ -22,10 +22,10 @@ public class Postback {
 	}
 
 	public ViewArtifact getViewArtifact() {
-		return viewArtifact;
+		return this.viewArtifact;
 	}
 
 	public Object getHandler() {
-		return handler;
+		return this.handler;
 	}
 }

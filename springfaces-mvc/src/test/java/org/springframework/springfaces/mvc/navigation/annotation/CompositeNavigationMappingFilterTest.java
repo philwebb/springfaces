@@ -29,15 +29,15 @@ public class CompositeNavigationMappingFilterTest {
 
 	@Test
 	public void shouldNeedArray() throws Exception {
-		thown.expect(IllegalArgumentException.class);
-		thown.expectMessage("Filters must not be null");
+		this.thown.expect(IllegalArgumentException.class);
+		this.thown.expectMessage("Filters must not be null");
 		new CompositeNavigationMappingFilter((NavigationMappingFilter[]) null);
 	}
 
 	@Test
 	public void shouldNeedNoNullElements() throws Exception {
-		thown.expect(IllegalArgumentException.class);
-		thown.expectMessage("Filters must not contain null elements");
+		this.thown.expect(IllegalArgumentException.class);
+		this.thown.expectMessage("Filters must not contain null elements");
 		new CompositeNavigationMappingFilter((NavigationMappingFilter) null);
 	}
 
@@ -46,11 +46,11 @@ public class CompositeNavigationMappingFilterTest {
 		NavigationMappingFilter f1 = mock(NavigationMappingFilter.class);
 		NavigationMappingFilter f2 = mock(NavigationMappingFilter.class);
 		NavigationMappingFilter f3 = mock(NavigationMappingFilter.class);
-		given(f1.matches(context)).willReturn(true);
-		given(f2.matches(context)).willReturn(true);
-		given(f3.matches(context)).willReturn(true);
+		given(f1.matches(this.context)).willReturn(true);
+		given(f2.matches(this.context)).willReturn(true);
+		given(f3.matches(this.context)).willReturn(true);
 		CompositeNavigationMappingFilter composite = new CompositeNavigationMappingFilter(f1, f2, f3);
-		assertTrue(composite.matches(context));
+		assertTrue(composite.matches(this.context));
 	}
 
 	@Test
@@ -58,11 +58,11 @@ public class CompositeNavigationMappingFilterTest {
 		NavigationMappingFilter f1 = mock(NavigationMappingFilter.class);
 		NavigationMappingFilter f2 = mock(NavigationMappingFilter.class);
 		NavigationMappingFilter f3 = mock(NavigationMappingFilter.class);
-		given(f1.matches(context)).willReturn(true);
-		given(f2.matches(context)).willReturn(false);
-		given(f3.matches(context)).willReturn(true);
+		given(f1.matches(this.context)).willReturn(true);
+		given(f2.matches(this.context)).willReturn(false);
+		given(f3.matches(this.context)).willReturn(true);
 		CompositeNavigationMappingFilter composite = new CompositeNavigationMappingFilter(f1, f2, f3);
-		assertFalse(composite.matches(context));
+		assertFalse(composite.matches(this.context));
 	}
 
 }

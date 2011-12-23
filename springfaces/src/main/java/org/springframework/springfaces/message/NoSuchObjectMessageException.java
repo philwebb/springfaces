@@ -42,7 +42,7 @@ public class NoSuchObjectMessageException extends RuntimeException {
 	 * @return the object being resolved
 	 */
 	public Object getObject() {
-		return object;
+		return this.object;
 	}
 
 	/**
@@ -50,6 +50,6 @@ public class NoSuchObjectMessageException extends RuntimeException {
 	 * @return the locale
 	 */
 	public Locale getLocale() {
-		return locale;
+		return this.locale;
 	}
 }

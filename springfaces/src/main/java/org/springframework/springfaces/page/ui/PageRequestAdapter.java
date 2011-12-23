@@ -21,11 +21,11 @@ class PageRequestAdapter implements PageRequest {
 	}
 
 	public int getPageNumber() {
-		return state.getRowIndex() / getPageSize();
+		return this.state.getRowIndex() / getPageSize();
 	}
 
 	public int getPageSize() {
-		return state.getPageSize();
+		return this.state.getPageSize();
 	}
 
 	public int getOffset() {
@@ -33,15 +33,15 @@ class PageRequestAdapter implements PageRequest {
 	}
 
 	public String getSortColumn() {
-		return state.getSortColumn();
+		return this.state.getSortColumn();
 	}
 
 	public boolean isSortAscending() {
-		return state.isSortAscending();
+		return this.state.isSortAscending();
 	}
 
 	public Map<String, String> getFilters() {
-		Map<String, String> filters = state.getFilters();
+		Map<String, String> filters = this.state.getFilters();
 		return (filters == null ? Collections.<String, String> emptyMap() : filters);
 	}
 }

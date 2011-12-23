@@ -28,13 +28,13 @@ public class ClassToEnumsConverterTest {
 	@Before
 	@SuppressWarnings("deprecation")
 	public void setup() throws Exception {
-		conversionService = ConversionServiceFactory.createDefaultConversionService();
-		conversionService.addConverter(new ClassToEnumsConverter());
+		this.conversionService = ConversionServiceFactory.createDefaultConversionService();
+		this.conversionService.addConverter(new ClassToEnumsConverter());
 	}
 
 	@Test
 	public void shouldConvertToArray() throws Exception {
-		ExampleEnum[] e = conversionService.convert(ExampleEnum.class, ExampleEnum[].class);
+		ExampleEnum[] e = this.conversionService.convert(ExampleEnum.class, ExampleEnum[].class);
 		assertEnums(e);
 	}
 
@@ -72,7 +72,8 @@ public class ClassToEnumsConverterTest {
 	}
 
 	private Object doConvert(TypeDescriptor targetType) {
-		return conversionService.convert(ExampleEnum.class, TypeDescriptor.forObject(ExampleEnum.class), targetType);
+		return this.conversionService.convert(ExampleEnum.class, TypeDescriptor.forObject(ExampleEnum.class),
+				targetType);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

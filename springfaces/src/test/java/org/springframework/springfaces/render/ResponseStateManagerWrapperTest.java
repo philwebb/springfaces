@@ -37,50 +37,50 @@ public class ResponseStateManagerWrapperTest {
 
 	@Test
 	public void shouldWrapWriteStateObject() throws Exception {
-		wrapper.writeState(context, stateObject);
-		verify(wrapped).writeState(context, stateObject);
+		this.wrapper.writeState(this.context, this.stateObject);
+		verify(this.wrapped).writeState(this.context, this.stateObject);
 	}
 
 	@Test
 	public void shouldWrapWriteStateSerializedView() throws Exception {
-		wrapper.writeState(context, stateSerializedView);
-		verify(wrapped).writeState(context, stateSerializedView);
+		this.wrapper.writeState(this.context, this.stateSerializedView);
+		verify(this.wrapped).writeState(this.context, this.stateSerializedView);
 	}
 
 	@Test
 	public void shouldWrapGetState() {
-		wrapper.getState(context, viewId);
-		verify(wrapped).getState(context, viewId);
+		this.wrapper.getState(this.context, this.viewId);
+		verify(this.wrapped).getState(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldWrapGetTreeStructureToRestore() {
-		wrapper.getTreeStructureToRestore(context, viewId);
-		verify(wrapped).getTreeStructureToRestore(context, viewId);
+		this.wrapper.getTreeStructureToRestore(this.context, this.viewId);
+		verify(this.wrapped).getTreeStructureToRestore(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldWrapGetComponentStateToRestore() {
-		wrapper.getComponentStateToRestore(context);
-		verify(wrapped).getComponentStateToRestore(context);
+		this.wrapper.getComponentStateToRestore(this.context);
+		verify(this.wrapped).getComponentStateToRestore(this.context);
 	}
 
 	@Test
 	public void shouldWrapIsPostback() {
-		wrapper.isPostback(context);
-		verify(wrapped).isPostback(context);
+		this.wrapper.isPostback(this.context);
+		verify(this.wrapped).isPostback(this.context);
 	}
 
 	@Test
 	public void shouldWrapGetViewState() {
-		wrapper.getViewState(context, stateObject);
-		verify(wrapped).getViewState(context, stateObject);
+		this.wrapper.getViewState(this.context, this.stateObject);
+		verify(this.wrapped).getViewState(this.context, this.stateObject);
 	}
 
 	private class MockResponseStateManagerWrapper extends ResponseStateManagerWrapper {
 		@Override
 		public ResponseStateManager getWrapped() {
-			return wrapped;
+			return ResponseStateManagerWrapperTest.this.wrapped;
 		}
 	}
 }

@@ -53,9 +53,9 @@ public class FacesResponseCompleteReturnValueHandlerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		FacesContextSetter.setCurrentInstance(facesContext);
-		handler = new FacesResponseCompleteReturnValueHandler(delegate);
-		given(handler.supportsReturnType(any(MethodParameter.class))).willReturn(true);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+		this.handler = new FacesResponseCompleteReturnValueHandler(this.delegate);
+		given(this.handler.supportsReturnType(any(MethodParameter.class))).willReturn(true);
 	}
 
 	@After
@@ -65,36 +65,36 @@ public class FacesResponseCompleteReturnValueHandlerTest {
 
 	@Test
 	public void shouldNeedDelegateHandler() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Handler must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Handler must not be null");
 		new FacesResponseCompleteReturnValueHandler(null);
 	}
 
 	@Test
 	public void shouldDelegateSupports() throws Exception {
-		handler.supportsReturnType(returnType);
-		verify(delegate).supportsReturnType(returnType);
-		verifyZeroInteractions(facesContext);
+		this.handler.supportsReturnType(this.returnType);
+		verify(this.delegate).supportsReturnType(this.returnType);
+		verifyZeroInteractions(this.facesContext);
 	}
 
 	@Test
 	public void shouldDelegateHandle() throws Exception {
-		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
-		verify(delegate).handleReturnValue(returnValue, returnType, mavContainer, webRequest);
+		this.handler.handleReturnValue(this.returnValue, this.returnType, this.mavContainer, this.webRequest);
+		verify(this.delegate).handleReturnValue(this.returnValue, this.returnType, this.mavContainer, this.webRequest);
 	}
 
 	@Test
 	public void shouldWorkWithoutFacesContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(null);
-		handler.supportsReturnType(returnType);
-		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
-		verify(delegate).supportsReturnType(returnType);
-		verify(delegate).handleReturnValue(returnValue, returnType, mavContainer, webRequest);
+		this.handler.supportsReturnType(this.returnType);
+		this.handler.handleReturnValue(this.returnValue, this.returnType, this.mavContainer, this.webRequest);
+		verify(this.delegate).supportsReturnType(this.returnType);
+		verify(this.delegate).handleReturnValue(this.returnValue, this.returnType, this.mavContainer, this.webRequest);
 	}
 
 	@Test
 	public void shouldMarkFacesContextAsResponseComplete() throws Exception {
-		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
-		verify(facesContext).responseComplete();
+		this.handler.handleReturnValue(this.returnValue, this.returnType, this.mavContainer, this.webRequest);
+		verify(this.facesContext).responseComplete();
 	}
 }

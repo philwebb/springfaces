@@ -32,32 +32,32 @@ public class ConfigurableNavigationHandlerWrapperTest {
 
 	@Test
 	public void shouldWrapGetNavigationCase() throws Exception {
-		wrapper.getNavigationCase(context, fromAction, outcome);
-		verify(wrapped).getNavigationCase(context, fromAction, outcome);
+		this.wrapper.getNavigationCase(this.context, this.fromAction, this.outcome);
+		verify(this.wrapped).getNavigationCase(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldWrapGetNavigationCases() throws Exception {
-		wrapper.getNavigationCases();
-		verify(wrapped).getNavigationCases();
+		this.wrapper.getNavigationCases();
+		verify(this.wrapped).getNavigationCases();
 	}
 
 	@Test
 	public void shouldWrapPerformNavigation() throws Exception {
-		wrapper.performNavigation(outcome);
-		verify(wrapped).performNavigation(outcome);
+		this.wrapper.performNavigation(this.outcome);
+		verify(this.wrapped).performNavigation(this.outcome);
 	}
 
 	@Test
 	public void shouldWrapHandleNavigation() throws Exception {
-		wrapper.handleNavigation(context, fromAction, outcome);
-		verify(wrapped).handleNavigation(context, fromAction, outcome);
+		this.wrapper.handleNavigation(this.context, this.fromAction, this.outcome);
+		verify(this.wrapped).handleNavigation(this.context, this.fromAction, this.outcome);
 	}
 
 	private class MockConfigurableNavigationHandlerWrapper extends ConfigurableNavigationHandlerWrapper {
 		@Override
 		public ConfigurableNavigationHandler getWrapped() {
-			return wrapped;
+			return ConfigurableNavigationHandlerWrapperTest.this.wrapped;
 		}
 	}
 }

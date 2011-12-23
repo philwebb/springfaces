@@ -34,26 +34,26 @@ public class RenderKitFactoryWrapperTest {
 
 	@Test
 	public void shouldWrapAddRenderKit() {
-		wrapper.addRenderKit(renderKitId, renderKit);
-		verify(wrapped).addRenderKit(renderKitId, renderKit);
+		this.wrapper.addRenderKit(this.renderKitId, this.renderKit);
+		verify(this.wrapped).addRenderKit(this.renderKitId, this.renderKit);
 	}
 
 	@Test
 	public void shouldWrapGetRenderKit() {
-		wrapper.getRenderKit(context, renderKitId);
-		verify(wrapped).getRenderKit(context, renderKitId);
+		this.wrapper.getRenderKit(this.context, this.renderKitId);
+		verify(this.wrapped).getRenderKit(this.context, this.renderKitId);
 	}
 
 	@Test
 	public void shouldWrapGetRenderKitIds() {
-		wrapper.getRenderKitIds();
-		verify(wrapped).getRenderKitIds();
+		this.wrapper.getRenderKitIds();
+		verify(this.wrapped).getRenderKitIds();
 	}
 
 	private class MockRenderKitFactoryWrapper extends RenderKitFactoryWrapper {
 		@Override
 		public RenderKitFactory getWrapped() {
-			return wrapped;
+			return RenderKitFactoryWrapperTest.this.wrapped;
 		}
 	}
 }

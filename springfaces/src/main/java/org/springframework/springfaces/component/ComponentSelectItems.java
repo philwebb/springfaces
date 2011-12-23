@@ -42,7 +42,7 @@ public class ComponentSelectItems implements Iterable<SelectItem> {
 	}
 
 	public Iterator<SelectItem> iterator() {
-		return new ChildIterator(component.getChildren().iterator());
+		return new ChildIterator(this.component.getChildren().iterator());
 	}
 
 	private class ChildIterator implements Iterator<SelectItem> {
@@ -60,12 +60,12 @@ public class ComponentSelectItems implements Iterable<SelectItem> {
 		}
 
 		public boolean hasNext() {
-			if (selectItems.hasNext()) {
+			if (this.selectItems.hasNext()) {
 				return true;
 			}
-			while (children.hasNext()) {
-				selectItems = newSelectItemsIterator(children.next());
-				if (selectItems.hasNext()) {
+			while (this.children.hasNext()) {
+				this.selectItems = newSelectItemsIterator(this.children.next());
+				if (this.selectItems.hasNext()) {
 					return true;
 				}
 			}
@@ -73,13 +73,13 @@ public class ComponentSelectItems implements Iterable<SelectItem> {
 		}
 
 		public SelectItem next() {
-			if (selectItems.hasNext()) {
-				return selectItems.next();
+			if (this.selectItems.hasNext()) {
+				return this.selectItems.next();
 			}
-			while (children.hasNext()) {
-				selectItems = newSelectItemsIterator(children.next());
-				if (selectItems.hasNext()) {
-					return selectItems.next();
+			while (this.children.hasNext()) {
+				this.selectItems = newSelectItemsIterator(this.children.next());
+				if (this.selectItems.hasNext()) {
+					return this.selectItems.next();
 				}
 			}
 			throw new NoSuchElementException();
@@ -110,20 +110,22 @@ public class ComponentSelectItems implements Iterable<SelectItem> {
 			SelectItems selectItems = new SelectItems(component.getValue()) {
 				@Override
 				protected SelectItem convertToSelectItem(final Object value) {
-					return FacesUtils.doWithRequestScopeVariable(context, var, value, new Callable<SelectItem>() {
-						public SelectItem call() throws Exception {
-							Map<String, Object> attrs = component.getAttributes();
-							Object itemValue = firstNonNullValue(attrs.get("itemValue"), value);
-							String itemLabel = getStringValue(firstNonNullValue(attrs.get("itemLabel"), itemValue));
-							SelectItem item = new SelectItem(itemValue, itemLabel);
-							item.setDescription(getStringValue(attrs.get("itemDescription")));
-							item.setEscape(getBooleanValue(attrs.get("itemLabelEscaped")));
-							item.setDisabled(getBooleanValue(attrs.get("itemDisabled")));
-							item.setNoSelectionOption(getBooleanValue(firstNonNullValue(attrs.get("noSelectionOption"),
-									attrs.get("noSelectionValue"))));
-							return item;
-						}
-					});
+					return FacesUtils.doWithRequestScopeVariable(ComponentSelectItems.this.context, var, value,
+							new Callable<SelectItem>() {
+								public SelectItem call() throws Exception {
+									Map<String, Object> attrs = component.getAttributes();
+									Object itemValue = firstNonNullValue(attrs.get("itemValue"), value);
+									String itemLabel = getStringValue(firstNonNullValue(attrs.get("itemLabel"),
+											itemValue));
+									SelectItem item = new SelectItem(itemValue, itemLabel);
+									item.setDescription(getStringValue(attrs.get("itemDescription")));
+									item.setEscape(getBooleanValue(attrs.get("itemLabelEscaped")));
+									item.setDisabled(getBooleanValue(attrs.get("itemDisabled")));
+									item.setNoSelectionOption(getBooleanValue(firstNonNullValue(
+											attrs.get("noSelectionOption"), attrs.get("noSelectionValue"))));
+									return item;
+								}
+							});
 				}
 			};
 			return selectItems.iterator();

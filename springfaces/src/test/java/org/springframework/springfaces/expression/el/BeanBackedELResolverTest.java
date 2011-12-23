@@ -26,33 +26,33 @@ public class BeanBackedELResolverTest {
 
 	@Test
 	public void shouldBeReadOnly() throws Exception {
-		assertTrue(resolver.isReadOnly("string"));
+		assertTrue(this.resolver.isReadOnly("string"));
 	}
 
 	@Test
 	public void shouldBeAvailableOnlyWhenHasBean() throws Exception {
-		assertTrue(resolver.isAvailable());
+		assertTrue(this.resolver.isAvailable());
 		this.bean = null;
-		assertFalse(resolver.isAvailable());
+		assertFalse(this.resolver.isAvailable());
 	}
 
 	@Test
 	public void testHandlesAndResolve() throws Exception {
-		assertTrue(resolver.handles("stringValue"));
-		assertEquals("string", resolver.get("stringValue"));
-		assertTrue(resolver.handles("longValue"));
-		assertEquals(new Long(12345), resolver.get("longValue"));
-		assertTrue(resolver.handles("intValue"));
-		assertEquals(new Integer(1), resolver.get("intValue"));
-		assertTrue(resolver.handles("alias"));
-		assertEquals("string", resolver.get("alias"));
-		assertFalse(resolver.handles("unmapped"));
+		assertTrue(this.resolver.handles("stringValue"));
+		assertEquals("string", this.resolver.get("stringValue"));
+		assertTrue(this.resolver.handles("longValue"));
+		assertEquals(new Long(12345), this.resolver.get("longValue"));
+		assertTrue(this.resolver.handles("intValue"));
+		assertEquals(new Integer(1), this.resolver.get("intValue"));
+		assertTrue(this.resolver.handles("alias"));
+		assertEquals("string", this.resolver.get("alias"));
+		assertFalse(this.resolver.handles("unmapped"));
 	}
 
 	@Test
 	public void testNotMapped() throws Exception {
-		assertFalse(resolver.handles("missing"));
-		assertNull(resolver.get("missing"));
+		assertFalse(this.resolver.handles("missing"));
+		assertNull(this.resolver.get("missing"));
 	}
 
 	private class TestBeanBackedElResolver extends BeanBackedELResolver {
@@ -64,8 +64,9 @@ public class BeanBackedELResolverTest {
 			map("alias", "stringValue");
 		}
 
+		@Override
 		protected Object getBean() {
-			return bean;
+			return BeanBackedELResolverTest.this.bean;
 		}
 	}
 
@@ -76,19 +77,19 @@ public class BeanBackedELResolverTest {
 		private String unmapped = "unmapped";
 
 		public String getStringValue() {
-			return stringValue;
+			return this.stringValue;
 		}
 
 		public Long getLongValue() {
-			return longValue;
+			return this.longValue;
 		}
 
 		public int getIntValue() {
-			return intValue;
+			return this.intValue;
 		}
 
 		public String getUnmapped() {
-			return unmapped;
+			return this.unmapped;
 		}
 	}
 }

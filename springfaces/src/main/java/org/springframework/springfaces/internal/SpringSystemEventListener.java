@@ -26,8 +26,8 @@ public class SpringSystemEventListener implements SystemEventListener {
 	}
 
 	public void processEvent(SystemEvent event) throws AbortProcessingException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Processing system event " + event);
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Processing system event " + event);
 		}
 		if (event instanceof PostConstructApplicationEvent) {
 			processPostConstructApplicationEvent((PostConstructApplicationEvent) event);

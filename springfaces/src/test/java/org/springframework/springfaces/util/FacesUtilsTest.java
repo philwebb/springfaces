@@ -55,18 +55,18 @@ public class FacesUtilsTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		ExternalContext externalContext = mock(ExternalContext.class);
-		given(context.getExternalContext()).willReturn(externalContext);
+		given(this.context.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getRequestMap()).willAnswer(new Answer<Map<String, Object>>() {
 			public Map<String, Object> answer(InvocationOnMock invocation) throws Throwable {
-				return requestMap;
+				return FacesUtilsTest.this.requestMap;
 			}
 		});
 	}
 
 	@Test
 	public void shouldNeedFacesContextForFindLocale() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("FacesContext must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("FacesContext must not be null");
 		FacesUtils.getLocale(null);
 	}
 
@@ -93,15 +93,15 @@ public class FacesUtilsTest {
 
 	@Test
 	public void shouldNeedComponentForFindParentOfType() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Component must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Component must not be null");
 		FacesUtils.findParentOfType(null, UIPanel.class);
 	}
 
 	@Test
 	public void shouldNeedParentTyoeFirFindParentIfType() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("ParentType must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("ParentType must not be null");
 		FacesUtils.findParentOfType(new UIInput(), null);
 
 	}
@@ -128,38 +128,38 @@ public class FacesUtilsTest {
 
 	@Test
 	public void shouldNeedContextForDoWithRequestScopeVariable() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Context must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Context must not be null");
 		FacesUtils.doWithRequestScopeVariable(null, "variableName", "value", new MockCallable<String>(""));
 	}
 
 	@Test
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void shouldNeedCallableForDoWithRequestScopeVariable() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Callable must not be null");
-		FacesUtils.doWithRequestScopeVariable(context, "variableName", "value", (Callable) null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Callable must not be null");
+		FacesUtils.doWithRequestScopeVariable(this.context, "variableName", "value", (Callable) null);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void shouldDoWithNullRequestScopeVariable() throws Exception {
-		requestMap = mock(Map.class);
+		this.requestMap = mock(Map.class);
 		MockCallable<String> callable = new MockCallable<String>("result");
-		String actualResult = FacesUtils.doWithRequestScopeVariable(context, null, "value", callable);
+		String actualResult = FacesUtils.doWithRequestScopeVariable(this.context, null, "value", callable);
 		assertThat(actualResult, is("result"));
-		verify(requestMap, never()).put(anyString(), any());
+		verify(this.requestMap, never()).put(anyString(), any());
 	}
 
 	@Test
 	public void shouldDoWithRequestScopeVariable() throws Exception {
 		Object initialRequestValue = "old";
 		Object valueAtTimeOfCall = "new";
-		requestMap.put("v", initialRequestValue);
+		this.requestMap.put("v", initialRequestValue);
 		MockCallable<String> callable = new MockCallable<String>("result");
-		String actualResult = FacesUtils.doWithRequestScopeVariable(context, "v", valueAtTimeOfCall, callable);
+		String actualResult = FacesUtils.doWithRequestScopeVariable(this.context, "v", valueAtTimeOfCall, callable);
 		assertThat("result not returned", actualResult, is("result"));
-		assertThat("old value not restored", requestMap.get("v"), is(initialRequestValue));
+		assertThat("old value not restored", this.requestMap.get("v"), is(initialRequestValue));
 		callable.assertCalled();
 		assertThat("value not replaced", callable.requestMapAtTimeOfCall.get("v"), is(valueAtTimeOfCall));
 
@@ -167,28 +167,28 @@ public class FacesUtilsTest {
 
 	@Test
 	public void shouldDoWithRequestScopeVariableWithNullValue() throws Exception {
-		requestMap.put("v", "old");
+		this.requestMap.put("v", "old");
 		MockCallable<String> callable = new MockCallable<String>("result");
-		FacesUtils.doWithRequestScopeVariable(context, "v", null, callable);
-		assertThat("old value not restored", requestMap.get("v"), is((Object) "old"));
+		FacesUtils.doWithRequestScopeVariable(this.context, "v", null, callable);
+		assertThat("old value not restored", this.requestMap.get("v"), is((Object) "old"));
 		callable.assertCalled();
 		assertThat("value not cleared", callable.requestMapAtTimeOfCall.get("v"), is(nullValue()));
 	}
 
 	@Test
 	public void shouldNeedRunnableForDoWithRequestScopeVariable() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Runnable must not be null");
-		FacesUtils.doWithRequestScopeVariable(context, "variableName", "value", (Runnable) null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Runnable must not be null");
+		FacesUtils.doWithRequestScopeVariable(this.context, "variableName", "value", (Runnable) null);
 	}
 
 	@Test
 	public void shouldDoWithRequestScopeVariableRunnable() throws Exception {
 		Object initialRequestValue = "old";
 		Object valueAtTimeOfCall = "new";
-		requestMap.put("v", initialRequestValue);
+		this.requestMap.put("v", initialRequestValue);
 		final MockCallable<String> callable = new MockCallable<String>("result");
-		FacesUtils.doWithRequestScopeVariable(context, "v", valueAtTimeOfCall, new Runnable() {
+		FacesUtils.doWithRequestScopeVariable(this.context, "v", valueAtTimeOfCall, new Runnable() {
 			public void run() {
 				try {
 					callable.call();
@@ -197,7 +197,7 @@ public class FacesUtilsTest {
 				}
 			}
 		});
-		assertThat("old value not restored", requestMap.get("v"), is(initialRequestValue));
+		assertThat("old value not restored", this.requestMap.get("v"), is(initialRequestValue));
 		callable.assertCalled();
 		assertThat("value not replaced", callable.requestMapAtTimeOfCall.get("v"), is(valueAtTimeOfCall));
 	}
@@ -205,7 +205,7 @@ public class FacesUtilsTest {
 	@Test
 	public void shouldWrapCheckedExceptionOnDoWithRequestScopeVariable() throws Exception {
 		try {
-			FacesUtils.doWithRequestScopeVariable(context, "v", "value", new Callable<String>() {
+			FacesUtils.doWithRequestScopeVariable(this.context, "v", "value", new Callable<String>() {
 				public String call() throws Exception {
 					throw new Exception("error");
 				}
@@ -228,12 +228,12 @@ public class FacesUtilsTest {
 		}
 
 		public V call() throws Exception {
-			requestMapAtTimeOfCall = new HashMap<String, Object>(requestMap);
-			return result;
+			this.requestMapAtTimeOfCall = new HashMap<String, Object>(FacesUtilsTest.this.requestMap);
+			return this.result;
 		}
 
 		public void assertCalled() {
-			assertTrue("Expected to be called", requestMapAtTimeOfCall != null);
+			assertTrue("Expected to be called", this.requestMapAtTimeOfCall != null);
 		}
 	}
 }

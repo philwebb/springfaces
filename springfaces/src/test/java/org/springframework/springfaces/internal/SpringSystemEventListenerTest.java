@@ -24,7 +24,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 
 	@Test
 	public void shouldListenForAllSource() throws Exception {
-		assertTrue(listener.isListenerForSource(new Object()));
+		assertTrue(this.listener.isListenerForSource(new Object()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,7 +35,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 		given(event.getApplication()).willReturn(application);
 		FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, MockApplicationFactory.class.getName());
 		try {
-			listener.processEvent(event);
+			this.listener.processEvent(event);
 			MockApplicationFactory applicationFactory = (MockApplicationFactory) FactoryFinder
 					.getFactory(FactoryFinder.APPLICATION_FACTORY);
 			Application actual = applicationFactory.getApplication();
@@ -53,7 +53,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 
 		@Override
 		public Application getApplication() {
-			return application;
+			return this.application;
 		}
 
 		@Override

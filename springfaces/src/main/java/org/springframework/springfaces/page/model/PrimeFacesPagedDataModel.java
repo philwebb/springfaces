@@ -32,82 +32,95 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		this.delegate = delegate;
 	}
 
+	@Override
 	public boolean isRowAvailable() {
-		return delegate.isRowAvailable();
+		return this.delegate.isRowAvailable();
 	}
 
+	@Override
 	public int getRowCount() {
-		return delegate.getRowCount();
+		return this.delegate.getRowCount();
 	}
 
+	@Override
 	public Object getRowData() {
-		return delegate.getRowData();
+		return this.delegate.getRowData();
 	}
 
+	@Override
 	public int getRowIndex() {
-		return delegate.getRowIndex();
+		return this.delegate.getRowIndex();
 	}
 
+	@Override
 	public void setRowIndex(int rowIndex) {
-		delegate.setRowIndex(rowIndex);
+		this.delegate.setRowIndex(rowIndex);
 	}
 
+	@Override
 	public Object getWrappedData() {
-		return delegate.getWrappedData();
+		return this.delegate.getWrappedData();
 	}
 
+	@Override
 	public void setWrappedData(Object o) {
 		// Ignore the wrapped data provided by primefaces
 	}
 
+	@Override
 	public int getPageSize() {
-		return delegate.getPageSize();
+		return this.delegate.getPageSize();
 	}
 
+	@Override
 	public void setPageSize(int pageSize) {
-		delegate.setPageSize(pageSize);
+		this.delegate.setPageSize(pageSize);
 	}
 
 	public boolean isSortAscending() {
-		return delegate.isSortAscending();
+		return this.delegate.isSortAscending();
 	}
 
 	public void setSortAscending(boolean sortAscending) {
-		delegate.setSortAscending(sortAscending);
+		this.delegate.setSortAscending(sortAscending);
 	}
 
 	public String getSortColumn() {
-		return delegate.getSortColumn();
+		return this.delegate.getSortColumn();
 	}
 
 	public void setSortColumn(String sortColumn) {
-		delegate.setSortColumn(sortColumn);
+		this.delegate.setSortColumn(sortColumn);
 	}
 
 	public void toggleSort(String sortColumn) {
-		delegate.toggleSort(sortColumn);
+		this.delegate.toggleSort(sortColumn);
 	}
 
 	public Map<String, String> getFilters() {
-		return delegate.getFilters();
+		return this.delegate.getFilters();
 	}
 
 	public void setFilters(Map filters) {
-		delegate.setFilters(filters);
+		this.delegate.setFilters(filters);
 	}
 
+	@Override
 	public void addDataModelListener(DataModelListener listener) {
-		delegate.addDataModelListener(listener);
+		this.delegate.addDataModelListener(listener);
 	}
 
+	@Override
 	public void removeDataModelListener(DataModelListener listener) {
-		delegate.removeDataModelListener(listener);
+		this.delegate.removeDataModelListener(listener);
 	}
 
+	@Override
 	public DataModelListener[] getDataModelListeners() {
-		return delegate.getDataModelListeners();
+		return this.delegate.getDataModelListeners();
 	}
 
+	@Override
 	public void setRowCount(int rowCount) {
 		throw new UnsupportedOperationException("Unable to set the row count for a PagedDataModel");
 	}
@@ -120,11 +133,12 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 			setSortAscending(sortOrder);
 		}
 		setFilters(filters);
-		delegate.clearCachedRowCount(first);
+		this.delegate.clearCachedRowCount(first);
 		return Collections.emptyList();
 	}
 
 	// Primefaces 3
+	@Override
 	public List load(int first, int pageSize, String sortField, org.primefaces.model.SortOrder sortOrder, Map filters) {
 		boolean sort = sortOrder == SortOrder.ASCENDING || sortOrder == SortOrder.UNSORTED;
 		return load(first, pageSize, sortField, sort, filters);

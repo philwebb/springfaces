@@ -32,7 +32,7 @@ public class SelectItemsTest {
 	public void shouldSupportNullValue() throws Exception {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(null);
 		assertFalse(iterator.hasNext());
-		thrown.expect(NoSuchElementException.class);
+		this.thrown.expect(NoSuchElementException.class);
 		iterator.next();
 	}
 
@@ -105,8 +105,8 @@ public class SelectItemsTest {
 
 	@Test
 	public void shouldNotSupportOtherObjectTypes() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Unsupport class type java.lang.StringBuffer for SelectItem value");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Unsupport class type java.lang.StringBuffer for SelectItem value");
 		new TestableSelectItems(new StringBuffer()).iterator();
 	}
 
@@ -191,7 +191,7 @@ public class SelectItemsTest {
 	@Test
 	public void shouldNotSupportRemove() throws Exception {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(new SelectItem());
-		thrown.expect(UnsupportedOperationException.class);
+		this.thrown.expect(UnsupportedOperationException.class);
 		iterator.remove();
 	}
 

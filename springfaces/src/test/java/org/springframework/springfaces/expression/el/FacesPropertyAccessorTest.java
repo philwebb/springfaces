@@ -31,7 +31,7 @@ public class FacesPropertyAccessorTest {
 
 	@Test
 	public void shouldWorkWithoutFacesContext() throws Exception {
-		assertNull(facesPropertyAccessor.getElContext(context, target));
+		assertNull(this.facesPropertyAccessor.getElContext(this.context, this.target));
 	}
 
 	@Test
@@ -40,6 +40,6 @@ public class FacesPropertyAccessorTest {
 		FacesContextSetter.setCurrentInstance(facesContext);
 		ELContext elContext = mock(ELContext.class);
 		given(facesContext.getELContext()).willReturn(elContext);
-		assertSame(elContext, facesPropertyAccessor.getElContext(context, elContext));
+		assertSame(elContext, this.facesPropertyAccessor.getElContext(this.context, elContext));
 	}
 }

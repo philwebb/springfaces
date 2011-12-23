@@ -33,8 +33,8 @@ public class AnnotationMethodParameterFilterTest {
 
 	@Test
 	public void shouldRequireIgnoredAnnotations() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("IgnoredAnnotations must not be null");
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("IgnoredAnnotations must not be null");
 		new AnnotationMethodParameterFilter((Class<?>[]) null);
 	}
 
@@ -43,10 +43,10 @@ public class AnnotationMethodParameterFilterTest {
 		Method method = ReflectionUtils
 				.findMethod(C.class, "m", Object.class, Object.class, Object.class, Object.class);
 		AnnotationMethodParameterFilter f = new AnnotationMethodParameterFilter(A1.class, A3.class);
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 0)));
-		assertFalse(f.isFiltered(request, new MethodParameter(method, 1)));
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 2)));
-		assertTrue(f.isFiltered(request, new MethodParameter(method, 3)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 0)));
+		assertFalse(f.isFiltered(this.request, new MethodParameter(method, 1)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 2)));
+		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 3)));
 
 	}
 

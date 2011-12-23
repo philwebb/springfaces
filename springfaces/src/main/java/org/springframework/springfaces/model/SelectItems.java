@@ -40,29 +40,29 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Iterator<SelectItem> iterator() {
-		if (value == null) {
+		if (this.value == null) {
 			return Collections.<SelectItem> emptySet().iterator();
 		}
-		if (value instanceof SelectItem) {
-			return Collections.singleton((SelectItem) value).iterator();
+		if (this.value instanceof SelectItem) {
+			return Collections.singleton((SelectItem) this.value).iterator();
 		}
-		if (value instanceof Map) {
-			return new MapEntryIterator(((Map) value).entrySet());
+		if (this.value instanceof Map) {
+			return new MapEntryIterator(((Map) this.value).entrySet());
 		}
-		if (value.getClass().isArray()) {
-			return new ValuesIterator(Arrays.asList((Object[]) value));
+		if (this.value.getClass().isArray()) {
+			return new ValuesIterator(Arrays.asList((Object[]) this.value));
 		}
-		if (value instanceof Iterable) {
-			return new ValuesIterator(((Iterable) value));
+		if (this.value instanceof Iterable) {
+			return new ValuesIterator(((Iterable) this.value));
 		}
-		throw new IllegalArgumentException("Unsupport class type " + value.getClass().getName()
+		throw new IllegalArgumentException("Unsupport class type " + this.value.getClass().getName()
 				+ " for SelectItem value");
 	}
 
 	/**
 	 * Convert the specified value into a {@link SelectItem}. Subclasses can implement their own strategy for converting
 	 * values (for example, by using EL expressions).
-	 * @param value the value to convert (never be a collection type, {@link SelectItem} or <tt>null</tt>)
+	 * @param value the value to convert (will never be a collection type, {@link SelectItem} or <tt>null</tt>)
 	 * @return a select item relevant to the value.
 	 */
 	protected abstract SelectItem convertToSelectItem(Object value);
@@ -123,7 +123,7 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 	 * @return the value
 	 */
 	protected final Object getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
@@ -145,11 +145,11 @@ public abstract class SelectItems implements Iterable<SelectItem> {
 		}
 
 		public boolean hasNext() {
-			return source.hasNext();
+			return this.source.hasNext();
 		}
 
 		public SelectItem next() {
-			return adapt(source.next());
+			return adapt(this.source.next());
 		}
 
 		/**

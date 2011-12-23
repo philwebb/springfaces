@@ -21,8 +21,8 @@ public class MethodParameterFilterChain implements MethodParameterFilter {
 	}
 
 	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
-		if (filters != null) {
-			for (MethodParameterFilter filter : filters) {
+		if (this.filters != null) {
+			for (MethodParameterFilter filter : this.filters) {
 				if (filter.isFiltered(request, methodParameter)) {
 					return true;
 				}

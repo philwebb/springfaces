@@ -27,7 +27,7 @@ public class TypeMethodParameterFilter implements MethodParameterFilter {
 
 	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
 		Class<?> parameterType = methodParameter.getParameterType();
-		for (Class<?> ignoredType : ignoredTypes) {
+		for (Class<?> ignoredType : this.ignoredTypes) {
 			if (ignoredType.isAssignableFrom(parameterType)) {
 				return true;
 			}

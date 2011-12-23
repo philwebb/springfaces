@@ -35,7 +35,7 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 	public void add(T stateHolder) {
 		Assert.notNull(stateHolder, "StateHolder must not be null");
 		clearInitialState();
-		stateHolders.add(stateHolder);
+		this.stateHolders.add(stateHolder);
 	}
 
 	/**
@@ -46,44 +46,44 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 	public boolean remove(T stateHolder) {
 		Assert.notNull(stateHolder, "StateHolder must not be null");
 		clearInitialState();
-		return stateHolders.remove(stateHolder);
+		return this.stateHolders.remove(stateHolder);
 	}
 
 	public boolean isTransient() {
-		return transientValue;
+		return this.transientValue;
 	}
 
 	public void setTransient(boolean newTransientValue) {
-		transientValue = newTransientValue;
-		for (StateHolder stateHolder : stateHolders) {
+		this.transientValue = newTransientValue;
+		for (StateHolder stateHolder : this.stateHolders) {
 			stateHolder.setTransient(newTransientValue);
 		}
 	}
 
 	public void markInitialState() {
-		initialState = true;
+		this.initialState = true;
 		for (Iterator<PartialStateHolder> iterator = iterator(PartialStateHolder.class); iterator.hasNext();) {
 			iterator.next().markInitialState();
 		}
 	}
 
 	public void clearInitialState() {
-		initialState = false;
+		this.initialState = false;
 		for (Iterator<PartialStateHolder> iterator = iterator(PartialStateHolder.class); iterator.hasNext();) {
 			iterator.next().clearInitialState();
 		}
 	}
 
 	public boolean initialStateMarked() {
-		return initialState;
+		return this.initialState;
 	}
 
 	public Object saveState(FacesContext context) {
 		boolean hasState = false;
-		Object[] stateArray = new Object[stateHolders.size()];
+		Object[] stateArray = new Object[this.stateHolders.size()];
 		for (int i = 0; i < stateArray.length; i++) {
-			StateHolder stateHolder = stateHolders.get(i);
-			if (initialState) {
+			StateHolder stateHolder = this.stateHolders.get(i);
+			if (this.initialState) {
 				if (!stateHolder.isTransient()) {
 					stateArray[i] = stateHolder.saveState(context);
 					hasState = true;
@@ -106,15 +106,15 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 			boolean savedFromInitialState = !(stateArray.length > 0 && stateArray[0] instanceof SavedAttachedState);
 			if (savedFromInitialState) {
 				for (int i = 0; i < stateArray.length; i++) {
-					StateHolder stateHolder = stateHolders.get(i);
+					StateHolder stateHolder = this.stateHolders.get(i);
 					stateHolder.restoreState(context, stateArray[i]);
 				}
 			} else {
-				stateHolders.clear();
+				this.stateHolders.clear();
 				for (int i = 0; i < stateArray.length; i++) {
 					SavedAttachedState savedAttachedState = (SavedAttachedState) stateArray[i];
 					Object restored = UIComponentBase.restoreAttachedState(context, savedAttachedState.getState());
-					stateHolders.add((T) restored);
+					this.stateHolders.add((T) restored);
 				}
 			}
 		}
@@ -122,7 +122,7 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 
 	@SuppressWarnings("unchecked")
 	private <C> Iterator<C> iterator(final Class<C> itemClass) {
-		return (Iterator<C>) new FilteredIterator<T>(stateHolders.iterator()) {
+		return (Iterator<C>) new FilteredIterator<T>(this.stateHolders.iterator()) {
 			@Override
 			protected boolean isElementFiltered(T element) {
 				return !(itemClass.isInstance(element));
@@ -139,7 +139,7 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 	 * @return an unmodifiable {@link List} of the contained state holders
 	 */
 	public List<T> asList() {
-		return Collections.unmodifiableList(stateHolders);
+		return Collections.unmodifiableList(this.stateHolders);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class StateHolders<T extends StateHolder> implements PartialStateHolder, 
 		}
 
 		public Object getState() {
-			return state;
+			return this.state;
 		}
 	}
 

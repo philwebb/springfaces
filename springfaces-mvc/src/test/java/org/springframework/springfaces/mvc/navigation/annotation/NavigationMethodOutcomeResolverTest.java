@@ -128,40 +128,43 @@ public class NavigationMethodOutcomeResolverTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		resolver = new NavigationMethodOutcomeResolver() {
+		this.resolver = new NavigationMethodOutcomeResolver() {
 			@Override
 			protected ServletInvocableHandlerMethod createInvocableNavigationMethod(Object handler, Method method) {
-				invocableNavigationMethod = spy(super.createInvocableNavigationMethod(handler, method));
-				return invocableNavigationMethod;
+				NavigationMethodOutcomeResolverTest.this.invocableNavigationMethod = spy(super
+						.createInvocableNavigationMethod(handler, method));
+				return NavigationMethodOutcomeResolverTest.this.invocableNavigationMethod;
 			}
 
+			@Override
 			protected InvocableHandlerMethod createInvocableBinderMethod(Object handler, Method method) {
-				invocableBinderMethod = spy(super.createInvocableBinderMethod(handler, method));
-				return invocableBinderMethod;
+				NavigationMethodOutcomeResolverTest.this.invocableBinderMethod = spy(super.createInvocableBinderMethod(
+						handler, method));
+				return NavigationMethodOutcomeResolverTest.this.invocableBinderMethod;
 			};
 		};
-		setApplicationContextBean(bean);
-		resolver.setBeanFactory(beanFactory);
-		given(context.getOutcome()).willReturn("navigate");
-		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getRequest()).willReturn(request);
-		given(externalContext.getResponse()).willReturn(response);
+		setApplicationContextBean(this.bean);
+		this.resolver.setBeanFactory(this.beanFactory);
+		given(this.context.getOutcome()).willReturn("navigate");
+		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
+		given(this.externalContext.getRequest()).willReturn(this.request);
+		given(this.externalContext.getResponse()).willReturn(this.response);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void setApplicationContextBean(Object bean) {
-		reset(applicationContext);
-		given(applicationContext.getBeanNamesForType(Object.class)).willReturn(new String[] { "bean" });
-		given(applicationContext.getType("bean")).willReturn((Class) bean.getClass());
-		given(applicationContext.getBean("bean")).willReturn(bean);
+		reset(this.applicationContext);
+		given(this.applicationContext.getBeanNamesForType(Object.class)).willReturn(new String[] { "bean" });
+		given(this.applicationContext.getType("bean")).willReturn((Class) bean.getClass());
+		given(this.applicationContext.getBean("bean")).willReturn(bean);
 	}
 
 	@Test
 	public void shouldCreateDefaultMessageConverters() throws Exception {
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
 		List<HttpMessageConverter<?>> expected = new RequestMappingHandlerAdapter().getMessageConverters();
-		List<HttpMessageConverter<?>> actual = resolver.getMessageConverters();
+		List<HttpMessageConverter<?>> actual = this.resolver.getMessageConverters();
 		assertClasses(expected, actual);
 	}
 
@@ -169,12 +172,13 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldSupportCustomArgumentResolvers() throws Exception {
 		HandlerMethodArgumentResolver customArgumentResolver = mock(HandlerMethodArgumentResolver.class);
 		List<HandlerMethodArgumentResolver> customArgumentResolvers = Arrays.asList(customArgumentResolver);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setCustomArgumentResolvers(customArgumentResolvers);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
-		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setCustomArgumentResolvers(customArgumentResolvers);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
+		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
+				"argumentResolvers");
 		assertTrue(actual.size() > 1);
 		assertTrue(actual.contains(customArgumentResolver));
 	}
@@ -183,12 +187,13 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldSupportArgumentResolvers() throws Exception {
 		HandlerMethodArgumentResolver customArgumentResolver = mock(HandlerMethodArgumentResolver.class);
 		List<HandlerMethodArgumentResolver> customArgumentResolvers = Arrays.asList(customArgumentResolver);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setArgumentResolvers(customArgumentResolvers);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
-		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setArgumentResolvers(customArgumentResolvers);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
+		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
+				"argumentResolvers");
 		assertTrue(actual.size() == 2);
 		assertTrue(actual.contains(customArgumentResolver));
 	}
@@ -197,12 +202,13 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldSupportInitBinderArgumentResolvers() throws Exception {
 		HandlerMethodArgumentResolver customArgumentResolver = mock(HandlerMethodArgumentResolver.class);
 		List<HandlerMethodArgumentResolver> customArgumentResolvers = Arrays.asList(customArgumentResolver);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setInitBinderArgumentResolvers(customArgumentResolvers);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableBinderMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
-		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setInitBinderArgumentResolvers(customArgumentResolvers);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableBinderMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
+		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
+				"argumentResolvers");
 		assertTrue(actual.size() == 1);
 		assertTrue(actual.contains(customArgumentResolver));
 	}
@@ -211,12 +217,12 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldSupportCustomReturnValueHandlers() throws Exception {
 		HandlerMethodReturnValueHandler customReturnValueHandler = mock(HandlerMethodReturnValueHandler.class);
 		List<HandlerMethodReturnValueHandler> customReturnValueHandlers = Arrays.asList(customReturnValueHandler);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setCustomReturnValueHandlers(customReturnValueHandlers);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodReturnValueHandlers(returnValueHandlers.capture());
-		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(returnValueHandlers.getValue(),
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setCustomReturnValueHandlers(customReturnValueHandlers);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
+		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
 		assertTrue(actual.size() > 1);
 		assertTrue(actual.contains(customReturnValueHandler));
@@ -227,12 +233,12 @@ public class NavigationMethodOutcomeResolverTest {
 		HandlerMethodReturnValueHandler customReturnValueHandler = mock(HandlerMethodReturnValueHandler.class);
 		given(customReturnValueHandler.supportsReturnType(any(MethodParameter.class))).willReturn(true);
 		List<HandlerMethodReturnValueHandler> customReturnValueHandlers = Arrays.asList(customReturnValueHandler);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setReturnValueHandlers(customReturnValueHandlers);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodReturnValueHandlers(returnValueHandlers.capture());
-		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(returnValueHandlers.getValue(),
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setReturnValueHandlers(customReturnValueHandlers);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
+		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
 		assertTrue(actual.size() == 1);
 		assertTrue(actual.contains(customReturnValueHandler));
@@ -243,13 +249,13 @@ public class NavigationMethodOutcomeResolverTest {
 		StringHttpMessageConverter customMessageConverter = new StringHttpMessageConverter();
 		List<HttpMessageConverter<?>> messageConverters = Arrays
 				.<HttpMessageConverter<?>> asList(customMessageConverter);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setMessageConverters(messageConverters);
-		resolver.afterPropertiesSet();
-		assertEquals(messageConverters, resolver.getMessageConverters());
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodReturnValueHandlers(returnValueHandlers.capture());
-		List<HandlerMethodReturnValueHandler> returnHandlers = fieldValueAsList(returnValueHandlers.getValue(),
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setMessageConverters(messageConverters);
+		this.resolver.afterPropertiesSet();
+		assertEquals(messageConverters, this.resolver.getMessageConverters());
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
+		List<HandlerMethodReturnValueHandler> returnHandlers = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
 		int i = 0;
 		for (HandlerMethodReturnValueHandler handler : returnHandlers) {
@@ -265,28 +271,28 @@ public class NavigationMethodOutcomeResolverTest {
 	@Test
 	public void shouldSupportWebBindingInitializer() throws Exception {
 		WebBindingInitializer webBindingInitializer = mock(WebBindingInitializer.class);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setWebBindingInitializer(webBindingInitializer);
-		resolver.afterPropertiesSet();
-		assertSame(webBindingInitializer, resolver.getWebBindingInitializer());
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setDataBinderFactory(dataBinderFactory.capture());
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setWebBindingInitializer(webBindingInitializer);
+		this.resolver.afterPropertiesSet();
+		assertSame(webBindingInitializer, this.resolver.getWebBindingInitializer());
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setDataBinderFactory(this.dataBinderFactory.capture());
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
 		String objectName = "name";
 		Object target = new Object();
-		dataBinderFactory.getValue().createBinder(webRequest, target, objectName);
-		verify(webBindingInitializer).initBinder(bean.binder, webRequest);
+		this.dataBinderFactory.getValue().createBinder(webRequest, target, objectName);
+		verify(webBindingInitializer).initBinder(this.bean.binder, webRequest);
 	}
 
 	@Test
 	public void shouldSupportParameterNameDiscoverer() throws Exception {
 		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setParameterNameDiscoverer(parameterNameDiscoverer);
-		verify(invocableBinderMethod).setParameterNameDiscoverer(parameterNameDiscoverer);
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setParameterNameDiscoverer(parameterNameDiscoverer);
+		verify(this.invocableBinderMethod).setParameterNameDiscoverer(parameterNameDiscoverer);
 	}
 
 	@Test
@@ -307,10 +313,10 @@ public class NavigationMethodOutcomeResolverTest {
 	private void doTestDetectNavigationMethods(Object bean, int expectedSize, boolean expectController)
 			throws Exception {
 		setApplicationContextBean(bean);
-		given(context.getController()).willReturn(bean);
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
-		Set<NavigationMappingMethod> mappings = fieldValueAsSet(resolver, "navigationMethods");
+		given(this.context.getController()).willReturn(bean);
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
+		Set<NavigationMappingMethod> mappings = fieldValueAsSet(this.resolver, "navigationMethods");
 		assertEquals(expectedSize, mappings.size());
 		for (NavigationMappingMethod mapping : mappings) {
 			assertEquals(expectController, mapping.isControllerBeanMethod());
@@ -319,11 +325,12 @@ public class NavigationMethodOutcomeResolverTest {
 
 	@Test
 	public void shouldInitDefaultArgumentResolvers() throws Exception {
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
-		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
+		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
+				"argumentResolvers");
 		List<Class<?>> expected = Arrays.<Class<?>> asList(RequestHeaderMethodArgumentResolver.class,
 				RequestHeaderMapMethodArgumentResolver.class, ServletCookieValueMethodArgumentResolver.class,
 				ExpressionValueMethodArgumentResolver.class, FacesContextMethodArgumentResolver.class,
@@ -334,11 +341,12 @@ public class NavigationMethodOutcomeResolverTest {
 
 	@Test
 	public void shouldInitDefaultBinderArgumentResolvers() throws Exception {
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableBinderMethod).setHandlerMethodArgumentResolvers(argumentResolvers.capture());
-		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(argumentResolvers.getValue(), "argumentResolvers");
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableBinderMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
+		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
+				"argumentResolvers");
 		List<Class<?>> expected = Arrays.<Class<?>> asList(RequestParamMethodArgumentResolver.class,
 				RequestParamMapMethodArgumentResolver.class, PathVariableMethodArgumentResolver.class,
 				ExpressionValueMethodArgumentResolver.class, ServletRequestMethodArgumentResolver.class,
@@ -348,11 +356,11 @@ public class NavigationMethodOutcomeResolverTest {
 
 	@Test
 	public void shouldInitDefaultReturnValueHandlers() throws Exception {
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
-		resolver.resolve(facesContext, context);
-		verify(invocableNavigationMethod).setHandlerMethodReturnValueHandlers(returnValueHandlers.capture());
-		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(returnValueHandlers.getValue(),
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
+		this.resolver.resolve(this.facesContext, this.context);
+		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
+		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
 		List<Class<?>> expected = Arrays.<Class<?>> asList(RequestResponseBodyMethodProcessor.class,
 				ModelAndViewMethodReturnValueHandler.class, HttpEntityMethodProcessor.class,
@@ -365,11 +373,11 @@ public class NavigationMethodOutcomeResolverTest {
 		Object controllerBean = new ControllerBean();
 		Object otherBean = new Object();
 		setApplicationContextBean(controllerBean);
-		given(context.getController()).willReturn(controllerBean, otherBean);
-		resolver.setApplicationContext(applicationContext);
-		resolver.afterPropertiesSet();
-		assertTrue(resolver.canResolve(facesContext, context));
-		assertFalse(resolver.canResolve(facesContext, context));
+		given(this.context.getController()).willReturn(controllerBean, otherBean);
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.afterPropertiesSet();
+		assertTrue(this.resolver.canResolve(this.facesContext, this.context));
+		assertFalse(this.resolver.canResolve(this.facesContext, this.context));
 	}
 
 	@Test
@@ -410,10 +418,10 @@ public class NavigationMethodOutcomeResolverTest {
 			}
 		};
 		List<HandlerMethodReturnValueHandler> customReturnValueHandlers = Arrays.asList(customReturnValueHandler);
-		resolver.setApplicationContext(applicationContext);
-		resolver.setReturnValueHandlers(customReturnValueHandlers);
-		resolver.afterPropertiesSet();
-		return resolver.resolve(facesContext, context);
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.resolver.setReturnValueHandlers(customReturnValueHandlers);
+		this.resolver.afterPropertiesSet();
+		return this.resolver.resolve(this.facesContext, this.context);
 	}
 
 	@SuppressWarnings("unchecked")

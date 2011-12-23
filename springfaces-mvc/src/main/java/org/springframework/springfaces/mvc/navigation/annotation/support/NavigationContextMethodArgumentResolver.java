@@ -35,13 +35,13 @@ public class NavigationContextMethodArgumentResolver implements HandlerMethodArg
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 		if (supportsNavigationContext(parameter)) {
-			return navigationContext;
+			return this.navigationContext;
 		}
 		if (supportsComponent(parameter)) {
-			return navigationContext.getComponent();
+			return this.navigationContext.getComponent();
 		}
 		if (supportsOutcome(parameter)) {
-			return navigationContext.getOutcome();
+			return this.navigationContext.getOutcome();
 		}
 		return null;
 	}
@@ -51,7 +51,7 @@ public class NavigationContextMethodArgumentResolver implements HandlerMethodArg
 	}
 
 	private boolean supportsComponent(MethodParameter parameter) {
-		UIComponent component = navigationContext.getComponent();
+		UIComponent component = this.navigationContext.getComponent();
 		return UIComponent.class.isAssignableFrom(parameter.getParameterType())
 				&& (component == null || parameter.getParameterType().isInstance(component));
 	}

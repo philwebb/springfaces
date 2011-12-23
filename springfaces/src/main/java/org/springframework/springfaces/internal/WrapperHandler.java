@@ -106,24 +106,24 @@ class WrapperHandler<T> {
 		if (facesContext == null) {
 			// Calls to wrapped instances can occur when there is no faces context if JSF has not yet completely
 			// intialized. We allow these early calls to proceed to the delegate.
-			wrapped = null;
-			return delegate.getDelegate(DelegateAccessType.WRAP);
+			this.wrapped = null;
+			return this.delegate.getDelegate(DelegateAccessType.WRAP);
 		}
 		ExternalContext externalContext = facesContext.getExternalContext();
-		if ((wrapped == null)
+		if ((this.wrapped == null)
 				|| (SpringFacesIntegration.isInstalled(externalContext) && (!SpringFacesIntegration
-						.getLastRefreshedDate(externalContext).equals(lastRefreshedDate)))) {
-			DelegateAccessType accessType = (wrapped == null ? DelegateAccessType.WRAP : DelegateAccessType.REWRAP);
-			if (logger.isDebugEnabled()) {
-				logger.debug((accessType == DelegateAccessType.WRAP ? "Wrapping " : "Rewrapping ")
-						+ delegate.getDescription());
+						.getLastRefreshedDate(externalContext).equals(this.lastRefreshedDate)))) {
+			DelegateAccessType accessType = (this.wrapped == null ? DelegateAccessType.WRAP : DelegateAccessType.REWRAP);
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug((accessType == DelegateAccessType.WRAP ? "Wrapping " : "Rewrapping ")
+						+ this.delegate.getDescription());
 			}
-			wrapped = wrap(externalContext, delegate.getDelegate(accessType));
+			this.wrapped = wrap(externalContext, this.delegate.getDelegate(accessType));
 			if (SpringFacesIntegration.isInstalled(externalContext)) {
-				lastRefreshedDate = SpringFacesIntegration.getLastRefreshedDate(externalContext);
+				this.lastRefreshedDate = SpringFacesIntegration.getLastRefreshedDate(externalContext);
 			}
 		}
-		return wrapped;
+		return this.wrapped;
 	}
 
 	/**
@@ -135,11 +135,12 @@ class WrapperHandler<T> {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private T wrap(ExternalContext externalContext, T delegate) {
 		if (!SpringFacesIntegration.isInstalled(externalContext)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("SpringFacesSupport is not yet installed, wrapping will be deferred");
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("SpringFacesSupport is not yet installed, wrapping will be deferred");
 			}
-			if (logger.isWarnEnabled() && warnOnMissingSpringFaces) {
-				logger.warn("SpringFacesSupport is not installed, full Spring/JSF integration may not be availble");
+			if (this.logger.isWarnEnabled() && this.warnOnMissingSpringFaces) {
+				this.logger
+						.warn("SpringFacesSupport is not installed, full Spring/JSF integration may not be availble");
 			}
 			return delegate;
 		}
@@ -155,12 +156,12 @@ class WrapperHandler<T> {
 		for (Map.Entry<String, FacesWrapperFactory> entry : orderdBeans) {
 			FacesWrapperFactory factory = entry.getValue();
 			if (isFactorySupported(factory)) {
-				T wrapper = (T) factory.newWrapper(typeClass, rtn);
+				T wrapper = (T) factory.newWrapper(this.typeClass, rtn);
 				if (wrapper != null) {
-					Assert.isInstanceOf(typeClass, wrapper, "FacesWrapperFactory " + entry.getValue()
+					Assert.isInstanceOf(this.typeClass, wrapper, "FacesWrapperFactory " + entry.getValue()
 							+ " returned incorrect type ");
-					if (logger.isDebugEnabled()) {
-						logger.debug("Wrapping " + typeClass.getSimpleName() + " with " + wrapper.getClass()
+					if (this.logger.isDebugEnabled()) {
+						this.logger.debug("Wrapping " + this.typeClass.getSimpleName() + " with " + wrapper.getClass()
 								+ " obtained from FacesWrapperFactory " + entry.getValue());
 					}
 					postProcessWrapper(wrapper);
@@ -185,7 +186,7 @@ class WrapperHandler<T> {
 				typeArg = GenericTypeResolver.resolveTypeArgument(targetClass, FacesWrapperFactory.class);
 			}
 		}
-		return (typeArg == null || typeArg.isAssignableFrom(typeClass));
+		return (typeArg == null || typeArg.isAssignableFrom(this.typeClass));
 	}
 
 	/**
@@ -266,11 +267,11 @@ class WrapperHandler<T> {
 		}
 
 		public String getDescription() {
-			return delegate.getClass().getName();
+			return this.delegate.getClass().getName();
 		}
 
 		public T getDelegate(DelegateAccessType accessType) {
-			return delegate;
+			return this.delegate;
 		}
 	}
 }

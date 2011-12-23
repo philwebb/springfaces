@@ -48,13 +48,13 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 
 	public Object newWrapper(Class<?> typeClass, Object delegate) {
 		if (delegate instanceof ResponseStateManager) {
-			return new MvcResponseStateManager((ResponseStateManager) delegate, facesViewStateHandler);
+			return new MvcResponseStateManager((ResponseStateManager) delegate, this.facesViewStateHandler);
 		}
 		if (delegate instanceof ViewHandler) {
-			return new MvcViewHandler((ViewHandler) delegate, destinationViewResolver);
+			return new MvcViewHandler((ViewHandler) delegate, this.destinationViewResolver);
 		}
 		if (ConfigurableNavigationHandler.class.equals(typeClass)) {
-			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, navigationOutcomeResolver);
+			return new MvcNavigationHandler((ConfigurableNavigationHandler) delegate, this.navigationOutcomeResolver);
 		}
 		if (ActionListener.class.equals(typeClass)) {
 			return new MvcNavigationActionListener((ActionListener) delegate);
@@ -69,7 +69,7 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 	}
 
 	public void onApplicationEvent(PostConstructApplicationSpringFacesEvent event) {
-		event.getSource().subscribeToEvent(PreRenderComponentEvent.class, navigationSystemEventListener);
+		event.getSource().subscribeToEvent(PreRenderComponentEvent.class, this.navigationSystemEventListener);
 	}
 
 	public void setNavigationOutcomeResolver(NavigationOutcomeResolver navigationOutcomeResolver) {

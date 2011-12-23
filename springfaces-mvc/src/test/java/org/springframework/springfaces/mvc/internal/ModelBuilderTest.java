@@ -49,20 +49,20 @@ public class ModelBuilderTest {
 	@Before
 	public void setup() {
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
-		given(context.getViewRoot()).willReturn(viewRoot);
+		given(this.context.getViewRoot()).willReturn(viewRoot);
 		given(viewRoot.createUniqueId()).willAnswer(new Answer<String>() {
 			public String answer(InvocationOnMock invocation) throws Throwable {
-				return "j_" + generatedId++;
+				return "j_" + ModelBuilderTest.this.generatedId++;
 			}
 		});
-		given(context.getApplication()).willReturn(application);
-		modelBuilder = new ModelBuilder(context);
+		given(this.context.getApplication()).willReturn(this.application);
+		this.modelBuilder = new ModelBuilder(this.context);
 	}
 
 	@Test
 	public void shouldSkipNullComponent() throws Exception {
-		modelBuilder.addFromComponent(null);
-		assertEquals(0, modelBuilder.getModel().size());
+		this.modelBuilder.addFromComponent(null);
+		assertEquals(0, this.modelBuilder.getModel().size());
 	}
 
 	@Test
@@ -71,8 +71,8 @@ public class ModelBuilderTest {
 		component.getChildren().add(newUIParameter("p1", "v1"));
 		component.getChildren().add(new UIInput());
 		component.getChildren().add(newUIParameter("p2", "v2"));
-		modelBuilder.addFromComponent(component);
-		Map<String, Object> model = modelBuilder.getModel();
+		this.modelBuilder.addFromComponent(component);
+		Map<String, Object> model = this.modelBuilder.getModel();
 		assertEquals(2, model.size());
 		assertEquals("v1", model.get("p1"));
 		assertEquals("v2", model.get("p2"));
@@ -84,8 +84,8 @@ public class ModelBuilderTest {
 		// against EL injection attacks
 		UIComponent component = new UIPanel();
 		component.getChildren().add(newUIParameter("p1", "#{expression}"));
-		modelBuilder.addFromComponent(component);
-		Map<String, Object> model = modelBuilder.getModel();
+		this.modelBuilder.addFromComponent(component);
+		Map<String, Object> model = this.modelBuilder.getModel();
 		assertEquals("#{expression}", model.get("p1"));
 	}
 
@@ -94,8 +94,8 @@ public class ModelBuilderTest {
 		UIComponent component = new UIPanel();
 		Person person = new Person();
 		component.getChildren().add(newUIParameter(null, person));
-		modelBuilder.addFromComponent(component);
-		Map<String, Object> model = modelBuilder.getModel();
+		this.modelBuilder.addFromComponent(component);
+		Map<String, Object> model = this.modelBuilder.getModel();
 		assertEquals(person, model.get("person"));
 
 	}
@@ -107,16 +107,16 @@ public class ModelBuilderTest {
 		sourceModel.put("m1", "v1");
 		sourceModel.put("m2", "v2");
 		component.getChildren().add(newUIParameter(null, new SpringFacesModel(sourceModel)));
-		modelBuilder.addFromComponent(component);
-		assertEquals(sourceModel, modelBuilder.getModel());
+		this.modelBuilder.addFromComponent(component);
+		assertEquals(sourceModel, this.modelBuilder.getModel());
 	}
 
 	@Test
 	public void shouldSkipNullUIParamValue() throws Exception {
 		UIComponent component = new UIPanel();
 		component.getChildren().add(newUIParameter("p1", null));
-		modelBuilder.addFromComponent(component);
-		assertEquals(0, modelBuilder.getModel().size());
+		this.modelBuilder.addFromComponent(component);
+		assertEquals(0, this.modelBuilder.getModel().size());
 	}
 
 	@Test
@@ -125,8 +125,8 @@ public class ModelBuilderTest {
 		UIParameter p = newUIParameter("p1", "v1");
 		p.setDisable(true);
 		component.getChildren().add(p);
-		modelBuilder.addFromComponent(component);
-		assertEquals(0, modelBuilder.getModel().size());
+		this.modelBuilder.addFromComponent(component);
+		assertEquals(0, this.modelBuilder.getModel().size());
 	}
 
 	@Test
@@ -134,31 +134,32 @@ public class ModelBuilderTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("m1", "v1");
 		map.put("m2", "v2");
-		modelBuilder.add(map, false);
-		assertEquals(map, modelBuilder.getModel());
+		this.modelBuilder.add(map, false);
+		assertEquals(map, this.modelBuilder.getModel());
 	}
 
 	@Test
 	public void shouldSkipNullMap() throws Exception {
-		modelBuilder.add(null, false);
-		assertEquals(0, modelBuilder.getModel().size());
+		this.modelBuilder.add(null, false);
+		assertEquals(0, this.modelBuilder.getModel().size());
 	}
 
 	@Test
 	public void shouldNotResolveElExpressionInMap() throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("m1", "#{expression}");
-		modelBuilder.add(map, false);
-		assertEquals("#{expression}", modelBuilder.getModel().get("m1"));
+		this.modelBuilder.add(map, false);
+		assertEquals("#{expression}", this.modelBuilder.getModel().get("m1"));
 	}
 
 	@Test
 	public void shouldResolveElExpressionInMap() throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("m1", "#{expression}");
-		given(application.evaluateExpressionGet(context, "#{expression}", Object.class)).willReturn("resolved");
-		modelBuilder.add(map, true);
-		assertEquals("resolved", modelBuilder.getModel().get("m1"));
+		given(this.application.evaluateExpressionGet(this.context, "#{expression}", Object.class)).willReturn(
+				"resolved");
+		this.modelBuilder.add(map, true);
+		assertEquals("resolved", this.modelBuilder.getModel().get("m1"));
 	}
 
 	@Test
@@ -168,8 +169,8 @@ public class ModelBuilderTest {
 		map.put("m2", "#expression}");
 		map.put("m3", "#}expression{");
 		map.put("m4", new StringBuffer("#{expression}"));
-		modelBuilder.add(map, true);
-		verifyZeroInteractions(application);
+		this.modelBuilder.add(map, true);
+		verifyZeroInteractions(this.application);
 	}
 
 	@Test
@@ -177,8 +178,8 @@ public class ModelBuilderTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("v1"));
 		parameters.put("m2", Collections.singletonList("v2"));
-		modelBuilder.addFromParameterList(parameters);
-		Map<String, Object> model = modelBuilder.getModel();
+		this.modelBuilder.addFromParameterList(parameters);
+		Map<String, Object> model = this.modelBuilder.getModel();
 		assertEquals(2, model.size());
 		assertEquals("v1", model.get("m1"));
 		assertEquals("v2", model.get("m2"));
@@ -186,17 +187,18 @@ public class ModelBuilderTest {
 
 	@Test
 	public void shouldSkipNullParametersList() throws Exception {
-		modelBuilder.addFromParameterList(null);
-		assertEquals(0, modelBuilder.getModel().size());
+		this.modelBuilder.addFromParameterList(null);
+		assertEquals(0, this.modelBuilder.getModel().size());
 	}
 
 	@Test
 	public void shouldResolveElFromParametersList() throws Exception {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("#{expression}"));
-		given(application.evaluateExpressionGet(context, "#{expression}", Object.class)).willReturn("resolved");
-		modelBuilder.addFromParameterList(parameters);
-		assertEquals("resolved", modelBuilder.getModel().get("m1"));
+		given(this.application.evaluateExpressionGet(this.context, "#{expression}", Object.class)).willReturn(
+				"resolved");
+		this.modelBuilder.addFromParameterList(parameters);
+		assertEquals("resolved", this.modelBuilder.getModel().get("m1"));
 	}
 
 	@Test
@@ -204,8 +206,8 @@ public class ModelBuilderTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		parameters.put("m1", Collections.singletonList("v1"));
 		parameters.put("m2", Arrays.asList("v2a", "v2b"));
-		modelBuilder.addFromParameterList(parameters);
-		Map<String, Object> model = modelBuilder.getModel();
+		this.modelBuilder.addFromParameterList(parameters);
+		Map<String, Object> model = this.modelBuilder.getModel();
 		assertEquals(1, model.size());
 		assertEquals("v1", model.get("m1"));
 	}
@@ -224,11 +226,11 @@ public class ModelBuilderTest {
 		parameters.put("m2", Collections.singletonList("c2"));
 		parameters.put("m3", Collections.singletonList("c3"));
 
-		modelBuilder.addFromComponent(component);
-		modelBuilder.add(map, false);
-		modelBuilder.addFromParameterList(parameters);
+		this.modelBuilder.addFromComponent(component);
+		this.modelBuilder.add(map, false);
+		this.modelBuilder.addFromParameterList(parameters);
 
-		Map<String, Object> model = modelBuilder.getModel();
+		Map<String, Object> model = this.modelBuilder.getModel();
 
 		assertEquals(3, model.size());
 		assertEquals("a1", model.get("m1"));

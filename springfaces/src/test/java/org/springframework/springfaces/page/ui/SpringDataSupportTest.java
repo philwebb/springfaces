@@ -44,56 +44,56 @@ public class SpringDataSupportTest {
 
 	@Test
 	public void shouldMakePageableWithSpringData() throws Exception {
-		PageRequest pageable = SpringDataSupport.getInstance().makePageable(pageRequest);
+		PageRequest pageable = SpringDataSupport.getInstance().makePageable(this.pageRequest);
 		assertThat(pageable, is(instanceOf(Pageable.class)));
 	}
 
 	@Test
 	public void shouldNotMakePageableWithoutSpringData() throws Exception {
 		SpringDataSupport.setHasSpringData(false);
-		PageRequest pageable = SpringDataSupport.getInstance().makePageable(pageRequest);
+		PageRequest pageable = SpringDataSupport.getInstance().makePageable(this.pageRequest);
 		assertThat(pageable, is(not(instanceOf(Pageable.class))));
 	}
 
 	@Test
 	public void shouldGetContentFromPageWithSpringData() throws Exception {
 		List<String> pageContent = Collections.singletonList("a");
-		given(page.getContent()).willReturn(pageContent);
-		Object content = SpringDataSupport.getInstance().getContentFromPage(page);
+		given(this.page.getContent()).willReturn(pageContent);
+		Object content = SpringDataSupport.getInstance().getContentFromPage(this.page);
 		assertThat(content, is(sameInstance((Object) pageContent)));
 	}
 
 	@Test
 	public void shouldNotGetContentIfNotPageWithSpringData() throws Exception {
-		Object content = SpringDataSupport.getInstance().getContentFromPage(notPage);
-		assertThat(content, is(sameInstance(notPage)));
+		Object content = SpringDataSupport.getInstance().getContentFromPage(this.notPage);
+		assertThat(content, is(sameInstance(this.notPage)));
 	}
 
 	@Test
 	public void shouldNotGetContentFromPageWithoutSpringData() throws Exception {
 		SpringDataSupport.setHasSpringData(false);
-		Object content = SpringDataSupport.getInstance().getContentFromPage(notPage);
-		assertThat(content, is(sameInstance(notPage)));
+		Object content = SpringDataSupport.getInstance().getContentFromPage(this.notPage);
+		assertThat(content, is(sameInstance(this.notPage)));
 	}
 
 	@Test
 	public void shouldGetRowCountFromPageWithSpringData() throws Exception {
 		Long numberOfElements = 100L;
-		given(page.getTotalElements()).willReturn(numberOfElements);
-		Object content = SpringDataSupport.getInstance().getRowCountFromPage(page);
+		given(this.page.getTotalElements()).willReturn(numberOfElements);
+		Object content = SpringDataSupport.getInstance().getRowCountFromPage(this.page);
 		assertThat(content, is(equalTo((Object) numberOfElements)));
 	}
 
 	@Test
 	public void shouldNotGetRowCountIfNotPageWithSpringData() throws Exception {
-		Object content = SpringDataSupport.getInstance().getRowCountFromPage(notPage);
+		Object content = SpringDataSupport.getInstance().getRowCountFromPage(this.notPage);
 		assertThat(content, is(nullValue()));
 	}
 
 	@Test
 	public void shouldNotGetRowCountFromPageWithoutSpringData() throws Exception {
 		SpringDataSupport.setHasSpringData(false);
-		Object content = SpringDataSupport.getInstance().getRowCountFromPage(notPage);
+		Object content = SpringDataSupport.getInstance().getRowCountFromPage(this.notPage);
 		assertThat(content, is(nullValue()));
 	}
 }

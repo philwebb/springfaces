@@ -118,11 +118,11 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	public NavigationMethodOutcomeResolver() {
 		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
 		stringHttpMessageConverter.setWriteAcceptCharset(false); // See SPR-7316
-		messageConverters = new ArrayList<HttpMessageConverter<?>>();
-		messageConverters.add(new ByteArrayHttpMessageConverter());
-		messageConverters.add(stringHttpMessageConverter);
-		messageConverters.add(new SourceHttpMessageConverter<Source>());
-		messageConverters.add(new XmlAwareFormHttpMessageConverter());
+		this.messageConverters = new ArrayList<HttpMessageConverter<?>>();
+		this.messageConverters.add(new ByteArrayHttpMessageConverter());
+		this.messageConverters.add(stringHttpMessageConverter);
+		this.messageConverters.add(new SourceHttpMessageConverter<Source>());
+		this.messageConverters.add(new XmlAwareFormHttpMessageConverter());
 		// FIXME we need to somehow hook into the converters registered as part of mvc:annotation-driven
 	}
 
@@ -207,7 +207,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	 * @return the message converters
 	 */
 	public List<HttpMessageConverter<?>> getMessageConverters() {
-		return messageConverters;
+		return this.messageConverters;
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	 * @return the web binder initializer
 	 */
 	public WebBindingInitializer getWebBindingInitializer() {
-		return webBindingInitializer;
+		return this.webBindingInitializer;
 	}
 
 	/**
@@ -239,10 +239,10 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 
 	@Override
 	protected void initApplicationContext() throws BeansException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Looking for navigation mappings in application context: " + getApplicationContext());
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Looking for navigation mappings in application context: " + getApplicationContext());
 		}
-		navigationMethods = new HashSet<NavigationMappingMethod>();
+		this.navigationMethods = new HashSet<NavigationMappingMethod>();
 		for (String beanName : getApplicationContext().getBeanNamesForType(Object.class)) {
 			Class<?> beanType = getApplicationContext().getType(beanName);
 			if (isNavigationBean(beanType)) {
@@ -259,7 +259,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		});
 		boolean controllerBeanMethod = isControllerBean(beanType);
 		for (Method method : methods) {
-			navigationMethods.add(new NavigationMappingMethod(beanName, beanType, method, controllerBeanMethod));
+			this.navigationMethods.add(new NavigationMappingMethod(beanName, beanType, method, controllerBeanMethod));
 		}
 	}
 
@@ -294,76 +294,76 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	private void initArgumentResolvers() {
-		if (argumentResolvers != null) {
+		if (this.argumentResolvers != null) {
 			return;
 		}
-		argumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
+		this.argumentResolvers = new ArrayList<HandlerMethodArgumentResolver>();
 
 		// Annotation-based resolvers
-		argumentResolvers.add(new RequestHeaderMethodArgumentResolver(beanFactory));
-		argumentResolvers.add(new RequestHeaderMapMethodArgumentResolver());
-		argumentResolvers.add(new ServletCookieValueMethodArgumentResolver(beanFactory));
-		argumentResolvers.add(new ExpressionValueMethodArgumentResolver(beanFactory));
+		this.argumentResolvers.add(new RequestHeaderMethodArgumentResolver(this.beanFactory));
+		this.argumentResolvers.add(new RequestHeaderMapMethodArgumentResolver());
+		this.argumentResolvers.add(new ServletCookieValueMethodArgumentResolver(this.beanFactory));
+		this.argumentResolvers.add(new ExpressionValueMethodArgumentResolver(this.beanFactory));
 
 		// Custom resolvers
-		if (customArgumentResolvers != null) {
-			argumentResolvers.addAll(customArgumentResolvers);
+		if (this.customArgumentResolvers != null) {
+			this.argumentResolvers.addAll(this.customArgumentResolvers);
 		}
 
 		// Type-based resolvers
-		argumentResolvers.add(new FacesContextMethodArgumentResolver());
-		argumentResolvers.add(new ServletRequestMethodArgumentResolver());
-		argumentResolvers.add(new ServletResponseMethodArgumentResolver());
-		argumentResolvers.add(new SpringFacesModelMethodArgumentResolver());
+		this.argumentResolvers.add(new FacesContextMethodArgumentResolver());
+		this.argumentResolvers.add(new ServletRequestMethodArgumentResolver());
+		this.argumentResolvers.add(new ServletResponseMethodArgumentResolver());
+		this.argumentResolvers.add(new SpringFacesModelMethodArgumentResolver());
 	}
 
 	private void initInitBinderArgumentResolvers() {
-		if (initBinderArgumentResolvers != null) {
+		if (this.initBinderArgumentResolvers != null) {
 			return;
 		}
-		initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite();
+		this.initBinderArgumentResolvers = new HandlerMethodArgumentResolverComposite();
 
 		// Annotation-based resolvers
-		initBinderArgumentResolvers.addResolver(new RequestParamMethodArgumentResolver(beanFactory, false));
-		initBinderArgumentResolvers.addResolver(new RequestParamMapMethodArgumentResolver());
-		initBinderArgumentResolvers.addResolver(new PathVariableMethodArgumentResolver());
-		initBinderArgumentResolvers.addResolver(new ExpressionValueMethodArgumentResolver(beanFactory));
+		this.initBinderArgumentResolvers.addResolver(new RequestParamMethodArgumentResolver(this.beanFactory, false));
+		this.initBinderArgumentResolvers.addResolver(new RequestParamMapMethodArgumentResolver());
+		this.initBinderArgumentResolvers.addResolver(new PathVariableMethodArgumentResolver());
+		this.initBinderArgumentResolvers.addResolver(new ExpressionValueMethodArgumentResolver(this.beanFactory));
 
 		// Custom resolvers
-		initBinderArgumentResolvers.addResolvers(customArgumentResolvers);
+		this.initBinderArgumentResolvers.addResolvers(this.customArgumentResolvers);
 
 		// Type-based resolvers
-		initBinderArgumentResolvers.addResolver(new ServletRequestMethodArgumentResolver());
-		initBinderArgumentResolvers.addResolver(new ServletResponseMethodArgumentResolver());
+		this.initBinderArgumentResolvers.addResolver(new ServletRequestMethodArgumentResolver());
+		this.initBinderArgumentResolvers.addResolver(new ServletResponseMethodArgumentResolver());
 
 		// Default-mode resolution
-		initBinderArgumentResolvers.addResolver(new RequestParamMethodArgumentResolver(beanFactory, true));
+		this.initBinderArgumentResolvers.addResolver(new RequestParamMethodArgumentResolver(this.beanFactory, true));
 	}
 
 	private void initReturnValueHandlers() {
-		if (returnValueHandlers != null) {
+		if (this.returnValueHandlers != null) {
 			return;
 		}
-		returnValueHandlers = new HandlerMethodReturnValueHandlerComposite();
+		this.returnValueHandlers = new HandlerMethodReturnValueHandlerComposite();
 
 		// Annotation-based handlers
-		returnValueHandlers.addHandler(new FacesResponseCompleteReturnValueHandler(
-				new RequestResponseBodyMethodProcessor(messageConverters)));
+		this.returnValueHandlers.addHandler(new FacesResponseCompleteReturnValueHandler(
+				new RequestResponseBodyMethodProcessor(this.messageConverters)));
 
 		// Custom return value handlers
-		returnValueHandlers.addHandlers(customReturnValueHandlers);
+		this.returnValueHandlers.addHandlers(this.customReturnValueHandlers);
 
 		// Type-based handlers
-		returnValueHandlers.addHandler(new ModelAndViewMethodReturnValueHandler());
-		returnValueHandlers.addHandler(new FacesResponseCompleteReturnValueHandler(new HttpEntityMethodProcessor(
-				messageConverters)));
+		this.returnValueHandlers.addHandler(new ModelAndViewMethodReturnValueHandler());
+		this.returnValueHandlers.addHandler(new FacesResponseCompleteReturnValueHandler(new HttpEntityMethodProcessor(
+				this.messageConverters)));
 
 		// Default handler
-		returnValueHandlers.addHandler(new NavigationMethodReturnValueHandler());
+		this.returnValueHandlers.addHandler(new NavigationMethodReturnValueHandler());
 	}
 
 	public boolean canResolve(FacesContext facesContext, NavigationContext context) {
-		for (NavigationMappingMethod navigationMethod : navigationMethods) {
+		for (NavigationMappingMethod navigationMethod : this.navigationMethods) {
 			if (navigationMethod.canResolve(context)) {
 				return true;
 			}
@@ -372,7 +372,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	public NavigationOutcome resolve(FacesContext facesContext, NavigationContext context) throws Exception {
-		for (NavigationMappingMethod navigationMethod : navigationMethods) {
+		for (NavigationMappingMethod navigationMethod : this.navigationMethods) {
 			if (navigationMethod.canResolve(context)) {
 				return resolve(facesContext, navigationMethod, context);
 			}
@@ -394,8 +394,8 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		ServletInvocableHandlerMethod invocable = createInvocableNavigationMethod(bean, navigationMethod.getMethod());
 		invocable.setDataBinderFactory(binderFactory);
 		invocable.setHandlerMethodArgumentResolvers(argumentResolvers);
-		invocable.setParameterNameDiscoverer(parameterNameDiscoverer);
-		invocable.setHandlerMethodReturnValueHandlers(returnValueHandlers);
+		invocable.setParameterNameDiscoverer(this.parameterNameDiscoverer);
+		invocable.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 
 		ExternalContext externalContext = facesContext.getExternalContext();
 		NativeWebRequest request = new ServletWebRequest((HttpServletRequest) externalContext.getRequest(),
@@ -419,11 +419,11 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	private WebDataBinderFactory createDataBinderFactory(Object bean, Class<?> handlerType) {
 		List<InvocableHandlerMethod> initBinderMethods = new ArrayList<InvocableHandlerMethod>();
 
-		Set<Method> binderMethods = initBinderMethodCache.get(handlerType);
+		Set<Method> binderMethods = this.initBinderMethodCache.get(handlerType);
 		if (binderMethods == null) {
 			binderMethods = HandlerMethodSelector.selectMethods(handlerType,
 					RequestMappingHandlerAdapter.INIT_BINDER_METHODS);
-			initBinderMethodCache.put(handlerType, binderMethods);
+			this.initBinderMethodCache.put(handlerType, binderMethods);
 		}
 
 		for (Method method : binderMethods) {

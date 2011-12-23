@@ -29,7 +29,7 @@ public class AnnotationMethodParameterFilter implements MethodParameterFilter {
 
 	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
 		for (Annotation ignoredAnnotation : methodParameter.getParameterAnnotations()) {
-			if (ignoredAnnotations.contains(ignoredAnnotation.annotationType())) {
+			if (this.ignoredAnnotations.contains(ignoredAnnotation.annotationType())) {
 				return true;
 			}
 		}

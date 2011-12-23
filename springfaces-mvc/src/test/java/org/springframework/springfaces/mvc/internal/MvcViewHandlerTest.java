@@ -88,22 +88,23 @@ public class MvcViewHandlerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		FacesContextSetter.setCurrentInstance(context);
+		FacesContextSetter.setCurrentInstance(this.context);
 		Map<Object, Object> attributes = new HashMap<Object, Object>();
-		given(context.getAttributes()).willReturn(attributes);
+		given(this.context.getAttributes()).willReturn(attributes);
 		ExternalContext externalContext = mock(ExternalContext.class);
-		given(context.getExternalContext()).willReturn(externalContext);
+		given(this.context.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getRequestContextPath()).willReturn("/rc");
 		given(externalContext.getRequestServletPath()).willReturn("/sp");
 		given(externalContext.getRequestPathInfo()).willReturn("/si");
-		given(externalContext.getRequest()).willReturn(request);
-		given(externalContext.getResponse()).willReturn(response);
+		given(externalContext.getRequest()).willReturn(this.request);
+		given(externalContext.getResponse()).willReturn(this.response);
 		PartialViewContext partialViewContext = mock(PartialViewContext.class);
-		given(context.getPartialViewContext()).willReturn(partialViewContext);
+		given(this.context.getPartialViewContext()).willReturn(partialViewContext);
 
-		handler = new MvcViewHandler(delegate, destinationViewResolver) {
+		this.handler = new MvcViewHandler(this.delegate, this.destinationViewResolver) {
+			@Override
 			protected DestinationAndModelRegistry newDestinationAndModelRegistry() {
-				return destinationAndModelRegistry;
+				return MvcViewHandlerTest.this.destinationAndModelRegistry;
 			};
 		};
 	}
@@ -128,217 +129,217 @@ public class MvcViewHandlerTest {
 
 	@Test
 	public void shouldRequireDelegate() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("DestinationViewResolver must not be null");
-		new MvcViewHandler(delegate, null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("DestinationViewResolver must not be null");
+		new MvcViewHandler(this.delegate, null);
 	}
 
 	@Test
 	public void shouldRequireDestinationViewResolver() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Delegate ViewResolver must not be null");
-		new MvcViewHandler(null, destinationViewResolver);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Delegate ViewResolver must not be null");
+		new MvcViewHandler(null, this.destinationViewResolver);
 	}
 
 	@Test
 	public void shouldWrapDelegate() throws Exception {
-		assertSame(delegate, handler.getWrapped());
+		assertSame(this.delegate, this.handler.getWrapped());
 	}
 
 	@Test
 	public void shouldDelegateCreateViewIfNoSpringFacesContext() throws Exception {
-		handler.createView(context, viewId);
-		verify(delegate).createView(context, viewId);
+		this.handler.createView(this.context, this.viewId);
+		verify(this.delegate).createView(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldCreateViewForNavigationResponse() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		setupDestination("test", mock(View.class));
-		given(context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
-		UIViewRoot view = handler.createView(context, "/test");
-		verify(delegate, never()).createView(eq(context), anyString());
+		given(this.context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
+		UIViewRoot view = this.handler.createView(this.context, "/test");
+		verify(this.delegate, never()).createView(eq(this.context), anyString());
 		assertTrue(view instanceof NavigationResponseUIViewRoot);
 	}
 
 	@Test
 	public void shouldNotCreateViewForNavigationResponseIfNotInCorrectPhase() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		setupDestination("test", mock(View.class));
-		given(context.getCurrentPhaseId()).willReturn(PhaseId.RENDER_RESPONSE);
-		UIViewRoot view = handler.createView(context, "/test");
-		verify(delegate).createView(context, "/test");
+		given(this.context.getCurrentPhaseId()).willReturn(PhaseId.RENDER_RESPONSE);
+		UIViewRoot view = this.handler.createView(this.context, "/test");
+		verify(this.delegate).createView(this.context, "/test");
 		assertFalse(view instanceof NavigationResponseUIViewRoot);
 	}
 
 	private DestinationAndModel setupDestination(String viewId, Object destination) {
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
-		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
+		given(this.destinationAndModelRegistry.get(this.context, viewId)).willReturn(destinationAndModel);
 		return destinationAndModel;
 	}
 
 	@Test
 	public void shouldCreateViewForMVCRender() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
-		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
-		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
-		UIViewRoot actual = handler.createView(context, "anything");
+		given(this.springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
+		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
+		UIViewRoot actual = this.handler.createView(this.context, "anything");
 		assertSame(viewRoot, actual);
-		verify(delegate).createView(context, "mvc");
+		verify(this.delegate).createView(this.context, "mvc");
 		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("mk"));
 	}
 
 	@Test
 	public void shouldDelegateRestoreView() throws Exception {
-		handler.restoreView(context, viewId);
-		verify(delegate).restoreView(context, viewId);
+		this.handler.restoreView(this.context, this.viewId);
+		verify(this.delegate).restoreView(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldUseArtifactForRestoreViewOfMVCRender() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
-		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
-		handler.restoreView(context, "anything");
-		verify(delegate).restoreView(context, "mvc");
+		given(this.springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
+		this.handler.restoreView(this.context, "anything");
+		verify(this.delegate).restoreView(this.context, "mvc");
 	}
 
 	@Test
 	public void shouldDelegateGetActionURL() throws Exception {
-		handler.getActionURL(context, viewId);
-		verify(delegate).getActionURL(context, viewId);
+		this.handler.getActionURL(this.context, this.viewId);
+		verify(this.delegate).getActionURL(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldUseSelfPostbackForActionURLFromMVCRender() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
-		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
-		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
-		handler.createView(context, "anything");
-		String actionUrl = handler.getActionURL(context, "mvc");
+		given(this.springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
+		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
+		this.handler.createView(this.context, "anything");
+		String actionUrl = this.handler.getActionURL(this.context, "mvc");
 		assertEquals("/rc/sp/si", actionUrl);
 	}
 
 	@Test
 	public void shouldUseSelfPostbackForActionURLFromMVCRenderWithoutPartialState() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		ModelAndViewArtifact modelAndViewArtifact = mockModelAndViewArtifact();
-		given(springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
-		given(delegate.createView(context, "mvc")).willReturn(viewRoot);
-		handler.restoreView(context, "anything");
-		String actionUrl = handler.getActionURL(context, "mvc");
+		given(this.springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
+		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
+		this.handler.restoreView(this.context, "anything");
+		String actionUrl = this.handler.getActionURL(this.context, "mvc");
 		assertEquals("/rc/sp/si", actionUrl);
 	}
 
 	@Test
 	public void shouldDelegateVDL() throws Exception {
-		handler.getViewDeclarationLanguage(context, viewId);
-		verify(delegate).getViewDeclarationLanguage(context, viewId);
+		this.handler.getViewDeclarationLanguage(this.context, this.viewId);
+		verify(this.delegate).getViewDeclarationLanguage(this.context, this.viewId);
 	}
 
 	@Test
 	public void shouldReturnNullVdlForResolvedDestination() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
-		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
-		ViewDeclarationLanguage vdl = handler.getViewDeclarationLanguage(context, viewId);
-		verify(delegate, never()).getViewDeclarationLanguage(eq(context), anyString());
+		given(this.destinationAndModelRegistry.get(this.context, this.viewId)).willReturn(destinationAndModel);
+		ViewDeclarationLanguage vdl = this.handler.getViewDeclarationLanguage(this.context, this.viewId);
+		verify(this.delegate, never()).getViewDeclarationLanguage(eq(this.context), anyString());
 		assertNull(vdl);
 	}
 
 	@Test
 	public void shouldDelegateRenderView() throws Exception {
 		UIViewRoot viewToRender = mockUIViewRootWithModelSupport();
-		handler.renderView(context, viewToRender);
-		verify(delegate).renderView(context, viewToRender);
+		this.handler.renderView(this.context, viewToRender);
+		verify(this.delegate).renderView(this.context, viewToRender);
 	}
 
 	@Test
 	public void shouldRenderNavigationResponse() throws Exception {
 		NavigationResponseUIViewRoot viewToRender = mock(NavigationResponseUIViewRoot.class);
-		handler.renderView(context, viewToRender);
-		verify(viewToRender).encodeAll(context);
-		verify(delegate, never()).renderView(context, viewToRender);
+		this.handler.renderView(this.context, viewToRender);
+		verify(viewToRender).encodeAll(this.context);
+		verify(this.delegate, never()).renderView(this.context, viewToRender);
 	}
 
 	@Test
 	public void shouldDelegateGetBookmarkableUrl() throws Exception {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
-		handler.getBookmarkableURL(context, viewId, parameters, includeViewParams);
-		verify(delegate).getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		this.handler.getBookmarkableURL(this.context, this.viewId, parameters, includeViewParams);
+		verify(this.delegate).getBookmarkableURL(this.context, this.viewId, parameters, includeViewParams);
 	}
 
 	@Test
 	public void shouldGetResolvableBookmark() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
 		BookmarkableView destination = mock(BookmarkableView.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
 		given(destination.getBookmarkUrl(anyModel(), any(HttpServletRequest.class))).willReturn("/bookmark");
-		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
+		given(this.destinationAndModelRegistry.get(this.context, this.viewId)).willReturn(destinationAndModel);
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
-		String bookmark = handler.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		String bookmark = this.handler.getBookmarkableURL(this.context, this.viewId, parameters, includeViewParams);
 		assertEquals("/bookmark", bookmark);
 	}
 
 	@Test
 	public void shouldRequireBookmarkInterfaceIfResolved() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
 		View destination = mock(View.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
-		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
+		given(this.destinationAndModelRegistry.get(this.context, this.viewId)).willReturn(destinationAndModel);
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("must be an instance of interface " + BookmarkableView.class.getName());
-		handler.getBookmarkableURL(context, viewId, parameters, includeViewParams);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("must be an instance of interface " + BookmarkableView.class.getName());
+		this.handler.getBookmarkableURL(this.context, this.viewId, parameters, includeViewParams);
 	}
 
 	@Test
 	public void shouldDelegateGetRedirectUrl() throws Exception {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
-		handler.getRedirectURL(context, viewId, parameters, includeViewParams);
-		verify(delegate).getRedirectURL(context, viewId, parameters, includeViewParams);
+		this.handler.getRedirectURL(this.context, this.viewId, parameters, includeViewParams);
+		verify(this.delegate).getRedirectURL(this.context, this.viewId, parameters, includeViewParams);
 	}
 
 	@Test
 	public void shouldRedirectUsingResolvedBookmarkUrl() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		DestinationAndModel destinationAndModel = mock(DestinationAndModel.class);
 		BookmarkableView destination = mock(BookmarkableView.class);
 		given(destinationAndModel.getDestination()).willReturn(destination);
 		given(destination.getBookmarkUrl(anyModel(), any(HttpServletRequest.class))).willReturn("/bookmark");
-		given(destinationAndModelRegistry.get(context, viewId)).willReturn(destinationAndModel);
+		given(this.destinationAndModelRegistry.get(this.context, this.viewId)).willReturn(destinationAndModel);
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
-		String redirect = handler.getRedirectURL(context, viewId, parameters, includeViewParams);
+		String redirect = this.handler.getRedirectURL(this.context, this.viewId, parameters, includeViewParams);
 		assertEquals("/bookmark", redirect);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void shouldResolveDestination() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		Object destination = "resolvableDestination";
 		DestinationAndModel destinationAndModel = setupDestination("test", destination);
-		given(context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
+		given(this.context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
 		View view = mock(View.class);
 		Map<String, Object> model = Collections.<String, Object> singletonMap("m", "v");
 		ModelAndView modelAndView = new ModelAndView(view, model);
 		given(
-				destinationViewResolver.resolveDestination(eq(destination), any(Locale.class),
+				this.destinationViewResolver.resolveDestination(eq(destination), any(Locale.class),
 						any(SpringFacesModel.class))).willReturn(modelAndView);
-		UIViewRoot createdView = handler.createView(context, "/test");
+		UIViewRoot createdView = this.handler.createView(this.context, "/test");
 		assertSame(view, ((NavigationResponseUIViewRoot) createdView).getModelAndView().getView());
 		verify(destinationAndModel).getModel(any(FacesContext.class), anyMap(), eq(model));
 	}
@@ -348,8 +349,8 @@ public class MvcViewHandlerTest {
 		View view = mock(View.class);
 		Map<String, Object> model = new HashMap<String, Object>();
 		ModelAndView modelAndView = new ModelAndView(view, model);
-		NavigationResponseUIViewRoot viewRoot = new NavigationResponseUIViewRoot(viewId, null, modelAndView);
-		viewRoot.encodeAll(context);
-		verify(view).render(model, request, response);
+		NavigationResponseUIViewRoot viewRoot = new NavigationResponseUIViewRoot(this.viewId, null, modelAndView);
+		viewRoot.encodeAll(this.context);
+		verify(view).render(model, this.request, this.response);
 	}
 }

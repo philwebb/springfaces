@@ -21,15 +21,15 @@ public class NavigationMethodReturnValueHandlerTest {
 
 	@Test
 	public void shouldSupportAllTypes() throws Exception {
-		assertTrue(handler.supportsReturnType(mockMethodParameter(Object.class)));
-		assertTrue(handler.supportsReturnType(mockMethodParameter(String.class)));
+		assertTrue(this.handler.supportsReturnType(mockMethodParameter(Object.class)));
+		assertTrue(this.handler.supportsReturnType(mockMethodParameter(String.class)));
 	}
 
 	@Test
 	public void shouldSetReturnValueToView() throws Exception {
 		Object returnValue = new Object();
 		ModelAndViewContainer mavContainer = mock(ModelAndViewContainer.class);
-		handler.handleReturnValue(returnValue, mockMethodParameter(Object.class), mavContainer,
+		this.handler.handleReturnValue(returnValue, mockMethodParameter(Object.class), mavContainer,
 				mock(NativeWebRequest.class));
 		verify(mavContainer).setView(returnValue);
 		verifyNoMoreInteractions(mavContainer);

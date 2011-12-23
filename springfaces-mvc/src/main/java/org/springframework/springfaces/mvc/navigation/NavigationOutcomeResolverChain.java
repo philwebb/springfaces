@@ -28,8 +28,8 @@ public class NavigationOutcomeResolverChain implements NavigationOutcomeResolver
 
 	private NavigationOutcomeResolver findResolver(FacesContext facesContext, NavigationContext navigationContext) {
 		NavigationOutcomeResolver found = null;
-		if (resolvers != null) {
-			for (NavigationOutcomeResolver resolver : resolvers) {
+		if (this.resolvers != null) {
+			for (NavigationOutcomeResolver resolver : this.resolvers) {
 				if (resolver.canResolve(facesContext, navigationContext)) {
 					Assert.state(found == null, "Duplicate resolvers found for navigation outcome '"
 							+ navigationContext.getOutcome() + "'");

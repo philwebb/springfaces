@@ -27,14 +27,14 @@ public class ActionListenerWrapperTest {
 
 	@Test
 	public void shouldWrapProcessAction() {
-		wrapper.processAction(event);
-		verify(wrapped).processAction(event);
+		this.wrapper.processAction(this.event);
+		verify(this.wrapped).processAction(this.event);
 	}
 
 	private class MockActionListenerWrapper extends ActionListenerWrapper {
 		@Override
 		public ActionListener getWrapped() {
-			return wrapped;
+			return ActionListenerWrapperTest.this.wrapped;
 		}
 	}
 }

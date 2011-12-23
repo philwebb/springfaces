@@ -142,15 +142,15 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 	 * @return a redirect URL
 	 */
 	private String buildRedirectUrl(HttpServletRequest request) {
-		RequestMapping methodRequestMapping = AnnotationUtils.findAnnotation(handlerMethod, RequestMapping.class);
-		RequestMapping typeLevelRequestMapping = AnnotationUtils.findAnnotation(handler.getClass(),
+		RequestMapping methodRequestMapping = AnnotationUtils.findAnnotation(this.handlerMethod, RequestMapping.class);
+		RequestMapping typeLevelRequestMapping = AnnotationUtils.findAnnotation(this.handler.getClass(),
 				RequestMapping.class);
 		Assert.state(methodRequestMapping != null, "The handler method must declare @RequestMapping annotation");
 		Assert.state(methodRequestMapping.value().length == 1,
 				"@RequestMapping must have a single value to be mapped to a URL");
 		Assert.state(typeLevelRequestMapping == null || typeLevelRequestMapping.value().length == 1,
 				"@RequestMapping on handler class must have a single value to be mapped to a URL");
-		String url = context.getDispatcherServletPath();
+		String url = this.context.getDispatcherServletPath();
 		if (url == null) {
 			url = request.getServletPath();
 		}
@@ -158,7 +158,7 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 			url += typeLevelRequestMapping.value()[0];
 		}
 
-		PathMatcher pathMatcher = context.getPathMatcher();
+		PathMatcher pathMatcher = this.context.getPathMatcher();
 		if (pathMatcher == null) {
 			pathMatcher = new AntPathMatcher();
 		}
@@ -189,7 +189,7 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 	 */
 	protected Map<String, ?> getRelevantModel(NativeWebRequest request, String url, Map<String, ?> sourceModel) {
 		// FIXME perhaps better error if the model builder fails
-		Map<String, Object> model = modelBuilder.build(request, sourceModel);
+		Map<String, Object> model = this.modelBuilder.build(request, sourceModel);
 		addUriTemplateParameters(model, url, sourceModel);
 		return model;
 	}

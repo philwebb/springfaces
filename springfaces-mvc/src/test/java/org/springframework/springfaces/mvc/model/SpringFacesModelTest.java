@@ -25,8 +25,8 @@ public class SpringFacesModelTest {
 
 	@Test
 	public void shouldRequireExistingModel() throws Exception {
-		thown.expect(IllegalArgumentException.class);
-		thown.expectMessage("Source must not be null");
+		this.thown.expect(IllegalArgumentException.class);
+		this.thown.expectMessage("Source must not be null");
 		new SpringFacesModel(null);
 	}
 

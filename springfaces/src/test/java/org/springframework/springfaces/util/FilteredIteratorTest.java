@@ -50,7 +50,7 @@ public class FilteredIteratorTest {
 		while (evenNumbers.hasNext()) {
 			evenNumbers.next();
 		}
-		thrown.expect(NoSuchElementException.class);
+		this.thrown.expect(NoSuchElementException.class);
 		evenNumbers.next();
 	}
 
@@ -83,6 +83,7 @@ public class FilteredIteratorTest {
 			super(sourceIterator);
 		}
 
+		@Override
 		protected boolean isElementFiltered(Integer element) {
 			return ((element.intValue() % 2) != 0);
 		};

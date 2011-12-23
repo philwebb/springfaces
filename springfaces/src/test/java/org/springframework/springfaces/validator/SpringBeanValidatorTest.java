@@ -39,15 +39,15 @@ public class SpringBeanValidatorTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
-		given(applicationContext.getBean(beanName)).willReturn(bean);
-		validator = new SpringBeanValidator<Object>(facesContext, beanName);
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
+		given(this.applicationContext.getBean(this.beanName)).willReturn(this.bean);
+		this.validator = new SpringBeanValidator<Object>(this.facesContext, this.beanName);
 	}
 
 	@Test
 	public void shouldDelegateValidate() throws Exception {
 		Object value = new Object();
-		validator.validate(facesContext, component, value);
-		verify(bean).validate(facesContext, component, value);
+		this.validator.validate(this.facesContext, this.component, value);
+		verify(this.bean).validate(this.facesContext, this.component, value);
 	}
 }

@@ -80,14 +80,14 @@ public class UIAspect extends UINamingContainer {
 
 	@Override
 	public String getClientId(FacesContext context) {
-		if (invocation != null) {
+		if (this.invocation != null) {
 			this.clientId = getId();
 			if (this.clientId == null) {
 				setId(generateCliendId(context));
 				this.clientId = getId();
 			}
-			return new StringBuilder(invocation.getComponent().getClientId(context))
-					.append(UINamingContainer.getSeparatorChar(context)).append(clientId).toString();
+			return new StringBuilder(this.invocation.getComponent().getClientId(context))
+					.append(UINamingContainer.getSeparatorChar(context)).append(this.clientId).toString();
 
 		}
 		return super.getClientId(context);
@@ -106,7 +106,7 @@ public class UIAspect extends UINamingContainer {
 		try {
 			this.proceedCalled = false;
 			super.encodeChildren(context);
-			if (!proceedCalled) {
+			if (!this.proceedCalled) {
 				invocation.proceed();
 			}
 		} finally {

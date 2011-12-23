@@ -33,15 +33,15 @@ public class PrimeFacesSupportTest {
 	@Test
 	public void shouldNotWrapWithoutPrimeFaces() throws Exception {
 		PrimeFacesSupport.setHasPrimeFaces(false);
-		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(pagedDataRows);
-		assertSame(wrapped, pagedDataRows);
+		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
+		assertSame(wrapped, this.pagedDataRows);
 	}
 
 	@Test
 	public void shouldWrapWithPrimeFaces() throws Exception {
-		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(pagedDataRows);
+		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
 		assertThat(wrapped, is(PrimeFacesPagedDataModel.class));
 		wrapped.getPageSize();
-		verify(pagedDataRows).getPageSize();
+		verify(this.pagedDataRows).getPageSize();
 	}
 }

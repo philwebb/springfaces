@@ -53,34 +53,34 @@ public class ImplicitObjectMethodArgumentResolverTest {
 
 	@Test
 	public void shouldSupportOnType() throws Exception {
-		resolver.add(Type.class, call);
-		assertTrue(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(SubType.class)));
+		this.resolver.add(Type.class, this.call);
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SubType.class)));
 	}
 
 	@Test
 	public void shouldSupportOnTypeMatchAndCondition() throws Exception {
-		given(condition.call()).willReturn(true);
-		resolver.add(Type.class, condition, call);
-		assertTrue(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertTrue(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
-		reset(condition);
-		given(condition.call()).willReturn(false);
-		assertFalse(resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertFalse(resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		given(this.condition.call()).willReturn(true);
+		this.resolver.add(Type.class, this.condition, this.call);
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertTrue(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		reset(this.condition);
+		given(this.condition.call()).willReturn(false);
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
+		assertFalse(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
 	}
 
 	@Test
 	public void shouldRethrowOnConditionException() throws Exception {
 		Exception ex = new Exception();
-		given(condition.call()).willThrow(ex);
-		resolver.add(Type.class, condition, call);
+		given(this.condition.call()).willThrow(ex);
+		this.resolver.add(Type.class, this.condition, this.call);
 		try {
-			resolver.supportsParameter(mockMethodParameter(Type.class));
+			this.resolver.supportsParameter(mockMethodParameter(Type.class));
 			fail("did not throw");
 		} catch (RuntimeException e) {
 			assertSame(ex, e.getCause());
@@ -90,19 +90,20 @@ public class ImplicitObjectMethodArgumentResolverTest {
 	@Test
 	public void shouldResolveUsingCall() throws Exception {
 		Type resolved = mock(Type.class);
-		given(call.call()).willReturn(resolved);
-		resolver.add(Type.class, call);
-		assertSame(resolved,
-				resolver.resolveArgument(mockMethodParameter(Type.class), mavContainer, webRequest, binderFactory));
+		given(this.call.call()).willReturn(resolved);
+		this.resolver.add(Type.class, this.call);
+		assertSame(resolved, this.resolver.resolveArgument(mockMethodParameter(Type.class), this.mavContainer,
+				this.webRequest, this.binderFactory));
 	}
 
 	@Test
 	public void shouldRethrowResolveExceptions() throws Exception {
 		Exception ex = new Exception();
-		given(call.call()).willThrow(ex);
-		resolver.add(Type.class, call);
-		thrown.expect(equalTo(ex));
-		resolver.resolveArgument(mockMethodParameter(Type.class), mavContainer, webRequest, binderFactory);
+		given(this.call.call()).willThrow(ex);
+		this.resolver.add(Type.class, this.call);
+		this.thrown.expect(equalTo(ex));
+		this.resolver.resolveArgument(mockMethodParameter(Type.class), this.mavContainer, this.webRequest,
+				this.binderFactory);
 	}
 
 	private static class MockImplicitObjectMethodArgumentResolver extends ImplicitObjectMethodArgumentResolver {

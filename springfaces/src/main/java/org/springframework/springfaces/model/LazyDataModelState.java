@@ -21,7 +21,7 @@ public class LazyDataModelState implements Serializable {
 	 * @see DataRows#getRowIndex()
 	 */
 	public int getRowIndex() {
-		return rowIndex;
+		return this.rowIndex;
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class LazyDataModelState implements Serializable {
 	}
 
 	public Long getLastLoadedTotalRowCount() {
-		return lastLoadedTotalRowCount;
+		return this.lastLoadedTotalRowCount;
 	}
 
 	public void setLastLoadedTotalRowCount(Long lastLoadedTotalRowCount) {

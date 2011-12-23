@@ -65,7 +65,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 	@Override
 	public ViewHandler getWrapped() {
-		return delegate;
+		return this.delegate;
 	}
 
 	@Override
@@ -206,7 +206,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (viewId != null && viewId.startsWith("/")) {
 			viewId = viewId.substring(1);
 		}
-		DestinationAndModel destinationAndModel = destinationAndModelRegistry.get(context, viewId);
+		DestinationAndModel destinationAndModel = this.destinationAndModelRegistry.get(context, viewId);
 		return destinationAndModel;
 	}
 
@@ -220,7 +220,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		try {
 			Locale locale = FacesUtils.getLocale(context);
 			SpringFacesModel model = SpringFacesModelHolder.getModel(context.getViewRoot());
-			return destinationViewResolver.resolveDestination(destination, locale, model);
+			return this.destinationViewResolver.resolveDestination(destination, locale, model);
 		} catch (Exception e) {
 			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
 		}
@@ -237,14 +237,14 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		}
 
 		public ModelAndView getModelAndView() {
-			return modelAndView;
+			return this.modelAndView;
 		}
 
 		@Override
 		public void encodeAll(FacesContext context) throws IOException {
 			try {
-				View view = modelAndView.getView();
-				Map<String, Object> model = modelAndView.getModel();
+				View view = this.modelAndView.getView();
+				Map<String, Object> model = this.modelAndView.getModel();
 				if (view instanceof FacesRenderedView) {
 					// FIXME test
 					((FacesRenderedView) view).render(model, context);

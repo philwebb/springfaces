@@ -21,11 +21,12 @@ public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 	private WrapperHandler<ResponseStateManager> wrapperHandler;
 
 	public SpringResponseStateManager(final String renderKitId, ResponseStateManager delegate) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Wrapping ResponseStateManager " + delegate.getClass() + " with renderKitId \"" + renderKitId
-					+ "\" to provide integration with Spring");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Wrapping ResponseStateManager " + delegate.getClass() + " with renderKitId \""
+					+ renderKitId + "\" to provide integration with Spring");
 		}
 		this.wrapperHandler = new WrapperHandler<ResponseStateManager>(ResponseStateManager.class, delegate) {
+			@Override
 			protected void postProcessWrapper(ResponseStateManager wrapped) {
 				if (wrapped instanceof RenderKitIdAware) {
 					((RenderKitIdAware) wrapped).setRenderKitId(renderKitId);
@@ -34,7 +35,8 @@ public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 		};
 	}
 
+	@Override
 	public ResponseStateManager getWrapped() {
-		return wrapperHandler.getWrapped();
+		return this.wrapperHandler.getWrapped();
 	}
 }

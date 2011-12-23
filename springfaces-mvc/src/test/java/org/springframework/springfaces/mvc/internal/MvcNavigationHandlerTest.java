@@ -106,21 +106,21 @@ public class MvcNavigationHandlerTest {
 
 	@Before
 	public void setup() {
-		FacesContextSetter.setCurrentInstance(context);
-		navigationHandler = new MvcNavigationHandler(delegate, navigationOutcomeResolver);
-		navigationHandler.setDestinationAndModelRegistry(destinationAndModelRegistry);
-		given(destinationAndModelRegistry.put(any(FacesContext.class), any(DestinationAndModel.class))).willReturn(
-				"viewId");
-		given(springFacesContext.getHandler()).willReturn(handler);
-		given(springFacesContext.getController()).willReturn(controller);
-		given(context.getApplication()).willReturn(application);
-		given(application.getViewHandler()).willReturn(viewHandler);
+		FacesContextSetter.setCurrentInstance(this.context);
+		this.navigationHandler = new MvcNavigationHandler(this.delegate, this.navigationOutcomeResolver);
+		this.navigationHandler.setDestinationAndModelRegistry(this.destinationAndModelRegistry);
+		given(this.destinationAndModelRegistry.put(any(FacesContext.class), any(DestinationAndModel.class)))
+				.willReturn("viewId");
+		given(this.springFacesContext.getHandler()).willReturn(this.handler);
+		given(this.springFacesContext.getController()).willReturn(this.controller);
+		given(this.context.getApplication()).willReturn(this.application);
+		given(this.application.getViewHandler()).willReturn(this.viewHandler);
 		Map<Object, Object> attributes = new HashMap<Object, Object>();
-		given(context.getAttributes()).willReturn(attributes);
-		given(context.getMessageList()).willReturn(messageList);
-		given(context.getMessages()).willAnswer(new Answer<Iterator<FacesMessage>>() {
+		given(this.context.getAttributes()).willReturn(attributes);
+		given(this.context.getMessageList()).willReturn(this.messageList);
+		given(this.context.getMessages()).willAnswer(new Answer<Iterator<FacesMessage>>() {
 			public Iterator<FacesMessage> answer(InvocationOnMock invocation) throws Throwable {
-				return messageList.iterator();
+				return MvcNavigationHandlerTest.this.messageList.iterator();
 			}
 		});
 	}
@@ -132,135 +132,138 @@ public class MvcNavigationHandlerTest {
 	}
 
 	private void handleOutcome() throws Exception {
-		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
-				true);
-		given(navigationOutcomeResolver.resolve(any(FacesContext.class), any(NavigationContext.class))).willReturn(
-				navigationOutcome);
+		given(this.navigationOutcomeResolver.canResolve(any(FacesContext.class), this.navigationContext.capture()))
+				.willReturn(true);
+		given(this.navigationOutcomeResolver.resolve(any(FacesContext.class), any(NavigationContext.class)))
+				.willReturn(this.navigationOutcome);
 	}
 
 	@Test
 	public void shouldDelegateGetNavigationCaseWithoutSpringFacesContext() throws Exception {
-		navigationHandler.getNavigationCase(context, fromAction, outcome);
-		verify(delegate).getNavigationCase(context, fromAction, outcome);
+		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
+		verify(this.delegate).getNavigationCase(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldDelegateGetNavigationCaseWhenNoResolve() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		navigationHandler.getNavigationCase(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
-		verify(delegate, atLeastOnce()).getNavigationCase(context, fromAction, outcome);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
+		verify(this.navigationOutcomeResolver).canResolve(any(FacesContext.class), this.navigationContext.capture());
+		verify(this.delegate, atLeastOnce()).getNavigationCase(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldNeedNavigationOutcomeForGetNavigationCase() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
-				true);
-		thrown.equals(IllegalStateException.class);
-		thrown.expectMessage("Unable to resolve required navigation outcome 'outcome'");
-		navigationHandler.getNavigationCase(context, fromAction, outcome);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		given(this.navigationOutcomeResolver.canResolve(any(FacesContext.class), this.navigationContext.capture()))
+				.willReturn(true);
+		this.thrown.equals(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to resolve required navigation outcome 'outcome'");
+		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldGetNavigationCase() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		UIComponent component = mock(UIComponent.class);
 		new MvcNavigationSystemEventListener().processEvent(new PreRenderComponentEvent(component));
 		handleOutcome();
-		NavigationCase navigationCase = navigationHandler.getNavigationCase(context, fromAction, outcome);
+		NavigationCase navigationCase = this.navigationHandler.getNavigationCase(this.context, this.fromAction,
+				this.outcome);
 		assertNotNull(navigationCase);
-		verify(destinationAndModelRegistry).put(eq(context), destinationAndModel.capture());
-		assertEquals(navigationOutcome.getDestination(), destinationAndModel.getValue().getDestination());
+		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
+		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
 		// FIXME test model?
 		NavigationContext navigationContext = this.navigationContext.getValue();
-		assertEquals(outcome, navigationContext.getOutcome());
-		assertEquals(fromAction, navigationContext.getFromAction());
+		assertEquals(this.outcome, navigationContext.getOutcome());
+		assertEquals(this.fromAction, navigationContext.getFromAction());
 		assertTrue(navigationContext.isPreemptive());
 		assertSame(component, navigationContext.getComponent());
-		assertSame(handler, navigationContext.getHandler());
-		assertSame(controller, navigationContext.getController());
+		assertSame(this.handler, navigationContext.getHandler());
+		assertSame(this.controller, navigationContext.getController());
 	}
 
 	@Test
 	public void shouldDelegateHandleNavigationWithoutSpringFacesContext() throws Exception {
-		navigationHandler.handleNavigation(context, fromAction, outcome);
-		verify(delegate).handleNavigation(context, fromAction, outcome);
+		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
+		verify(this.delegate).handleNavigation(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldDelegateHandleNavigationWhenCantResolve() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		navigationHandler.handleNavigation(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
-		verify(delegate).handleNavigation(context, fromAction, outcome);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
+		verify(this.navigationOutcomeResolver).canResolve(any(FacesContext.class), this.navigationContext.capture());
+		verify(this.delegate).handleNavigation(this.context, this.fromAction, this.outcome);
 	}
 
 	@Test
 	public void shouldReRenderCurrentScreenWhenCanResolveAndNullOutcome() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(navigationOutcomeResolver.canResolve(any(FacesContext.class), navigationContext.capture())).willReturn(
-				true);
-		navigationHandler.handleNavigation(context, fromAction, outcome);
-		verify(navigationOutcomeResolver).canResolve(any(FacesContext.class), navigationContext.capture());
-		verify(delegate, never()).handleNavigation(context, fromAction, outcome);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		given(this.navigationOutcomeResolver.canResolve(any(FacesContext.class), this.navigationContext.capture()))
+				.willReturn(true);
+		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
+		verify(this.navigationOutcomeResolver).canResolve(any(FacesContext.class), this.navigationContext.capture());
+		verify(this.delegate, never()).handleNavigation(this.context, this.fromAction, this.outcome);
 		// FIXME double check this
 	}
 
 	@Test
 	public void shouldHandleNavigation() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
 		ActionEvent actionEvent = mock(ActionEvent.class);
 		UIComponent component = mock(UIComponent.class);
 		handleOutcome();
-		given(viewHandler.createView(context, "viewId")).willReturn(viewRoot);
+		given(this.viewHandler.createView(this.context, "viewId")).willReturn(viewRoot);
 		given(actionEvent.getComponent()).willReturn(component);
 
 		// Simulate the action event listener
 		MvcNavigationActionListener actionLister = new MvcNavigationActionListener(mock(ActionListener.class));
 		actionLister.processAction(actionEvent);
 
-		navigationHandler.handleNavigation(context, fromAction, outcome);
+		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
 
-		verify(destinationAndModelRegistry).put(eq(context), destinationAndModel.capture());
-		assertEquals(navigationOutcome.getDestination(), destinationAndModel.getValue().getDestination());
+		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
+		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
 		// FIXME verify model?
-		verify(context).setViewRoot(viewRoot);
+		verify(this.context).setViewRoot(viewRoot);
 		NavigationContext navigationContext = this.navigationContext.getValue();
-		assertEquals(outcome, navigationContext.getOutcome());
-		assertEquals(fromAction, navigationContext.getFromAction());
+		assertEquals(this.outcome, navigationContext.getOutcome());
+		assertEquals(this.fromAction, navigationContext.getFromAction());
 		assertFalse(navigationContext.isPreemptive());
 		assertSame(component, navigationContext.getComponent());
-		assertSame(handler, navigationContext.getHandler());
-		assertSame(controller, navigationContext.getController());
+		assertSame(this.handler, navigationContext.getHandler());
+		assertSame(this.controller, navigationContext.getController());
 	}
 
 	@Test
 	public void shouldRemoveSlashFromDefaultDestinationViewId() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		handleOutcome();
 		NavigationCase defaultNavigationCase = mock(NavigationCase.class);
-		given(delegate.getNavigationCase(context, fromAction, outcome)).willReturn(defaultNavigationCase);
-		given(defaultNavigationCase.getToViewId(context)).willReturn("/example");
-		navigationHandler.getNavigationCase(context, fromAction, outcome);
-		assertEquals("example", navigationContext.getValue().getDefaultDestinationViewId());
+		given(this.delegate.getNavigationCase(this.context, this.fromAction, this.outcome)).willReturn(
+				defaultNavigationCase);
+		given(defaultNavigationCase.getToViewId(this.context)).willReturn("/example");
+		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
+		assertEquals("example", this.navigationContext.getValue().getDefaultDestinationViewId());
 	}
 
 	@Test
 	public void shouldRemoveSuperflousWarningFacesMessages() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		handleOutcome();
-		messageList.add(new FacesMessage("existing"));
-		given(delegate.getNavigationCase(context, fromAction, outcome)).willAnswer(new Answer<NavigationCase>() {
-			public NavigationCase answer(InvocationOnMock invocation) throws Throwable {
-				messageList.add(new FacesMessage("new warning"));
-				return null;
-			}
-		});
-		navigationHandler.getNavigationCase(context, fromAction, outcome);
-		assertEquals(1, messageList.size());
-		assertEquals("existing", messageList.get(0).getSummary());
+		this.messageList.add(new FacesMessage("existing"));
+		given(this.delegate.getNavigationCase(this.context, this.fromAction, this.outcome)).willAnswer(
+				new Answer<NavigationCase>() {
+					public NavigationCase answer(InvocationOnMock invocation) throws Throwable {
+						MvcNavigationHandlerTest.this.messageList.add(new FacesMessage("new warning"));
+						return null;
+					}
+				});
+		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
+		assertEquals(1, this.messageList.size());
+		assertEquals("existing", this.messageList.get(0).getSummary());
 	}
 
 }

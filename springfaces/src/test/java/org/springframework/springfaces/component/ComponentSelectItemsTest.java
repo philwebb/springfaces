@@ -57,22 +57,22 @@ public class ComponentSelectItemsTest {
 		MockitoAnnotations.initMocks(this);
 		ExternalContext externalContext = mock(ExternalContext.class);
 		Map<String, Object> requestMap = new HashMap<String, Object>();
-		given(context.getExternalContext()).willReturn(externalContext);
+		given(this.context.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getRequestMap()).willReturn(requestMap);
 	}
 
 	@Test
 	public void shouldNeedFacesContext() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Context must not be null");
-		new ComponentSelectItems(null, component);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Context must not be null");
+		new ComponentSelectItems(null, this.component);
 	}
 
 	@Test
 	public void shouldNeedComponent() throws Exception {
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("Component must not be null");
-		new ComponentSelectItems(context, null);
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Component must not be null");
+		new ComponentSelectItems(this.context, null);
 	}
 
 	@Test
@@ -85,25 +85,25 @@ public class ComponentSelectItemsTest {
 		map.put("kc", null);
 		UISelectItems mapItems = new UISelectItems();
 		mapItems.setValue(map);
-		component.getChildren().add(mapItems);
+		this.component.getChildren().add(mapItems);
 
 		// Mix in something we don't support
-		component.getChildren().add(new UIParameter());
+		this.component.getChildren().add(new UIParameter());
 
 		// Child 2 = UISelectItems containing List
 		SelectItem la = new SelectItem();
 		SelectItem lb = new SelectItem();
 		UISelectItems listItems = new UISelectItems();
 		listItems.setValue(Arrays.asList(la, lb));
-		component.getChildren().add(listItems);
+		this.component.getChildren().add(listItems);
 
 		// Child3 = UISelectItem
 		SelectItem i = new SelectItem();
 		UISelectItem uiSelectItem = new UISelectItem();
 		uiSelectItem.setValue(i);
-		component.getChildren().add(uiSelectItem);
+		this.component.getChildren().add(uiSelectItem);
 
-		ComponentSelectItems items = new ComponentSelectItems(context, component);
+		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
 		Iterator<SelectItem> iterator = items.iterator();
 		assertTrue(iterator.hasNext());
 		SelectItem i1 = iterator.next();
@@ -145,8 +145,8 @@ public class ComponentSelectItemsTest {
 		uiSelectItem.setItemDisabled(true);
 		uiSelectItem.setItemEscaped(true);
 		uiSelectItem.setNoSelectionOption(true);
-		component.getChildren().add(uiSelectItem);
-		ComponentSelectItems selectItems = new ComponentSelectItems(context, component);
+		this.component.getChildren().add(uiSelectItem);
+		ComponentSelectItems selectItems = new ComponentSelectItems(this.context, this.component);
 		Iterator<SelectItem> iterator = selectItems.iterator();
 		SelectItem item = iterator.next();
 		assertThat(item.getValue(), is((Object) "v"));
@@ -199,19 +199,20 @@ public class ComponentSelectItemsTest {
 		given(map.get(any())).willAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				if ("itemLabel".equals(invocation.getArguments()[0])) {
-					assertNotNull(context.getExternalContext().getRequestMap().get("var"));
+					assertNotNull(ComponentSelectItemsTest.this.context.getExternalContext().getRequestMap().get("var"));
 					return "label";
 				}
 				return invocation.callRealMethod();
 			}
 		});
 		UISelectItems selectItems = new UISelectItems() {
+			@Override
 			public java.util.Map<String, Object> getAttributes() {
 				return map;
 			};
 		};
 		selectItems.setValue(Collections.singleton("a"));
-		component.getChildren().add(selectItems);
+		this.component.getChildren().add(selectItems);
 		selectItems.getAttributes().put("var", "var");
 		selectItems.getAttributes().put("itemLabel", "#{var}");
 		SelectItem item = getSingleSelectItems();
@@ -221,12 +222,12 @@ public class ComponentSelectItemsTest {
 	private UISelectItems setupUISelectItems(Object value) {
 		UISelectItems uiSelectItems = new UISelectItems();
 		uiSelectItems.setValue(Collections.singleton(value));
-		component.getChildren().add(uiSelectItems);
+		this.component.getChildren().add(uiSelectItems);
 		return uiSelectItems;
 	}
 
 	private SelectItem getSingleSelectItems() {
-		ComponentSelectItems items = new ComponentSelectItems(context, component);
+		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
 		Iterator<SelectItem> iterator = items.iterator();
 		SelectItem item = iterator.next();
 		assertFalse(iterator.hasNext());
@@ -235,8 +236,8 @@ public class ComponentSelectItemsTest {
 
 	@Test
 	public void shouldThrowOnRemove() throws Exception {
-		ComponentSelectItems items = new ComponentSelectItems(context, component);
-		thrown.expect(UnsupportedOperationException.class);
+		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
+		this.thrown.expect(UnsupportedOperationException.class);
 		items.iterator().remove();
 	}
 }

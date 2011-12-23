@@ -33,7 +33,7 @@ public class ApplyAspectSystemEventListenerTest {
 	@Test
 	public void shouldListenForAllSource() throws Exception {
 		Object source = new Object();
-		boolean actual = listener.isListenerForSource(source);
+		boolean actual = this.listener.isListenerForSource(source);
 		assertThat(actual, is(true));
 	}
 
@@ -41,19 +41,19 @@ public class ApplyAspectSystemEventListenerTest {
 	public void shouldWrapComponent() throws Exception {
 		UIComponent component = addToParent(UIInput.class);
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
+		this.listener.processEvent(event);
 		assertThat(component.getParent(), is(UIApplyAspects.class));
-		assertThat(component.getParent().getParent(), is((UIComponent) parent));
-		assertThat(parent.getChildCount(), is(1));
+		assertThat(component.getParent().getParent(), is((UIComponent) this.parent));
+		assertThat(this.parent.getChildCount(), is(1));
 	}
 
 	@Test
 	public void shouldNotDoubleWrap() throws Exception {
 		UIComponent component = addToParent(UIInput.class);
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
-		listener.processEvent(event);
-		assertThat(component.getParent().getParent(), is((UIComponent) parent));
+		this.listener.processEvent(event);
+		this.listener.processEvent(event);
+		assertThat(component.getParent().getParent(), is((UIComponent) this.parent));
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class ApplyAspectSystemEventListenerTest {
 		UIComponent component = new UIInput();
 		parent.getChildren().add(component);
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
+		this.listener.processEvent(event);
 		assertThat(component.getParent(), is((UIComponent) parent));
 	}
 
@@ -70,10 +70,10 @@ public class ApplyAspectSystemEventListenerTest {
 	public void shouldWrapChildren() throws Exception {
 		UIComponent component = new UIPanel();
 		UIInput child = new UIInput();
-		parent.getChildren().add(component);
+		this.parent.getChildren().add(component);
 		component.getChildren().add(child);
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
+		this.listener.processEvent(event);
 		assertThat(child.getParent(), is(UIApplyAspects.class));
 		assertThat(child.getParent().getParent(), is(component));
 	}
@@ -82,7 +82,7 @@ public class ApplyAspectSystemEventListenerTest {
 	public void shouldNotWrapWithoutParent() throws Exception {
 		UIInput component = new UIInput();
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
+		this.listener.processEvent(event);
 		assertThat(component.getParent(), is(nullValue()));
 	}
 
@@ -116,8 +116,8 @@ public class ApplyAspectSystemEventListenerTest {
 			throws Exception {
 		T component = addToParent(componentConstructor, initArgs);
 		SystemEvent event = new PostAddToViewEvent(component);
-		listener.processEvent(event);
-		assertThat(component.getParent(), is((UIComponent) parent));
+		this.listener.processEvent(event);
+		assertThat(component.getParent(), is((UIComponent) this.parent));
 	}
 
 	private <T extends UIComponent> T addToParent(Class<T> componentClass) throws Exception {
@@ -127,7 +127,7 @@ public class ApplyAspectSystemEventListenerTest {
 	private <T extends UIComponent> T addToParent(Constructor<T> componentConstructor, Object... initArgs)
 			throws Exception {
 		T component = componentConstructor.newInstance(initArgs);
-		parent.getChildren().add(component);
+		this.parent.getChildren().add(component);
 		return component;
 	}
 

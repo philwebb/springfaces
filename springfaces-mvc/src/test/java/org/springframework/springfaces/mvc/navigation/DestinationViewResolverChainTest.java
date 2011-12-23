@@ -32,7 +32,7 @@ public class DestinationViewResolverChainTest {
 
 	@Test
 	public void shouldReturnNullWhenNullResolvers() throws Exception {
-		assertNull(chain.resolveDestination(destination, locale, model));
+		assertNull(this.chain.resolveDestination(this.destination, this.locale, this.model));
 	}
 
 	@Test
@@ -45,11 +45,11 @@ public class DestinationViewResolverChainTest {
 		resolvers.add(r1);
 		resolvers.add(r2);
 		resolvers.add(r3);
-		given(r2.resolveDestination(destination, locale, model)).willReturn(modelAndView);
-		chain.setResolvers(resolvers);
-		ModelAndView resolved = chain.resolveDestination(destination, locale, model);
+		given(r2.resolveDestination(this.destination, this.locale, this.model)).willReturn(modelAndView);
+		this.chain.setResolvers(resolvers);
+		ModelAndView resolved = this.chain.resolveDestination(this.destination, this.locale, this.model);
 		assertSame(modelAndView, resolved);
-		verify(r1).resolveDestination(destination, locale, model);
-		verify(r3, never()).resolveDestination(resolved, locale, model);
+		verify(r1).resolveDestination(this.destination, this.locale, this.model);
+		verify(r3, never()).resolveDestination(resolved, this.locale, this.model);
 	}
 }

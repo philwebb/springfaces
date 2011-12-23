@@ -25,6 +25,6 @@ public final class ViewArtifact implements Serializable {
 
 	@Override
 	public String toString() {
-		return artifact;
+		return this.artifact;
 	}
 }

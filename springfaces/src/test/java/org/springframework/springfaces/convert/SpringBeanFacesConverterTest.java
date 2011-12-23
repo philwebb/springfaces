@@ -41,17 +41,17 @@ public class SpringBeanFacesConverterTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(context, applicationContext);
-		given(applicationContext.getBean(beanName)).willReturn(bean);
-		converter = new SpringBeanFacesConverter(context, beanName);
+		SpringFacesMocks.setupSpringFacesIntegration(this.context, this.applicationContext);
+		given(this.applicationContext.getBean(this.beanName)).willReturn(this.bean);
+		this.converter = new SpringBeanFacesConverter(this.context, this.beanName);
 	}
 
 	@Test
 	public void shouldDelegateGetAsString() throws Exception {
 		String value = "value";
 		Object object = new Object();
-		given(bean.getAsObject(context, component, value)).willReturn(object);
-		Object actual = converter.getAsObject(context, component, value);
+		given(this.bean.getAsObject(this.context, this.component, value)).willReturn(object);
+		Object actual = this.converter.getAsObject(this.context, this.component, value);
 		assertThat(actual, is(object));
 	}
 
@@ -59,8 +59,8 @@ public class SpringBeanFacesConverterTest {
 	public void shouldDelegateGetAsObject() throws Exception {
 		Object value = new Object();
 		String string = "string";
-		given(bean.getAsString(context, component, value)).willReturn(string);
-		String actual = converter.getAsString(context, component, value);
+		given(this.bean.getAsString(this.context, this.component, value)).willReturn(string);
+		String actual = this.converter.getAsString(this.context, this.component, value);
 		assertThat(actual, is(string));
 	}
 }

@@ -52,78 +52,78 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetCommonPropertyType() throws Exception {
-		assertEquals(Object.class, resolver.getCommonPropertyType(elContext, null));
-		assertEquals(null, resolver.getCommonPropertyType(elContext, BASE_OBJECT));
+		assertEquals(Object.class, this.resolver.getCommonPropertyType(this.elContext, null));
+		assertEquals(null, this.resolver.getCommonPropertyType(this.elContext, BASE_OBJECT));
 	}
 
 	@Test
 	public void shouldGetFeatureDescriptors() throws Exception {
-		assertNull(resolver.getFeatureDescriptors(elContext, null));
-		assertNull(resolver.getFeatureDescriptors(elContext, BASE_OBJECT));
+		assertNull(this.resolver.getFeatureDescriptors(this.elContext, null));
+		assertNull(this.resolver.getFeatureDescriptors(this.elContext, BASE_OBJECT));
 	}
 
 	@Test
 	public void shouldGetTypeForNonNullBase() throws Exception {
-		assertNull(resolver.getType(elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertNull(this.resolver.getType(this.elContext, BASE_OBJECT, PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldGetTypeWhenFound() throws Exception {
-		assertEquals(Long.class, resolver.getType(elContext, null, PROPERTY_NAME));
-		verify(elContext).setPropertyResolved(true);
+		assertEquals(Long.class, this.resolver.getType(this.elContext, null, PROPERTY_NAME));
+		verify(this.elContext).setPropertyResolved(true);
 	}
 
 	@Test
 	public void shouldGetTypeWhenNotFound() throws Exception {
-		assertNull(resolver.getType(elContext, null, MISSING_PROPERTY_NAME));
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
+		assertNull(this.resolver.getType(this.elContext, null, MISSING_PROPERTY_NAME));
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
 	@Test
 	public void shouldGetValueWhenNonNullBase() throws Exception {
-		assertNull(resolver.getValue(elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertNull(this.resolver.getValue(this.elContext, BASE_OBJECT, PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldGetValueWhenFound() throws Exception {
-		assertEquals(PROPERTY_VALUE, resolver.getValue(elContext, null, PROPERTY_NAME));
-		verify(elContext).setPropertyResolved(true);
+		assertEquals(PROPERTY_VALUE, this.resolver.getValue(this.elContext, null, PROPERTY_NAME));
+		verify(this.elContext).setPropertyResolved(true);
 	}
 
 	@Test
 	public void shouldGetValueWhenNotFound() throws Exception {
-		assertNull(resolver.getValue(elContext, null, MISSING_PROPERTY_NAME));
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
+		assertNull(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME));
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
 	@Test
 	public void shouldNotBeReadOnlyWhenNonNullBase() throws Exception {
-		assertFalse(resolver.isReadOnly(elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertFalse(this.resolver.isReadOnly(this.elContext, BASE_OBJECT, PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldBeReadOnly() throws Exception {
-		assertTrue(resolver.isReadOnly(elContext, null, PROPERTY_NAME));
-		verify(elContext).setPropertyResolved(true);
+		assertTrue(this.resolver.isReadOnly(this.elContext, null, PROPERTY_NAME));
+		verify(this.elContext).setPropertyResolved(true);
 	}
 
 	@Test
 	public void shouldNotBeReadOnlyWhenNotFound() throws Exception {
-		assertFalse(resolver.isReadOnly(elContext, null, MISSING_PROPERTY_NAME));
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
+		assertFalse(this.resolver.isReadOnly(this.elContext, null, MISSING_PROPERTY_NAME));
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
 	@Test
 	public void shouldSetValueOnReadOnlyNonNullBase() throws Exception {
-		resolver.setValue(elContext, BASE_OBJECT, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
-		assertEquals(PROPERTY_VALUE, map.get(PROPERTY_NAME));
+		this.resolver.setValue(this.elContext, BASE_OBJECT, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
+		assertEquals(PROPERTY_VALUE, this.map.get(PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldThrowThenSetValueOnReadOnly() throws Exception {
 		try {
-			resolver.setValue(elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
+			this.resolver.setValue(this.elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 			fail();
 		} catch (PropertyNotWritableException e) {
 			assertEquals("The property myObject is not writable.", e.getMessage());
@@ -132,73 +132,78 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldSetValueOnReadOnlyNotFound() throws Exception {
-		resolver.setValue(elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
-		assertFalse(map.containsKey(MISSING_PROPERTY_NAME));
+		this.resolver.setValue(this.elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
+		assertFalse(this.map.containsKey(MISSING_PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldSetValueOnMutableObjectWhenFound() throws Exception {
-		readOnly = Boolean.FALSE;
-		resolver.setValue(elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
-		verify(elContext).setPropertyResolved(true);
-		assertEquals(REPLACED_PROPERTY_VALUE, map.get(PROPERTY_NAME));
+		this.readOnly = Boolean.FALSE;
+		this.resolver.setValue(this.elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
+		verify(this.elContext).setPropertyResolved(true);
+		assertEquals(REPLACED_PROPERTY_VALUE, this.map.get(PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldSetValueOnMutableObjectWhenNotFound() throws Exception {
-		readOnly = Boolean.FALSE;
-		resolver.setValue(elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
-		assertNull(map.get(MISSING_PROPERTY_NAME));
+		this.readOnly = Boolean.FALSE;
+		this.resolver.setValue(this.elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
+		assertNull(this.map.get(MISSING_PROPERTY_NAME));
 	}
 
 	@Test
 	public void shouldReturnNullOnMissingProperty() throws Exception {
-		handles = Boolean.TRUE;
-		assertNull(resolver.getValue(elContext, null, MISSING_PROPERTY_NAME));
-		verify(elContext).setPropertyResolved(true);
+		this.handles = Boolean.TRUE;
+		assertNull(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME));
+		verify(this.elContext).setPropertyResolved(true);
 	}
 
 	@Test
 	public void shouldGetNullValueWhenNotAvailable() throws Exception {
-		available = Boolean.FALSE;
-		assertNull(resolver.getValue(elContext, null, PROPERTY_NAME));
-		verify(elContext, never()).setPropertyResolved(anyBoolean());
+		this.available = Boolean.FALSE;
+		assertNull(this.resolver.getValue(this.elContext, null, PROPERTY_NAME));
+		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
 	private class MockELResolver extends AbstractELResolver {
 
+		@Override
 		protected boolean handles(String property) {
-			if (handles == null) {
+			if (AbstrctELResolverTest.this.handles == null) {
 				return super.handles(property);
 			}
-			return handles.booleanValue();
+			return AbstrctELResolverTest.this.handles.booleanValue();
 		}
 
+		@Override
 		protected boolean isAvailable() {
-			if (available == null) {
+			if (AbstrctELResolverTest.this.available == null) {
 				return super.isAvailable();
 			}
-			return available.booleanValue();
+			return AbstrctELResolverTest.this.available.booleanValue();
 		}
 
+		@Override
 		protected boolean isReadOnly(String property) {
-			if (readOnly == null) {
+			if (AbstrctELResolverTest.this.readOnly == null) {
 				return super.isReadOnly(property);
 			}
-			return readOnly.booleanValue();
+			return AbstrctELResolverTest.this.readOnly.booleanValue();
 		}
 
+		@Override
 		protected Object get(String property) {
-			return map.get(property);
+			return AbstrctELResolverTest.this.map.get(property);
 		}
 
+		@Override
 		protected void set(String property, Object value) throws PropertyNotWritableException {
-			if (readOnly == null) {
+			if (AbstrctELResolverTest.this.readOnly == null) {
 				super.set(property, value);
 			}
-			map.put(property, value);
+			AbstrctELResolverTest.this.map.put(property, value);
 		}
 	}
 }

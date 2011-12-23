@@ -33,15 +33,15 @@ public class DestinationAndModelTest {
 
 	@Test
 	public void shouldNotAllowNullNavigationOutcomeWithPreRenderComponentEvent() throws Exception {
-		thown.expect(IllegalArgumentException.class);
-		thown.expectMessage("NavigationOutcome must not be null");
+		this.thown.expect(IllegalArgumentException.class);
+		this.thown.expectMessage("NavigationOutcome must not be null");
 		new DestinationAndModel(null, (PreRenderComponentEvent) null);
 	}
 
 	@Test
 	public void shouldNotAllowNullNavigationOutcomeWithActionEvent() throws Exception {
-		thown.expect(IllegalArgumentException.class);
-		thown.expectMessage("NavigationOutcome must not be null");
+		this.thown.expect(IllegalArgumentException.class);
+		this.thown.expectMessage("NavigationOutcome must not be null");
 		new DestinationAndModel(null, (ActionEvent) null);
 	}
 

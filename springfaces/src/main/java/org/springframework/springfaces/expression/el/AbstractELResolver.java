@@ -98,6 +98,7 @@ public abstract class AbstractELResolver extends ELResolver {
 		return null;
 	}
 
+	@Override
 	public Class<?> getCommonPropertyType(ELContext elContext, Object base) {
 		if (base == null) {
 			return Object.class;
@@ -105,10 +106,12 @@ public abstract class AbstractELResolver extends ELResolver {
 		return null;
 	}
 
+	@Override
 	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext elContext, Object base) {
 		return null;
 	}
 
+	@Override
 	public Class<?> getType(ELContext elContext, Object base, Object property) {
 		return handle(elContext, base, property, new ELOperation<Class<?>>() {
 			public Class<?> execute(String property) {
@@ -117,6 +120,7 @@ public abstract class AbstractELResolver extends ELResolver {
 		});
 	}
 
+	@Override
 	public Object getValue(ELContext elContext, Object base, Object property) {
 		return handle(elContext, base, property, new ELOperation<Object>() {
 			public Object execute(String property) {
@@ -125,6 +129,7 @@ public abstract class AbstractELResolver extends ELResolver {
 		});
 	}
 
+	@Override
 	public boolean isReadOnly(ELContext elContext, Object base, Object property) {
 		Boolean readOnly = handle(elContext, base, property, new ELOperation<Boolean>() {
 			public Boolean execute(String property) {
@@ -134,6 +139,7 @@ public abstract class AbstractELResolver extends ELResolver {
 		return (readOnly != null ? readOnly.booleanValue() : false);
 	}
 
+	@Override
 	public void setValue(ELContext elContext, Object base, Object property, final Object value) {
 		handle(elContext, base, property, new ELOperation<Object>() {
 			public Object execute(String property) {

@@ -34,7 +34,7 @@ public class WebArgumentResolverMethodParameterFilterTest {
 	public void shouldAcceptNullWebArgumentResolver() throws Exception {
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(
 				(WebArgumentResolver[]) null);
-		assertFalse(f.isFiltered(request, methodParameter));
+		assertFalse(f.isFiltered(this.request, this.methodParameter));
 	}
 
 	@Test
@@ -42,14 +42,14 @@ public class WebArgumentResolverMethodParameterFilterTest {
 		WebArgumentResolver w1 = mock(WebArgumentResolver.class);
 		WebArgumentResolver w2 = mock(WebArgumentResolver.class);
 		WebArgumentResolver w3 = mock(WebArgumentResolver.class);
-		given(w1.resolveArgument(methodParameter, request)).willReturn(WebArgumentResolver.UNRESOLVED);
-		given(w3.resolveArgument(methodParameter, request)).willReturn(WebArgumentResolver.UNRESOLVED);
+		given(w1.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
+		given(w3.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(w1, w2, w3);
-		assertTrue(f.isFiltered(request, methodParameter));
+		assertTrue(f.isFiltered(this.request, this.methodParameter));
 		InOrder ordered = inOrder(w1, w2, w3);
-		ordered.verify(w1).resolveArgument(methodParameter, request);
-		ordered.verify(w2).resolveArgument(methodParameter, request);
-		ordered.verify(w3, never()).resolveArgument(methodParameter, request);
+		ordered.verify(w1).resolveArgument(this.methodParameter, this.request);
+		ordered.verify(w2).resolveArgument(this.methodParameter, this.request);
+		ordered.verify(w3, never()).resolveArgument(this.methodParameter, this.request);
 	}
 
 }

@@ -61,12 +61,12 @@ public class GenericFacesConverterTest {
 
 	@Before
 	public void setupMocks() {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		given(springFacesContext.getFacesContext()).willReturn(facesContext);
-		given(facesContext.getApplication()).willReturn(application);
-		given(application.createConverter("example")).willReturn(facesConverter);
-		given(application.createConverter(ClassWithConverter.class)).willReturn(facesConverter);
-		given(facesConverter.getAsObject(facesContext, null, source)).willReturn(converted);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		given(this.springFacesContext.getFacesContext()).willReturn(this.facesContext);
+		given(this.facesContext.getApplication()).willReturn(this.application);
+		given(this.application.createConverter("example")).willReturn(this.facesConverter);
+		given(this.application.createConverter(ClassWithConverter.class)).willReturn(this.facesConverter);
+		given(this.facesConverter.getAsObject(this.facesContext, null, this.source)).willReturn(this.converted);
 	}
 
 	@After
@@ -76,7 +76,7 @@ public class GenericFacesConverterTest {
 
 	@Test
 	public void shouldConvertStringToObject() throws Exception {
-		Set<ConvertiblePair> types = converter.getConvertibleTypes();
+		Set<ConvertiblePair> types = this.converter.getConvertibleTypes();
 		assertEquals(1, types.size());
 		ConvertiblePair pair = types.iterator().next();
 		assertEquals(String.class, pair.getSourceType());
@@ -86,72 +86,72 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldNotMatchIfNotSpringFacesContext() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(null);
-		assertFalse(converter.matches(sourceType, TypeDescriptor.valueOf(Object.class)));
+		assertFalse(this.converter.matches(this.sourceType, TypeDescriptor.valueOf(Object.class)));
 	}
 
 	@Test
 	public void shouldMatchIfHasAnnotationOnField() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		assertTrue(converter.matches(sourceType, targetType));
+		assertTrue(this.converter.matches(this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldMatchIfHasAnnotationOnMethod() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getMethodParamTypeDescriptor();
-		assertTrue(converter.matches(sourceType, targetType));
+		assertTrue(this.converter.matches(this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldMatchIfConverterExists() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithConverter.class);
-		assertTrue(converter.matches(sourceType, targetType));
+		assertTrue(this.converter.matches(this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldNotMatchIfNoConverterExists() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithoutConverter.class);
-		assertFalse(converter.matches(sourceType, targetType));
+		assertFalse(this.converter.matches(this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldConvertNull() throws Exception {
-		assertNull(converter.convert(null, sourceType, TypeDescriptor.forObject(Object.class)));
+		assertNull(this.converter.convert(null, this.sourceType, TypeDescriptor.forObject(Object.class)));
 	}
 
 	@Test
 	public void shouldConvertAnnotationOnField() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		assertEquals(converted, converter.convert(source, sourceType, targetType));
+		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldConvertAnnotationOnMethod() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getMethodParamTypeDescriptor();
-		assertEquals(converted, converter.convert(source, sourceType, targetType));
+		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldConvertByType() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithConverter.class);
-		assertEquals(converted, converter.convert(source, sourceType, targetType));
+		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
 	}
 
 	@Test
 	public void shouldThrowIfNoConverter() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		reset(application);
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("No JSF converter located for ID 'example'");
-		converter.convert(source, sourceType, targetType);
+		reset(this.application);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("No JSF converter located for ID 'example'");
+		this.converter.convert(this.source, this.sourceType, targetType);
 	}
 
 	@Test
 	public void shouldReThrowFacesException() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		reset(application);
-		given(application.createConverter("example")).willThrow(new FacesException());
-		thrown.expect(FacesException.class);
-		converter.convert(source, sourceType, targetType);
+		reset(this.application);
+		given(this.application.createConverter("example")).willThrow(new FacesException());
+		this.thrown.expect(FacesException.class);
+		this.converter.convert(this.source, this.sourceType, targetType);
 	}
 
 	@SuppressWarnings("unused")

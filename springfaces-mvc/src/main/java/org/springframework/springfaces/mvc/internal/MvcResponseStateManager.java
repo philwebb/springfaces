@@ -34,16 +34,16 @@ public class MvcResponseStateManager extends ResponseStateManagerWrapper impleme
 
 	@Override
 	public ResponseStateManager getWrapped() {
-		return delegate;
+		return this.delegate;
 	}
 
 	@Override
 	public void writeState(FacesContext context, Object state) throws IOException {
 		if (SpringFacesContext.getCurrentInstance() != null
 				&& SpringFacesContext.getCurrentInstance().getRendering() != null
-				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(renderKitId)) {
+				&& RenderKitFactory.HTML_BASIC_RENDER_KIT.equals(this.renderKitId)) {
 			ViewArtifact viewArtifact = SpringFacesContext.getCurrentInstance().getRendering().getViewArtifact();
-			stateHandler.write(context, viewArtifact);
+			this.stateHandler.write(context, viewArtifact);
 		}
 		super.writeState(context, state);
 	}

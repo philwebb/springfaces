@@ -36,44 +36,45 @@ public class ImplicitNavigationOutcomeResolverTest {
 
 	@Test
 	public void shouldResolvePrefixedDefaultDestinationViewId() throws Exception {
-		given(navigationContext.getDefaultDestinationViewId()).willReturn("spring:view");
-		assertTrue(resolver.canResolve(facesContext, navigationContext));
-		NavigationOutcome outcome = resolver.resolve(facesContext, navigationContext);
+		given(this.navigationContext.getDefaultDestinationViewId()).willReturn("spring:view");
+		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertEquals("view", outcome.getDestination());
 		assertNull(outcome.getImplicitModel());
 	}
 
 	@Test
 	public void shouldResolvePrefixedOutcome() throws Exception {
-		given(navigationContext.getOutcome()).willReturn("spring:view");
-		assertTrue(resolver.canResolve(facesContext, navigationContext));
-		NavigationOutcome outcome = resolver.resolve(facesContext, navigationContext);
+		given(this.navigationContext.getOutcome()).willReturn("spring:view");
+		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertEquals("view", outcome.getDestination());
 		assertNull(outcome.getImplicitModel());
 	}
 
 	@Test
 	public void shouldResolveCustomPrefix() throws Exception {
-		resolver.setPrefix("springFaces:");
-		given(navigationContext.getOutcome()).willReturn("springFaces:view");
-		assertTrue(resolver.canResolve(facesContext, navigationContext));
-		NavigationOutcome outcome = resolver.resolve(facesContext, navigationContext);
+		this.resolver.setPrefix("springFaces:");
+		given(this.navigationContext.getOutcome()).willReturn("springFaces:view");
+		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertEquals("view", outcome.getDestination());
 		assertNull(outcome.getImplicitModel());
 	}
 
 	@Test
 	public void shouldNotResolvedNonPrefixed() throws Exception {
-		given(navigationContext.getOutcome()).willReturn("xspring:view");
-		assertFalse(resolver.canResolve(facesContext, navigationContext));
+		given(this.navigationContext.getOutcome()).willReturn("xspring:view");
+		assertFalse(this.resolver.canResolve(this.facesContext, this.navigationContext));
 	}
 
 	@Test
 	public void shouldRequireDestinationText() throws Exception {
-		given(navigationContext.getOutcome()).willReturn("spring:");
-		assertTrue(resolver.canResolve(facesContext, navigationContext));
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("The destination must be specified for an implicit MVC navigation prefixed 'spring:'");
-		resolver.resolve(facesContext, navigationContext);
+		given(this.navigationContext.getOutcome()).willReturn("spring:");
+		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown
+				.expectMessage("The destination must be specified for an implicit MVC navigation prefixed 'spring:'");
+		this.resolver.resolve(this.facesContext, this.navigationContext);
 	}
 }

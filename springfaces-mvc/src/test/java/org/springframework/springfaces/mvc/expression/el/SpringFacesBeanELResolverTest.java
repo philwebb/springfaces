@@ -39,7 +39,7 @@ public class SpringFacesBeanELResolverTest {
 
 	@Before
 	public void setup() {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 	}
 
 	@After
@@ -49,7 +49,7 @@ public class SpringFacesBeanELResolverTest {
 
 	@Test
 	public void shouldHaveEmptyBeanFactoryWhenNotRendering() throws Exception {
-		BeanFactory factory = resolver.getBeanFactory(elContext);
+		BeanFactory factory = this.resolver.getBeanFactory(this.elContext);
 		assertEquals(0, ((ListableBeanFactory) factory).getBeanDefinitionCount());
 	}
 
@@ -57,9 +57,9 @@ public class SpringFacesBeanELResolverTest {
 	public void shouldGetBeanFactoryFromSpringFacesContext() throws Exception {
 		ViewArtifact viewArtifact = new ViewArtifact("artifact");
 		ModelAndViewArtifact rendering = new ModelAndViewArtifact(viewArtifact, null);
-		given(springFacesContext.getRendering()).willReturn(rendering);
+		given(this.springFacesContext.getRendering()).willReturn(rendering);
 		WebApplicationContext applicationContext = mock(WebApplicationContext.class);
-		given(springFacesContext.getWebApplicationContext()).willReturn(applicationContext);
-		assertSame(applicationContext, resolver.getBeanFactory(elContext));
+		given(this.springFacesContext.getWebApplicationContext()).willReturn(applicationContext);
+		assertSame(applicationContext, this.resolver.getBeanFactory(this.elContext));
 	}
 }

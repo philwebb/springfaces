@@ -66,21 +66,21 @@ public class UIMessageSourceTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesMocks.setupSpringFacesIntegration(facesContext, applicationContext);
-		given(facesContext.getViewRoot()).willReturn(viewRoot);
-		given(facesContext.getExternalContext().getRequestMap()).willReturn(requestMap);
-		uiMessageSource = new UIMessageSource();
-		uiMessageSource.setVar("msg");
+		SpringFacesMocks.setupSpringFacesIntegration(this.facesContext, this.applicationContext);
+		given(this.facesContext.getViewRoot()).willReturn(this.viewRoot);
+		given(this.facesContext.getExternalContext().getRequestMap()).willReturn(this.requestMap);
+		this.uiMessageSource = new UIMessageSource();
+		this.uiMessageSource.setVar("msg");
 	}
 
 	@Test
 	public void shouldGetComponentFamily() throws Exception {
-		assertThat(uiMessageSource.getFamily(), is(equalTo(UIMessageSource.COMPONENT_FAMILY)));
+		assertThat(this.uiMessageSource.getFamily(), is(equalTo(UIMessageSource.COMPONENT_FAMILY)));
 	}
 
 	@Test
 	public void shouldAddMessageMap() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		assertThat(messageSourceMap, is(notNullValue()));
 	}
@@ -112,101 +112,102 @@ public class UIMessageSourceTest {
 
 	@Test
 	public void shouldReplacePreviousVar() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		Object previous = new Object();
-		requestMap.put("msg", previous);
+		this.requestMap.put("msg", previous);
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		assertThat(messageSourceMap, is(not(previous)));
 	}
 
 	@Test
 	public void shouldUseApplicationContextAsSource() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		messageSourceMap.get("test").toString();
-		verify(applicationContext).getMessage((MessageSourceResolvable) any(), (Locale) any());
+		verify(this.applicationContext).getMessage((MessageSourceResolvable) any(), (Locale) any());
 	}
 
 	@Test
 	public void shouldUseDefinedSource() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		MessageSource source = mock(MessageSource.class);
-		uiMessageSource.setSource(source);
+		this.uiMessageSource.setSource(source);
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		messageSourceMap.get("test").toString();
 		verify(source).getMessage((MessageSourceResolvable) any(), (Locale) any());
-		verify(applicationContext, never()).getMessage((MessageSourceResolvable) any(), (Locale) any());
+		verify(this.applicationContext, never()).getMessage((MessageSourceResolvable) any(), (Locale) any());
 	}
 
 	@Test
 	public void shouldNeedSpringIntegration() throws Exception {
-		SpringFacesMocks.removeSpringFacesIntegration(facesContext);
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to find MessageSource, ensure that SpringFaces intergation is enabled or set the 'source' attribute");
+		SpringFacesMocks.removeSpringFacesIntegration(this.facesContext);
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown
+				.expectMessage("Unable to find MessageSource, ensure that SpringFaces intergation is enabled or set the 'source' attribute");
 		callEncodeEnd();
 	}
 
 	@Test
 	public void shouldSupportDefinedPrefixes() throws Exception {
-		uiMessageSource.setPrefix("a.b,a.b.c , a.b.c.d");
+		this.uiMessageSource.setPrefix("a.b,a.b.c , a.b.c.d");
 		assertCodes("z", new String[] { "a.b.z", "a.b.c.z", "a.b.c.d.z" });
 	}
 
 	@Test
 	public void shouldUseLocaleFromViewRoot() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		Locale locale = Locale.CANADA_FRENCH;
-		given(viewRoot.getLocale()).willReturn(locale);
+		given(this.viewRoot.getLocale()).willReturn(locale);
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		messageSourceMap.get("test").toString();
-		verify(applicationContext).getMessage((MessageSourceResolvable) any(), eq(locale));
+		verify(this.applicationContext).getMessage((MessageSourceResolvable) any(), eq(locale));
 	}
 
 	@Test
 	public void shouldThrowOnMissingMessageWhenInProduction() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		given(facesContext.isProjectStage(ProjectStage.Production)).willReturn(true);
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.facesContext.isProjectStage(ProjectStage.Production)).willReturn(true);
 		MessageSourceMap messageSourceMap = callEncodeEnd();
-		given(applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
+		given(this.applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
 				new NoSuchMessageException("test"));
-		thrown.expect(NoSuchMessageException.class);
+		this.thrown.expect(NoSuchMessageException.class);
 		messageSourceMap.get("test").toString();
 	}
 
 	@Test
 	public void shouldAddFacesMessageOnMissingMessageWhenNotInProduction() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		given(facesContext.isProjectStage(ProjectStage.Production)).willReturn(false);
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.facesContext.isProjectStage(ProjectStage.Production)).willReturn(false);
 		MessageSourceMap messageSourceMap = callEncodeEnd();
-		given(applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
+		given(this.applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
 				new NoSuchMessageException("test"));
 		messageSourceMap.get("test").toString();
-		verify(facesContext).addMessage(anyString(), messageCaptor.capture());
-		assertThat(messageCaptor.getValue().getDetail(), is("No message found under code 'test' for locale '"
+		verify(this.facesContext).addMessage(anyString(), this.messageCaptor.capture());
+		assertThat(this.messageCaptor.getValue().getDetail(), is("No message found under code 'test' for locale '"
 				+ Locale.getDefault().toString() + "'."));
 	}
 
 	@Test
 	public void shouldWrapWithDefaultObjectMessageSource() throws Exception {
-		given(viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		MessageSourceMap messageSourceMap = callEncodeEnd();
 		Convertable convertable = new Convertable();
 		given(
-				applicationContext.getMessage("org.springframework.springfaces.message.ui."
+				this.applicationContext.getMessage("org.springframework.springfaces.message.ui."
 						+ "UIMessageSourceTest$Convertable", new Object[] {}, null)).willReturn("test");
 		String actual = messageSourceMap.get(convertable).toString();
 		assertThat(actual, is("test"));
 	}
 
 	private MessageSourceMap callEncodeEnd() throws IOException {
-		uiMessageSource.encodeEnd(facesContext);
-		MessageSourceMap msg = (MessageSourceMap) requestMap.get("msg");
+		this.uiMessageSource.encodeEnd(this.facesContext);
+		MessageSourceMap msg = (MessageSourceMap) this.requestMap.get("msg");
 		return msg;
 	}
 
 	private void assertBuildCode(String viewId, String expectedPrefix) throws IOException {
-		given(viewRoot.getViewId()).willReturn(viewId);
+		given(this.viewRoot.getViewId()).willReturn(viewId);
 		assertCodes("test", new String[] { expectedPrefix + "test" });
 	}
 

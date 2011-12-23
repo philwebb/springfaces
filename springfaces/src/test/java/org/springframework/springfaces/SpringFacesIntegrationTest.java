@@ -52,8 +52,8 @@ public class SpringFacesIntegrationTest {
 	private ArgumentCaptor<ApplicationEvent> applicationEventCaptor;
 
 	public SpringFacesIntegrationTest() {
-		servletContext = new MockServletContext();
-		externalContext = mock(ExternalContext.class);
+		this.servletContext = new MockServletContext();
+		this.externalContext = mock(ExternalContext.class);
 		Map<String, Object> applicationMap = new AbstractMap<String, Object>() {
 			@Override
 			public Set<java.util.Map.Entry<String, Object>> entrySet() {
@@ -62,28 +62,28 @@ public class SpringFacesIntegrationTest {
 
 			@Override
 			public Object get(Object key) {
-				return servletContext.getAttribute((String) key);
+				return SpringFacesIntegrationTest.this.servletContext.getAttribute((String) key);
 			}
 
 			@Override
 			public Object put(String key, Object value) {
-				servletContext.setAttribute(key, value);
+				SpringFacesIntegrationTest.this.servletContext.setAttribute(key, value);
 				return null;
 			}
 		};
-		given(externalContext.getApplicationMap()).willReturn(applicationMap);
+		given(this.externalContext.getApplicationMap()).willReturn(applicationMap);
 	}
 
 	private void createSpringFacesIntegration() {
 		this.applicationContext = mock(WebApplicationContext.class);
-		given(applicationContext.getServletContext()).willReturn(servletContext);
+		given(this.applicationContext.getServletContext()).willReturn(this.servletContext);
 		this.springFacesIntegration = new SpringFacesIntegration();
-		springFacesIntegration.setApplicationContext(applicationContext);
+		this.springFacesIntegration.setApplicationContext(this.applicationContext);
 	}
 
 	@Test
 	public void shouldNotBeInstalledUsing() throws Exception {
-		assertFalse(SpringFacesIntegration.isInstalled(servletContext));
+		assertFalse(SpringFacesIntegration.isInstalled(this.servletContext));
 	}
 
 	@Test
@@ -95,70 +95,70 @@ public class SpringFacesIntegrationTest {
 	@Test
 	public void shouldBeInstalledUsing() throws Exception {
 		createSpringFacesIntegration();
-		assertTrue(SpringFacesIntegration.isInstalled(servletContext));
+		assertTrue(SpringFacesIntegration.isInstalled(this.servletContext));
 	}
 
 	@Test
 	public void shouldBeInstalledUsingExternalContext() throws Exception {
 		createSpringFacesIntegration();
-		assertTrue(SpringFacesIntegration.isInstalled(externalContext));
+		assertTrue(SpringFacesIntegration.isInstalled(this.externalContext));
 	}
 
 	@Test
 	public void shouldThrowWithoutLastRefreshedDate() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to determine the last refresh date for SpringFaces");
-		SpringFacesIntegration.getLastRefreshedDate(servletContext);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to determine the last refresh date for SpringFaces");
+		SpringFacesIntegration.getLastRefreshedDate(this.servletContext);
 	}
 
 	@Test
 	public void shouldThrowWithoutLastRefreshedDateFromExternalContext() throws Exception {
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to determine the last refresh date for SpringFaces");
-		SpringFacesIntegration.getLastRefreshedDate(externalContext);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to determine the last refresh date for SpringFaces");
+		SpringFacesIntegration.getLastRefreshedDate(this.externalContext);
 	}
 
 	@Test
 	public void shouldHaveSetLastRefreshedDateOnLoad() throws Exception {
 		createSpringFacesIntegration();
-		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(servletContext));
-		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(externalContext));
+		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(this.servletContext));
+		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(this.externalContext));
 	}
 
 	@Test
 	public void shouldUpdateLastRefreshDateOnReload() throws Exception {
 		createSpringFacesIntegration();
-		Date initialDate = SpringFacesIntegration.getLastRefreshedDate(servletContext);
+		Date initialDate = SpringFacesIntegration.getLastRefreshedDate(this.servletContext);
 		Thread.sleep(100);
 		ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
-		springFacesIntegration.onApplicationEvent(event);
-		assertTrue(SpringFacesIntegration.getLastRefreshedDate(servletContext).after(initialDate));
-		assertTrue(SpringFacesIntegration.getLastRefreshedDate(externalContext).after(initialDate));
+		this.springFacesIntegration.onApplicationEvent(event);
+		assertTrue(SpringFacesIntegration.getLastRefreshedDate(this.servletContext).after(initialDate));
+		assertTrue(SpringFacesIntegration.getLastRefreshedDate(this.externalContext).after(initialDate));
 	}
 
 	@Test
 	public void shouldGetCurrentInstace() throws Exception {
 		createSpringFacesIntegration();
-		assertSame(springFacesIntegration, SpringFacesIntegration.getCurrentInstance(servletContext));
-		assertSame(springFacesIntegration, SpringFacesIntegration.getCurrentInstance(externalContext));
+		assertSame(this.springFacesIntegration, SpringFacesIntegration.getCurrentInstance(this.servletContext));
+		assertSame(this.springFacesIntegration, SpringFacesIntegration.getCurrentInstance(this.externalContext));
 	}
 
 	@Test
 	public void shouldPublishPostConstructApplicationEventWhenSpringFirst() throws Exception {
 		createSpringFacesIntegration();
 		Application application = mock(Application.class);
-		SpringFacesIntegration.postConstructApplicationEvent(externalContext, application);
-		verify(applicationContext).publishEvent(applicationEventCaptor.capture());
-		assertSame(application, applicationEventCaptor.getValue().getSource());
+		SpringFacesIntegration.postConstructApplicationEvent(this.externalContext, application);
+		verify(this.applicationContext).publishEvent(this.applicationEventCaptor.capture());
+		assertSame(application, this.applicationEventCaptor.getValue().getSource());
 	}
 
 	@Test
 	public void shouldPublishPostConstructApplicationEventWhenJsfFirst() throws Exception {
 		Application application = mock(Application.class);
-		SpringFacesIntegration.postConstructApplicationEvent(externalContext, application);
+		SpringFacesIntegration.postConstructApplicationEvent(this.externalContext, application);
 		createSpringFacesIntegration();
-		springFacesIntegration.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
-		verify(applicationContext).publishEvent(applicationEventCaptor.capture());
-		assertSame(application, applicationEventCaptor.getValue().getSource());
+		this.springFacesIntegration.onApplicationEvent(new ContextRefreshedEvent(this.applicationContext));
+		verify(this.applicationContext).publishEvent(this.applicationEventCaptor.capture());
+		assertSame(application, this.applicationEventCaptor.getValue().getSource());
 	}
 }

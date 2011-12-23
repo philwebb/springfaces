@@ -91,8 +91,8 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		FacesContext facesContext = mock(FacesContext.class);
 		ExternalContext externalContext = mock(ExternalContext.class);
 		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getRequest()).willReturn(request);
-		given(externalContext.getResponse()).willReturn(response);
+		given(externalContext.getRequest()).willReturn(this.request);
+		given(externalContext.getResponse()).willReturn(this.response);
 		FacesContextSetter.setCurrentInstance(facesContext);
 	}
 
@@ -104,8 +104,8 @@ public class RequestMappedRedirectViewModelBuilderTest {
 	private void setHandlerMethod(String methodName) {
 		for (Method method : Methods.class.getMethods()) {
 			if (method.getName().equals(methodName)) {
-				handlerMethod = method;
-				builder = new RequestMappedRedirectViewModelBuilder(context, handlerMethod);
+				this.handlerMethod = method;
+				this.builder = new RequestMappedRedirectViewModelBuilder(this.context, this.handlerMethod);
 				return;
 			}
 		}
@@ -129,7 +129,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		given(annotationMock.annotationType()).willReturn((Class) annotation);
 		given(methodParameter.getParameterAnnotations()).willReturn(new Annotation[] { annotationMock });
 		given(methodParameter.getParameterType()).willReturn((Class) Object.class);
-		assertEquals(expected, builder.isIgnored(nativeRequest, methodParameter));
+		assertEquals(expected, this.builder.isIgnored(this.nativeRequest, methodParameter));
 	}
 
 	@Test
@@ -159,7 +159,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		MethodParameter methodParameter = mock(MethodParameter.class);
 		given(methodParameter.getParameterAnnotations()).willReturn(new Annotation[] {});
 		given(methodParameter.getParameterType()).willReturn((Class) type);
-		assertEquals(expected, builder.isIgnored(nativeRequest, methodParameter));
+		assertEquals(expected, this.builder.isIgnored(this.nativeRequest, methodParameter));
 	}
 
 	@Test
@@ -178,9 +178,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 			}
 		};
 		WebArgumentResolver[] resolvers = new WebArgumentResolver[] { argumentResolver };
-		given(context.getCustomArgumentResolvers()).willReturn(resolvers);
+		given(this.context.getCustomArgumentResolvers()).willReturn(resolvers);
 		setHandlerMethod("ignore");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertTrue(model.isEmpty());
 	}
 
@@ -190,7 +190,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("pv1", "1");
 		source.put("p2", "2");
 		setHandlerMethod("pathVariable");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(2, model.size());
 		assertEquals("1", model.get("pv1"));
 		assertEquals("2", model.get("p2"));
@@ -202,7 +202,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xa", new Long(1));
 		source.put("xb", new Integer(2));
 		setHandlerMethod("pathVariableByType");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(2, model.size());
 		assertEquals(new Long(1), model.get("p1"));
 		assertEquals(new Integer(2), model.get("p2"));
@@ -213,9 +213,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		Map<String, Object> source = new HashMap<String, Object>();
 		source.put("xa", new Long(1));
 		setHandlerMethod("pathVariableByType");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to find value in model of type java.lang.Integer");
-		builder.build(nativeRequest, source);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to find value in model of type java.lang.Integer");
+		this.builder.build(this.nativeRequest, source);
 	}
 
 	@Test
@@ -225,23 +225,23 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xb", new Integer(2));
 		source.put("xc", new Long(3));
 		setHandlerMethod("pathVariableByType");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("Unable to find single unique value in model of type java.lang.Long");
-		builder.build(nativeRequest, source);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to find single unique value in model of type java.lang.Long");
+		this.builder.build(this.nativeRequest, source);
 	}
 
 	@Test
 	public void shouldNeedPathVaraibleName() throws Exception {
 		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
-		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(this.context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
 		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
 		Map<String, String> source = new HashMap<String, String>();
 		source.put("pv1", "1");
 		setHandlerMethod("pathVariable");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
 				+ "no parameter name information found in class file either.");
-		builder.build(nativeRequest, source);
+		this.builder.build(this.nativeRequest, source);
 	}
 
 	@Test
@@ -251,7 +251,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("p2", "2");
 		source.put("p3", "3");
 		setHandlerMethod("requestParam");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(3, model.size());
 		assertEquals("1", model.get("pv1"));
 		assertEquals("2", model.get("p2"));
@@ -265,7 +265,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xb", new Integer(2));
 		source.put("xc", new Byte((byte) 3));
 		setHandlerMethod("requestParamByType");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(3, model.size());
 		assertEquals(new Long(1), model.get("p1"));
 		assertEquals(new Integer(2), model.get("p2"));
@@ -277,7 +277,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		Map<String, Object> source = new HashMap<String, Object>();
 		source.put("x", new ComplexType(1, 2L));
 		setHandlerMethod("requestParamComplexType");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(2, model.size());
 		assertEquals("1", model.get("a"));
 		assertEquals("2", model.get("b"));
@@ -289,34 +289,34 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("x", new ComplexType(1, 2L));
 		setHandlerMethod("requestParamComplexType");
 		WebBindingInitializer webBindingInitializer = mock(WebBindingInitializer.class);
-		given(context.getWebBindingInitializer()).willReturn(webBindingInitializer);
-		builder.build(nativeRequest, source);
+		given(this.context.getWebBindingInitializer()).willReturn(webBindingInitializer);
+		this.builder.build(this.nativeRequest, source);
 		verify(webBindingInitializer).initBinder(any(WebDataBinder.class), any(WebRequest.class));
 	}
 
 	@Test
 	public void shouldNeedNameForSimpleRequestParamType() throws Exception {
 		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
-		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(this.context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
 		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
 		Map<String, String> source = new HashMap<String, String>();
 		source.put("xa", "1");
 		setHandlerMethod("requestParamNotNamed");
-		thrown.expect(IllegalStateException.class);
-		thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("No parameter name specified for argument of type [java.lang.String], and "
 				+ "no parameter name information found in class file either.");
-		builder.build(nativeRequest, source);
+		this.builder.build(this.nativeRequest, source);
 	}
 
 	@Test
 	public void shouldResolveByTypeWhenComplexTypeNotNamed() throws Exception {
 		ParameterNameDiscoverer parameterNameDiscoverer = mock(ParameterNameDiscoverer.class);
-		given(context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
+		given(this.context.getParameterNameDiscoverer()).willReturn(parameterNameDiscoverer);
 		given(parameterNameDiscoverer.getParameterNames(any(Method.class))).willReturn(null);
 		Map<String, Object> source = new HashMap<String, Object>();
 		source.put("xa", new ComplexType(1, 2L));
 		setHandlerMethod("requestParamComplexType");
-		Map<String, Object> model = builder.build(nativeRequest, source);
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
 		assertEquals(2, model.size());
 		assertEquals("1", model.get("a"));
 		assertEquals("2", model.get("b"));
@@ -377,7 +377,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		}
 
 		public Integer getA() {
-			return a;
+			return this.a;
 		}
 
 		public void setA(Integer a) {
@@ -385,7 +385,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		}
 
 		public Long getB() {
-			return b;
+			return this.b;
 		}
 
 		public void setB(Long b) {

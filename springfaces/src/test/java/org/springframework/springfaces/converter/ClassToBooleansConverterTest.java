@@ -28,19 +28,19 @@ public class ClassToBooleansConverterTest {
 	@Before
 	@SuppressWarnings("deprecation")
 	public void setup() throws Exception {
-		conversionService = ConversionServiceFactory.createDefaultConversionService();
-		conversionService.addConverter(new ClassToBooleansConverter());
+		this.conversionService = ConversionServiceFactory.createDefaultConversionService();
+		this.conversionService.addConverter(new ClassToBooleansConverter());
 	}
 
 	@Test
 	public void shouldConvertToObjectArray() throws Exception {
-		Boolean[] b = conversionService.convert(Boolean.class, Boolean[].class);
+		Boolean[] b = this.conversionService.convert(Boolean.class, Boolean[].class);
 		assertTrue(Arrays.equals(new Boolean[] { false, true }, b));
 	}
 
 	@Test
 	public void shouldConvertToPrimitiveArray() throws Exception {
-		boolean[] b = conversionService.convert(Boolean.class, boolean[].class);
+		boolean[] b = this.conversionService.convert(Boolean.class, boolean[].class);
 		assertTrue(Arrays.equals(new boolean[] { false, true }, b));
 	}
 
@@ -74,7 +74,7 @@ public class ClassToBooleansConverterTest {
 
 	@Test
 	public void shouldConvertFromPrimitives() throws Exception {
-		conversionService.convert(Boolean.TYPE, TypeDescriptor.forObject(Boolean.TYPE), collectionType(Set.class));
+		this.conversionService.convert(Boolean.TYPE, TypeDescriptor.forObject(Boolean.TYPE), collectionType(Set.class));
 	}
 
 	@Test(expected = ConverterNotFoundException.class)
@@ -83,7 +83,7 @@ public class ClassToBooleansConverterTest {
 	}
 
 	private Object doConvert(TypeDescriptor targetType) {
-		return conversionService.convert(Boolean.class, TypeDescriptor.forObject(Boolean.class), targetType);
+		return this.conversionService.convert(Boolean.class, TypeDescriptor.forObject(Boolean.class), targetType);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

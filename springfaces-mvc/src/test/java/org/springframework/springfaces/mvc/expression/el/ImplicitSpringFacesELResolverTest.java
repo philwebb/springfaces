@@ -43,10 +43,10 @@ public class ImplicitSpringFacesELResolverTest {
 
 	@Before
 	public void setup() {
-		SpringFacesContextSetter.setCurrentInstance(springFacesContext);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
-		given(facesContext.getViewRoot()).willReturn(viewRoot);
+		given(this.facesContext.getViewRoot()).willReturn(viewRoot);
 	}
 
 	@After
@@ -58,18 +58,18 @@ public class ImplicitSpringFacesELResolverTest {
 	@Test
 	public void shouldGetHandler() throws Exception {
 		Object handler = new Object();
-		given(springFacesContext.getHandler()).willReturn(handler);
-		Object value = resolver.getValue(context, null, "handler");
-		assertTrue(context.isPropertyResolved());
+		given(this.springFacesContext.getHandler()).willReturn(handler);
+		Object value = this.resolver.getValue(this.context, null, "handler");
+		assertTrue(this.context.isPropertyResolved());
 		assertSame(handler, value);
 	}
 
 	@Test
 	public void shouldGetController() throws Exception {
 		Object controller = new Object();
-		given(springFacesContext.getController()).willReturn(controller);
-		Object value = resolver.getValue(context, null, "controller");
-		assertTrue(context.isPropertyResolved());
+		given(this.springFacesContext.getController()).willReturn(controller);
+		Object value = this.resolver.getValue(this.context, null, "controller");
+		assertTrue(this.context.isPropertyResolved());
 		assertSame(controller, value);
 	}
 
@@ -77,9 +77,9 @@ public class ImplicitSpringFacesELResolverTest {
 	public void shouldGetModel() throws Exception {
 		SpringFacesModel model = new SpringFacesModel();
 		model.put("key", "value");
-		SpringFacesModelHolder.attach(facesContext, facesContext.getViewRoot(), model);
-		Object value = resolver.getValue(context, null, "model");
-		assertTrue(context.isPropertyResolved());
+		SpringFacesModelHolder.attach(this.facesContext, this.facesContext.getViewRoot(), model);
+		Object value = this.resolver.getValue(this.context, null, "model");
+		assertTrue(this.context.isPropertyResolved());
 		assertEquals(model, value);
 	}
 }

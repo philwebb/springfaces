@@ -18,8 +18,8 @@ public class DestinationViewResolverChain implements DestinationViewResolver {
 	private List<DestinationViewResolver> resolvers;
 
 	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
-		if (resolvers != null) {
-			for (DestinationViewResolver resolver : resolvers) {
+		if (this.resolvers != null) {
+			for (DestinationViewResolver resolver : this.resolvers) {
 				ModelAndView view = resolver.resolveDestination(destination, locale, model);
 				if (view != null) {
 					return view;

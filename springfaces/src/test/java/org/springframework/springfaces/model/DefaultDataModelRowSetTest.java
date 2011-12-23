@@ -24,26 +24,26 @@ public class DefaultDataModelRowSetTest {
 
 	@Test
 	public void shouldNotHaveRowCountWhenEmpty() throws Exception {
-		assertThat(empty.getTotalRowCount(), is(-1L));
+		assertThat(this.empty.getTotalRowCount(), is(-1L));
 	}
 
 	@Test
 	public void shouldNotHaveRowDataWhenEmpty() throws Exception {
-		thrown.expect(NoRowAvailableException.class);
-		empty.getRowData(0);
+		this.thrown.expect(NoRowAvailableException.class);
+		this.empty.getRowData(0);
 	}
 
 	@Test
 	public void shouldContainRowWhenEmpty() throws Exception {
-		assertThat(empty.contains(-1), is(true));
+		assertThat(this.empty.contains(-1), is(true));
 	}
 
 	@Test
 	public void shouldContainSpecificRowWhenEmpty() throws Exception {
-		empty = DefaultDataModelRowSet.emptySet(2);
-		assertThat(empty.contains(1), is(false));
-		assertThat(empty.contains(2), is(true));
-		assertThat(empty.contains(3), is(false));
+		this.empty = DefaultDataModelRowSet.emptySet(2);
+		assertThat(this.empty.contains(1), is(false));
+		assertThat(this.empty.contains(2), is(true));
+		assertThat(this.empty.contains(3), is(false));
 	}
 
 	@Test

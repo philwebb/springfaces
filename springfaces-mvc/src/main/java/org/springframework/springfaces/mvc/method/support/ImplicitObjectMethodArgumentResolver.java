@@ -68,12 +68,12 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 		Assert.notNull(type, "Type must not be null");
 		Assert.notNull(condition, "Condition must not be null");
 		Assert.notNull(call, "Call must not be null");
-		implicitObjects.add(new ImplicitObject<T>(type, condition, call));
+		this.implicitObjects.add(new ImplicitObject<T>(type, condition, call));
 	}
 
 	public boolean supportsParameter(MethodParameter parameter) {
 		try {
-			for (ImplicitObject<?> implicitObject : implicitObjects) {
+			for (ImplicitObject<?> implicitObject : this.implicitObjects) {
 				if (parameter.getParameterType().isAssignableFrom(implicitObject.getType())
 						&& Boolean.TRUE.equals(implicitObject.getCondition().call())) {
 					return true;
@@ -87,7 +87,7 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		for (ImplicitObject<?> implicitObject : implicitObjects) {
+		for (ImplicitObject<?> implicitObject : this.implicitObjects) {
 			if (implicitObject.getType().isAssignableFrom(parameter.getParameterType())
 					&& Boolean.TRUE.equals(implicitObject.getCondition().call())) {
 				return implicitObject.getCall().call();
@@ -108,15 +108,15 @@ public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMet
 		}
 
 		public Class<T> getType() {
-			return type;
+			return this.type;
 		}
 
 		public Callable<Boolean> getCondition() {
-			return condition;
+			return this.condition;
 		}
 
 		public Callable<T> getCall() {
-			return call;
+			return this.call;
 		}
 	}
 }

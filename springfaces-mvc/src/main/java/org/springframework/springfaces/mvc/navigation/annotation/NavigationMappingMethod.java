@@ -97,32 +97,32 @@ class NavigationMappingMethod {
 	 * @return <tt>true</tt> if this method can be used to handle navigation
 	 */
 	public boolean canResolve(NavigationContext context) {
-		return filter.matches(context);
+		return this.filter.matches(context);
 	}
 
 	public String getBeanName() {
-		return beanName;
+		return this.beanName;
 	}
 
 	/**
 	 * @return the bean type
 	 */
 	public Class<?> getBeanType() {
-		return beanType;
+		return this.beanType;
 	}
 
 	/**
 	 * @return the method
 	 */
 	public Method getMethod() {
-		return method;
+		return this.method;
 	}
 
 	/**
 	 * @return <tt>true</tt> if the method is on a controller bean
 	 */
 	public boolean isControllerBeanMethod() {
-		return controllerBeanMethod;
+		return this.controllerBeanMethod;
 	}
 
 	private class OutcomesFilter implements NavigationMappingFilter {
@@ -149,7 +149,7 @@ class NavigationMappingMethod {
 		}
 
 		public boolean matches(NavigationContext context) {
-			return outcomes.contains(context.getOutcome());
+			return this.outcomes.contains(context.getOutcome());
 		}
 	}
 
@@ -163,13 +163,13 @@ class NavigationMappingMethod {
 		}
 
 		public boolean matches(NavigationContext context) {
-			return fromAction == null || fromAction.equals(context.getFromAction());
+			return this.fromAction == null || this.fromAction.equals(context.getFromAction());
 		}
 	}
 
 	private class ControllerFilter implements NavigationMappingFilter {
 		public boolean matches(NavigationContext context) {
-			return beanType.isInstance(context.getController());
+			return NavigationMappingMethod.this.beanType.isInstance(context.getController());
 		}
 	}
 
