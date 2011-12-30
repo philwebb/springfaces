@@ -36,41 +36,62 @@ public class ForClassFilterTest {
 	@Before
 	public void setup() throws Exception {
 		this.beans = new HashMap<String, Object>();
-		addBeans(ForAnimals.class);
-		addBeans(ForDog.class);
-		addBeans(ForCat.class);
-		addBeans(ForDogAndCat.class);
-		addBeans(ForAnimalFromGeneric.class);
-		addBeans(ForDogFromMultiGeneric.class);
-		addBeans(DeducedForDog.class);
+		addBean(ForAnimals.class);
+		addBean(ForDog.class);
+		addBean(ForCat.class);
+		addBean(ForDogAndCat.class);
+		addBean(ForAnimalFromGeneric.class);
+		addBean(ForDogFromMultiGeneric.class);
+		addBean(DeducedForDog.class);
 	}
 
 	@Test
 	public void shouldFilterLeafClassAnnotatedBeans() throws Exception {
+		this.beans.remove("ForAnimalFromGeneric");
+		this.beans.remove("ForDogFromMultiGeneric");
+		this.beans.remove("DeducedForDog");
 		ForClassFilter filter = new ForClassFilter();
 		testFilter(filter, Dog.class, "ForAnimals", "ForDog", "ForDogAndCat");
 	}
 
 	@Test
 	public void shouldFilterSuperClassAnnotatedBeans() throws Exception {
+		this.beans.remove("ForAnimalFromGeneric");
+		this.beans.remove("ForDogFromMultiGeneric");
+		this.beans.remove("DeducedForDog");
 		ForClassFilter filter = new ForClassFilter();
 		testFilter(filter, Animal.class, "ForAnimals");
 	}
 
 	@Test
 	public void shouldFilterByGeneric() throws Exception {
+		this.beans.remove("DeducedForDog");
+		this.beans.remove("ForDogFromMultiGeneric");
+		ForClassFilter filter = new ForClassFilter(Generic.class);
+		testFilter(filter, Cat.class, "ForAnimals", "ForCat", "ForDogAndCat", "ForAnimalFromGeneric");
+	}
+
+	@Test
+	public void shouldNotIncludeItemsWithoutAnnotationWhenFilterByGeneric() throws Exception {
+		this.beans.remove("DeducedForDog");
+		this.beans.remove("ForDogFromMultiGeneric");
+		addBean(ForAnimalFromGenericWithoutAnnotation.class);
 		ForClassFilter filter = new ForClassFilter(Generic.class);
 		testFilter(filter, Cat.class, "ForAnimals", "ForCat", "ForDogAndCat", "ForAnimalFromGeneric");
 	}
 
 	@Test
 	public void shouldFilterByMulitGeneric() throws Exception {
+		this.beans.remove("ForAnimalFromGeneric");
+		this.beans.remove("DeducedForDog");
 		ForClassFilter filter = new ForClassFilter(MultiGeneric.class, 1);
 		testFilter(filter, Dog.class, "ForAnimals", "ForDog", "ForDogAndCat", "ForDogFromMultiGeneric");
 	}
 
 	@Test
 	public void shouldFilterFromCustomDeducer() throws Exception {
+		this.beans.remove("ForAnimalFromGeneric");
+		this.beans.remove("ForDogFromMultiGeneric");
 		ForClassFilter filter = new ForClassFilter(new ForClassFilter.Deducer() {
 			public Class<?> getForClass(Object bean) {
 				if (getName(bean).equals("DeducedForDog")) {
@@ -216,7 +237,7 @@ public class ForClassFilterTest {
 		assertThat(actualNames, is(equalToSetOf(expected)));
 	}
 
-	private void addBeans(Class<?> beanClass) throws Exception {
+	private void addBean(Class<?> beanClass) throws Exception {
 		this.beans.put(getName(beanClass), beanClass.newInstance());
 	}
 
@@ -265,12 +286,18 @@ public class ForClassFilterTest {
 	static class ForDogAndCat {
 	}
 
+	@ForClass
 	static class ForAnimalFromGeneric implements Generic<Animal> {
 	}
 
+	@ForClass
 	static class ForDogFromMultiGeneric implements MultiGeneric<String, Animal, String> {
 	}
 
+	@ForClass
 	static class DeducedForDog {
+	}
+
+	static class ForAnimalFromGenericWithoutAnnotation implements Generic<Animal> {
 	}
 }

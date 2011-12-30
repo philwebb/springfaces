@@ -158,7 +158,6 @@ public class ForClassFilter {
 		if (object == null) {
 			return false;
 		}
-
 		Set<Class<?>> classes = getForClasses(object);
 		boolean isForClass = isAssignableFromAny(targetClass, classes);
 
@@ -180,19 +179,19 @@ public class ForClassFilter {
 	 * @return a set of classes
 	 */
 	private Set<Class<?>> getForClasses(Object object) {
-		Set<Class<?>> forClasses = new HashSet<Class<?>>();
-
-		Class<?> deduced = this.deducer.getForClass(object);
-		if (deduced != null) {
-			forClasses.add(deduced);
-		}
-
 		ForClass annotation = AnnotationUtils.findAnnotation(object.getClass(), ForClass.class);
-		if (annotation != null) {
-			forClasses.addAll(Arrays.asList(annotation.value()));
-			Assert.state(forClasses.size() > 0, "Unable to determine classes for use with "
-					+ object.getClass().getName());
+		if (annotation == null) {
+			return Collections.emptySet();
 		}
+		Set<Class<?>> forClasses = new HashSet<Class<?>>();
+		forClasses.addAll(Arrays.asList(annotation.value()));
+		if (forClasses.isEmpty()) {
+			Class<?> deduced = this.deducer.getForClass(object);
+			if (deduced != null) {
+				forClasses.add(deduced);
+			}
+		}
+		Assert.state(forClasses.size() > 0, "Unable to determine classes for use with " + object.getClass().getName());
 		return forClasses;
 	}
 
