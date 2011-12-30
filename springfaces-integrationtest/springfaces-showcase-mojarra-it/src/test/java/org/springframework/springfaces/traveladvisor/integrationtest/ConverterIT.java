@@ -9,9 +9,9 @@ import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.FacesConverterByIdPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.FacesConverterForClassPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.GenericSpringConverterPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.GenericSpringBeanConverterPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.SpringBeanForClassConverterPage;
-import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.SpringConverterPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.converter.SpringBeanConverterPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
 /**
@@ -38,13 +38,13 @@ public class ConverterIT {
 
 	@Test
 	public void shouldSupportSpringBeanConverter() throws Exception {
-		PageObject page = pages.get(SpringConverterPage.class);
+		PageObject page = pages.get(SpringBeanConverterPage.class);
 		assertThat(page.getBodyText(), is("Conversion by ID : 123 from springBeanConverter"));
 	}
 
 	@Test
 	public void shouldSupportGenericSpringBeanConverter() throws Exception {
-		GenericSpringConverterPage page = pages.get(GenericSpringConverterPage.class);
+		GenericSpringBeanConverterPage page = pages.get(GenericSpringBeanConverterPage.class);
 		page.setInputText("123");
 		page = page.clickSubmitButton();
 		assertThat(page.getConversionText(), is("Conversion by ID : 123 from genericSpringBeanConverter"));

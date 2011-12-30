@@ -34,7 +34,7 @@ public class ConverterExampleController {
 	@RequestMapping("/converter/springbean")
 	public Model springBean(@FacesConverterId("springBeanConverter") @RequestParam ConvertedObject value) {
 		// Any SpringBean that implements Converter is automatically available as a JSF converter with fully
-		// supporting Spring dependency injection and AOP. Here SpringBeanConverter is used
+		// supported Spring dependency injection and AOP. Here SpringBeanConverter is used
 		return new ExtendedModelMap().addAttribute("converted", value.toString());
 	}
 

@@ -8,15 +8,15 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Validator - Spring (by ID)</title>
+		<title>Validator - Generic Spring</title>
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:inputText value="#{holder.integerValue}">
+		<h:form id="form">
+			<h:inputText id="input" value="#{holder.integerValue}">
 				<f:validator validatorId="genericSpringBeanValidator"/>
 			</h:inputText>
-			<h:commandButton value="Go"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>

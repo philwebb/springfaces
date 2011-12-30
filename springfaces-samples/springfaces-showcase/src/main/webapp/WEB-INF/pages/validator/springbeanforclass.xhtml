@@ -8,13 +8,13 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Validator - Spring (by ID)</title>
+		<title>Validator - Spring (forClass)</title>
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:inputText value="#{holder.bigIntegerValue}"/>
-			<h:commandButton value="Go"/>
+		<h:form id="form">
+			<h:inputText id="input" value="#{holder.bigIntegerValue}"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>

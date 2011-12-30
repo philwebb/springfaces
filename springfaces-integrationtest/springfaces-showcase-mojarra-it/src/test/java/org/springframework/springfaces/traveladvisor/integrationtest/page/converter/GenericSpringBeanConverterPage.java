@@ -6,9 +6,9 @@ import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
 
 @PageURL("/converter/genericspringbean")
-public class GenericSpringConverterPage extends PageObject {
+public class GenericSpringBeanConverterPage extends PageObject {
 
-	public GenericSpringConverterPage(WebDriver webDriver) {
+	public GenericSpringBeanConverterPage(WebDriver webDriver) {
 		super(webDriver);
 	}
 
@@ -21,9 +21,9 @@ public class GenericSpringConverterPage extends PageObject {
 		getWebDriver().findElement(By.id("form:input")).sendKeys(value);
 	}
 
-	public GenericSpringConverterPage clickSubmitButton() {
+	public GenericSpringBeanConverterPage clickSubmitButton() {
 		getWebDriver().findElement(By.id("form:submit")).click();
-		return newPage(GenericSpringConverterPage.class);
+		return newPage(GenericSpringBeanConverterPage.class);
 	}
 
 	public String getConversionText() {

@@ -5,9 +5,9 @@ import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
 
 @PageURL("/converter/springbean?value=123")
-public class SpringConverterPage extends PageObject {
+public class SpringBeanConverterPage extends PageObject {
 
-	public SpringConverterPage(WebDriver webDriver) {
+	public SpringBeanConverterPage(WebDriver webDriver) {
 		super(webDriver);
 	}
 
