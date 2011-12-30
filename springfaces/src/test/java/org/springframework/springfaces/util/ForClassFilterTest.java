@@ -2,6 +2,7 @@ package org.springframework.springfaces.util;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -18,6 +19,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.springfaces.bean.ConditionalForClass;
 import org.springframework.springfaces.bean.ForClass;
 import org.springframework.util.ClassUtils;
 
@@ -177,6 +179,26 @@ public class ForClassFilterTest {
 		new ForClassFilter().match(new Object(), null);
 	}
 
+	@Test
+	public void shouldUseConditionalForClassInterface() throws Exception {
+		Conditional conditional = new Conditional();
+		boolean actual = new ForClassFilter().match(conditional, Dog.class);
+		assertThat(actual, is(true));
+		assertThat(conditional.getTargetClass(), is(equalTo((Class) Dog.class)));
+	}
+
+	@Test
+	public void shouldOnlyUseConditionalForClassInterfaceIfAnnotationMatches() throws Exception {
+		ConditionalForDog conditional = new ConditionalForDog();
+		// Even though the conditional returns true the @ForClass(Dog.class) takes precedence
+		boolean actual = new ForClassFilter().match(conditional, Cat.class);
+		assertThat(actual, is(false));
+		assertThat(conditional.getTargetClass(), is(nullValue()));
+		actual = new ForClassFilter().match(conditional, Dog.class);
+		assertThat(actual, is(true));
+		assertThat(conditional.getTargetClass(), is(equalTo((Class) Dog.class)));
+	}
+
 	private void testFilter(ForClassFilter filter, Class<?> targetClass, String... expected) {
 		testFilterCollection(filter, targetClass, expected);
 		testFilterCollectionOfMapEntry(filter, targetClass, expected);
@@ -299,5 +321,22 @@ public class ForClassFilterTest {
 	}
 
 	static class ForAnimalFromGenericWithoutAnnotation implements Generic<Animal> {
+	}
+
+	class Conditional implements ConditionalForClass {
+		private Class<?> targetClass;
+
+		public boolean isForClass(Class<?> targetClass) {
+			this.targetClass = targetClass;
+			return true;
+		}
+
+		public Class<?> getTargetClass() {
+			return this.targetClass;
+		}
+	}
+
+	@ForClass(Dog.class)
+	class ConditionalForDog extends Conditional {
 	}
 }
