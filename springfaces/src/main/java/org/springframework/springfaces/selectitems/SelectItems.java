@@ -1,4 +1,4 @@
-package org.springframework.springfaces.model;
+package org.springframework.springfaces.selectitems;
 
 import java.util.Arrays;
 import java.util.Collection;

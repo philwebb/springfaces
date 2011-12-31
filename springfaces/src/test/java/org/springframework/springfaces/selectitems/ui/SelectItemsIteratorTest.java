@@ -1,4 +1,4 @@
-package org.springframework.springfaces.component;
+package org.springframework.springfaces.selectitems.ui;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -36,13 +36,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
+import org.springframework.springfaces.selectitems.ui.SelectItemsIterator;
 
 /**
- * Tests for {@link ComponentSelectItems}.
+ * Tests for {@link SelectItemsIterator}.
  * 
  * @author Phillip Webb
  */
-public class ComponentSelectItemsTest {
+public class SelectItemsIteratorTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
@@ -65,14 +66,14 @@ public class ComponentSelectItemsTest {
 	public void shouldNeedFacesContext() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("Context must not be null");
-		new ComponentSelectItems(null, this.component);
+		new SelectItemsIterator(null, this.component);
 	}
 
 	@Test
 	public void shouldNeedComponent() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("Component must not be null");
-		new ComponentSelectItems(this.context, null);
+		new SelectItemsIterator(this.context, null);
 	}
 
 	@Test
@@ -103,8 +104,7 @@ public class ComponentSelectItemsTest {
 		uiSelectItem.setValue(i);
 		this.component.getChildren().add(uiSelectItem);
 
-		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
-		Iterator<SelectItem> iterator = items.iterator();
+		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
 		assertTrue(iterator.hasNext());
 		SelectItem i1 = iterator.next();
 		assertTrue(iterator.hasNext());
@@ -146,8 +146,7 @@ public class ComponentSelectItemsTest {
 		uiSelectItem.setItemEscaped(true);
 		uiSelectItem.setNoSelectionOption(true);
 		this.component.getChildren().add(uiSelectItem);
-		ComponentSelectItems selectItems = new ComponentSelectItems(this.context, this.component);
-		Iterator<SelectItem> iterator = selectItems.iterator();
+		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
 		SelectItem item = iterator.next();
 		assertThat(item.getValue(), is((Object) "v"));
 		assertThat(item.getLabel(), is("l"));
@@ -199,7 +198,8 @@ public class ComponentSelectItemsTest {
 		given(map.get(any())).willAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				if ("itemLabel".equals(invocation.getArguments()[0])) {
-					assertNotNull(ComponentSelectItemsTest.this.context.getExternalContext().getRequestMap().get("var"));
+					assertNotNull(SelectItemsIteratorTest.this.context.getExternalContext().getRequestMap()
+							.get("var"));
 					return "label";
 				}
 				return invocation.callRealMethod();
@@ -227,8 +227,7 @@ public class ComponentSelectItemsTest {
 	}
 
 	private SelectItem getSingleSelectItems() {
-		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
-		Iterator<SelectItem> iterator = items.iterator();
+		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
 		SelectItem item = iterator.next();
 		assertFalse(iterator.hasNext());
 		return item;
@@ -236,8 +235,8 @@ public class ComponentSelectItemsTest {
 
 	@Test
 	public void shouldThrowOnRemove() throws Exception {
-		ComponentSelectItems items = new ComponentSelectItems(this.context, this.component);
+		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
 		this.thrown.expect(UnsupportedOperationException.class);
-		items.iterator().remove();
+		iterator.remove();
 	}
 }

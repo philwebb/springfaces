@@ -32,4 +32,10 @@
 			<component-type>spring.faces.MessageSource</component-type>
 		</component>
 	</tag>
+	<tag>
+		<tag-name>selectItems</tag-name>
+		<component>
+			<component-type>spring.faces.SelectItems</component-type>
+		</component>
+	</tag>
 </facelet-taglib>

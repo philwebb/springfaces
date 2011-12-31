@@ -1,4 +1,4 @@
-package org.springframework.springfaces.model;
+package org.springframework.springfaces.selectitems;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -17,6 +17,7 @@ import javax.faces.model.SelectItem;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.springframework.springfaces.selectitems.SelectItems;
 
 /**
  * Tests for {@link SelectItems}.

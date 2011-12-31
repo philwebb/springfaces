@@ -22,10 +22,11 @@ import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
 /**
- * Component that can be used to create a paged {@link DataModel} that lazily fetches data from an underling source. The
- * <tt>value</tt> expression will be called each time new data needs to be fetched and the optional <tt>rowCount</tt>
- * expression will be used to determine the total number of rows. The expression should use the <tt>pageRequest</tt>
- * variable to access {@link PageRequest context} information about the specific data that needs to be returned.
+ * Component that can be used to create a paged {@link DataModel} that lazily fetches data from an underlying source.
+ * The <tt>value</tt> expression will be called each time new data needs to be fetched and the optional
+ * <tt>rowCount</tt> expression will be used to determine the total number of rows. The expression should use the
+ * <tt>pageRequest</tt> variable to access {@link PageRequest context} information about the specific data that needs to
+ * be returned.
  * <p>
  * For example:
  * 

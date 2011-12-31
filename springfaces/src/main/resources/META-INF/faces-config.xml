@@ -38,7 +38,11 @@
 		<component-class>org.springframework.springfaces.page.ui.UIPagedData</component-class>
 	</component>
 	<component>
-	<component-type>spring.faces.MessageSource</component-type>
-	<component-class>org.springframework.springfaces.message.ui.UIMessageSource</component-class>
+		<component-type>spring.faces.MessageSource</component-type>
+		<component-class>org.springframework.springfaces.message.ui.UIMessageSource</component-class>
+	</component>
+	<component>
+		<component-type>spring.faces.SelectItems</component-type>
+		<component-class>org.springframework.springfaces.selectitems.ui.UISelectItems</component-class>
 	</component>
 </faces-config>

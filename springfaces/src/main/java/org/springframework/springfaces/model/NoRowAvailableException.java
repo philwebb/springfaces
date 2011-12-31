@@ -3,6 +3,8 @@ package org.springframework.springfaces.model;
 /**
  * Exception to indicate that no row data is available.
  * 
+ * @see DataModelRowSet
+ * 
  * @author Phillip Webb
  */
 public class NoRowAvailableException extends IllegalArgumentException {
