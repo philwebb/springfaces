@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
  */
 public class SpringFacesModelHolder extends UIComponentBase {
 
-	private static final String COMPONENT_FAMILY = "spring.faces.Model";
+	private static final String COMPONENT_FAMILY = "javax.faces.Parameter";
 
 	/**
 	 * Immutable id of the flow execution key component for easier lookup later.
