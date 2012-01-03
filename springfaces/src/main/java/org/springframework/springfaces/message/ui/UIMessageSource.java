@@ -15,11 +15,12 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.springfaces.SpringFacesIntegration;
-import org.springframework.springfaces.message.DefaultObjectMessageSource;
 import org.springframework.springfaces.message.ObjectMessageSource;
+import org.springframework.springfaces.message.ObjectMessageSourceUtils;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -41,6 +42,8 @@ import org.springframework.util.StringUtils;
  * <tt>pages.spring.example.</tt></b> ".
  * <p>
  * Use the {@link #setPrefix(String) prefix} attribute if a different prefix is required.
+ * 
+ * @see MessageSourceMap
  * 
  * @author Phillip Webb
  */
@@ -80,41 +83,23 @@ public class UIMessageSource extends UIComponentBase {
 	 */
 	private MessageSourceMap createMessageSourceMap(final FacesContext context) {
 		String[] prefixCodes = getPrefixCodes(context);
-		MessageSource messageSource = getMessageSource(context);
-		ObjectMessageSource objectMessageSource = getObjectMessageSource(messageSource);
+		MessageSource messageSource = getSource();
+		ApplicationContext applicationContext = getApplicationContext(context);
+		Assert.state(((applicationContext != null) || (messageSource != null)),
+				"Unable to find MessageSource, ensure that SpringFaces intergation "
+						+ "is enabled or set the 'source' attribute");
+		ObjectMessageSource objectMessageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource,
+				applicationContext);
 		return new UIMessageSourceMap(context, objectMessageSource, prefixCodes);
 	}
 
-	/**
-	 * Returns an {@link ObjectMessageSource} from the specified message source.
-	 * @param messageSource the message source
-	 * @return an object message source
-	 */
-	private ObjectMessageSource getObjectMessageSource(MessageSource messageSource) {
-		if (messageSource instanceof ObjectMessageSource) {
-			return (ObjectMessageSource) messageSource;
-		}
-		return new DefaultObjectMessageSource(messageSource);
-	}
-
-	/**
-	 * Return a message source by calling {@link #getSource()} or falling back to the current
-	 * {@link SpringFacesIntegration#getApplicationContext() ApplicationContext}.
-	 * @param context the faces context
-	 * @return a {@link MessageSource} instance
-	 */
-	private MessageSource getMessageSource(FacesContext context) {
+	private ApplicationContext getApplicationContext(FacesContext context) {
 		Assert.notNull(context, "Context must not be null");
-		MessageSource source = getSource();
-		if (source == null) {
-			ExternalContext externalContext = context.getExternalContext();
-			if (SpringFacesIntegration.isInstalled(externalContext)) {
-				source = SpringFacesIntegration.getCurrentInstance(externalContext).getApplicationContext();
-			}
+		ExternalContext externalContext = context.getExternalContext();
+		if (SpringFacesIntegration.isInstalled(externalContext)) {
+			return SpringFacesIntegration.getCurrentInstance(externalContext).getApplicationContext();
 		}
-		Assert.state(source != null, "Unable to find MessageSource, ensure that SpringFaces intergation "
-				+ "is enabled or set the 'source' attribute");
-		return source;
+		return null;
 	}
 
 	/**

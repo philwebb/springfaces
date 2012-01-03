@@ -10,7 +10,7 @@ import javax.faces.context.FacesContext;
 import org.springframework.util.Assert;
 
 /**
- * General purpose JSF Utilities.
+ * Miscellaneous <tt>JavaServer Faces</tt> utility methods.
  * 
  * @author Phillip Webb
  */

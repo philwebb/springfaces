@@ -11,11 +11,18 @@
 		<title>Select Items - Test</title>
 	</h:head>
 
-	<h:body>           
-		<h:selectOneMenu>                           
-			<s:selectItems/>
-		</h:selectOneMenu>
-		<h:commandButton/>
+	<h:body>
+		<h:form>
+			<h:selectOneMenu value="#{sampleBean.sampleEnum}">
+				<s:selectItems itemConvertedValue="#{item.ordinal()}"/>
+			</h:selectOneMenu>
+			
+			<h:selectManyCheckbox value="#{sampleBean.sampleEnums}">
+				<s:selectItems />
+			</h:selectManyCheckbox>
+
+			<h:commandButton value="Submit"/>
+		</h:form>
 	</h:body>
 </ui:composition>
 
