@@ -38,12 +38,14 @@ public class DefaultObjectMessageSourceTest {
 		this.messageSource = new DefaultObjectMessageSource();
 		this.messageSource.setParentMessageSource(this.parent);
 		addMessageToParent(INNER + "Mapped", "mapped");
-		addMessageToParent(INNER + "MappedArguments", "a {name} b {numberEnum}");
+		addMessageToParent(INNER + "MappedArguments", "a {name} b {numberEnum} c {boolean}");
 		addMessageToParent(INNER + "NumberEnum.ONE", "1");
 		addMessageToParent(INNER + "MappedArray", "numbers {numbers}");
 		addMessageToParent(INNER + "MappedCollection", "collection {collection}");
 		addMessageToParent(INNER + "MappedWithMissingParameters", "mapped {missing}");
 		addMessageToParent(INNER + "MappedWithArguments", "mapped args {1} {0}");
+		addMessageToParent("java.lang.Boolean.TRUE", "Yes");
+		addMessageToParent("java.lang.Boolean.FALSE", "No");
 	}
 
 	private void addMessageToParent(String code, String msg) {
@@ -69,15 +71,27 @@ public class DefaultObjectMessageSourceTest {
 	}
 
 	@Test
+	public void shouldGetMessageForBooleanTrue() throws Exception {
+		String actual = this.messageSource.getMessage(true, null, LOCALE);
+		assertThat(actual, is("Yes"));
+	}
+
+	@Test
+	public void shouldGetMessageForBooleanFalse() throws Exception {
+		String actual = this.messageSource.getMessage(Boolean.FALSE, null, LOCALE);
+		assertThat(actual, is("No"));
+	}
+
+	@Test
 	public void shouldGetMessageWithExpandedArguments() throws Exception {
-		String actual = this.messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE), null, LOCALE);
-		assertThat(actual, is("a x b 1"));
+		String actual = this.messageSource.getMessage(new MappedArguments("x", NumberEnum.ONE, true), null, LOCALE);
+		assertThat(actual, is("a x b 1 c Yes"));
 	}
 
 	@Test
 	public void shouldGetMessageWithExpandedNullArgument() throws Exception {
-		String actual = this.messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE), null, LOCALE);
-		assertThat(actual, is("a  b 1"));
+		String actual = this.messageSource.getMessage(new MappedArguments(null, NumberEnum.ONE, true), null, LOCALE);
+		assertThat(actual, is("a  b 1 c Yes"));
 	}
 
 	@Test
@@ -121,10 +135,12 @@ public class DefaultObjectMessageSourceTest {
 	static class MappedArguments {
 		private String name;
 		private NumberEnum numberEnum;
+		private Boolean booleanValue;
 
-		public MappedArguments(String name, NumberEnum numberEnum) {
+		public MappedArguments(String name, NumberEnum numberEnum, Boolean booleanValue) {
 			this.name = name;
 			this.numberEnum = numberEnum;
+			this.booleanValue = booleanValue;
 		}
 
 		public String getName() {
@@ -133,6 +149,10 @@ public class DefaultObjectMessageSourceTest {
 
 		public NumberEnum getNumberEnum() {
 			return this.numberEnum;
+		}
+
+		public Boolean getBoolean() {
+			return this.booleanValue;
 		}
 	}
 

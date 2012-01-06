@@ -110,13 +110,17 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 
 	/**
 	 * Resolve the message code for the given object. Objects that are {@link Enum} instances will use the fully
-	 * qualified class name along with the enum name as the code. All other objects will use the fully qualified class
-	 * name. Subclasses can override this method to support additional types.
+	 * qualified class name along with the enum name as the code. {@link Boolean} objects will use
+	 * <tt>java.lang.Boolean.TRUE</tt> or <tt>java.lang.Boolean.FALSE</tt>. All other objects will use the fully
+	 * qualified class name. Subclasses can override this method to support additional types.
 	 * @param object the object to resolve (never <tt>null</tt>)
 	 * @param locale the locale
 	 * @return the message code for the object or <tt>null</tt> if the object cannot be resolved
 	 */
 	protected String resolveCode(Object object, Locale locale) {
+		if (Boolean.class.isInstance(object)) {
+			return object.getClass().getName() + "." + (((Boolean) object).booleanValue() ? "TRUE" : "FALSE");
+		}
 		if (Enum.class.isInstance(object)) {
 			return object.getClass().getName() + "." + ((Enum) object).name();
 		}
