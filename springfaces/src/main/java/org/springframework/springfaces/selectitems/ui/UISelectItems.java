@@ -4,16 +4,22 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
+import javax.faces.component.UISelectMany;
+import javax.faces.component.UISelectOne;
 import javax.faces.component.ValueHolder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import javax.faces.model.SelectItem;
 
 import org.springframework.context.ApplicationContext;
@@ -27,29 +33,73 @@ import org.springframework.springfaces.message.ObjectMessageSourceUtils;
 import org.springframework.springfaces.selectitems.SelectItemsConverter;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
+/**
+ * Alternative to the standard JSF {@link javax.faces.component.UISelectItems} component that may be nested inside a
+ * {@link UISelectMany} or {@link UISelectOne} component in order to add {@link SelectItem}s. The {@link #getValues()
+ * values} attribute will be used to build the list of select items and may be bound to any object of the following
+ * type:
+ * <ul>
+ * <li>A {@link Collection}</li>
+ * <li>An {@link Object} Array</li>
+ * <li>A {@link String} containing a comma separated list of values</li>
+ * </ul>
+ * In addition it is possible to omit the {@link #getValues() values} attribute entirely when the parent component is
+ * bound to a value of the following type:
+ * <ul>
+ * <li>A {@link Boolean} (Presents the values <tt>yes</tt> and <tt>no</tt>)</li>
+ * <li>An {@link Enum} (Presents the enum values)</li>
+ * <li>Any generically typed {@link Collection} of the above</li>
+ * </ul>
+ * <p>
+ * Contents of {@link SelectItem} will be constructed using the optional {@link #getItemLabel() itemLabel},
+ * {@link #isItemEscaped() itemEscaped}, {@link #getItemDescription() itemDescription} and {@link #isItemDisabled()
+ * itemDisabled} attributes. Each of these may make reference to the item value using via a EL variable (the name of the
+ * variable defaults to <tt>item</tt> but can be changed using the {@link #getVar() var} attribute).
+ * <p>
+ * For example:
+ * 
+ * <pre>
+ * &lt;s:selectItems values="#{customers}" itemLabel="#{item.name}"/&gt;
+ * </pre>
+ * 
+ * <p>
+ * If not explicitly specified the {@link #getItemLabel() itemLabel} will be deduced. If the Spring
+ * {@link ApplicationContext} is linked to an {@link ObjectMessageSource} then this will be used to construct the label,
+ * otherwise the <tt>toString()</tt> value will be used ({@link NoSuchObjectMessageException}s will be silently
+ * ignored).
+ * <p>
+ * If the parent component does not have a JSF {@link Converter} defined then a {@link SelectItemsConverter} will be
+ * automatically attached. The {@link #getItemConverterStringValue() itemConverterStringValue} attribute will be used to
+ * as the {@link Converter#getAsString(FacesContext, UIComponent, Object) getAsString} implementation. If the
+ * {@link #getItemConverterStringValue() itemConverterStringValue} attribute is not specified a string will be created
+ * either from using the item <tt>toString()</tt> method or ,if the object is a JPA <tt>@Entity</tt>, using the
+ * <tt>@ID</tt> annotated field.
+ * <p>
+ * <strong>NOTE:</strong> It is imperative that each item has a unique <tt>itemConverterStringValue</tt> value.
+ * 
+ * @see ObjectMessageSource
+ * @see SelectItemsConverter
+ * @author Phillip Webbb
+ */
 public class UISelectItems extends UIComponentBase {
 
-	// FIXME make a complete component
+	// FIXME Do we want a noSelectionValue? What if the converted item is a no selection?
 
-	// - Drop in replacement for f:selectItems
-	// - Attaches converter if there is not one
-	// - Can use an expression to create item ID (getAsString)
-	// - Generates select items from the bound value (Enums, Booleans, Others?)
-	// - Allows a noSelection item to be inserted easily
-	//
-	// <s:selectItems
-	// value - optional, if not specified will generate items from the bound parent component value
-	// var - The var, optional will default to item
-	// itemValue - Optional default id item from collection
-	// itemLabel - As standard, optional default JSF conversion of value
-	// itemEscaped - Optional
-	// itemDescription - Optional default null
-	// itemDisabled - Optional default false
-	// itemConvertedValue - The converted to string value, optional defaults to either @Id (if one) or value.toString()
-	// includeNoSelection - Includes a noSelection option, defaults to false
-	// Do we want a noSelectionValue? What if the converted item is a no selection?
+	private static final String DEFAULT_VAR = "item";
+
+	private static Map<Object, String> DEFAULT_OBJECT_STRINGS;
+	static {
+		Map<Object, String> map = new HashMap<Object, String>();
+		map.put(Boolean.TRUE, "Yes");
+		map.put(Boolean.FALSE, "No");
+		DEFAULT_OBJECT_STRINGS = Collections.unmodifiableMap(map);
+	}
+
 	public static final String COMPONENT_FAMILY = "spring.faces.SelectItems";
+
+	private static final Object[] BOOLEAN_VALUES = { true, false };
 
 	private ExposedUISelectItems exposedUISelectItems = new ExposedUISelectItems();
 
@@ -62,7 +112,7 @@ public class UISelectItems extends UIComponentBase {
 
 	protected Collection<SelectItem> getSelectItems() {
 		Collection<SelectItem> selectItems = new ArrayList<SelectItem>();
-		Collection<Object> valueItems = getValueItems();
+		Collection<Object> valueItems = getOrDeduceValues();
 		for (Object valueItem : valueItems) {
 			SelectItem selectItem = convertToSelectItem(valueItem);
 			selectItems.add(selectItem);
@@ -70,57 +120,58 @@ public class UISelectItems extends UIComponentBase {
 		return selectItems;
 	}
 
-	private Collection<Object> getValueItems() {
-
-		// FIXME
-		Object value = getValue();
-		if (value == null) {
-			return getValueItemsForParentComponentValueExpression();
+	@SuppressWarnings("unchecked")
+	private Collection<Object> getOrDeduceValues() {
+		Object values = getValues();
+		if (values == null) {
+			values = deduceValuesFromParentComponent();
 		}
-		if (value instanceof Collection) {
-			return (Collection) value;
+		if (values instanceof String) {
+			values = StringUtils.split((String) values, ",");
 		}
-		if (value instanceof Array) {
-			return Arrays.asList((Object[]) value);
+		if (values instanceof Array) {
+			values = Arrays.asList((Object[]) values);
 		}
-		// FIXME String to class lookup?
-		// FIXME String array?
-		return null;
+		Assert.state(values instanceof Collection, "The values type " + values.getClass()
+				+ " is not supported, please use a Collection, Array or String");
+		return (Collection<Object>) values;
 	}
 
-	private Collection<Object> getValueItemsForParentComponentValueExpression() {
+	private Object deduceValuesFromParentComponent() {
 		ValueExpression valueExpression = getParent().getValueExpression("value");
-		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, getFacesContext().getELContext());
-		System.out.println(typeDescriptor);
+		Assert.notNull(valueExpression,
+				"The 'values' attribute is requred as the parent component does not have a bound 'values'");
+		TypeDescriptor type = ELUtils.getTypeDescriptor(valueExpression, getFacesContext().getELContext());
+		Object valueForType = deduceValuesForType(type);
+		Assert.notNull(valueForType,
+				"The 'values' attribute is requred as select items cannot be deduced from parent componenet 'values' expression '"
+						+ valueExpression + "'");
+		return valueForType;
+	}
 
-		//
-		//
-		// TrackingELContext elContext = new TrackingELContext(getFacesContext().getELContext());
-		// Class<?> expectedType = valueExpression.getType(elContext);
-		if (Enum.class.isAssignableFrom(typeDescriptor.getType())) {
-			return EnumSet.allOf((Class) typeDescriptor.getType());
+	@SuppressWarnings("unchecked")
+	protected Object deduceValuesForType(TypeDescriptor type) {
+		if (type.isArray() || type.isCollection()) {
+			Class<?> elementType = type.getElementTypeDescriptor().getType();
+			if (Boolean.class.equals(elementType) || Boolean.TYPE.equals(elementType)) {
+				return BOOLEAN_VALUES;
+			}
+			if (Enum.class.isAssignableFrom(elementType)) {
+				return EnumSet.allOf((Class<? extends Enum>) elementType);
+			}
 		}
-		// Entry entry = elContext.getEntries().get(0);
-		// Class<?> clazz = entry.getBase().getClass();
-		// PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(clazz, entry.getProperty().toString());
-		// Property property = new Property(clazz, pd.getReadMethod(), pd.getWriteMethod());
-		// TypeDescriptor typeDescriptor = new TypeDescriptor(property);
-		// System.out.println(typeDescriptor);
-		// System.out.println(typeDescriptor.getElementTypeDescriptor());
-
-		// FIXME
-		return Arrays.<Object> asList("a", "b", "c");
+		return null;
 	}
 
 	private SelectItem convertToSelectItem(final Object valueItem) {
 		if (valueItem instanceof SelectItem) {
 			return (SelectItem) valueItem;
 		}
-		String var = getVar("item");
-		return FacesUtils.doWithRequestScopeVariable(getFacesContext(), var, valueItem, new Callable<SelectItem>() {
+		final FacesContext context = getFacesContext();
+		final String var = getVar(DEFAULT_VAR);
+		return FacesUtils.doWithRequestScopeVariable(context, var, valueItem, new Callable<SelectItem>() {
 			public SelectItem call() throws Exception {
-				Object value = getItemValue(valueItem);
-				String label = getValueLabel(value);
+				String label = getItemLabel(valueItem);
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
 				boolean escape = isItemEscaped();
@@ -134,27 +185,31 @@ public class UISelectItems extends UIComponentBase {
 		return (var != null ? var : defaultValue);
 	}
 
-	private Object getItemValue(Object defaultValue) {
-		return getStateHelper().eval(PropertyKeys.itemValue, defaultValue);
-	}
-
-	private String getValueLabel(Object value) {
+	private String getItemLabel(Object value) {
 		String itemLabel = getItemLabel();
 		if (itemLabel == null) {
 			FacesContext context = getFacesContext();
 			ApplicationContext applicationContext = getApplicationContext(context);
 			ObjectMessageSource messageSource = ObjectMessageSourceUtils.getObjectMessageSource(getMessageSource(),
 					applicationContext);
+			Locale locale = FacesUtils.getLocale(context);
 			try {
-				Locale locale = FacesUtils.getLocale(context);
 				itemLabel = messageSource.getMessage(value, null, locale);
 			} catch (NoSuchObjectMessageException e) {
 			}
 		}
 		if (itemLabel == null) {
-			itemLabel = String.valueOf(value);
+			itemLabel = deduceItemLabel(value);
 		}
+		Assert.notNull(itemLabel, "Unable to deduce item label");
 		return itemLabel;
+	}
+
+	protected String deduceItemLabel(Object value) {
+		if (DEFAULT_OBJECT_STRINGS.containsKey(value)) {
+			return DEFAULT_OBJECT_STRINGS.get(value);
+		}
+		return String.valueOf(value);
 	}
 
 	private ApplicationContext getApplicationContext(FacesContext context) {
@@ -166,16 +221,20 @@ public class UISelectItems extends UIComponentBase {
 		return null;
 	}
 
-	protected String convertToString(FacesContext context, UIComponent component, final Object value) {
-		String var = getVar("item");
-		// FIXME shortcut if not got expression
+	protected final String getItemConverterStringValue(final Object value) {
+		String var = getVar(DEFAULT_VAR);
 		return FacesUtils.doWithRequestScopeVariable(getFacesContext(), var, value, new Callable<String>() {
 			public String call() throws Exception {
-				String itemConvertedValue = getItemConvertedValue();
-				// FIXME get value from @ID
-				return itemConvertedValue == null ? value.toString() : itemConvertedValue;
+				String itemConverterStringValue = getItemConverterStringValue();
+				return itemConverterStringValue == null ? deduceItemConverterStringValue(value)
+						: itemConverterStringValue;
 			}
 		});
+	}
+
+	protected String deduceItemConverterStringValue(final Object value) {
+		// FIXME JPA entity IDs
+		return String.valueOf(value);
 	}
 
 	@Override
@@ -209,12 +268,12 @@ public class UISelectItems extends UIComponentBase {
 		}
 	}
 
-	public Object getValue() {
-		return getStateHelper().eval(PropertyKeys.value);
+	public Object getValues() {
+		return getStateHelper().eval(PropertyKeys.values);
 	}
 
-	public void setValue(Object value) {
-		getStateHelper().put(PropertyKeys.value, value);
+	public void setValues(Object value) {
+		getStateHelper().put(PropertyKeys.values, value);
 	}
 
 	public String getVar() {
@@ -223,14 +282,6 @@ public class UISelectItems extends UIComponentBase {
 
 	public void setVar(String var) {
 		getStateHelper().put(PropertyKeys.var, var);
-	}
-
-	public Object getItemValue() {
-		return getStateHelper().eval(PropertyKeys.itemValue);
-	}
-
-	public void setItemValue(Object itemValue) {
-		getStateHelper().put(PropertyKeys.itemValue, itemValue);
 	}
 
 	public String getItemLabel() {
@@ -265,12 +316,12 @@ public class UISelectItems extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.itemEscaped, itemEscaped);
 	}
 
-	public String getItemConvertedValue() {
-		return (String) getStateHelper().eval(PropertyKeys.itemConvertedValue);
+	public String getItemConverterStringValue() {
+		return (String) getStateHelper().eval(PropertyKeys.itemConverterStringValue);
 	}
 
-	public void setItemConvertedValue(String value) {
-		getStateHelper().put(PropertyKeys.itemConvertedValue, value);
+	public void setItemConverterStringValue(String value) {
+		getStateHelper().put(PropertyKeys.itemConverterStringValue, value);
 	}
 
 	public MessageSource getMessageSource() {
@@ -282,7 +333,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, var, itemValue, itemLabel, itemDescription, itemDisabled, itemEscaped, itemConvertedValue, messageSource
+		values, var, itemLabel, itemDescription, itemDisabled, itemEscaped, itemConverterStringValue, messageSource
 	}
 
 	private class ExposedUISelectItems extends javax.faces.component.UISelectItems {
@@ -298,9 +349,8 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private class UISelectItemsConverter extends SelectItemsConverter {
-
 		public String getAsString(FacesContext context, UIComponent component, Object value) {
-			return UISelectItems.this.convertToString(context, component, value);
+			return UISelectItems.this.getItemConverterStringValue(value);
 		}
 	}
 }

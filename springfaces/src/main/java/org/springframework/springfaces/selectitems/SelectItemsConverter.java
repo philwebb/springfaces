@@ -11,6 +11,7 @@ import org.springframework.springfaces.selectitems.ui.SelectItemsIterator;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+//FIXME DC + Test
 public abstract class SelectItemsConverter implements Converter {
 
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
