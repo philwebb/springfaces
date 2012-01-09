@@ -1,16 +1,17 @@
 package org.springframework.springfaces.selectitems.ui;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javax.el.ELContext;
 import javax.el.ValueExpression;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
@@ -33,7 +34,6 @@ import org.springframework.springfaces.message.ObjectMessageSourceUtils;
 import org.springframework.springfaces.selectitems.SelectItemsConverter;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 /**
  * Alternative to the standard JSF {@link javax.faces.component.UISelectItems} component that may be nested inside a
@@ -50,11 +50,11 @@ import org.springframework.util.StringUtils;
  * <ul>
  * <li>A {@link Boolean} (Presents the values <tt>yes</tt> and <tt>no</tt>)</li>
  * <li>An {@link Enum} (Presents the enum values)</li>
- * <li>Any generically typed {@link Collection} of the above</li>
+ * <li>Any generic typed {@link Collection} or Array of the above</li>
  * </ul>
  * <p>
  * Contents of {@link SelectItem} will be constructed using the optional {@link #getItemLabel() itemLabel},
- * {@link #isItemEscaped() itemEscaped}, {@link #getItemDescription() itemDescription} and {@link #isItemDisabled()
+ * {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription} and {@link #isItemDisabled()
  * itemDisabled} attributes. Each of these may make reference to the item value using via a EL variable (the name of the
  * variable defaults to <tt>item</tt> but can be changed using the {@link #getVar() var} attribute).
  * <p>
@@ -87,6 +87,8 @@ public class UISelectItems extends UIComponentBase {
 
 	// FIXME Do we want a noSelectionValue? What if the converted item is a no selection?
 
+	public static final String COMPONENT_FAMILY = "spring.faces.SelectItems";
+
 	private static final String DEFAULT_VAR = "item";
 
 	private static Map<Object, String> DEFAULT_OBJECT_STRINGS;
@@ -96,8 +98,6 @@ public class UISelectItems extends UIComponentBase {
 		map.put(Boolean.FALSE, "No");
 		DEFAULT_OBJECT_STRINGS = Collections.unmodifiableMap(map);
 	}
-
-	public static final String COMPONENT_FAMILY = "spring.faces.SelectItems";
 
 	private static final Object[] BOOLEAN_VALUES = { true, false };
 
@@ -110,8 +110,39 @@ public class UISelectItems extends UIComponentBase {
 		return COMPONENT_FAMILY;
 	}
 
-	protected Collection<SelectItem> getSelectItems() {
-		Collection<SelectItem> selectItems = new ArrayList<SelectItem>();
+	@Override
+	public void setParent(UIComponent parent) {
+		detatch(getParent());
+		super.setParent(parent);
+		attatch(parent);
+	}
+
+	private void detatch(UIComponent parent) {
+		if (parent != null) {
+			parent.getChildren().remove(this.exposedUISelectItems);
+			if (parent instanceof ValueHolder) {
+				ValueHolder valueHolder = (ValueHolder) parent;
+				if (valueHolder.getConverter() == this.converter) {
+					valueHolder.setConverter(null);
+				}
+			}
+		}
+	}
+
+	private void attatch(UIComponent parent) {
+		if (parent != null) {
+			parent.getChildren().add(this.exposedUISelectItems);
+			if (parent instanceof ValueHolder) {
+				ValueHolder valueHolder = (ValueHolder) parent;
+				if (valueHolder.getConverter() == null) {
+					valueHolder.setConverter(this.converter);
+				}
+			}
+		}
+	}
+
+	protected List<SelectItem> getSelectItems() {
+		List<SelectItem> selectItems = new ArrayList<SelectItem>();
 		Collection<Object> valueItems = getOrDeduceValues();
 		for (Object valueItem : valueItems) {
 			SelectItem selectItem = convertToSelectItem(valueItem);
@@ -127,9 +158,9 @@ public class UISelectItems extends UIComponentBase {
 			values = deduceValuesFromParentComponent();
 		}
 		if (values instanceof String) {
-			values = StringUtils.split((String) values, ",");
+			values = ((String) values).split(",");
 		}
-		if (values instanceof Array) {
+		if (values instanceof Object[]) {
 			values = Arrays.asList((Object[]) values);
 		}
 		Assert.state(values instanceof Collection, "The values type " + values.getClass()
@@ -141,7 +172,7 @@ public class UISelectItems extends UIComponentBase {
 		ValueExpression valueExpression = getParent().getValueExpression("value");
 		Assert.notNull(valueExpression,
 				"The 'values' attribute is requred as the parent component does not have a bound 'values'");
-		TypeDescriptor type = ELUtils.getTypeDescriptor(valueExpression, getFacesContext().getELContext());
+		TypeDescriptor type = getTypeDescriptor(valueExpression, getFacesContext().getELContext());
 		Object valueForType = deduceValuesForType(type);
 		Assert.notNull(valueForType,
 				"The 'values' attribute is requred as select items cannot be deduced from parent componenet 'values' expression '"
@@ -149,16 +180,21 @@ public class UISelectItems extends UIComponentBase {
 		return valueForType;
 	}
 
+	protected TypeDescriptor getTypeDescriptor(ValueExpression valueExpression, ELContext elContext) {
+		return ELUtils.getTypeDescriptor(valueExpression, elContext);
+	}
+
 	@SuppressWarnings("unchecked")
 	protected Object deduceValuesForType(TypeDescriptor type) {
 		if (type.isArray() || type.isCollection()) {
-			Class<?> elementType = type.getElementTypeDescriptor().getType();
-			if (Boolean.class.equals(elementType) || Boolean.TYPE.equals(elementType)) {
-				return BOOLEAN_VALUES;
-			}
-			if (Enum.class.isAssignableFrom(elementType)) {
-				return EnumSet.allOf((Class<? extends Enum>) elementType);
-			}
+			type = type.getElementTypeDescriptor();
+		}
+		Class<?> classType = type.getType();
+		if (Boolean.class.equals(classType) || Boolean.TYPE.equals(classType)) {
+			return BOOLEAN_VALUES;
+		}
+		if (Enum.class.isAssignableFrom(classType)) {
+			return EnumSet.allOf((Class<? extends Enum>) classType);
 		}
 		return null;
 	}
@@ -174,7 +210,7 @@ public class UISelectItems extends UIComponentBase {
 				String label = getItemLabel(valueItem);
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
-				boolean escape = isItemEscaped();
+				boolean escape = isItemEscape();
 				return new SelectItem(valueItem, label, description, disabled, escape);
 			}
 		});
@@ -237,37 +273,6 @@ public class UISelectItems extends UIComponentBase {
 		return String.valueOf(value);
 	}
 
-	@Override
-	public void setParent(UIComponent parent) {
-		detatch(getParent());
-		super.setParent(parent);
-		attatch(parent);
-	}
-
-	private void detatch(UIComponent parent) {
-		if (parent != null) {
-			parent.getChildren().remove(this.exposedUISelectItems);
-			if (parent instanceof ValueHolder) {
-				ValueHolder valueHolder = (ValueHolder) parent;
-				if (valueHolder.getConverter() == this.converter) {
-					valueHolder.setConverter(null);
-				}
-			}
-		}
-	}
-
-	private void attatch(UIComponent parent) {
-		if (parent != null) {
-			parent.getChildren().add(this.exposedUISelectItems);
-			if (parent instanceof ValueHolder) {
-				ValueHolder valueHolder = (ValueHolder) parent;
-				if (valueHolder.getConverter() == null) {
-					valueHolder.setConverter(this.converter);
-				}
-			}
-		}
-	}
-
 	public Object getValues() {
 		return getStateHelper().eval(PropertyKeys.values);
 	}
@@ -308,12 +313,12 @@ public class UISelectItems extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.itemDisabled, itemDisabled);
 	}
 
-	public boolean isItemEscaped() {
-		return (Boolean) getStateHelper().eval(PropertyKeys.itemEscaped, true);
+	public boolean isItemEscape() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.itemEscape, true);
 	}
 
-	public void setItemEscaped(boolean itemEscaped) {
-		getStateHelper().put(PropertyKeys.itemEscaped, itemEscaped);
+	public void setItemEscape(boolean itemEscape) {
+		getStateHelper().put(PropertyKeys.itemEscape, itemEscape);
 	}
 
 	public String getItemConverterStringValue() {
@@ -333,10 +338,13 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		values, var, itemLabel, itemDescription, itemDisabled, itemEscaped, itemConverterStringValue, messageSource
+		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemConverterStringValue, messageSource
 	}
 
-	private class ExposedUISelectItems extends javax.faces.component.UISelectItems {
+	/**
+	 * Internal JSF {@link javax.faces.component.UISelectItems} used to expose items from the outer class.
+	 */
+	class ExposedUISelectItems extends javax.faces.component.UISelectItems {
 		@Override
 		public String getId() {
 			return UISelectItems.this.getId() + "_ExposedSelectItems";
@@ -348,7 +356,10 @@ public class UISelectItems extends UIComponentBase {
 		}
 	}
 
-	private class UISelectItemsConverter extends SelectItemsConverter {
+	/**
+	 * Internal JSF {@link Converter} used to convert items from the outer class.
+	 */
+	class UISelectItemsConverter extends SelectItemsConverter {
 		public String getAsString(FacesContext context, UIComponent component, Object value) {
 			return UISelectItems.this.getItemConverterStringValue(value);
 		}
