@@ -141,6 +141,10 @@ public class UISelectItems extends UIComponentBase {
 		}
 	}
 
+	/**
+	 * Returns the {@link List} of {@link SelectItem}s that should be exposed to the parent component.
+	 * @return the list of select items.
+	 */
 	protected List<SelectItem> getSelectItems() {
 		List<SelectItem> selectItems = new ArrayList<SelectItem>();
 		Collection<Object> valueItems = getOrDeduceValues();
@@ -180,10 +184,23 @@ public class UISelectItems extends UIComponentBase {
 		return valueForType;
 	}
 
+	/**
+	 * Returns a {@link TypeDescriptor} for the given {@link ValueExpression}.
+	 * @param valueExpression The value expression
+	 * @param elContext the EL Context
+	 * @return the {@link TypeDescriptor} of the value expression
+	 */
 	protected TypeDescriptor getTypeDescriptor(ValueExpression valueExpression, ELContext elContext) {
 		return ELUtils.getTypeDescriptor(valueExpression, elContext);
 	}
 
+	/**
+	 * Deduces the values that should be used for the given type descriptor. By default this method will support
+	 * {@link Boolean} and {@link Enum} types. Subclasses can implement additional support if required.
+	 * @param type The type to deduce values for
+	 * @return The values for the given type ({@link Collection}, <tt>Array</tt> or Comma Separated <tt>String</tt>
+	 * return types are supported)
+	 */
 	@SuppressWarnings("unchecked")
 	protected Object deduceValuesForType(TypeDescriptor type) {
 		if (type.isArray() || type.isCollection()) {
@@ -241,6 +258,13 @@ public class UISelectItems extends UIComponentBase {
 		return itemLabel;
 	}
 
+	/**
+	 * Deduce the item label for the given object. This method is called when no {@link ObjectMessageSource} mapping is
+	 * found. By default this method will use <tt>value.toString()</tt>, except with {@link Boolean} values where the
+	 * strings "Yes" and "No" will be used.
+	 * @param value the value to deduce
+	 * @return the label of the item
+	 */
 	protected String deduceItemLabel(Object value) {
 		if (DEFAULT_OBJECT_STRINGS.containsKey(value)) {
 			return DEFAULT_OBJECT_STRINGS.get(value);
@@ -257,6 +281,15 @@ public class UISelectItems extends UIComponentBase {
 		return null;
 	}
 
+	/**
+	 * Returns the item value converted to a String. This method is called by the
+	 * {@link SelectItemsConverter#getAsString(FacesContext, UIComponent, Object) select items converter}. By default
+	 * this method will attempt to use the {@link #getItemConverterStringValue() itemConverterStringValue} attribute,
+	 * falling back to {@link #deduceItemConverterStringValue(Object)}.
+	 * @param value the value to convert
+	 * @return the converted <tt>String</tt> value
+	 * @see #deduceItemConverterStringValue(Object)
+	 */
 	protected final String getItemConverterStringValue(final Object value) {
 		String var = getVar(DEFAULT_VAR);
 		return FacesUtils.doWithRequestScopeVariable(getFacesContext(), var, value, new Callable<String>() {
@@ -268,71 +301,171 @@ public class UISelectItems extends UIComponentBase {
 		});
 	}
 
+	/**
+	 * Deduce the item value converted to a <tt>String</tt>. By default this method will use the <tt>@Id</tt> field of
+	 * any <tt>@Entity</tt>, falling back to <tt>value.toString()</tt>.
+	 * @param value the value to convert
+	 * @return the converted <tt>String</tt> value
+	 * @see #getItemConverterStringValue(Object)
+	 */
 	protected String deduceItemConverterStringValue(final Object value) {
-		// FIXME JPA entity IDs
-		return String.valueOf(value);
+		Object entityId = SelectItemsJpaSupport.getInstance().getEntityId(value);
+		if (entityId != null) {
+			return entityId.toString();
+		}
+		return value.toString();
 	}
 
-	public Object getValues() {
-		return getStateHelper().eval(PropertyKeys.values);
-	}
-
-	public void setValues(Object value) {
-		getStateHelper().put(PropertyKeys.values, value);
-	}
-
+	/**
+	 * Return the request-scope attribute under which the current <tt>value</tt> will be exposed. This variable can be
+	 * referenced from the {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape},
+	 * {@link #getItemDescription() itemDescription}, {@link #isItemDisabled() itemDisabled} and
+	 * {@link #getItemConverterStringValue() itemConverterStringValue} attributes. If not specified the <tt>var</tt>
+	 * "item" will be used.This property is <b>not</b> enabled for value binding expressions.
+	 * @return The variable name
+	 * @see #getValues()
+	 */
 	public String getVar() {
 		return (String) getStateHelper().get(PropertyKeys.var);
 	}
 
+	/**
+	 * Set the request-scope attribute under which the current <tt>value</tt> will be exposed.
+	 * @param var The new request-scope attribute name
+	 * @see #getVar()
+	 */
 	public void setVar(String var) {
 		getStateHelper().put(PropertyKeys.var, var);
 	}
 
+	/**
+	 * Returns the values that should be made available as {@link SelectItem}s. Values can refer to a {@link Collection}
+	 * , <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the values will be
+	 * deduced from the parent component value binding. Items are converted to select items used the
+	 * {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape}, {@link #getItemDescription()
+	 * itemDescription}, {@link #isItemDisabled() itemDisabled} and {@link #getItemConverterStringValue()
+	 * itemConverterStringValue} attributes.
+	 * @return the values to expose as select items
+	 * @see #getVar()
+	 */
+	public Object getValues() {
+		return getStateHelper().eval(PropertyKeys.values);
+	}
+
+	/**
+	 * Set the values that should be made available as {@link SelectItem}s.
+	 * @param values the values
+	 * @see #getValues()
+	 */
+	public void setValues(Object values) {
+		getStateHelper().put(PropertyKeys.values, values);
+	}
+
+	/**
+	 * Returns the {@link SelectItem#getLabel() label} that should be used for the select item. This expression can
+	 * refer to the current value using the {@link #getVar() var} attribute.
+	 * @return the item label
+	 */
 	public String getItemLabel() {
 		return (String) getStateHelper().eval(PropertyKeys.itemLabel);
 	}
 
+	/**
+	 * Set the item label
+	 * @param itemLabel the item label
+	 * @see #getItemLabel()
+	 */
 	public void setItemLabel(String itemLabel) {
 		getStateHelper().put(PropertyKeys.itemLabel, itemLabel);
 	}
 
+	/**
+	 * Returns the {@link SelectItem#getDescription() description} that should be used for the select item. This
+	 * expression can refer to the current value using the {@link #getVar() var} attribute.
+	 * @return the item description
+	 */
 	public String getItemDescription() {
 		return (String) getStateHelper().eval(PropertyKeys.itemDescription);
 	}
 
+	/**
+	 * Set the item description
+	 * @param itemDescription the item description
+	 * @see #getItemDescription()
+	 */
 	public void setItemDescription(String itemDescription) {
 		getStateHelper().put(PropertyKeys.itemDescription, itemDescription);
 	}
 
+	/**
+	 * Returns if select item is {@link SelectItem#isDisabled() disabled}. This expression can refer to the current
+	 * value using the {@link #getVar() var} attribute.
+	 * @return if the item is disabled
+	 */
 	public boolean isItemDisabled() {
 		return (Boolean) getStateHelper().eval(PropertyKeys.itemDisabled, false);
 	}
 
+	/**
+	 * Set if the item is disabled
+	 * @param itemDisabled if the item is disabled
+	 * @see #isItemDisabled()
+	 */
 	public void setItemDisabled(boolean itemDisabled) {
 		getStateHelper().put(PropertyKeys.itemDisabled, itemDisabled);
 	}
 
+	/**
+	 * Returns if select item is {@link SelectItem#isEscape() escaped}. This expression can refer to the current value
+	 * using the {@link #getVar() var} attribute.
+	 * @return if the item is escaped
+	 */
 	public boolean isItemEscape() {
 		return (Boolean) getStateHelper().eval(PropertyKeys.itemEscape, true);
 	}
 
+	/**
+	 * Set if the item is escaped
+	 * @param itemEscape if the item is escaped
+	 * @see #isItemEscape()
+	 */
 	public void setItemEscape(boolean itemEscape) {
 		getStateHelper().put(PropertyKeys.itemEscape, itemEscape);
 	}
 
+	/**
+	 * Returns the converter string value that should be used for the select item. This expression can refer to the
+	 * current value using the {@link #getVar() var} attribute.
+	 * @return the converter string value
+	 */
 	public String getItemConverterStringValue() {
 		return (String) getStateHelper().eval(PropertyKeys.itemConverterStringValue);
 	}
 
-	public void setItemConverterStringValue(String value) {
-		getStateHelper().put(PropertyKeys.itemConverterStringValue, value);
+	/**
+	 * Set the converter string value.
+	 * @param converterStringValue the converter string value
+	 * @see #getItemConverterStringValue()
+	 */
+	public void setItemConverterStringValue(String converterStringValue) {
+		getStateHelper().put(PropertyKeys.itemConverterStringValue, converterStringValue);
 	}
 
+	/**
+	 * Return the {@link MessageSource} or {@link ObjectMessageSource} that should be used construct the item label
+	 * (when the {@link #getItemLabel() itemLabel} attribute is not specified). If not specified the
+	 * {@link ApplicationContext} will be used.
+	 * @return the message source
+	 */
 	public MessageSource getMessageSource() {
 		return (MessageSource) getStateHelper().eval(PropertyKeys.messageSource);
 	}
 
+	/**
+	 * Set the message source.
+	 * @param messageSource the message source
+	 * @see #getMessageSource()
+	 */
 	public void setMessageSource(MessageSource messageSource) {
 		getStateHelper().put(PropertyKeys.messageSource, messageSource);
 	}

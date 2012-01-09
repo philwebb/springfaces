@@ -8,7 +8,7 @@ import org.springframework.util.ClassUtils;
  * 
  * @author Phillip Webb
  */
-abstract class SpringDataSupport {
+abstract class PagedSpringDataSupport {
 
 	/**
 	 * Extend the specified {@link PageRequest} with the Spring Data <tt>Pageable</tt> interface.
@@ -35,11 +35,11 @@ abstract class SpringDataSupport {
 	public abstract Object getContentFromPage(Object value);
 
 	private static boolean hasSpringData = ClassUtils.isPresent("org.springframework.data.domain.Page",
-			SpringDataSupport.class.getClassLoader());
+			PagedSpringDataSupport.class.getClassLoader());
 
-	private static SpringDataSupport instance;
+	private static PagedSpringDataSupport instance;
 
-	public static SpringDataSupport getInstance() {
+	public static PagedSpringDataSupport getInstance() {
 		if (instance == null) {
 			instance = (hasSpringData ? new HasSpringData() : new NoSpringData());
 		}
@@ -51,12 +51,12 @@ abstract class SpringDataSupport {
 	 * @param hasSpringData if spring data is available.
 	 */
 	static void setHasSpringData(boolean hasSpringData) {
-		SpringDataSupport.hasSpringData = hasSpringData;
+		PagedSpringDataSupport.hasSpringData = hasSpringData;
 		instance = null;
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static class HasSpringData extends SpringDataSupport {
+	private static class HasSpringData extends PagedSpringDataSupport {
 		@Override
 		public PageRequest makePageable(PageRequest pageRequest) {
 			return new SpringDataPageRequest(pageRequest);
@@ -79,7 +79,7 @@ abstract class SpringDataSupport {
 		}
 	}
 
-	private static class NoSpringData extends SpringDataSupport {
+	private static class NoSpringData extends PagedSpringDataSupport {
 		@Override
 		public PageRequest makePageable(PageRequest pageRequest) {
 			return pageRequest;

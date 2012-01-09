@@ -15,31 +15,31 @@ import org.springframework.springfaces.page.model.PagedDataRows;
 import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
 
 /**
- * Tests for {@link PrimeFacesSupport}.
+ * Tests for {@link PagedPrimeFacesSupport}.
  * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PrimeFacesSupportTest {
+public class PagedPrimeFacesSupportTest {
 
 	@Mock
 	private PagedDataModel<Object> pagedDataRows;
 
 	@After
 	public void resetHasPrimeFaces() {
-		PrimeFacesSupport.setHasPrimeFaces(true);
+		PagedPrimeFacesSupport.setHasPrimeFaces(true);
 	}
 
 	@Test
 	public void shouldNotWrapWithoutPrimeFaces() throws Exception {
-		PrimeFacesSupport.setHasPrimeFaces(false);
-		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
+		PagedPrimeFacesSupport.setHasPrimeFaces(false);
+		PagedDataRows<Object> wrapped = PagedPrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
 		assertSame(wrapped, this.pagedDataRows);
 	}
 
 	@Test
 	public void shouldWrapWithPrimeFaces() throws Exception {
-		PagedDataRows<Object> wrapped = PrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
+		PagedDataRows<Object> wrapped = PagedPrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
 		assertThat(wrapped, is(PrimeFacesPagedDataModel.class));
 		wrapped.getPageSize();
 		verify(this.pagedDataRows).getPageSize();

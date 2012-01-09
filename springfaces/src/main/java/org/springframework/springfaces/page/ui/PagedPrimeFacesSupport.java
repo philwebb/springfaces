@@ -10,7 +10,7 @@ import org.springframework.util.ClassUtils;
  * 
  * @author Phillip Webb
  */
-abstract class PrimeFacesSupport {
+abstract class PagedPrimeFacesSupport {
 
 	/**
 	 * Wrap a {@link PagedDataModel} with an instance suitable for PrimeFaces.
@@ -21,11 +21,11 @@ abstract class PrimeFacesSupport {
 	public abstract <E> PagedDataRows<E> wrapPagedDataRows(PagedDataModel<E> pagedDataRows);
 
 	private static boolean hasPrimeFaces = ClassUtils.isPresent("org.primefaces.model.LazyDataModel",
-			PrimeFacesSupport.class.getClassLoader());
+			PagedPrimeFacesSupport.class.getClassLoader());
 
-	private static PrimeFacesSupport instance;
+	private static PagedPrimeFacesSupport instance;
 
-	public static PrimeFacesSupport getInstance() {
+	public static PagedPrimeFacesSupport getInstance() {
 		if (instance == null) {
 			instance = (hasPrimeFaces ? new HasPrimeFaces() : new NoPrimeFaces());
 		}
@@ -37,11 +37,11 @@ abstract class PrimeFacesSupport {
 	 * @param hasPrimeFaces if spring data is available.
 	 */
 	static void setHasPrimeFaces(boolean hasPrimeFaces) {
-		PrimeFacesSupport.hasPrimeFaces = hasPrimeFaces;
+		PagedPrimeFacesSupport.hasPrimeFaces = hasPrimeFaces;
 		instance = null;
 	}
 
-	private static class HasPrimeFaces extends PrimeFacesSupport {
+	private static class HasPrimeFaces extends PagedPrimeFacesSupport {
 		@Override
 		@SuppressWarnings("unchecked")
 		public <E> PagedDataRows<E> wrapPagedDataRows(PagedDataModel<E> pagedDataRows) {
@@ -49,7 +49,7 @@ abstract class PrimeFacesSupport {
 		}
 	}
 
-	private static class NoPrimeFaces extends PrimeFacesSupport {
+	private static class NoPrimeFaces extends PagedPrimeFacesSupport {
 		@Override
 		public <E> PagedDataRows<E> wrapPagedDataRows(PagedDataModel<E> pagedDataRows) {
 			return pagedDataRows;

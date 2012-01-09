@@ -67,8 +67,8 @@ public class UIPagedData extends UIComponentBase {
 	private static final Object DEFAULT_PAGE_SIZE = 10;
 	private static final String PAGE_REQUEST_VARIABLE = "pageRequest";
 
-	private static PrimeFacesSupport primeFacesSupport = PrimeFacesSupport.getInstance();
-	private static SpringDataSupport springDataSupport = SpringDataSupport.getInstance();
+	private static PagedPrimeFacesSupport primeFacesSupport = PagedPrimeFacesSupport.getInstance();
+	private static PagedSpringDataSupport springDataSupport = PagedSpringDataSupport.getInstance();
 
 	@Override
 	public String getFamily() {
@@ -131,6 +131,10 @@ public class UIPagedData extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.pageSize, pageSize);
 	}
 
+	/**
+	 * Return the initial sort column for the {@link PagedDataRows}.
+	 * @return the sort column
+	 */
 	public String getSortColumn() {
 		return (String) getStateHelper().eval(PropertyKeys.sortColumn);
 	}
