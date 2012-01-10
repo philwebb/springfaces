@@ -267,11 +267,13 @@ public class UISelectItemsTest {
 		this.selectItems.setValueExpression("itemDescription", mockValueExpression(assertItemIsSet, "description"));
 		this.selectItems.setValueExpression("itemDisabled", mockValueExpression(assertItemIsSet, true));
 		this.selectItems.setValueExpression("itemEscape", mockValueExpression(assertItemIsSet, false));
+		this.selectItems.setValueExpression("itemNoSelectionOption", mockValueExpression(assertItemIsSet, true));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("label"));
 		assertThat(actual.getDescription(), is("description"));
 		assertThat(actual.isDisabled(), is(true));
 		assertThat(actual.isEscape(), is(false));
+		assertThat(actual.isNoSelectionOption(), is(true));
 	}
 
 	@Test

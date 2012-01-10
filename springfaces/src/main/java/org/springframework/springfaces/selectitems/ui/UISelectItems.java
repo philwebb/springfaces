@@ -54,9 +54,10 @@ import org.springframework.util.Assert;
  * </ul>
  * <p>
  * Contents of {@link SelectItem} will be constructed using the optional {@link #getItemLabel() itemLabel},
- * {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription} and {@link #isItemDisabled()
- * itemDisabled} attributes. Each of these may make reference to the item value using via a EL variable (the name of the
- * variable defaults to <tt>item</tt> but can be changed using the {@link #getVar() var} attribute).
+ * {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription}, {@link #isItemDisabled()
+ * itemDisabled} and {@link #isItemNoSelectionOption() itemNoSelectionOption} attributes. Each of these may make
+ * reference to the item value using via a EL variable (the name of the variable defaults to <tt>item</tt> but can be
+ * changed using the {@link #getVar() var} attribute).
  * <p>
  * For example:
  * 
@@ -228,7 +229,8 @@ public class UISelectItems extends UIComponentBase {
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
 				boolean escape = isItemEscape();
-				return new SelectItem(valueItem, label, description, disabled, escape);
+				boolean noSelectionOption = isItemNoSelectionOption();
+				return new SelectItem(valueItem, label, description, disabled, escape, noSelectionOption);
 			}
 		});
 	}
@@ -321,9 +323,10 @@ public class UISelectItems extends UIComponentBase {
 	/**
 	 * Return the request-scope attribute under which the current <tt>value</tt> will be exposed. This variable can be
 	 * referenced from the {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape},
-	 * {@link #getItemDescription() itemDescription}, {@link #isItemDisabled() itemDisabled} and
-	 * {@link #getItemConverterStringValue() itemConverterStringValue} attributes. If not specified the <tt>var</tt>
-	 * "item" will be used.This property is <b>not</b> enabled for value binding expressions.
+	 * {@link #getItemDescription() itemDescription}, {@link #isItemDisabled() itemDisabled},
+	 * {@link #isItemNoSelectionOption() itemNoSelectionOption} and {@link #getItemConverterStringValue()
+	 * itemConverterStringValue} attributes. If not specified the <tt>var</tt> "item" will be used.This property is
+	 * <b>not</b> enabled for value binding expressions.
 	 * @return The variable name
 	 * @see #getValues()
 	 */
@@ -345,8 +348,8 @@ public class UISelectItems extends UIComponentBase {
 	 * , <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the values will be
 	 * deduced from the parent component value binding. Items are converted to select items used the
 	 * {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape}, {@link #getItemDescription()
-	 * itemDescription}, {@link #isItemDisabled() itemDisabled} and {@link #getItemConverterStringValue()
-	 * itemConverterStringValue} attributes.
+	 * itemDescription}, {@link #isItemDisabled() itemDisabled}, {@link #isItemNoSelectionOption()
+	 * itemNoSelectionOption} and {@link #getItemConverterStringValue() itemConverterStringValue} attributes.
 	 * @return the values to expose as select items
 	 * @see #getVar()
 	 */
@@ -436,6 +439,24 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
+	 * Returns if select item is a {@link SelectItem#isNoSelectionOption() no selection option}. This expression can
+	 * refer to the current value using the {@link #getVar() var} attribute.
+	 * @return if the item is a no selection option
+	 */
+	public boolean isItemNoSelectionOption() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.itemNoSelectionOption, false);
+	}
+
+	/**
+	 * Set if the item is a no selection option.
+	 * @param itemNoSelectionOption
+	 * @see #isItemNoSelectionOption()
+	 */
+	public void setItemNoSelectionOption(boolean itemNoSelectionOption) {
+		getStateHelper().put(PropertyKeys.itemNoSelectionOption, itemNoSelectionOption);
+	}
+
+	/**
 	 * Returns the converter string value that should be used for the select item. This expression can refer to the
 	 * current value using the {@link #getVar() var} attribute.
 	 * @return the converter string value
@@ -473,7 +494,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemConverterStringValue, messageSource
+		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, messageSource
 	}
 
 	/**
