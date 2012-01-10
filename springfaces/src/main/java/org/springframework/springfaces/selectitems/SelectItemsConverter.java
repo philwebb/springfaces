@@ -25,20 +25,20 @@ import org.springframework.util.ObjectUtils;
 public abstract class SelectItemsConverter implements Converter {
 
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {
-		Object objectValue = null;
+		SelectItem matchingSelectItem = null;
 		Iterator<SelectItem> iterator = getSelectItemsIterator(context, component);
 		while (iterator.hasNext()) {
 			SelectItem selectItem = iterator.next();
 			String stringValue = getAsString(context, component, selectItem.getValue());
 			if (ObjectUtils.nullSafeEquals(value, stringValue)) {
-				Assert.state(objectValue == null, "Multiple select items mapped to string value '" + stringValue
+				Assert.state(matchingSelectItem == null, "Multiple select items mapped to string value '" + stringValue
 						+ "' ensure that getAsString always returns a unique value");
-				objectValue = selectItem.getValue();
+				matchingSelectItem = selectItem;
 			}
 		}
-		Assert.state(objectValue != null, "No select item mapped to string value '" + value
+		Assert.state(matchingSelectItem != null, "No select item mapped to string value '" + value
 				+ "' ensure that getAsString always returns a consistent value");
-		return objectValue;
+		return matchingSelectItem.getValue();
 	}
 
 	/**

@@ -353,6 +353,17 @@ public class UISelectItemsTest {
 	}
 
 	@Test
+	public void shouldUseToEmptyStringForConvertNull() throws Exception {
+		// If a converted null value is null the html option has no value and the text ends up being part of the
+		// postback. Using "" solves this
+		UIComponent parent = mockParent(true);
+		this.selectItems.setParent(parent);
+		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, null);
+		assertThat(actual, is(""));
+	}
+
+	@Test
 	public void shouldUseEntityIdForConverter() throws Exception {
 		UIComponent parent = mockParent(true);
 		this.selectItems.setParent(parent);

@@ -309,11 +309,13 @@ public class UISelectItems extends UIComponentBase {
 	 * @see #getItemConverterStringValue(Object)
 	 */
 	protected String deduceItemConverterStringValue(final Object value) {
-		Object entityId = SelectItemsJpaSupport.getInstance().getEntityId(value);
-		if (entityId != null) {
-			return entityId.toString();
+		if (value != null) {
+			Object entityId = SelectItemsJpaSupport.getInstance().getEntityId(value);
+			if (entityId != null) {
+				return entityId.toString();
+			}
 		}
-		return value.toString();
+		return (value == null ? "" : value.toString());
 	}
 
 	/**
