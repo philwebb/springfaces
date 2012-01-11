@@ -34,6 +34,7 @@ import org.springframework.springfaces.message.ObjectMessageSourceUtils;
 import org.springframework.springfaces.selectitems.SelectItemsConverter;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Alternative to the standard JSF {@link javax.faces.component.UISelectItems} component that may be nested inside a
@@ -54,9 +55,9 @@ import org.springframework.util.Assert;
  * <p>
  * Contents of {@link SelectItem} will be constructed using the optional {@link #getItemLabel() itemLabel},
  * {@link #isItemLabelEscaped() itemLabelEscaped}, {@link #getItemDescription() itemDescription},
- * {@link #isItemDisabled() itemDisabled} and {@link #isItemNoSelectionOption() itemNoSelectionOption} attributes. Each
- * of these may make reference to the item value using via a EL variable (the name of the variable defaults to
- * <tt>item</tt> but can be changed using the {@link #getVar() var} attribute).
+ * {@link #isItemDisabled() itemDisabled} and {@link #getNoSelectionValue() noSelectionValue} attributes. Each of these
+ * may make reference to the item value using via a EL variable (the name of the variable defaults to <tt>item</tt> but
+ * can be changed using the {@link #getVar() var} attribute).
  * <p>
  * For example:
  * 
@@ -91,7 +92,7 @@ import org.springframework.util.Assert;
 public class UISelectItems extends UIComponentBase {
 
 	// FIXME itemValue should be added
-	// FIXME Change itemNoSelectionOption to noSelectionValue
+	// FIXME value should work with DataModel
 
 	/**
 	 * The message code used to look up any {@link #getIncludeNoSelectionOption() included} noSelectionOption item. If
@@ -277,7 +278,9 @@ public class UISelectItems extends UIComponentBase {
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
 				boolean escape = isItemLabelEscaped();
-				boolean noSelectionOption = isItemNoSelectionOption();
+				Object noSelectionValue = getNoSelectionValue();
+				boolean noSelectionOption = noSelectionValue != null
+						&& ObjectUtils.nullSafeEquals(valueItem, noSelectionValue);
 				return new SelectItem(valueItem, label, description, disabled, escape, noSelectionOption);
 			}
 		});
@@ -376,7 +379,7 @@ public class UISelectItems extends UIComponentBase {
 	 * Return the request-scope attribute under which the current <tt>value</tt> will be exposed. This variable can be
 	 * referenced from the {@link #getItemLabel() itemLabel}, {@link #isItemLabelEscaped() itemLabelEscaped},
 	 * {@link #getItemDescription() itemDescription}, {@link #isItemDisabled() itemDisabled},
-	 * {@link #isItemNoSelectionOption() itemNoSelectionOption} and {@link #getItemConverterStringValue()
+	 * {@link #getNoSelectionValue() noSelectionValue} and {@link #getItemConverterStringValue()
 	 * itemConverterStringValue} attributes. If not specified the <tt>var</tt> "item" will be used.This property is
 	 * <b>not</b> enabled for value binding expressions.
 	 * @return The variable name
@@ -400,7 +403,7 @@ public class UISelectItems extends UIComponentBase {
 	 * <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the value will be deduced
 	 * from the parent component value binding. Items are converted to select items used the {@link #getItemLabel()
 	 * itemLabel}, {@link #isItemLabelEscaped() itemLabelEscaped}, {@link #getItemDescription() itemDescription},
-	 * {@link #isItemDisabled() itemDisabled}, {@link #isItemNoSelectionOption() itemNoSelectionOption} and
+	 * {@link #isItemDisabled() itemDisabled}, {@link #getNoSelectionValue() noSelectionValue} and
 	 * {@link #getItemConverterStringValue() itemConverterStringValue} attributes.
 	 * @return the value to expose as select items
 	 * @see #getVar()
@@ -491,24 +494,6 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
-	 * Returns if select item is a {@link SelectItem#isNoSelectionOption() no selection option}. This expression can
-	 * refer to the current value using the {@link #getVar() var} attribute.
-	 * @return if the item is a no selection option
-	 */
-	public boolean isItemNoSelectionOption() {
-		return (Boolean) getStateHelper().eval(PropertyKeys.itemNoSelectionOption, false);
-	}
-
-	/**
-	 * Set if the item is a no selection option.
-	 * @param itemNoSelectionOption
-	 * @see #isItemNoSelectionOption()
-	 */
-	public void setItemNoSelectionOption(boolean itemNoSelectionOption) {
-		getStateHelper().put(PropertyKeys.itemNoSelectionOption, itemNoSelectionOption);
-	}
-
-	/**
 	 * Returns the converter string value that should be used for the select item. This expression can refer to the
 	 * current value using the {@link #getVar() var} attribute.
 	 * @return the converter string value
@@ -524,6 +509,24 @@ public class UISelectItems extends UIComponentBase {
 	 */
 	public void setItemConverterStringValue(String converterStringValue) {
 		getStateHelper().put(PropertyKeys.itemConverterStringValue, converterStringValue);
+	}
+
+	/**
+	 * Returns the value for the {@link SelectItem#isNoSelectionOption() no selection option}. This expression can refer
+	 * to the current value using the {@link #getVar() var} attribute.
+	 * @return if the no selection value
+	 */
+	public Object getNoSelectionValue() {
+		return getStateHelper().eval(PropertyKeys.noSelectionValue);
+	}
+
+	/**
+	 * Set if the no selection value.
+	 * @param noSelectionValue the no selection value
+	 * @see #getNoSelectionValue()
+	 */
+	public void setNoSelectionValue(Object noSelectionValue) {
+		getStateHelper().put(PropertyKeys.noSelectionValue, noSelectionValue);
 	}
 
 	/**
@@ -566,7 +569,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, var, itemLabel, itemDescription, itemDisabled, itemLabelEscaped, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
+		value, var, itemLabel, itemDescription, itemDisabled, itemLabelEscaped, itemConverterStringValue, noSelectionValue, includeNoSelectionOption, messageSource
 	}
 
 	/**
