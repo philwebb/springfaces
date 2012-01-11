@@ -177,7 +177,7 @@ public class UISelectItemsTest {
 	@Test
 	public void shouldGetSelectItemsFromCommaString() throws Exception {
 		this.selectItems.setParent(mockParent(UISelectMany.class));
-		String values = "1,2,3";
+		String values = "1, 2 ,3";
 		this.selectItems.setValues(values);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
 		assertThat(actual.size(), is(3));

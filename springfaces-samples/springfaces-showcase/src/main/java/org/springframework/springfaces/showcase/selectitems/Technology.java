@@ -1,6 +1,7 @@
 package org.springframework.springfaces.showcase.selectitems;
-public enum SampleEnum {
 
-	BMW, FORD, HONDA
+public enum Technology {
+
+	JAVA, SPRING, JAVASERVER_FACES
 
 }

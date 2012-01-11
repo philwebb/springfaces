@@ -205,7 +205,11 @@ public class UISelectItems extends UIComponentBase {
 			values = deduceValuesFromParentComponent();
 		}
 		if (values instanceof String) {
-			values = ((String) values).split(",");
+			String[] stringValues = ((String) values).split(",");
+			for (int i = 0; i < stringValues.length; i++) {
+				stringValues[i] = stringValues[i].trim();
+			}
+			values = stringValues;
 		}
 		if (values instanceof Object[]) {
 			values = Arrays.asList((Object[]) values);

@@ -8,21 +8,14 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Select Items - Test</title>
+		<title>Select Items - Select Many (String)</title>
 	</h:head>
 
 	<h:body>
 		<h:form>
-			<h:selectOneMenu value="#{sampleBean.sampleEnum}">
-				<f:selectItem itemLabel="--Please Select--" noSelectionOption="true"/>
-				<s:selectItems itemConvertedValue="#{item.ordinal()}"/>
-			</h:selectOneMenu>
-			
-			<h:selectManyCheckbox value="#{sampleBean.sampleEnums}">
-				<f:selectItem itemLabel="--Please Select--" noSelectionOption="true"/>
-				<s:selectItems />
-			</h:selectManyCheckbox>
-
+			<h:selectManyListbox value="#{exampleBean.strings}">
+				<s:selectItems values="Framework, Web Flow, Data, Integration"/>
+			</h:selectManyListbox>
 			<h:commandButton value="Submit"/>
 		</h:form>
 	</h:body>
