@@ -6,15 +6,17 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,8 +24,9 @@ import java.util.Set;
 
 import javax.el.ELContext;
 import javax.el.ValueExpression;
-import javax.faces.component.EditableValueHolder;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UISelectMany;
+import javax.faces.component.UISelectOne;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -37,7 +40,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockSettings;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -103,59 +105,59 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldAddDelegateSelectItemsComponentOnAttach() throws Exception {
-		UIComponent parent = mockParent(false);
+		UIComponent parent = mockParent(UIComponent.class);
 		this.selectItems.setParent(parent);
 		assertThat(parent.getChildren().get(0), is(ExposedUISelectItems.class));
 	}
 
 	@Test
 	public void shouldAddConverterOnAttach() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		assertThat(this.converterCaptor.getValue(), is(UISelectItemsConverter.class));
 	}
 
 	@Test
 	public void shouldNotReplaceExistingConverterOnAttach() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		Converter converter = mock(Converter.class);
-		given(((EditableValueHolder) parent).getConverter()).willReturn(converter);
+		given((parent).getConverter()).willReturn(converter);
 		this.selectItems.setParent(parent);
-		verify((EditableValueHolder) parent, never()).setConverter(any(Converter.class));
+		verify(parent, never()).setConverter(any(Converter.class));
 	}
 
 	@Test
 	public void shouldRemoveDelegateSelectItemsComponentOnDetatch() throws Exception {
-		UIComponent parent = mockParent(false);
+		UIComponent parent = mockParent(UIComponent.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setParent(mockParent(false));
+		this.selectItems.setParent(mockParent(UIComponent.class));
 		assertThat(parent.getChildren().size(), is(0));
 	}
 
 	@Test
 	public void shouldRemoveConverterOnDetatch() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
-		given(((EditableValueHolder) parent).getConverter()).willReturn(this.converterCaptor.getValue());
-		this.selectItems.setParent(mockParent(true));
-		verify((EditableValueHolder) parent).setConverter(null);
+		verify(parent).setConverter(this.converterCaptor.capture());
+		given((parent).getConverter()).willReturn(this.converterCaptor.getValue());
+		this.selectItems.setParent(mockParent(UISelectMany.class));
+		verify(parent).setConverter(null);
 	}
 
 	@Test
 	public void shouldNotRemoveExistingConverterOnDetatch() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		Converter converter = mock(Converter.class);
-		given(((EditableValueHolder) parent).getConverter()).willReturn(converter);
+		given((parent).getConverter()).willReturn(converter);
 		this.selectItems.setParent(parent);
-		this.selectItems.setParent(mockParent(true));
-		verify((EditableValueHolder) parent, never()).setConverter(null);
+		this.selectItems.setParent(mockParent(UISelectMany.class));
+		verify(parent, never()).setConverter(null);
 	}
 
 	@Test
 	public void shouldGetSelectItemsFromArray() throws Exception {
-		this.selectItems.setParent(mockParent(true));
+		this.selectItems.setParent(mockParent(UISelectMany.class));
 		SelectItem selectItem = new SelectItem();
 		SelectItem[] values = { selectItem };
 		this.selectItems.setValues(values);
@@ -165,7 +167,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldGetSelectItemsFromCollection() throws Exception {
-		this.selectItems.setParent(mockParent(true));
+		this.selectItems.setParent(mockParent(UISelectMany.class));
 		Collection<SelectItem> values = Collections.singleton(new SelectItem());
 		this.selectItems.setValues(values);
 		Collection<SelectItem> actual = this.selectItems.getSelectItems();
@@ -174,7 +176,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldGetSelectItemsFromCommaString() throws Exception {
-		this.selectItems.setParent(mockParent(true));
+		this.selectItems.setParent(mockParent(UISelectMany.class));
 		String values = "1,2,3";
 		this.selectItems.setValues(values);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
@@ -189,7 +191,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldDeduceSelectItemsFromEnum() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		ValueExpression valueExpression = mock(ValueExpression.class);
 		given(parent.getValueExpression("value")).willReturn(valueExpression);
 		this.typeDescriptor = TypeDescriptor.valueOf(SampleEnum.class);
@@ -206,7 +208,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldDeduceSelectItemsFromBoolean() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		ValueExpression valueExpression = mock(ValueExpression.class);
 		given(parent.getValueExpression("value")).willReturn(valueExpression);
 		this.typeDescriptor = TypeDescriptor.valueOf(Boolean.class);
@@ -221,7 +223,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldDeduceSelectItemsFromArray() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		ValueExpression valueExpression = mock(ValueExpression.class);
 		given(parent.getValueExpression("value")).willReturn(valueExpression);
 		this.typeDescriptor = TypeDescriptor.valueOf(SampleEnum[].class);
@@ -233,7 +235,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldDeduceSelectItemsFromCollection() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		ValueExpression valueExpression = mock(ValueExpression.class);
 		given(parent.getValueExpression("value")).willReturn(valueExpression);
 		this.typeDescriptor = TypeDescriptor.collection(Set.class, TypeDescriptor.valueOf(SampleEnum.class));
@@ -245,7 +247,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldUseSensibleDefaultWhenNoAttributes() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.TWO));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
@@ -259,7 +261,7 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldUseAttributesToConvertToSelectItem() throws Exception {
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("item", SampleEnum.ONE);
@@ -278,20 +280,20 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldUseItemConverterStringValueAttribute() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("item", SampleEnum.ONE);
 		this.selectItems.setValueExpression("itemConverterStringValue", mockValueExpression(assertItemIsSet, "1"));
 		this.selectItems.getSelectItems();
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, SampleEnum.ONE);
 		assertThat(actual, is("1"));
 	}
 
 	@Test
 	public void shouldSupportCustomVar() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setVar("example");
@@ -299,7 +301,7 @@ public class UISelectItemsTest {
 		this.selectItems.setValueExpression("itemLabel", mockValueExpression(assertItemIsSet, "label"));
 		this.selectItems.setValueExpression("itemConverterStringValue", mockValueExpression(assertItemIsSet, "1"));
 		this.selectItems.getSelectItems();
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		this.converterCaptor.getValue().getAsString(this.facesContext, parent, SampleEnum.ONE);
 	}
 
@@ -311,7 +313,7 @@ public class UISelectItemsTest {
 		given(this.applicationContext.getBean(AbstractApplicationContext.MESSAGE_SOURCE_BEAN_NAME)).willReturn(
 				messageSource);
 		given(messageSource.getMessage(SampleEnum.ONE, null, this.locale)).willReturn("Eins");
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
@@ -322,7 +324,7 @@ public class UISelectItemsTest {
 	public void shouldSupportCustomMessageSource() throws Exception {
 		ObjectMessageSource messageSource = mock(ObjectMessageSource.class);
 		given(messageSource.getMessage(SampleEnum.ONE, null, this.locale)).willReturn("Eins");
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setMessageSource(messageSource);
@@ -335,7 +337,7 @@ public class UISelectItemsTest {
 		ObjectMessageSource messageSource = mock(ObjectMessageSource.class);
 		given(messageSource.getMessage(SampleEnum.ONE, null, this.locale)).willThrow(
 				new NoSuchObjectMessageException(SampleEnum.ONE, this.locale));
-		UIComponent parent = mockParent(true);
+		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setMessageSource(messageSource);
@@ -345,11 +347,11 @@ public class UISelectItemsTest {
 
 	@Test
 	public void shouldUseToStringForConverter() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.getSelectItems();
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, SampleEnum.ONE);
 		assertThat(actual, is("ONE"));
 	}
@@ -358,21 +360,21 @@ public class UISelectItemsTest {
 	public void shouldUseToEmptyStringForConvertNull() throws Exception {
 		// If a converted null value is null the html option has no value and the text ends up being part of the
 		// postback. Using "" solves this
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, null);
 		assertThat(actual, is(""));
 	}
 
 	@Test
 	public void shouldUseEntityIdForConverter() throws Exception {
-		UIComponent parent = mockParent(true);
+		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		SampleEntity entity = new SampleEntity();
 		this.selectItems.setValues(Collections.singleton(entity));
 		this.selectItems.getSelectItems();
-		verify((EditableValueHolder) parent).setConverter(this.converterCaptor.capture());
+		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, entity);
 		assertThat(actual, is("ABC"));
 	}
@@ -392,6 +394,66 @@ public class UISelectItemsTest {
 		assertThat(this.selectItems.getItemConverterStringValue(), is("converterStringValue"));
 	}
 
+	@Test
+	public void shouldAddNoSelectionOptionForUISelectOne() throws Exception {
+		doTestNoSelectionOption(UISelectOne.class, null, true);
+	}
+
+	@Test
+	public void shouldNotAddNoSelectionOptionForUISelectOne() throws Exception {
+		doTestNoSelectionOption(UISelectMany.class, null, false);
+	}
+
+	@Test
+	public void shouldAddNoSelectionOptionIfSpecified() throws Exception {
+		doTestNoSelectionOption(UISelectMany.class, true, true);
+	}
+
+	@Test
+	public void shouldNotAddNoSelectionOptionIfSpecified() throws Exception {
+		doTestNoSelectionOption(UISelectOne.class, false, false);
+	}
+
+	private void doTestNoSelectionOption(Class<? extends UIComponent> componentClass, Boolean value,
+			boolean expectInclude) {
+		given(
+				this.applicationContext.getMessage(eq(UISelectItems.NO_SELECTION_OPTION_MESSAGE_CODE),
+						(Object[]) isNull(), eq(UISelectItems.NO_SELECTION_OPTION_DEFAULT_MESSAGE), any(Locale.class)))
+				.willReturn(UISelectItems.NO_SELECTION_OPTION_DEFAULT_MESSAGE);
+		UIComponent parent = mockParent(componentClass);
+		this.selectItems.setParent(parent);
+		this.selectItems.setValues("test");
+		this.selectItems.setIncludeNoSelectionOption(value);
+		List<SelectItem> actual = this.selectItems.getSelectItems();
+		assertThat(actual.size(), is(expectInclude ? 2 : 1));
+		Iterator<SelectItem> iterator = actual.iterator();
+		if (expectInclude) {
+			SelectItem selectItem = iterator.next();
+			assertThat(selectItem.getValue(), is(nullValue()));
+			assertThat(selectItem.getLabel(), is(UISelectItems.NO_SELECTION_OPTION_DEFAULT_MESSAGE));
+			assertThat(selectItem.getDescription(), is(nullValue()));
+			assertThat(selectItem.isDisabled(), is(false));
+			assertThat(selectItem.isEscape(), is(true));
+			assertThat(selectItem.isNoSelectionOption(), is(true));
+		}
+		assertThat(iterator.next().getLabel(), is("test"));
+		assertThat(iterator.hasNext(), is(false));
+	}
+
+	@Test
+	public void shouldUseMessageSourceForNoSelectionOption() throws Exception {
+		String label = "label";
+		given(
+				this.applicationContext.getMessage(eq(UISelectItems.NO_SELECTION_OPTION_MESSAGE_CODE),
+						(Object[]) isNull(), eq(UISelectItems.NO_SELECTION_OPTION_DEFAULT_MESSAGE), any(Locale.class)))
+				.willReturn(label);
+		UIComponent parent = mockParent(UISelectOne.class);
+		this.selectItems.setParent(parent);
+		this.selectItems.setValues("test");
+		List<SelectItem> actual = this.selectItems.getSelectItems();
+		assertThat(actual.get(0).getLabel(), is(label));
+	}
+
 	private ValueExpression mockValueExpression(final RunnableAsserts runnable, final Object value) {
 		ValueExpression valueExpression = mock(ValueExpression.class);
 		given(valueExpression.getValue(any(ELContext.class))).willAnswer(new Answer<Object>() {
@@ -403,12 +465,8 @@ public class UISelectItemsTest {
 		return valueExpression;
 	}
 
-	private UIComponent mockParent(boolean editableValueHolder) {
-		MockSettings settings = withSettings();
-		if (editableValueHolder) {
-			settings = settings.extraInterfaces(EditableValueHolder.class);
-		}
-		UIComponent parent = mock(UIComponent.class, settings);
+	private <T extends UIComponent> T mockParent(Class<T> componentClass) {
+		T parent = mock(componentClass);
 		List<UIComponent> children = new ArrayList<UIComponent>();
 		given(parent.getChildren()).willReturn(children);
 		return parent;

@@ -48,7 +48,7 @@ import org.springframework.util.Assert;
  * In addition it is possible to omit the {@link #getValues() values} attribute entirely when the parent component is
  * bound to a value of the following type:
  * <ul>
- * <li>A {@link Boolean} (Presents the values <tt>yes</tt> and <tt>no</tt>)</li>
+ * <li>A {@link Boolean} (Presents the values <tt>Yes</tt> and <tt>No</tt>)</li>
  * <li>An {@link Enum} (Presents the enum values)</li>
  * <li>Any generic typed {@link Collection} or Array of the above</li>
  * </ul>
@@ -79,6 +79,10 @@ import org.springframework.util.Assert;
  * <tt>@ID</tt> annotated field.
  * <p>
  * <strong>NOTE:</strong> It is imperative that each item has a unique <tt>itemConverterStringValue</tt> value.
+ * <p>
+ * By default a {@link SelectItem#isNoSelectionOption() noSelectionOption} {@link SelectItem} will by added if the
+ * parent is a {@link UISelectOne} component. The {@link #setIncludeNoSelectionOption(Boolean) includeNoSelectionOption}
+ * attribute can be used to override this behaviour.
  * 
  * @see ObjectMessageSource
  * @see SelectItemsConverter
@@ -86,7 +90,18 @@ import org.springframework.util.Assert;
  */
 public class UISelectItems extends UIComponentBase {
 
-	// FIXME Do we want a noSelectionValue? What if the converted item is a no selection?
+	/**
+	 * The message code used to look up any {@link #getIncludeNoSelectionOption() included} noSelectionOption item. If
+	 * no message is found the {@link #NO_SELECTION_OPTION_DEFAULT_MESSAGE} will be used.
+	 * @see #NO_SELECTION_OPTION_DEFAULT_MESSAGE
+	 */
+	public static final String NO_SELECTION_OPTION_MESSAGE_CODE = "spring.faces.noselectionoption";
+
+	/**
+	 * The message used for any {@link #getIncludeNoSelectionOption() included} noSelectionOption item.
+	 * @see #NO_SELECTION_OPTION_MESSAGE_CODE
+	 */
+	public static final String NO_SELECTION_OPTION_DEFAULT_MESSAGE = "--- Please Select ---";
 
 	public static final String COMPONENT_FAMILY = "spring.faces.SelectItems";
 
@@ -146,14 +161,41 @@ public class UISelectItems extends UIComponentBase {
 	 * Returns the {@link List} of {@link SelectItem}s that should be exposed to the parent component.
 	 * @return the list of select items.
 	 */
-	protected List<SelectItem> getSelectItems() {
+	protected final List<SelectItem> getSelectItems() {
+		FacesContext context = getFacesContext();
 		List<SelectItem> selectItems = new ArrayList<SelectItem>();
+		addNoSelectionOptionAsRequired(context, selectItems);
 		Collection<Object> valueItems = getOrDeduceValues();
 		for (Object valueItem : valueItems) {
-			SelectItem selectItem = convertToSelectItem(valueItem);
+			SelectItem selectItem = convertToSelectItem(context, valueItem);
 			selectItems.add(selectItem);
 		}
 		return selectItems;
+	}
+
+	private void addNoSelectionOptionAsRequired(FacesContext context, List<SelectItem> selectItems) {
+		Boolean includeNoSelectionOption = getIncludeNoSelectionOption();
+		if (includeNoSelectionOption == null) {
+			includeNoSelectionOption = (getParent() instanceof UISelectOne);
+		}
+		if (includeNoSelectionOption) {
+			SelectItem item = createNoSelectionOption(context);
+			Assert.state(item != null, "No select item created");
+			selectItems.add(item);
+		}
+	}
+
+	/**
+	 * Create the {@link SelectItem} for any {@link #getIncludeNoSelectionOption() included} noSelectionOption item.
+	 * @param context the faces context
+	 * @return a new select item
+	 */
+	protected SelectItem createNoSelectionOption(FacesContext context) {
+		ObjectMessageSource objectMessageSource = getObjectMessageSource(context);
+		Locale locale = FacesUtils.getLocale(context);
+		String label = objectMessageSource.getMessage(NO_SELECTION_OPTION_MESSAGE_CODE, null,
+				NO_SELECTION_OPTION_DEFAULT_MESSAGE, locale);
+		return new SelectItem(null, label, null, false, true, true);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -217,15 +259,14 @@ public class UISelectItems extends UIComponentBase {
 		return null;
 	}
 
-	private SelectItem convertToSelectItem(final Object valueItem) {
+	private SelectItem convertToSelectItem(final FacesContext context, final Object valueItem) {
 		if (valueItem instanceof SelectItem) {
 			return (SelectItem) valueItem;
 		}
-		final FacesContext context = getFacesContext();
 		final String var = getVar(DEFAULT_VAR);
 		return FacesUtils.doWithRequestScopeVariable(context, var, valueItem, new Callable<SelectItem>() {
 			public SelectItem call() throws Exception {
-				String label = getItemLabel(valueItem);
+				String label = getItemLabel(context, valueItem);
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
 				boolean escape = isItemEscape();
@@ -240,13 +281,10 @@ public class UISelectItems extends UIComponentBase {
 		return (var != null ? var : defaultValue);
 	}
 
-	private String getItemLabel(Object value) {
+	private String getItemLabel(FacesContext context, Object value) {
 		String itemLabel = getItemLabel();
 		if (itemLabel == null) {
-			FacesContext context = getFacesContext();
-			ApplicationContext applicationContext = getApplicationContext(context);
-			ObjectMessageSource messageSource = ObjectMessageSourceUtils.getObjectMessageSource(getMessageSource(),
-					applicationContext);
+			ObjectMessageSource messageSource = getObjectMessageSource(context);
 			Locale locale = FacesUtils.getLocale(context);
 			try {
 				itemLabel = messageSource.getMessage(value, null, locale);
@@ -258,6 +296,13 @@ public class UISelectItems extends UIComponentBase {
 		}
 		Assert.notNull(itemLabel, "Unable to deduce item label");
 		return itemLabel;
+	}
+
+	private ObjectMessageSource getObjectMessageSource(FacesContext context) {
+		ApplicationContext applicationContext = getApplicationContext(context);
+		ObjectMessageSource messageSource = ObjectMessageSourceUtils.getObjectMessageSource(getMessageSource(),
+				applicationContext);
+		return messageSource;
 	}
 
 	/**
@@ -475,6 +520,26 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
+	 * Returns if a {@link SelectItem#isNoSelectionOption() noSelectionOption} item is included. If this value is not
+	 * specified a no selection item will automatically be included for {@link UISelectOne} components only. The
+	 * noSelectionItem will be inserted before other select items with a <tt>null</tt> value and a label
+	 * {@value #NO_SELECTION_OPTION_MESSAGE_CODE looked up} from the {@link #getMessageSource() MessageSource}.
+	 * @return if a noSelectionOption item is included
+	 */
+	public Boolean getIncludeNoSelectionOption() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.includeNoSelectionOption);
+	}
+
+	/**
+	 * Sets if a {@link SelectItem#isNoSelectionOption() noSelectionOption} item is included.
+	 * @param includeNoSelectionOption if a noSelectionOption item is included
+	 * @see #getIncludeNoSelectionOption()
+	 */
+	public void setIncludeNoSelectionOption(Boolean includeNoSelectionOption) {
+		getStateHelper().put(PropertyKeys.includeNoSelectionOption, includeNoSelectionOption);
+	}
+
+	/**
 	 * Return the {@link MessageSource} or {@link ObjectMessageSource} that should be used construct the item label
 	 * (when the {@link #getItemLabel() itemLabel} attribute is not specified). If not specified the
 	 * {@link ApplicationContext} will be used.
@@ -494,7 +559,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, messageSource
+		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
 	}
 
 	/**
