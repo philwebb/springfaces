@@ -12,11 +12,11 @@
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:selectOneMenu value="#{exampleBean.booleanValue}">
+		<h:form id="form">
+			<h:selectOneMenu id="select" value="#{exampleBean.booleanValue}">
 				<s:selectItems/>
 			</h:selectOneMenu>
-			<h:commandButton value="Submit"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>

@@ -8,15 +8,15 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Select Items - JPA Values</title>
+		<title>Select Items - Select One (JPA)</title>
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:selectOneMenu value="#{exampleBean.author}">
+		<h:form id="form">
+			<h:selectOneMenu id="select" value="#{exampleBean.author}">
 				<s:selectItems values="#{authorRepository.all}" var="author" itemLabel="#{author.firstName} #{author.lastName}"/>
 			</h:selectOneMenu>
-			<h:commandButton value="Submit"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>

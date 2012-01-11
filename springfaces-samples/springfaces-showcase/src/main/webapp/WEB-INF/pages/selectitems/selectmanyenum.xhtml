@@ -12,11 +12,11 @@
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:selectManyCheckbox value="#{exampleBean.technologies}">
+		<h:form id="form">
+			<h:selectManyCheckbox id="select" value="#{exampleBean.technologies}">
 				<s:selectItems/>
 			</h:selectManyCheckbox>
-			<h:commandButton value="Submit"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>

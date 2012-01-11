@@ -12,11 +12,11 @@
 	</h:head>
 
 	<h:body>
-		<h:form>
-			<h:selectManyListbox value="#{exampleBean.strings}">
+		<h:form id="form">
+			<h:selectManyListbox id="select" value="#{exampleBean.strings}">
 				<s:selectItems values="Framework, Web Flow, Data, Integration"/>
 			</h:selectManyListbox>
-			<h:commandButton value="Submit"/>
+			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
 	</h:body>
 </ui:composition>
