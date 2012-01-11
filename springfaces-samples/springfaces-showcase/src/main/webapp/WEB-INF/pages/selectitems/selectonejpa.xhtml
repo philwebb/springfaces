@@ -14,7 +14,7 @@
 	<h:body>
 		<h:form id="form">
 			<h:selectOneMenu id="select" value="#{exampleBean.author}">
-				<s:selectItems values="#{authorRepository.all}" var="author" itemLabel="#{author.firstName} #{author.lastName}"/>
+				<s:selectItems value="#{authorRepository.all}" var="author" itemLabel="#{author.firstName} #{author.lastName}"/>
 			</h:selectOneMenu>
 			<h:commandButton id="submit" value="Submit"/>
 		</h:form>
