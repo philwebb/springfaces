@@ -159,8 +159,8 @@ public class UISelectItemsTest {
 	public void shouldGetSelectItemsFromArray() throws Exception {
 		this.selectItems.setParent(mockParent(UISelectMany.class));
 		SelectItem selectItem = new SelectItem();
-		SelectItem[] values = { selectItem };
-		this.selectItems.setValues(values);
+		SelectItem[] value = { selectItem };
+		this.selectItems.setValue(value);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
 		assertThat(actual, is(equalTo((Collection) Collections.singletonList(selectItem))));
 	}
@@ -168,17 +168,17 @@ public class UISelectItemsTest {
 	@Test
 	public void shouldGetSelectItemsFromCollection() throws Exception {
 		this.selectItems.setParent(mockParent(UISelectMany.class));
-		Collection<SelectItem> values = Collections.singleton(new SelectItem());
-		this.selectItems.setValues(values);
+		Collection<SelectItem> value = Collections.singleton(new SelectItem());
+		this.selectItems.setValue(value);
 		Collection<SelectItem> actual = this.selectItems.getSelectItems();
-		assertThat(actual, is(equalTo((Collection) new ArrayList<SelectItem>(values))));
+		assertThat(actual, is(equalTo((Collection) new ArrayList<SelectItem>(value))));
 	}
 
 	@Test
 	public void shouldGetSelectItemsFromCommaString() throws Exception {
 		this.selectItems.setParent(mockParent(UISelectMany.class));
-		String values = "1, 2 ,3";
-		this.selectItems.setValues(values);
+		String value = "1, 2 ,3";
+		this.selectItems.setValue(value);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
 		assertThat(actual.size(), is(3));
 		assertThat(actual.get(0).getLabel(), is("1"));
@@ -249,7 +249,7 @@ public class UISelectItemsTest {
 	public void shouldUseSensibleDefaultWhenNoAttributes() throws Exception {
 		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.TWO));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.TWO));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("TWO"));
 		assertThat(actual.getDescription(), is(nullValue()));
@@ -263,7 +263,7 @@ public class UISelectItemsTest {
 	public void shouldUseAttributesToConvertToSelectItem() throws Exception {
 		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("item", SampleEnum.ONE);
 		this.selectItems.setValueExpression("itemLabel", mockValueExpression(assertItemIsSet, "label"));
 		this.selectItems.setValueExpression("itemDescription", mockValueExpression(assertItemIsSet, "description"));
@@ -282,7 +282,7 @@ public class UISelectItemsTest {
 	public void shouldUseItemConverterStringValueAttribute() throws Exception {
 		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("item", SampleEnum.ONE);
 		this.selectItems.setValueExpression("itemConverterStringValue", mockValueExpression(assertItemIsSet, "1"));
 		this.selectItems.getSelectItems();
@@ -295,7 +295,7 @@ public class UISelectItemsTest {
 	public void shouldSupportCustomVar() throws Exception {
 		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setVar("example");
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("example", SampleEnum.ONE);
 		this.selectItems.setValueExpression("itemLabel", mockValueExpression(assertItemIsSet, "label"));
@@ -315,7 +315,7 @@ public class UISelectItemsTest {
 		given(messageSource.getMessage(SampleEnum.ONE, null, this.locale)).willReturn("Eins");
 		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("Eins"));
 	}
@@ -326,7 +326,7 @@ public class UISelectItemsTest {
 		given(messageSource.getMessage(SampleEnum.ONE, null, this.locale)).willReturn("Eins");
 		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setMessageSource(messageSource);
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("Eins"));
@@ -339,7 +339,7 @@ public class UISelectItemsTest {
 				new NoSuchObjectMessageException(SampleEnum.ONE, this.locale));
 		UIComponent parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.setMessageSource(messageSource);
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("ONE"));
@@ -349,7 +349,7 @@ public class UISelectItemsTest {
 	public void shouldUseToStringForConverter() throws Exception {
 		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues(Collections.singleton(SampleEnum.ONE));
+		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		this.selectItems.getSelectItems();
 		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, SampleEnum.ONE);
@@ -372,7 +372,7 @@ public class UISelectItemsTest {
 		UISelectMany parent = mockParent(UISelectMany.class);
 		this.selectItems.setParent(parent);
 		SampleEntity entity = new SampleEntity();
-		this.selectItems.setValues(Collections.singleton(entity));
+		this.selectItems.setValue(Collections.singleton(entity));
 		this.selectItems.getSelectItems();
 		verify(parent).setConverter(this.converterCaptor.capture());
 		String actual = this.converterCaptor.getValue().getAsString(this.facesContext, parent, entity);
@@ -422,7 +422,7 @@ public class UISelectItemsTest {
 				.willReturn(UISelectItems.NO_SELECTION_OPTION_DEFAULT_MESSAGE);
 		UIComponent parent = mockParent(componentClass);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues("test");
+		this.selectItems.setValue("test");
 		this.selectItems.setIncludeNoSelectionOption(value);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
 		assertThat(actual.size(), is(expectInclude ? 2 : 1));
@@ -449,7 +449,7 @@ public class UISelectItemsTest {
 				.willReturn(label);
 		UIComponent parent = mockParent(UISelectOne.class);
 		this.selectItems.setParent(parent);
-		this.selectItems.setValues("test");
+		this.selectItems.setValue("test");
 		List<SelectItem> actual = this.selectItems.getSelectItems();
 		assertThat(actual.get(0).getLabel(), is(label));
 	}

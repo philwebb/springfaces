@@ -37,15 +37,14 @@ import org.springframework.util.Assert;
 
 /**
  * Alternative to the standard JSF {@link javax.faces.component.UISelectItems} component that may be nested inside a
- * {@link UISelectMany} or {@link UISelectOne} component in order to add {@link SelectItem}s. The {@link #getValues()
- * values} attribute will be used to build the list of select items and may be bound to any object of the following
- * type:
+ * {@link UISelectMany} or {@link UISelectOne} component in order to add {@link SelectItem}s. The {@link #getValue()
+ * value} attribute will be used to build the list of select items and may be bound to any object of the following type:
  * <ul>
  * <li>A {@link Collection}</li>
  * <li>An {@link Object} Array</li>
  * <li>A {@link String} containing a comma separated list of values</li>
  * </ul>
- * In addition it is possible to omit the {@link #getValues() values} attribute entirely when the parent component is
+ * In addition it is possible to omit the {@link #getValue() value} attribute entirely when the parent component is
  * bound to a value of the following type:
  * <ul>
  * <li>A {@link Boolean} (Presents the values <tt>Yes</tt> and <tt>No</tt>)</li>
@@ -62,7 +61,7 @@ import org.springframework.util.Assert;
  * For example:
  * 
  * <pre>
- * &lt;s:selectItems values="#{customers}" itemLabel="#{item.name}"/&gt;
+ * &lt;s:selectItems value="#{customers}" itemLabel="#{item.name}"/&gt;
  * </pre>
  * 
  * <p>
@@ -86,6 +85,7 @@ import org.springframework.util.Assert;
  * 
  * @see ObjectMessageSource
  * @see SelectItemsConverter
+ * 
  * @author Phillip Webbb
  */
 public class UISelectItems extends UIComponentBase {
@@ -200,7 +200,7 @@ public class UISelectItems extends UIComponentBase {
 
 	@SuppressWarnings("unchecked")
 	private Collection<Object> getOrDeduceValues() {
-		Object values = getValues();
+		Object values = getValue();
 		if (values == null) {
 			values = deduceValuesFromParentComponent();
 		}
@@ -214,7 +214,7 @@ public class UISelectItems extends UIComponentBase {
 		if (values instanceof Object[]) {
 			values = Arrays.asList((Object[]) values);
 		}
-		Assert.state(values instanceof Collection, "The values type " + values.getClass()
+		Assert.state(values instanceof Collection, "The value type " + values.getClass()
 				+ " is not supported, please use a Collection, Array or String");
 		return (Collection<Object>) values;
 	}
@@ -222,11 +222,11 @@ public class UISelectItems extends UIComponentBase {
 	private Object deduceValuesFromParentComponent() {
 		ValueExpression valueExpression = getParent().getValueExpression("value");
 		Assert.notNull(valueExpression,
-				"The 'values' attribute is requred as the parent component does not have a bound 'values'");
+				"The 'value' attribute is requred as the parent component does not have a bound 'value'");
 		TypeDescriptor type = getTypeDescriptor(valueExpression, getFacesContext().getELContext());
 		Object valueForType = deduceValuesForType(type);
 		Assert.notNull(valueForType,
-				"The 'values' attribute is requred as select items cannot be deduced from parent componenet 'values' expression '"
+				"The 'value' attribute is requred as select items cannot be deduced from parent componenet 'value' expression '"
 						+ valueExpression + "'");
 		return valueForType;
 	}
@@ -377,7 +377,7 @@ public class UISelectItems extends UIComponentBase {
 	 * itemConverterStringValue} attributes. If not specified the <tt>var</tt> "item" will be used.This property is
 	 * <b>not</b> enabled for value binding expressions.
 	 * @return The variable name
-	 * @see #getValues()
+	 * @see #getValue()
 	 */
 	public String getVar() {
 		return (String) getStateHelper().get(PropertyKeys.var);
@@ -393,26 +393,26 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
-	 * Returns the values that should be made available as {@link SelectItem}s. Values can refer to a {@link Collection}
-	 * , <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the values will be
-	 * deduced from the parent component value binding. Items are converted to select items used the
-	 * {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape}, {@link #getItemDescription()
-	 * itemDescription}, {@link #isItemDisabled() itemDisabled}, {@link #isItemNoSelectionOption()
-	 * itemNoSelectionOption} and {@link #getItemConverterStringValue() itemConverterStringValue} attributes.
-	 * @return the values to expose as select items
+	 * Returns the value that should be made available as {@link SelectItem}s. Value can refer to a {@link Collection} ,
+	 * <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the value will be deduced
+	 * from the parent component value binding. Items are converted to select items used the {@link #getItemLabel()
+	 * itemLabel}, {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription},
+	 * {@link #isItemDisabled() itemDisabled}, {@link #isItemNoSelectionOption() itemNoSelectionOption} and
+	 * {@link #getItemConverterStringValue() itemConverterStringValue} attributes.
+	 * @return the value to expose as select items
 	 * @see #getVar()
 	 */
-	public Object getValues() {
-		return getStateHelper().eval(PropertyKeys.values);
+	public Object getValue() {
+		return getStateHelper().eval(PropertyKeys.value);
 	}
 
 	/**
-	 * Set the values that should be made available as {@link SelectItem}s.
-	 * @param values the values
-	 * @see #getValues()
+	 * Set the value that should be made available as {@link SelectItem}s.
+	 * @param value the value
+	 * @see #getValue()
 	 */
-	public void setValues(Object values) {
-		getStateHelper().put(PropertyKeys.values, values);
+	public void setValue(Object value) {
+		getStateHelper().put(PropertyKeys.value, value);
 	}
 
 	/**
@@ -563,7 +563,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		values, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
+		value, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
 	}
 
 	/**
