@@ -53,10 +53,10 @@ import org.springframework.util.Assert;
  * </ul>
  * <p>
  * Contents of {@link SelectItem} will be constructed using the optional {@link #getItemLabel() itemLabel},
- * {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription}, {@link #isItemDisabled()
- * itemDisabled} and {@link #isItemNoSelectionOption() itemNoSelectionOption} attributes. Each of these may make
- * reference to the item value using via a EL variable (the name of the variable defaults to <tt>item</tt> but can be
- * changed using the {@link #getVar() var} attribute).
+ * {@link #isItemLabelEscaped() itemLabelEscaped}, {@link #getItemDescription() itemDescription},
+ * {@link #isItemDisabled() itemDisabled} and {@link #isItemNoSelectionOption() itemNoSelectionOption} attributes. Each
+ * of these may make reference to the item value using via a EL variable (the name of the variable defaults to
+ * <tt>item</tt> but can be changed using the {@link #getVar() var} attribute).
  * <p>
  * For example:
  * 
@@ -89,6 +89,9 @@ import org.springframework.util.Assert;
  * @author Phillip Webbb
  */
 public class UISelectItems extends UIComponentBase {
+
+	// FIXME itemValue should be added
+	// FIXME Change itemNoSelectionOption to noSelectionValue
 
 	/**
 	 * The message code used to look up any {@link #getIncludeNoSelectionOption() included} noSelectionOption item. If
@@ -273,7 +276,7 @@ public class UISelectItems extends UIComponentBase {
 				String label = getItemLabel(context, valueItem);
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
-				boolean escape = isItemEscape();
+				boolean escape = isItemLabelEscaped();
 				boolean noSelectionOption = isItemNoSelectionOption();
 				return new SelectItem(valueItem, label, description, disabled, escape, noSelectionOption);
 			}
@@ -371,7 +374,7 @@ public class UISelectItems extends UIComponentBase {
 
 	/**
 	 * Return the request-scope attribute under which the current <tt>value</tt> will be exposed. This variable can be
-	 * referenced from the {@link #getItemLabel() itemLabel}, {@link #isItemEscape() itemEscape},
+	 * referenced from the {@link #getItemLabel() itemLabel}, {@link #isItemLabelEscaped() itemLabelEscaped},
 	 * {@link #getItemDescription() itemDescription}, {@link #isItemDisabled() itemDisabled},
 	 * {@link #isItemNoSelectionOption() itemNoSelectionOption} and {@link #getItemConverterStringValue()
 	 * itemConverterStringValue} attributes. If not specified the <tt>var</tt> "item" will be used.This property is
@@ -396,7 +399,7 @@ public class UISelectItems extends UIComponentBase {
 	 * Returns the value that should be made available as {@link SelectItem}s. Value can refer to a {@link Collection} ,
 	 * <tt>Array</tt> or a <tt>String</tt> containing comma separated values. If not specified the value will be deduced
 	 * from the parent component value binding. Items are converted to select items used the {@link #getItemLabel()
-	 * itemLabel}, {@link #isItemEscape() itemEscape}, {@link #getItemDescription() itemDescription},
+	 * itemLabel}, {@link #isItemLabelEscaped() itemLabelEscaped}, {@link #getItemDescription() itemDescription},
 	 * {@link #isItemDisabled() itemDisabled}, {@link #isItemNoSelectionOption() itemNoSelectionOption} and
 	 * {@link #getItemConverterStringValue() itemConverterStringValue} attributes.
 	 * @return the value to expose as select items
@@ -470,21 +473,21 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
-	 * Returns if select item is {@link SelectItem#isEscape() escaped}. This expression can refer to the current value
-	 * using the {@link #getVar() var} attribute.
+	 * Returns if select item label is {@link SelectItem#isEscape() escaped}. This expression can refer to the current
+	 * value using the {@link #getVar() var} attribute.
 	 * @return if the item is escaped
 	 */
-	public boolean isItemEscape() {
-		return (Boolean) getStateHelper().eval(PropertyKeys.itemEscape, true);
+	public boolean isItemLabelEscaped() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.itemLabelEscaped, true);
 	}
 
 	/**
 	 * Set if the item is escaped
-	 * @param itemEscape if the item is escaped
-	 * @see #isItemEscape()
+	 * @param itemLabelEscaped if the item label is escaped
+	 * @see #isItemLabelEscaped()
 	 */
-	public void setItemEscape(boolean itemEscape) {
-		getStateHelper().put(PropertyKeys.itemEscape, itemEscape);
+	public void setItemLabelEscaped(boolean itemLabelEscaped) {
+		getStateHelper().put(PropertyKeys.itemLabelEscaped, itemLabelEscaped);
 	}
 
 	/**
@@ -563,7 +566,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, var, itemLabel, itemDescription, itemDisabled, itemEscape, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
+		value, var, itemLabel, itemDescription, itemDisabled, itemLabelEscaped, itemNoSelectionOption, itemConverterStringValue, includeNoSelectionOption, messageSource
 	}
 
 	/**

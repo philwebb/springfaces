@@ -268,7 +268,7 @@ public class UISelectItemsTest {
 		this.selectItems.setValueExpression("itemLabel", mockValueExpression(assertItemIsSet, "label"));
 		this.selectItems.setValueExpression("itemDescription", mockValueExpression(assertItemIsSet, "description"));
 		this.selectItems.setValueExpression("itemDisabled", mockValueExpression(assertItemIsSet, true));
-		this.selectItems.setValueExpression("itemEscape", mockValueExpression(assertItemIsSet, false));
+		this.selectItems.setValueExpression("itemLabelEscaped", mockValueExpression(assertItemIsSet, false));
 		this.selectItems.setValueExpression("itemNoSelectionOption", mockValueExpression(assertItemIsSet, true));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
 		assertThat(actual.getLabel(), is("label"));
@@ -384,13 +384,13 @@ public class UISelectItemsTest {
 		this.selectItems.setItemLabel("itemLabel");
 		this.selectItems.setItemDescription("itemDescription");
 		this.selectItems.setItemDisabled(true);
-		this.selectItems.setItemEscape(false);
+		this.selectItems.setItemLabelEscaped(false);
 		this.selectItems.setItemConverterStringValue("converterStringValue");
 
 		assertThat(this.selectItems.getItemLabel(), is("itemLabel"));
 		assertThat(this.selectItems.getItemDescription(), is("itemDescription"));
 		assertThat(this.selectItems.isItemDisabled(), is(true));
-		assertThat(this.selectItems.isItemEscape(), is(false));
+		assertThat(this.selectItems.isItemLabelEscaped(), is(false));
 		assertThat(this.selectItems.getItemConverterStringValue(), is("converterStringValue"));
 	}
 
