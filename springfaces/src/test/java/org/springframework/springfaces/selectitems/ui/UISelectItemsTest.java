@@ -30,6 +30,8 @@ import javax.faces.component.UISelectOne;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.model.ArrayDataModel;
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -187,6 +189,16 @@ public class UISelectItemsTest {
 		assertThat(actual.get(0).getValue(), is((Object) "1"));
 		assertThat(actual.get(1).getValue(), is((Object) "2"));
 		assertThat(actual.get(2).getValue(), is((Object) "3"));
+	}
+
+	@Test
+	public void shouldGetSelectItemsFromDataModel() throws Exception {
+		this.selectItems.setParent(mockParent(UISelectMany.class));
+		SelectItem selectItem = new SelectItem();
+		DataModel<SelectItem> value = new ArrayDataModel<SelectItem>(new SelectItem[] { selectItem });
+		this.selectItems.setValue(value);
+		List<SelectItem> actual = this.selectItems.getSelectItems();
+		assertThat(actual, is(equalTo((Collection) Collections.singletonList(selectItem))));
 	}
 
 	@Test

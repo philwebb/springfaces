@@ -21,6 +21,7 @@ import javax.faces.component.ValueHolder;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.model.DataModel;
 import javax.faces.model.SelectItem;
 
 import org.springframework.context.ApplicationContext;
@@ -44,6 +45,7 @@ import org.springframework.util.ObjectUtils;
  * <li>A {@link Collection}</li>
  * <li>An {@link Object} Array</li>
  * <li>A {@link String} containing a comma separated list of values</li>
+ * <li>A {@link DataModel}</li>
  * </ul>
  * In addition it is possible to omit the {@link #getValue() value} attribute entirely when the parent component is
  * bound to a value of the following type:
@@ -82,7 +84,7 @@ import org.springframework.util.ObjectUtils;
  * <p>
  * By default a {@link SelectItem#isNoSelectionOption() noSelectionOption} {@link SelectItem} will by added if the
  * parent is a {@link UISelectOne} component. The {@link #setIncludeNoSelectionOption(Boolean) includeNoSelectionOption}
- * attribute can be used to override this behaviour.
+ * attribute can be used to override this behavior.
  * 
  * @see ObjectMessageSource
  * @see SelectItemsConverter
@@ -90,8 +92,6 @@ import org.springframework.util.ObjectUtils;
  * @author Phillip Webbb
  */
 public class UISelectItems extends UIComponentBase {
-
-	// FIXME value should work with DataModel
 
 	/**
 	 * The message code used to look up any {@link #getIncludeNoSelectionOption() included} noSelectionOption item. If
@@ -171,7 +171,7 @@ public class UISelectItems extends UIComponentBase {
 			FacesContext context = getFacesContext();
 			List<SelectItem> selectItems = new ArrayList<SelectItem>();
 			addNoSelectionOptionAsRequired(context, selectItems);
-			Collection<Object> valueItems = getOrDeduceValues();
+			Iterable<Object> valueItems = getOrDeduceValues();
 			for (Object valueItem : valueItems) {
 				SelectItem selectItem = convertToSelectItem(context, valueItem);
 				selectItems.add(selectItem);
@@ -208,7 +208,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Collection<Object> getOrDeduceValues() {
+	private Iterable<Object> getOrDeduceValues() {
 		Object values = getValue();
 		if (values == null) {
 			values = deduceValuesFromParentComponent();
@@ -223,9 +223,9 @@ public class UISelectItems extends UIComponentBase {
 		if (values instanceof Object[]) {
 			values = Arrays.asList((Object[]) values);
 		}
-		Assert.state(values instanceof Collection, "The value type " + values.getClass()
+		Assert.state(values instanceof Iterable, "The value type " + values.getClass()
 				+ " is not supported, please use a Collection, Array or String");
-		return (Collection<Object>) values;
+		return (Iterable<Object>) values;
 	}
 
 	private Object deduceValuesFromParentComponent() {

@@ -106,5 +106,4 @@ public abstract class FacesUtils {
 			}
 		});
 	}
-
 }
