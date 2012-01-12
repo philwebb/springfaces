@@ -91,7 +91,6 @@ import org.springframework.util.ObjectUtils;
  */
 public class UISelectItems extends UIComponentBase {
 
-	// FIXME itemValue should be added
 	// FIXME value should work with DataModel
 
 	/**
@@ -124,6 +123,8 @@ public class UISelectItems extends UIComponentBase {
 	private ExposedUISelectItems exposedUISelectItems = new ExposedUISelectItems();
 
 	private UISelectItemsConverter converter = new UISelectItemsConverter();
+
+	private List<SelectItem> selectItems;
 
 	@Override
 	public String getFamily() {
@@ -166,15 +167,19 @@ public class UISelectItems extends UIComponentBase {
 	 * @return the list of select items.
 	 */
 	protected final List<SelectItem> getSelectItems() {
-		FacesContext context = getFacesContext();
-		List<SelectItem> selectItems = new ArrayList<SelectItem>();
-		addNoSelectionOptionAsRequired(context, selectItems);
-		Collection<Object> valueItems = getOrDeduceValues();
-		for (Object valueItem : valueItems) {
-			SelectItem selectItem = convertToSelectItem(context, valueItem);
-			selectItems.add(selectItem);
+		if (this.selectItems == null) {
+			FacesContext context = getFacesContext();
+			List<SelectItem> selectItems = new ArrayList<SelectItem>();
+			addNoSelectionOptionAsRequired(context, selectItems);
+			Collection<Object> valueItems = getOrDeduceValues();
+			for (Object valueItem : valueItems) {
+				SelectItem selectItem = convertToSelectItem(context, valueItem);
+				selectItems.add(selectItem);
+			}
+			this.selectItems = selectItems;
 		}
-		return selectItems;
+		return this.selectItems;
+
 	}
 
 	private void addNoSelectionOptionAsRequired(FacesContext context, List<SelectItem> selectItems) {
@@ -274,6 +279,10 @@ public class UISelectItems extends UIComponentBase {
 		final String var = getVar(DEFAULT_VAR);
 		return FacesUtils.doWithRequestScopeVariable(context, var, valueItem, new Callable<SelectItem>() {
 			public SelectItem call() throws Exception {
+				Object value = getItemValue();
+				if (value == null) {
+					value = valueItem;
+				}
 				String label = getItemLabel(context, valueItem);
 				String description = getItemDescription();
 				boolean disabled = isItemDisabled();
@@ -281,7 +290,7 @@ public class UISelectItems extends UIComponentBase {
 				Object noSelectionValue = getNoSelectionValue();
 				boolean noSelectionOption = noSelectionValue != null
 						&& ObjectUtils.nullSafeEquals(valueItem, noSelectionValue);
-				return new SelectItem(valueItem, label, description, disabled, escape, noSelectionOption);
+				return new SelectItem(value, label, description, disabled, escape, noSelectionOption);
 			}
 		});
 	}
@@ -422,6 +431,24 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
+	 * Returns the {@link SelectItem#getValue() value} that should be used for the select item. This expression can
+	 * refer to the current value using the {@link #getVar() var} attribute.
+	 * @return the item label
+	 */
+	public Object getItemValue() {
+		return getStateHelper().eval(PropertyKeys.itemValue);
+	}
+
+	/**
+	 * Sets the item value.
+	 * @param itemValue the item value
+	 * @see #getItemValue()
+	 */
+	public void setItemValue(Object itemValue) {
+		getStateHelper().put(PropertyKeys.itemValue, itemValue);
+	}
+
+	/**
 	 * Returns the {@link SelectItem#getLabel() label} that should be used for the select item. This expression can
 	 * refer to the current value using the {@link #getVar() var} attribute.
 	 * @return the item label
@@ -495,7 +522,9 @@ public class UISelectItems extends UIComponentBase {
 
 	/**
 	 * Returns the converter string value that should be used for the select item. This expression can refer to the
-	 * current value using the {@link #getVar() var} attribute.
+	 * current value using the {@link #getVar() var} attribute. NOTE: in this context var is
+	 * {@link SelectItem#getValue()}, this may differ from the item value if a custom {@link #getItemValue itemValue}
+	 * has been specified.
 	 * @return the converter string value
 	 */
 	public String getItemConverterStringValue() {
@@ -569,7 +598,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	private enum PropertyKeys {
-		value, var, itemLabel, itemDescription, itemDisabled, itemLabelEscaped, itemConverterStringValue, noSelectionValue, includeNoSelectionOption, messageSource
+		value, var, itemValue, itemLabel, itemDescription, itemDisabled, itemLabelEscaped, itemConverterStringValue, noSelectionValue, includeNoSelectionOption, messageSource
 	}
 
 	/**

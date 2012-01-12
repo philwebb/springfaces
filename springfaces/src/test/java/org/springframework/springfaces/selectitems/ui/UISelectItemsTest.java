@@ -265,12 +265,14 @@ public class UISelectItemsTest {
 		this.selectItems.setParent(parent);
 		this.selectItems.setValue(Collections.singleton(SampleEnum.ONE));
 		RunnableAsserts assertItemIsSet = assertTheItemVarIsSet("item", SampleEnum.ONE);
+		this.selectItems.setValueExpression("itemValue", mockValueExpression(assertItemIsSet, "itemValue"));
 		this.selectItems.setValueExpression("itemLabel", mockValueExpression(assertItemIsSet, "label"));
 		this.selectItems.setValueExpression("itemDescription", mockValueExpression(assertItemIsSet, "description"));
 		this.selectItems.setValueExpression("itemDisabled", mockValueExpression(assertItemIsSet, true));
 		this.selectItems.setValueExpression("itemLabelEscaped", mockValueExpression(assertItemIsSet, false));
 		this.selectItems.setValueExpression("noSelectionValue", mockValueExpression(assertItemIsSet, SampleEnum.ONE));
 		SelectItem actual = this.selectItems.getSelectItems().get(0);
+		assertThat(actual.getValue(), is((Object) "itemValue"));
 		assertThat(actual.getLabel(), is("label"));
 		assertThat(actual.getDescription(), is("description"));
 		assertThat(actual.isDisabled(), is(true));
