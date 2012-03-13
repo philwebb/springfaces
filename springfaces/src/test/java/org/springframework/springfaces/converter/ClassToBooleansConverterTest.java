@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.convert.support.ConversionServiceFactory;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 
 /**
@@ -26,9 +26,8 @@ public class ClassToBooleansConverterTest {
 	private GenericConversionService conversionService;
 
 	@Before
-	@SuppressWarnings("deprecation")
 	public void setup() throws Exception {
-		this.conversionService = ConversionServiceFactory.createDefaultConversionService();
+		this.conversionService = new DefaultConversionService();
 		this.conversionService.addConverter(new ClassToBooleansConverter());
 	}
 
