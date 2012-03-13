@@ -1,11 +1,12 @@
 package org.springframework.springfaces.showcase.selectitems;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ExampleSelectItemsBean {
+public class ExampleSelectItemsBean implements Serializable {
 
 	private Boolean booleanValue;
 
@@ -16,7 +17,7 @@ public class ExampleSelectItemsBean {
 	private Author author;
 
 	public Boolean getBooleanValue() {
-		return booleanValue;
+		return this.booleanValue;
 	}
 
 	public void setBooleanValue(Boolean booleanValue) {
@@ -24,7 +25,7 @@ public class ExampleSelectItemsBean {
 	}
 
 	public Set<Technology> getTechnologies() {
-		return technologies;
+		return this.technologies;
 	}
 
 	public void setTechnologies(Set<Technology> technologies) {
@@ -32,7 +33,7 @@ public class ExampleSelectItemsBean {
 	}
 
 	public List<String> getStrings() {
-		return strings;
+		return this.strings;
 	}
 
 	public void setStrings(List<String> strings) {
@@ -40,7 +41,7 @@ public class ExampleSelectItemsBean {
 	}
 
 	public Author getAuthor() {
-		return author;
+		return this.author;
 	}
 
 	public void setAuthor(Author author) {
