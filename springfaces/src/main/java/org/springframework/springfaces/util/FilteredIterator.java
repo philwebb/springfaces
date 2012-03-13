@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 import org.springframework.util.Assert;
 
 /**
- * Base for {@link Iterator}s that selectively {@link #isElementFiltered(Object) filter} items from an underlying
+ * Base for {@link Iterator}s that selectively {@link #isElementFiltered(Object) filters} items from an underlying
  * source.
  * 
  * @param <E> the element type
