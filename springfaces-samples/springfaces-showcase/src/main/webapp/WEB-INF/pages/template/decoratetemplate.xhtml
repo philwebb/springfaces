@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:util="http://java.sun.com/jsf/composite/components/util"
+	xmlns:s="http://www.springframework.org/tags/springfaces">
+
+	<h:body>
+		<ui:composition>
+		
+			<!-- 
+			<s:componentInfo var="componentInfo" from="childrenOf">
+				<ui:param name="concattest" value="#{thecomponent.id}label"/>
+				<h:outputLabel styleClass="control-label" for="#{component.id}" value="#{message[component.id]}"/>
+				<ui:insert/>
+			</s:componentInfo>
+		 	-->
+		
+			<div style="border: solid 1px red">
+
+<!--  
+			<h:panelGroup styleClass="control-group">			
+				<h:outputLabel styleClass="control-label" for="#{component.id}" value="#{message[component.id]}"/>
+				<ui:insert/>
+				<ui:insert name="afterComponent"/>
+			</h:panelGroup>
+-->
+		
+		
+			<p>
+			[
+			<h:panelGroup>
+			<ui:insert />
+			</h:panelGroup>
+			]
+			</p>
+			<p>
+			<ui:insert name="help"/>
+			</p>
+			<p>
+			<h:outputText value="#{test}"/>
+			</p>
+			</div>
+		</ui:composition>
+	</h:body>
+</ui:composition>
+
+
+

@@ -38,4 +38,8 @@
 			<component-type>spring.faces.SelectItems</component-type>
 		</component>
 	</tag>
+	<tag>
+		<tag-name>decorateAll</tag-name>
+		<handler-class>org.springframework.springfaces.template.facelets.DecorateAllHandler</handler-class>
+	</tag>
 </facelet-taglib>

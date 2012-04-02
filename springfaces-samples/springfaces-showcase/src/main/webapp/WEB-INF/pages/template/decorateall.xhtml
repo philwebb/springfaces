@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:util="http://java.sun.com/jsf/composite/components/util"
+	xmlns:s="http://www.springframework.org/tags/springfaces">
+
+	<h:head>
+		<title>Templates - Decorate All</title>
+	</h:head>
+
+	<h:body>
+		<h:form id="form">
+
+			<s:decorateAll template="decoratetemplate.xhtml">
+
+				<h:outputText id="otext" value="d1" />
+
+				<h:inputText id="itext" required="true"/>
+				<ui:param name="test" value="test" />
+				<ui:define name="help">
+					<h:outputText value="Help is here" />
+				</ui:define>
+
+				<h:panelGrid id="pg">
+					<p>Hello</p>
+					<div>test</div>
+				</h:panelGrid>
+			</s:decorateAll>
+
+			<ui:decorate template="decoratetemplate.xhtml">
+				<h:outputText id="d1" value="d1" />
+				<ui:define name="help">
+					<h:outputText value="Help is here" />
+				</ui:define>
+			</ui:decorate>
+			
+			<ui:decorate template="decoratetemplate.xhtml">
+				<h:inputText id="d2" />
+			</ui:decorate>
+		</h:form>
+	</h:body>
+</ui:composition>
+
+
+
