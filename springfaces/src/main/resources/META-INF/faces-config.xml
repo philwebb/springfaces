@@ -13,10 +13,6 @@
 			<system-event-listener-class>org.springframework.springfaces.internal.SpringSystemEventListener</system-event-listener-class>
 			<system-event-class>javax.faces.event.PostConstructApplicationEvent</system-event-class>
 		</system-event-listener>
-		<system-event-listener>
-			<system-event-listener-class>org.springframework.springfaces.ui.ApplyAspectSystemEventListener</system-event-listener-class>
-			<system-event-class>javax.faces.event.PostAddToViewEvent</system-event-class>
-		</system-event-listener>
 	</application>
 	<factory>
 		<render-kit-factory>org.springframework.springfaces.internal.SpringRenderKitFactory</render-kit-factory>

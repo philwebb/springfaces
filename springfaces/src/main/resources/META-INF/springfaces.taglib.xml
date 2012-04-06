@@ -40,6 +40,6 @@
 	</tag>
 	<tag>
 		<tag-name>decorateAll</tag-name>
-		<handler-class>org.springframework.springfaces.template.facelets.DecorateAllHandler</handler-class>
+		<handler-class>org.springframework.springfaces.template.ui.DecorateAllHandler</handler-class>
 	</tag>
 </facelet-taglib>
