@@ -13,6 +13,8 @@ import javax.faces.view.facelets.TagAttributeException;
 import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagHandler;
 
+import org.springframework.springfaces.util.FacesVendor;
+
 /**
  * A {@link TagHandler} to support the <tt>s:decorateAll</tt> tag. Provides a drop-in replacement for
  * <tt>ui:decorate</tt> that apply decoration against all child components. Nested <tt>ui:param</tt> and
@@ -21,8 +23,8 @@ import javax.faces.view.facelets.TagHandler;
  * <p>
  * This tag is particularly useful when writing HTML form templates.
  * 
- * @see MojarraDecorateAllChildHandler
- * @see MyFacesDecorateAllChildHandler
+ * @see MojarraDecorateAllHandlerDelegate
+ * @see MyFacesDecorateAllHandlerDelegate
  * 
  * @author Phillip Webb
  */
@@ -72,7 +74,13 @@ public class DecorateAllHandler extends TagHandler {
 	}
 
 	private Delegate getDelegate() {
-		return new MojarraDecorateAllHandlerDelegate();
+		switch (FacesVendor.getCurrent()) {
+		case MOJARRA:
+			return new MojarraDecorateAllHandlerDelegate();
+		case MYFACES:
+			return new MyFacesDecorateAllHandlerDelegate();
+		}
+		throw new IllegalStateException("Unknown JSF vendor, please use MyFaces or Mojarra");
 	}
 
 	public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
@@ -90,18 +98,63 @@ public class DecorateAllHandler extends TagHandler {
 		}
 	}
 
+	/**
+	 * Various handler type.
+	 */
 	enum Type {
-		COMPONENT, VARIABLE_DECLARATION, OTHER
+
+		/**
+		 * Handler that creates a {@link UIComponent}.
+		 */
+		COMPONENT,
+
+		/**
+		 * Handler that defines some variable part of the template. For example <tt>ui:define</tt> or <tt>ui:param</tt>.
+		 */
+		VARIABLE_DECLARATION,
+
+		/**
+		 * All other handler types
+		 */
+		OTHER
 	}
 
+	/**
+	 * Delegate used to contain vendor specific implementation.
+	 */
 	static interface Delegate {
 
-		Type getType(FaceletHandler child);
+		/**
+		 * Returns the type of the given handler.
+		 * @param handler the handler
+		 * @return the type of handler
+		 */
+		Type getType(FaceletHandler handler);
 
+		/**
+		 * Create a new {@link DecoratedChild} instance for the given handler.
+		 * @param handler the component handler to decorate
+		 * @param variableDeclarationHandlers all {@link Type#VARIABLE_DECLARATION variable declaration} handlers that
+		 * the child may refer to
+		 * @return the decorated child
+		 */
 		DecoratedChild createdDecoratedChild(FaceletHandler handler, List<FaceletHandler> variableDeclarationHandlers);
 	}
 
+	/**
+	 * A single decorated child element.
+	 */
 	static interface DecoratedChild {
+
+		/**
+		 * Apply the decorated child, implementations will ensure that all variable declarations are exposed for use by
+		 * the template.
+		 * 
+		 * @param ctx the facelet context
+		 * @param parent the parent component
+		 * @param template the template used to decorate the child
+		 * @throws IOException
+		 */
 		void apply(FaceletContext ctx, UIComponent parent, String template) throws IOException;
 	}
 

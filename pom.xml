@@ -144,6 +144,17 @@
 				<version>1.2.16</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.myfaces.core</groupId>
+				<artifactId>myfaces-impl</artifactId>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.myfaces.core</groupId>
+						<artifactId>myfaces-api</artifactId>
+					</exclusion>
+				</exclusions>
+				<version>2.1.6</version>
+			</dependency>
+			<dependency>
 				<groupId>org.glassfish.web</groupId>
 				<artifactId>el-impl</artifactId>
 				<version>2.2</version>

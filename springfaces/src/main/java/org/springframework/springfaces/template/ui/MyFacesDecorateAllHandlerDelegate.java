@@ -12,21 +12,20 @@ import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletHandler;
 
+import org.apache.myfaces.view.facelets.AbstractFaceletContext;
+import org.apache.myfaces.view.facelets.TemplateClient;
+import org.apache.myfaces.view.facelets.el.VariableMapperWrapper;
+import org.apache.myfaces.view.facelets.tag.ui.DefineHandler;
+import org.apache.myfaces.view.facelets.tag.ui.ParamHandler;
 import org.springframework.springfaces.template.ui.DecorateAllHandler.DecoratedChild;
 import org.springframework.springfaces.template.ui.DecorateAllHandler.Type;
 
-import com.sun.faces.facelets.FaceletContextImplBase;
-import com.sun.faces.facelets.TemplateClient;
-import com.sun.faces.facelets.el.VariableMapperWrapper;
-import com.sun.faces.facelets.tag.ui.DefineHandler;
-import com.sun.faces.facelets.tag.ui.ParamHandler;
-
 /**
- * {@link DecorateAllHandler.Delegate} for Mojarra.
+ * {@link DecorateAllHandler.Delegate} for MyFaces.
  * 
  * @author Phillip Webb
  */
-class MojarraDecorateAllHandlerDelegate implements DecorateAllHandler.Delegate {
+class MyFacesDecorateAllHandlerDelegate implements DecorateAllHandler.Delegate {
 
 	public Type getType(FaceletHandler handler) {
 		if (handler instanceof ParamHandler || handler instanceof DefineHandler) {
@@ -64,7 +63,7 @@ class MojarraDecorateAllHandlerDelegate implements DecorateAllHandler.Delegate {
 		}
 
 		public void apply(FaceletContext ctx, final UIComponent parent, String templatePath) throws IOException {
-			FaceletContextImplBase faceletContextImpl = (FaceletContextImplBase) ctx;
+			AbstractFaceletContext faceletContextImpl = (AbstractFaceletContext) ctx;
 			VariableMapper originalVariableMapper = ctx.getVariableMapper();
 			if (this.paramHandlers != null) {
 				ctx.setVariableMapper(new VariableMapperWrapper(originalVariableMapper));
