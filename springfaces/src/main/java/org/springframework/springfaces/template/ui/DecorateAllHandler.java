@@ -36,33 +36,33 @@ public class DecorateAllHandler extends TagHandler {
 
 	public DecorateAllHandler(TagConfig config) {
 		super(config);
-		Delegate childHandler = getDelegate();
+		Delegate delegate = getDelegate();
 		this.template = this.getRequiredAttribute("template");
 		this.children = new ArrayList<Object>();
 		List<FaceletHandler> globalVariableDeclarations = new ArrayList<FaceletHandler>();
 		List<FaceletHandler> variableDeclarations = new ArrayList<FaceletHandler>();
 		FaceletHandler component = null;
 		for (FaceletHandler child : getHandlers(this.nextHandler)) {
-			Type type = childHandler.getType(child);
-			if (type == Type.COMPONENT) {
-				if (component != null) {
-					this.children.add(childHandler.createdDecoratedChild(component, variableDeclarations));
-					variableDeclarations.clear();
-					variableDeclarations.addAll(globalVariableDeclarations);
-				}
-				component = child;
-			} else if (type == Type.VARIABLE_DECLARATION) {
+			Type type = delegate.getType(child);
+			if (type == Type.VARIABLE_DECLARATION) {
 				if (component == null) {
 					globalVariableDeclarations.add(child);
-				} else {
-					variableDeclarations.add(child);
 				}
+				variableDeclarations.add(child);
 			} else {
-				this.children.add(child);
+				if (component != null) {
+					this.children.add(delegate.createdDecoratedChild(component, variableDeclarations));
+					variableDeclarations = new ArrayList<FaceletHandler>(globalVariableDeclarations);
+				}
+				if (type == Type.COMPONENT) {
+					component = child;
+				} else {
+					this.children.add(child);
+				}
 			}
 		}
 		if (component != null) {
-			this.children.add(childHandler.createdDecoratedChild(component, variableDeclarations));
+			this.children.add(delegate.createdDecoratedChild(component, variableDeclarations));
 		}
 	}
 
@@ -73,7 +73,7 @@ public class DecorateAllHandler extends TagHandler {
 		return new FaceletHandler[] { this.nextHandler };
 	}
 
-	private Delegate getDelegate() {
+	protected Delegate getDelegate() {
 		switch (FacesVendor.getCurrent()) {
 		case MOJARRA:
 			return new MojarraDecorateAllHandlerDelegate();
