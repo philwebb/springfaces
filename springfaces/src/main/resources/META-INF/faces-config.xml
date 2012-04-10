@@ -41,4 +41,8 @@
 		<component-type>spring.faces.SelectItems</component-type>
 		<component-class>org.springframework.springfaces.selectitems.ui.UISelectItems</component-class>
 	</component>
+	<component>
+		<component-type>spring.faces.ComponentInfo</component-type>
+		<component-class>org.springframework.springfaces.template.ui.UIComponentInfo</component-class>
+	</component>
 </faces-config>

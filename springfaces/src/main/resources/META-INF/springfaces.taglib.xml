@@ -39,6 +39,12 @@
 		</component>
 	</tag>
 	<tag>
+		<tag-name>componentInfo</tag-name>
+		<component>
+			<component-type>spring.faces.ComponentInfo</component-type>
+		</component>
+	</tag>
+	<tag>
 		<tag-name>decorateAll</tag-name>
 		<handler-class>org.springframework.springfaces.template.ui.DecorateAllHandler</handler-class>
 	</tag>

@@ -10,4 +10,8 @@ public class TemplateExampleController {
 	public void simple() {
 	}
 
+	@RequestMapping("/template/componentinfo")
+	public void componentInfo() {
+	}
+
 }
