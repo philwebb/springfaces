@@ -1,5 +1,6 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.TemporalType;
 import org.springframework.util.Assert;
 
 @Entity
-public class Review {
+public class Review implements Serializable {
 
 	@Id
 	@GeneratedValue
@@ -62,15 +63,15 @@ public class Review {
 	}
 
 	public Hotel getHotel() {
-		return hotel;
+		return this.hotel;
 	}
 
 	public int getIndex() {
-		return index;
+		return this.index;
 	}
 
 	public Rating getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public void setRating(Rating rating) {
@@ -78,7 +79,7 @@ public class Review {
 	}
 
 	public Date getCheckInDate() {
-		return checkInDate;
+		return this.checkInDate;
 	}
 
 	public void setCheckInDate(Date checkInDate) {
@@ -86,7 +87,7 @@ public class Review {
 	}
 
 	public TripType getTripType() {
-		return tripType;
+		return this.tripType;
 	}
 
 	public void setTripType(TripType tripType) {
@@ -94,7 +95,7 @@ public class Review {
 	}
 
 	public String getTitle() {
-		return title;
+		return this.title;
 	}
 
 	public void setTitle(String title) {
@@ -102,7 +103,7 @@ public class Review {
 	}
 
 	public String getDetails() {
-		return details;
+		return this.details;
 	}
 
 	public void setDetails(String details) {

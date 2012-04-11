@@ -1,10 +1,11 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 //FIXME Hibernate bug HHH-5792 prevents this being embedded
 
-public class ReviewDetails {
+public class ReviewDetails implements Serializable {
 
 	private Rating rating;
 
@@ -26,7 +27,7 @@ public class ReviewDetails {
 	}
 
 	public Rating getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public void setRating(Rating rating) {
@@ -34,7 +35,7 @@ public class ReviewDetails {
 	}
 
 	public Date getCheckInDate() {
-		return checkInDate;
+		return this.checkInDate;
 	}
 
 	public void setCheckInDate(Date checkInDate) {
@@ -42,7 +43,7 @@ public class ReviewDetails {
 	}
 
 	public TripType getTripType() {
-		return tripType;
+		return this.tripType;
 	}
 
 	public void setTripType(TripType tripType) {
@@ -50,7 +51,7 @@ public class ReviewDetails {
 	}
 
 	public String getTitle() {
-		return title;
+		return this.title;
 	}
 
 	public void setTitle(String title) {
@@ -58,7 +59,7 @@ public class ReviewDetails {
 	}
 
 	public String getDetails() {
-		return details;
+		return this.details;
 	}
 
 	public void setDetails(String details) {

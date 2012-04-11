@@ -1,10 +1,11 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-public class HotelSummary {
+public class HotelSummary implements Serializable {
 
 	private static final MathContext MATH_CONTEXT = new MathContext(2, RoundingMode.HALF_UP);
 
@@ -21,14 +22,14 @@ public class HotelSummary {
 	}
 
 	public City getCity() {
-		return city;
+		return this.city;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public Double getAverageRating() {
-		return averageRating;
+		return this.averageRating;
 	}
 }

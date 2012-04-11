@@ -1,5 +1,6 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.NaturalId;
 
 @Entity
-public class Hotel {
+public class Hotel implements Serializable {
 
 	@Id
 	@GeneratedValue
@@ -47,18 +48,18 @@ public class Hotel {
 	}
 
 	public City getCity() {
-		return city;
+		return this.city;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public String getAddress() {
-		return address;
+		return this.address;
 	}
 
 	public String getZip() {
-		return zip;
+		return this.zip;
 	}
 }

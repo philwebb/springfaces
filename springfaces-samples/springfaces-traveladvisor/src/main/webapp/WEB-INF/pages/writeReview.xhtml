@@ -12,32 +12,18 @@
 
 		<h:outputText value="Write review for #{hotel.name} #{city}"/>
 
-		<p>
-			<p:inputText value="#{review.title}"/>
-		</p>
-
-		<p>
-			<p:rating value="#{reviewRating.value}" stars="4"/>
-		</p>
-		<br/>
-		<p>
-			<p:selectOneMenu value="#{review.tripType}">
-				<!-- FIXME selections -->
+		<s:decorateAll template="/WEB-INF/layouts/inputForm.xhtml">
+			<p:inputText label="Title" value="#{review.title}" required="true"/>
+			<p:rating label="Rating" value="#{reviewRating.value}" stars="4"/>
+			<p:selectOneMenu label="Trip Type" value="#{review.tripType}">
+				<s:selectItems/>
 			</p:selectOneMenu>
-		</p>
+			<p:calendar label="Check-In Date" value="#{review.checkInDate}"/>
+			<p:inputTextarea label="Details" value="#{review.details}"/>
+		</s:decorateAll>
 
-		<p>
-			<p:calendar value="#{review.checkInDate}"/>
-		</p>
-
-		<p>
-			<p:inputTextarea value="#{review.details}"/>
-		</p>
-
-		<p>
-			<p:captcha/>
-		</p>
-
+		<p:captcha/>
+		
 		<h:commandButton value="Submit" action="submitReview"/>
 
 	</ui:composition>

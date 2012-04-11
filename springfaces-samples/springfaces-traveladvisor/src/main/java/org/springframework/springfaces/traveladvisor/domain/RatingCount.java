@@ -1,6 +1,8 @@
 package org.springframework.springfaces.traveladvisor.domain;
 
-public class RatingCount {
+import java.io.Serializable;
+
+public class RatingCount implements Serializable {
 
 	private Rating rating;
 
@@ -12,10 +14,10 @@ public class RatingCount {
 	}
 
 	public Rating getRating() {
-		return rating;
+		return this.rating;
 	}
 
 	public long getCount() {
-		return count;
+		return this.count;
 	}
 }
