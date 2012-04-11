@@ -2,6 +2,7 @@ package org.springframework.springfaces.expression.el;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Collection;
@@ -14,6 +15,7 @@ import javax.el.ValueExpression;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.convert.Property;
 import org.springframework.core.convert.TypeDescriptor;
 
 import com.sun.el.lang.ExpressionBuilder;
@@ -39,14 +41,14 @@ public class ELUtilsTest {
 	}
 
 	@Test
-	public void shouldResolveSimpleType() throws Exception {
+	public void shouldGetTypeDescriptorForSimpleType() throws Exception {
 		ValueExpression valueExpression = newValueExpression("integer", Object.class);
 		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, this.context);
 		assertThat(typeDescriptor.getType(), is(equalTo((Class) Integer.class)));
 	}
 
 	@Test
-	public void shouldResolveArray() throws Exception {
+	public void shouldGetTypeDescriptorForArray() throws Exception {
 		ValueExpression valueExpression = newValueExpression("arrayOfString", Object.class);
 		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, this.context);
 		assertThat(typeDescriptor.isArray(), is(true));
@@ -55,7 +57,7 @@ public class ELUtilsTest {
 	}
 
 	@Test
-	public void shouldResolveCollectionWithGeneric() throws Exception {
+	public void shouldGetTypeDescriptorForCollectionWithGeneric() throws Exception {
 		ValueExpression valueExpression = newValueExpression("setOfLong", Object.class);
 		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, this.context);
 		assertThat(typeDescriptor.getType(), is(equalTo((Class) Set.class)));
@@ -64,7 +66,7 @@ public class ELUtilsTest {
 	}
 
 	@Test
-	public void shouldResolveMapWithGenerics() throws Exception {
+	public void shouldGetTypeDescriptorForMapWithGenerics() throws Exception {
 		ValueExpression valueExpression = newValueExpression("mapOfStringInteger", Object.class);
 		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, this.context);
 		assertThat(typeDescriptor.getType(), is(equalTo((Class) Map.class)));
@@ -74,12 +76,42 @@ public class ELUtilsTest {
 	}
 
 	@Test
-	public void shouldResolveNested() throws Exception {
+	public void shouldGetTypeDescriptorForNested() throws Exception {
 		ValueExpression valueExpression = newValueExpression("nested.collectionOfInteger", Object.class);
 		TypeDescriptor typeDescriptor = ELUtils.getTypeDescriptor(valueExpression, this.context);
 		assertThat(typeDescriptor.getType(), is(equalTo((Class) Collection.class)));
 		assertThat(typeDescriptor.isCollection(), is(true));
 		assertThat(typeDescriptor.getElementTypeDescriptor(), is(TypeDescriptor.valueOf(Integer.class)));
+	}
+
+	@Test
+	public void shouldGetPropertyForNull() throws Exception {
+		Property property = ELUtils.getProperty(null, this.context);
+		assertThat(property, is(nullValue()));
+	}
+
+	@Test
+	public void shouldGetProperty() throws Exception {
+		ValueExpression valueExpression = newValueExpression("integer", Object.class);
+		Property property = ELUtils.getProperty(valueExpression, this.context);
+		assertThat(property.getName(), is(equalTo("integer")));
+		assertThat(property.getObjectType(), is(equalTo((Class) Bean.class)));
+	}
+
+	@Test
+	public void shouldGetNestedProperty() throws Exception {
+		ValueExpression valueExpression = newValueExpression("nested.collectionOfInteger", Object.class);
+		Property property = ELUtils.getProperty(valueExpression, this.context);
+		assertThat(property.getName(), is(equalTo("collectionOfInteger")));
+		assertThat(property.getObjectType(), is(equalTo((Class) NestedBean.class)));
+	}
+
+	@Test
+	public void shouldGetNullPropertyIfMissing() throws Exception {
+		ValueExpression valueExpression = new ExpressionBuilder("#{bean}", this.context)
+				.createValueExpression(Object.class);
+		Property property = ELUtils.getProperty(valueExpression, this.context);
+		assertThat(property, is(nullValue()));
 	}
 
 	private ValueExpression newValueExpression(String propery, Class<?> expectedType) {

@@ -1,5 +1,7 @@
 package org.springframework.springfaces.util;
 
+import org.springframework.util.ClassUtils;
+
 /**
  * Supported JSF vendors including detection of the {@link #getCurrent() currently running implementation}.
  * 
@@ -11,12 +13,12 @@ public enum FacesVendor {
 	/**
 	 * Oracle Mojarra reference JSF implementation.
 	 */
-	MOJARRA("org.apache.myfaces.application.ApplicationFactoryImpl"),
+	MOJARRA("com.sun.faces.application.ApplicationFactoryImpl"),
 
 	/**
 	 * Apache MyFaces JSF implementation.
 	 */
-	MYFACES("com.sun.faces.application.ApplicationFactoryImpl"),
+	MYFACES("org.apache.myfaces.application.ApplicationFactoryImpl"),
 
 	/**
 	 * Unknown JSF implementation.
@@ -27,11 +29,7 @@ public enum FacesVendor {
 
 	private FacesVendor(String implementationSpecificClass) {
 		if (implementationSpecificClass != null) {
-			try {
-				Class.forName(implementationSpecificClass);
-				this.present = true;
-			} catch (ClassNotFoundException e) {
-			}
+			this.present = ClassUtils.isPresent(implementationSpecificClass, getClass().getClassLoader());
 		}
 	}
 

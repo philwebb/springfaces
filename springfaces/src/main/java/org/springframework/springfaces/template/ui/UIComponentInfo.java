@@ -105,7 +105,7 @@ public class UIComponentInfo extends UIComponentBase {
 		VisitContext visitContext = VisitContext.createVisitContext(context);
 		EditableValueHoldersCollector collector = new EditableValueHoldersCollector();
 		sourceComponent.visitTree(visitContext, collector);
-		return new DefaultComponentInfo(collector.getEditableValueHolders());
+		return new DefaultComponentInfo(context, collector.getEditableValueHolders());
 	}
 
 	private UIComponent getForComponent() {

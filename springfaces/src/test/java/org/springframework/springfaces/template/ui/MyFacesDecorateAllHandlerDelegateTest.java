@@ -58,7 +58,7 @@ public class MyFacesDecorateAllHandlerDelegateTest {
 	@Captor
 	private ArgumentCaptor<VariableMapper> variableMapper;
 
-	private MojarraDecorateAllHandlerDelegate delegate = new MojarraDecorateAllHandlerDelegate();
+	private MyFacesDecorateAllHandlerDelegate delegate = new MyFacesDecorateAllHandlerDelegate();
 
 	@Test
 	public void shouldDetectParamHandlerType() throws Exception {

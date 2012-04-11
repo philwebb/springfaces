@@ -9,6 +9,7 @@ import javax.el.ValueExpression;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.Property;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.util.Assert;
 
 /**
  * Miscellaneous <tt>Unified EL</tt> utility methods.
@@ -25,6 +26,8 @@ public abstract class ELUtils {
 	 * @return a {@link TypeDescriptor} for the given expression
 	 */
 	public static TypeDescriptor getTypeDescriptor(ValueExpression valueExpression, ELContext elContext) {
+		Assert.notNull(valueExpression, "ValueExpression must not be null");
+		Assert.notNull(elContext, "ELContext must not be null");
 		TrackedELContext trackedContext = new TrackedELContext(elContext);
 		Class<?> type = valueExpression.getType(trackedContext);
 		if (type == null) {
@@ -35,17 +38,44 @@ public abstract class ELUtils {
 			// We may be able to obtain the generic type info by resolving the property directly
 			if (trackedContext.hasValues()) {
 				try {
-					Class<? extends Object> baseClass = trackedContext.getBase().getClass();
-					PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(baseClass, trackedContext
-							.getProperty().toString());
-					Property property = new Property(baseClass, propertyDescriptor.getReadMethod(),
-							propertyDescriptor.getWriteMethod());
-					typeDescriptor = new TypeDescriptor(property);
+					Property property = getProperty(trackedContext);
+					if (property != null) {
+						typeDescriptor = new TypeDescriptor(property);
+					}
 				} catch (Exception e) {
 				}
 			}
 		}
 		return typeDescriptor;
+	}
+
+	/**
+	 * Returns a {@link Property} for the given <tt>valueExpression</tt> or <tt>null</tt> if the property cannot be
+	 * deduced.
+	 * @param valueExpression the value expression (can be null)
+	 * @param elContext the el context
+	 * @return a {@link Property} or <tt>null</tt>
+	 */
+	public static Property getProperty(ValueExpression valueExpression, ELContext elContext) {
+		Assert.notNull(elContext, "ELContext must not be null");
+		if (valueExpression == null) {
+			return null;
+		}
+		TrackedELContext trackedContext = new TrackedELContext(elContext);
+		valueExpression.getType(trackedContext);
+		return getProperty(trackedContext);
+	}
+
+	private static Property getProperty(TrackedELContext trackedContext) {
+		if (!trackedContext.hasValues()) {
+			return null;
+		}
+		Class<? extends Object> baseClass = trackedContext.getBase().getClass();
+		PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(baseClass, trackedContext.getProperty()
+				.toString());
+		Property property = new Property(baseClass, propertyDescriptor.getReadMethod(),
+				propertyDescriptor.getWriteMethod());
+		return property;
 	}
 
 	/**
@@ -95,7 +125,6 @@ public abstract class ELUtils {
 				return super.getType(context, base, property);
 			}
 		}
-
 	}
 
 }
