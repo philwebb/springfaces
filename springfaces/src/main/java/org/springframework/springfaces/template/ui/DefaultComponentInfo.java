@@ -73,7 +73,7 @@ public class DefaultComponentInfo implements ComponentInfo {
 		if (component instanceof EditableValueHolder) {
 			return isValid(component, (EditableValueHolder) component);
 		}
-		return false;
+		return true;
 	}
 
 	private boolean isValid(UIComponent component, EditableValueHolder editableValueHolder) {
@@ -81,7 +81,7 @@ public class DefaultComponentInfo implements ComponentInfo {
 			return false;
 		}
 		String clientId = component.getClientId(this.context);
-		return containsErrorMessage(this.context.getMessages(clientId));
+		return !containsErrorMessage(this.context.getMessages(clientId));
 	}
 
 	private boolean containsErrorMessage(Iterator<FacesMessage> messages) {
@@ -105,7 +105,9 @@ public class DefaultComponentInfo implements ComponentInfo {
 
 	private boolean isRequired(UIComponent component) {
 		if (component instanceof EditableValueHolder) {
-			return ((EditableValueHolder) component).isRequired();
+			if (((EditableValueHolder) component).isRequired()) {
+				return true;
+			}
 		}
 		return this.beanValidation.isRequired(component);
 	}
