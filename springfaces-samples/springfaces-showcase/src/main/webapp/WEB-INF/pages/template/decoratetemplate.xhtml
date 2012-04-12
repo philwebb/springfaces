@@ -9,54 +9,25 @@
 
 	<h:body>
 		<ui:composition>
-		
-			<!-- 
-			<s:inputs for="" applyMessageConventions="true" messages="#{messages}" var="input">
-			    <h:outputText value="*" rendered="input.required"/>
-			    <h:panelGrid styleClass="input.valid ? '' : 'error'>
-					<h:outputLabel styleClass="control-label" for="#{input.clientId}" value="#{input.label}"/>
-					<ui:messages for="input.clientId"/>
-					<ui:insert/>
-				</h:panelGrid>
-			</s:inputs>
-			
-			
-			<s:componentInfo var="inserted">
-			    <h:outputText value="*" rendered="inserted.required"/>
-			    <h:panelGrid styleClass="inserted.valid ? '' : 'error'>
-					<h:outputLabel styleClass="control-label" for="#{inserted.clientId}" value="#{inserted.label}"/>
-					<ui:insert/>
-				</h:panelGrid>
-			</s:componentInfo>
-		 	-->
-		
-			<div style="border: solid 1px red">
-
-<!--  
-			<h:panelGroup styleClass="control-group">			
-				<h:outputLabel styleClass="control-label" for="#{component.id}" value="#{message[component.id]}"/>
+			<div>
+				<h:outputText value="before"/>
 				<ui:insert/>
-				<ui:insert name="afterComponent"/>
-			</h:panelGroup>
--->
-		
-		
-			<p>
-			[
-			<h:panelGroup>
-			<ui:insert />
-			</h:panelGroup>
-			]
-			</p>
-			<p>
-			<ui:insert name="help"/>
-			</p>
-			<p>
-			<h:outputText value="#{test}"/>
-			</p>
-			<ui:insert name="global"/>
-			<h:outputText value="#{globalparam}"/>
+				<h:outputText value="after"/>
 			</div>
+			
+			<div>
+				<ui:insert name="globaldefine"/>
+			</div>
+			<div>
+				<h:outputText styleClass="globalparam" value="#{globalparam}"/>
+			</div>
+			<div>
+				<ui:insert name="localdefine"/>
+			</div>
+			<div>
+				<h:outputText styleClass="localparam" value="#{localparam}"/>
+			</div>
+			<p/>
 		</ui:composition>
 	</h:body>
 </ui:composition>

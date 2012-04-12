@@ -15,45 +15,24 @@
 		<h:form id="form">
 
 			<s:decorateAll template="decoratetemplate.xhtml">
-				
-				<ui:define name="global">
-				global define
+
+				<ui:define name="globaldefine">
+					<h:outputText value="globaldefinevalue"/>
 				</ui:define>
-				<ui:param name="globalparam" value="globalparam"/>
+				<ui:param name="globalparam" value="globalparamvalue"/>
 
-				<h:outputText id="otext" value="d1" />
-
-				<h:inputText id="itext" required="true"/>
-				<ui:param name="test" value="test" />
-				<ui:define name="help">
-					<h:outputText value="Help is here" requiredMessage="" errorMessage="" />
+				<h:outputText value="insert1"/>
+				<ui:param name="localparam" value="localparamvalue1" />
+				<ui:define name="localdefine">
+					<h:outputText value="localdefinevalue1"/>
 				</ui:define>
 
-				<h:panelGrid id="pg">
-					<p>Hello</p>
-					<div>test</div>
-				</h:panelGrid>
+				<h:outputText value="insert1"/>
+				<ui:param name="localparam" value="localparamvalue2" />
+				<ui:define name="localdefine">
+					<h:outputText value="localdefinevalue2"/>
+				</ui:define>
 			</s:decorateAll>
-
-			<ui:decorate template="decoratetemplate.xhtml">
-				<h:outputText id="d1" value="d1" />
-				<ui:define name="help">
-					<h:outputText value="Help is here" />
-				</ui:define>
-			</ui:decorate>
-			
-			<ui:decorate template="decoratetemplate.xhtml">
-				<h:inputText id="d2" />
-			</ui:decorate>
-			
-			<!-- 
-			<ui:decorateAll>
-				<h:inputText id="firstName" label="#{messages.firstNameLabel}" required="true"/>
-				<h:inputText id="lastName" label="#{messages.lastNameLabel}" required="true"/>
-				<h:inputText id="age" label="#{messages.ageLabel}"/>
-			</ui:decorateAll>
-			
-			 -->
 		</h:form>
 	</h:body>
 </ui:composition>
