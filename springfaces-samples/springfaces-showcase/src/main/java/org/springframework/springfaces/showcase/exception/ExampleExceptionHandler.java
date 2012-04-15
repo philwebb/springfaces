@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
@@ -55,6 +56,10 @@ public class ExampleExceptionHandler extends ExceptionHandlerWrapper {
 				iterator.remove();
 				System.err.println("***************************************");
 				event.getContext().getException().printStackTrace();
+				// SpringFacesContext.getCurrentInstance().clearRendering();
+				UIViewRoot newRoot = context.getApplication().getViewHandler()
+						.createView(context, "/WEB-INF/pages/template/decorateall.xhtml");
+				context.setViewRoot(newRoot);
 			}
 		}
 		super.handle();

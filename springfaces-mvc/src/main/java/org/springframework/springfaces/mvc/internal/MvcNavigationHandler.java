@@ -79,7 +79,6 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 							navigationOutcome, preRenderComponentEvent));
 					return new NavigationCase(fromViewId, fromAction, outcome, null, toViewId, null, false, false);
 				} catch (Exception e) {
-					// FIXME
 					throw new FacesException(e);
 				}
 			}
@@ -106,7 +105,6 @@ public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {
 						context.setViewRoot(newRoot);
 					}
 				} catch (Exception e) {
-					// FIXME
 					throw new FacesException(e);
 				}
 				return;

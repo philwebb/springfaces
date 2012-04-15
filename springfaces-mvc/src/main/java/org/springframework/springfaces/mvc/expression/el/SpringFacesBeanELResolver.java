@@ -35,8 +35,7 @@ public class SpringFacesBeanELResolver extends SpringBeanELResolver {
 
 	@Override
 	protected BeanFactory getBeanFactory(ELContext elContext) {
-		if (SpringFacesContext.getCurrentInstance() == null
-				|| SpringFacesContext.getCurrentInstance().getRendering() == null) {
+		if (SpringFacesContext.getCurrentInstance() == null) {
 			return EMPTY_BEAN_FACTORY;
 		}
 		return SpringFacesContext.getCurrentInstance().getWebApplicationContext();

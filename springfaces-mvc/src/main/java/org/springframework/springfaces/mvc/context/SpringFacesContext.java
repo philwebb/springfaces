@@ -16,6 +16,7 @@
 package org.springframework.springfaces.mvc.context;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.PhaseId;
 import javax.faces.webapp.FacesServlet;
 
 import org.springframework.core.NamedThreadLocal;
@@ -86,7 +87,8 @@ public abstract class SpringFacesContext {
 
 	/**
 	 * Return the {@link ModelAndViewArtifact} that is currently being {@link #render rendered} or <tt>null</tt> if no
-	 * Spring Faces MVC request is being rendered.
+	 * Spring Faces MVC request is being rendered. This value remains valid up to the
+	 * {@link PhaseId#APPLY_REQUEST_VALUES apply request values phase}.
 	 * @return the {@link ModelAndViewArtifact} being rendered or <tt>null</tt>
 	 */
 	public abstract ModelAndViewArtifact getRendering();

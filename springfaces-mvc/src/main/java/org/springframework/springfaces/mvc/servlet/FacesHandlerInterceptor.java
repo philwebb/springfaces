@@ -19,6 +19,9 @@ import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.FacesContextWrapper;
+import javax.faces.event.PhaseEvent;
+import javax.faces.event.PhaseId;
+import javax.faces.event.PhaseListener;
 import javax.faces.lifecycle.Lifecycle;
 import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
@@ -50,6 +53,26 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	private FacesContextFactory facesContextFactory;
 	private Lifecycle lifecycle;
 	private String lifecycleId;
+
+	private PhaseListener lifecyclePhaseListener = new PhaseListener() {
+		public PhaseId getPhaseId() {
+			return PhaseId.ANY_PHASE;
+		}
+
+		public void beforePhase(PhaseEvent event) {
+			SpringFacesContextImpl springFacesContext = getSpringFacesContext(false);
+			if (springFacesContext != null) {
+				springFacesContext.beforePhase(event);
+			}
+		}
+
+		public void afterPhase(PhaseEvent event) {
+			SpringFacesContextImpl springFacesContext = getSpringFacesContext(false);
+			if (springFacesContext != null) {
+				springFacesContext.afterPhase(event);
+			}
+		}
+	};
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
@@ -84,6 +107,8 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 				lifecycleIdToUse = LifecycleFactory.DEFAULT_LIFECYCLE;
 			}
 			this.lifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
+			this.lifecycle.removePhaseListener(this.lifecyclePhaseListener);
+			this.lifecycle.addPhaseListener(this.lifecyclePhaseListener);
 		}
 	}
 
@@ -200,6 +225,15 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		@Override
 		public ModelAndViewArtifact getRendering() {
 			return this.rendering;
+		}
+
+		public void beforePhase(PhaseEvent event) {
+			if (PhaseId.APPLY_REQUEST_VALUES.equals(event.getPhaseId())) {
+				this.rendering = null;
+			}
+		}
+
+		public void afterPhase(PhaseEvent event) {
 		}
 
 		private void checkNotRelased() {

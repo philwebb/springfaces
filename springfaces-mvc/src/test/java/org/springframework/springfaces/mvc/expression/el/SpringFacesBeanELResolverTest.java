@@ -22,8 +22,6 @@ import static org.mockito.Mockito.mock;
 
 import javax.el.ELContext;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -52,29 +50,24 @@ public class SpringFacesBeanELResolverTest {
 
 	private ELContext elContext = new MockELContext();
 
-	@Before
-	public void setup() {
-		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
-	}
-
-	@After
-	public void cleanup() {
-		SpringFacesContextSetter.setCurrentInstance(null);
-	}
-
 	@Test
-	public void shouldHaveEmptyBeanFactoryWhenNotRendering() throws Exception {
+	public void shouldHaveEmptyBeanFactoryWhenActive() throws Exception {
 		BeanFactory factory = this.resolver.getBeanFactory(this.elContext);
 		assertEquals(0, ((ListableBeanFactory) factory).getBeanDefinitionCount());
 	}
 
 	@Test
 	public void shouldGetBeanFactoryFromSpringFacesContext() throws Exception {
-		ViewArtifact viewArtifact = new ViewArtifact("artifact");
-		ModelAndViewArtifact rendering = new ModelAndViewArtifact(viewArtifact, null);
-		given(this.springFacesContext.getRendering()).willReturn(rendering);
-		WebApplicationContext applicationContext = mock(WebApplicationContext.class);
-		given(this.springFacesContext.getWebApplicationContext()).willReturn(applicationContext);
-		assertSame(applicationContext, this.resolver.getBeanFactory(this.elContext));
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		try {
+			ViewArtifact viewArtifact = new ViewArtifact("artifact");
+			ModelAndViewArtifact rendering = new ModelAndViewArtifact(viewArtifact, null);
+			given(this.springFacesContext.getRendering()).willReturn(rendering);
+			WebApplicationContext applicationContext = mock(WebApplicationContext.class);
+			given(this.springFacesContext.getWebApplicationContext()).willReturn(applicationContext);
+			assertSame(applicationContext, this.resolver.getBeanFactory(this.elContext));
+		} finally {
+			SpringFacesContextSetter.setCurrentInstance(null);
+		}
 	}
 }
