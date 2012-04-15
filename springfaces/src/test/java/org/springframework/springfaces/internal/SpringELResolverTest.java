@@ -94,7 +94,7 @@ public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {
 		private CompositeELResolver delegate = mock(CompositeELResolver.class);
 
 		@Override
-		protected CompositeELResolver getWrapped() {
+		public CompositeELResolver getWrapped() {
 			return this.delegate;
 		}
 
