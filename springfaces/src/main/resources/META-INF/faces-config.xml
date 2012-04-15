@@ -16,6 +16,7 @@
 	</application>
 	<factory>
 		<render-kit-factory>org.springframework.springfaces.internal.SpringRenderKitFactory</render-kit-factory>
+		<exception-handler-factory>org.springframework.springfaces.internal.SpringExceptionHandlerFactory</exception-handler-factory>
 	</factory>
 	<component>
 		<component-type>spring.faces.AspectGroup</component-type>

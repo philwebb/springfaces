@@ -20,6 +20,7 @@ import javax.faces.FacesWrapper;
 import javax.faces.application.Application;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
+import javax.faces.context.ExceptionHandler;
 import javax.faces.event.ActionListener;
 import javax.faces.render.RenderKit;
 import javax.faces.render.ResponseStateManager;
@@ -40,6 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
  * <li>{@link RenderKit}</li>
  * <li>{@link ResponseStateManager}</li>
  * <li>{@link ViewHandler}</li>
+ * <li>{@link ExceptionHandler}</li>
  * <li>{@link CompositeELResolver}</li>
  * </ul>
  * A <tt>FacesWrapperFactory</tt> can generically declare the JSF object type that it wraps. Factories will be filtered
