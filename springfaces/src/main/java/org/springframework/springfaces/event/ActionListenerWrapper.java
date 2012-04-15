@@ -22,8 +22,8 @@ import javax.faces.event.ActionListener;
 
 /**
  * Provides a simple implementation of {@link ActionListener} that can be subclassed by developers wishing to provide
- * specialised behaviour to an existing {@link ActionListener instance} . The default implementation of all methods is
- * to call through to the wrapped {@link ActionListener}.
+ * Specialized behavior to an existing {@link ActionListener instance} . The default implementation of all methods is to
+ * call through to the wrapped {@link ActionListener}.
  * 
  * @author Phillip Webb
  */
