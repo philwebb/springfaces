@@ -61,9 +61,9 @@ class WrapperHandler<T> {
 	private Class<?> typeClass;
 
 	/**
-	 * The root delegate.
+	 * access to the wrapped instance
 	 */
-	private DelegateAccessor<T> delegate;
+	private WrappedAccessor<T> wrappedAccessor;
 
 	/**
 	 * The fully wrapped implementation. This is late binding.
@@ -81,13 +81,13 @@ class WrapperHandler<T> {
 	/**
 	 * Create a mew WrapperHandler.
 	 * @param typeClass The JSF type being wrapped
-	 * @param delegate The root delegate
+	 * @param wrapped The root delegate
 	 */
-	public WrapperHandler(Class<T> typeClass, T delegate) {
+	public WrapperHandler(Class<T> typeClass, T wrapped) {
 		Assert.notNull(typeClass, "TypeClass must not be null");
-		Assert.notNull(delegate, "Delegate must not be null");
+		Assert.notNull(wrapped, "Delegate must not be null");
 		this.typeClass = typeClass;
-		this.delegate = new DirectDelegateAccessor<T>(delegate);
+		this.wrappedAccessor = new DirectAccessor<T>(wrapped);
 	}
 
 	/**
@@ -95,11 +95,11 @@ class WrapperHandler<T> {
 	 * @param typeClass The JSF type being wrapped
 	 * @param delegate Access to the root delegate
 	 */
-	public WrapperHandler(Class<T> typeClass, DelegateAccessor<T> delegate) {
+	public WrapperHandler(Class<T> typeClass, WrappedAccessor<T> delegate) {
 		Assert.notNull(typeClass, "TypeClass must not be null");
 		Assert.notNull(delegate, "Delegate must not be null");
 		this.typeClass = typeClass;
-		this.delegate = delegate;
+		this.wrappedAccessor = delegate;
 	}
 
 	/**
@@ -122,18 +122,18 @@ class WrapperHandler<T> {
 			// Calls to wrapped instances can occur when there is no faces context if JSF has not yet completely
 			// intialized. We allow these early calls to proceed to the delegate.
 			this.wrapped = null;
-			return this.delegate.getDelegate(DelegateAccessType.WRAP);
+			return this.wrappedAccessor.getWrapped(WrappedAccessType.WRAP);
 		}
 		ExternalContext externalContext = facesContext.getExternalContext();
 		if ((this.wrapped == null)
 				|| (SpringFacesIntegration.isInstalled(externalContext) && (!SpringFacesIntegration
 						.getLastRefreshedDate(externalContext).equals(this.lastRefreshedDate)))) {
-			DelegateAccessType accessType = (this.wrapped == null ? DelegateAccessType.WRAP : DelegateAccessType.REWRAP);
+			WrappedAccessType accessType = (this.wrapped == null ? WrappedAccessType.WRAP : WrappedAccessType.REWRAP);
 			if (this.logger.isDebugEnabled()) {
-				this.logger.debug((accessType == DelegateAccessType.WRAP ? "Wrapping " : "Rewrapping ")
-						+ this.delegate.getDescription());
+				this.logger.debug((accessType == WrappedAccessType.WRAP ? "Wrapping " : "Rewrapping ")
+						+ this.wrappedAccessor.getDescription());
 			}
-			this.wrapped = wrap(externalContext, this.delegate.getDelegate(accessType));
+			this.wrapped = wrap(externalContext, this.wrappedAccessor.getWrapped(accessType));
 			if (SpringFacesIntegration.isInstalled(externalContext)) {
 				this.lastRefreshedDate = SpringFacesIntegration.getLastRefreshedDate(externalContext);
 			}
@@ -238,7 +238,7 @@ class WrapperHandler<T> {
 	/**
 	 * The various reasons that a delegate can be accessed.
 	 */
-	public enum DelegateAccessType {
+	public enum WrappedAccessType {
 		/**
 		 * The delegate is required for an initial wrap.
 		 */
@@ -250,13 +250,13 @@ class WrapperHandler<T> {
 	};
 
 	/**
-	 * Interface to provide access to the underlying delegate. Implementations can return a different delegate if
-	 * required.
-	 * @param <T> The delegate type
+	 * Interface to provide access to the underlying wrapped delegate. Implementations can return a different delegate
+	 * if required.
+	 * @param <T> The wrapped delegate type
 	 */
-	public static interface DelegateAccessor<T> {
+	public static interface WrappedAccessor<T> {
 		/**
-		 * Returns a description of the delegate.
+		 * Returns a description of the wrapped item.
 		 * @return the description
 		 */
 		public String getDescription();
@@ -266,27 +266,27 @@ class WrapperHandler<T> {
 		 * @param accessType the reason that the delegate is being accessed
 		 * @return the delegate
 		 */
-		public T getDelegate(DelegateAccessType accessType);
+		public T getWrapped(WrappedAccessType accessType);
 	}
 
 	/**
-	 * Implementation of {@link WrapperHandler.DelegateAccessor} that simple returns an object instance.
+	 * Implementation of {@link WrapperHandler.WrappedAccessor} that simple returns an object instance.
 	 * @param <T> the data type
 	 */
-	private static class DirectDelegateAccessor<T> implements DelegateAccessor<T> {
+	private static class DirectAccessor<T> implements WrappedAccessor<T> {
 
-		private T delegate;
+		private T wrapped;
 
-		public DirectDelegateAccessor(T delegate) {
-			this.delegate = delegate;
+		public DirectAccessor(T delegate) {
+			this.wrapped = delegate;
 		}
 
 		public String getDescription() {
-			return this.delegate.getClass().getName();
+			return this.wrapped.getClass().getName();
 		}
 
-		public T getDelegate(DelegateAccessType accessType) {
-			return this.delegate;
+		public T getWrapped(WrappedAccessType accessType) {
+			return this.wrapped;
 		}
 	}
 }

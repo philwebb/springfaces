@@ -37,13 +37,13 @@ public class SpringRenderKit extends RenderKitWrapper {
 	SpringResponseStateManager responseStateManager;
 	private WrapperHandler<RenderKit> wrapperHandler;
 
-	public SpringRenderKit(String renderKitId, RenderKit delegate) {
+	public SpringRenderKit(String renderKitId, RenderKit wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping RenderKit " + delegate.getClass() + " with ID " + renderKitId
+			this.logger.debug("Wrapping RenderKit " + wrapped.getClass() + " with ID " + renderKitId
 					+ " to provide integration with Spring");
 		}
 		this.renderKitId = renderKitId;
-		this.wrapperHandler = WrapperHandler.get(RenderKit.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(RenderKit.class, wrapped);
 	}
 
 	@Override

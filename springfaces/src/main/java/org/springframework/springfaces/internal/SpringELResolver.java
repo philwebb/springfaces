@@ -21,8 +21,9 @@ import java.util.Iterator;
 import javax.el.CompositeELResolver;
 import javax.el.ELContext;
 import javax.el.ELResolver;
+import javax.faces.FacesWrapper;
 
-import org.springframework.springfaces.internal.WrapperHandler.DelegateAccessType;
+import org.springframework.springfaces.internal.WrapperHandler.WrappedAccessType;
 
 /**
  * An {@link ELResolver} that provides integration with Spring.
@@ -30,55 +31,55 @@ import org.springframework.springfaces.internal.WrapperHandler.DelegateAccessTyp
  * @author Phillip Webb
  */
 @SuppressWarnings("rawtypes")
-public class SpringELResolver extends ELResolver {
+public class SpringELResolver extends ELResolver implements FacesWrapper<CompositeELResolver> {
 
 	private WrapperHandler<CompositeELResolver> wrapperHandler = new WrapperHandler<CompositeELResolver>(
-			CompositeELResolver.class, new CompositeELResolverFactory());
+			CompositeELResolver.class, new Accessor());
 
-	protected CompositeELResolver getDelegate() {
+	public CompositeELResolver getWrapped() {
 		return this.wrapperHandler.getWrapped();
 	}
 
 	@Override
 	public Object getValue(ELContext context, Object base, Object property) {
-		return getDelegate().getValue(context, base, property);
+		return getWrapped().getValue(context, base, property);
 	}
 
 	@Override
 	public Class<?> getType(ELContext context, Object base, Object property) {
-		return getDelegate().getType(context, base, property);
+		return getWrapped().getType(context, base, property);
 	}
 
 	@Override
 	public void setValue(ELContext context, Object base, Object property, Object value) {
-		getDelegate().setValue(context, base, property, value);
+		getWrapped().setValue(context, base, property, value);
 	}
 
 	@Override
 	public boolean isReadOnly(ELContext context, Object base, Object property) {
-		return getDelegate().isReadOnly(context, base, property);
+		return getWrapped().isReadOnly(context, base, property);
 	}
 
 	@Override
 	public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-		return getDelegate().getFeatureDescriptors(context, base);
+		return getWrapped().getFeatureDescriptors(context, base);
 	}
 
 	@Override
 	public Class<?> getCommonPropertyType(ELContext context, Object base) {
-		return getDelegate().getCommonPropertyType(context, base);
+		return getWrapped().getCommonPropertyType(context, base);
 	}
 
 	/**
-	 * {@link WrapperHandler.DelegateAccessor} that creates a new {@link CompositeELResolver} each time.
+	 * {@link WrapperHandler.WrappedAccessor} that creates a new {@link CompositeELResolver} each time.
 	 */
-	private static class CompositeELResolverFactory implements WrapperHandler.DelegateAccessor<CompositeELResolver> {
+	private static class Accessor implements WrapperHandler.WrappedAccessor<CompositeELResolver> {
 
 		public String getDescription() {
 			return CompositeELResolver.class.getName();
 		}
 
-		public CompositeELResolver getDelegate(DelegateAccessType accessType) {
+		public CompositeELResolver getWrapped(WrappedAccessType accessType) {
 			return new CompositeELResolver();
 		}
 	}

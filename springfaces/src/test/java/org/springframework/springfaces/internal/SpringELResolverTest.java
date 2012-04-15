@@ -45,7 +45,7 @@ public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {
 		FacesWrapperFactory<CompositeELResolver> wrapperFactory = mock(FacesWrapperFactory.class);
 		addFactoryWrapper("wrapper", wrapperFactory);
 		SpringELResolver resolver = new SpringELResolver();
-		resolver.getDelegate();
+		resolver.getWrapped();
 		verify(wrapperFactory).newWrapper(eq(CompositeELResolver.class), any(CompositeELResolver.class));
 	}
 
@@ -94,7 +94,7 @@ public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {
 		private CompositeELResolver delegate = mock(CompositeELResolver.class);
 
 		@Override
-		protected CompositeELResolver getDelegate() {
+		protected CompositeELResolver getWrapped() {
 			return this.delegate;
 		}
 

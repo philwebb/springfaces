@@ -33,12 +33,12 @@ public class SpringNavigationHandler extends ConfigurableNavigationHandlerWrappe
 
 	private WrapperHandler<ConfigurableNavigationHandler> wrapperHandler;
 
-	public SpringNavigationHandler(ConfigurableNavigationHandler delegate) {
+	public SpringNavigationHandler(ConfigurableNavigationHandler wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping NavigationHandler " + delegate.getClass()
+			this.logger.debug("Wrapping NavigationHandler " + wrapped.getClass()
 					+ " to provide integration with Spring");
 		}
-		this.wrapperHandler = WrapperHandler.get(ConfigurableNavigationHandler.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(ConfigurableNavigationHandler.class, wrapped);
 	}
 
 	@Override

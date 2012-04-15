@@ -35,12 +35,12 @@ public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 
 	private WrapperHandler<ResponseStateManager> wrapperHandler;
 
-	public SpringResponseStateManager(final String renderKitId, ResponseStateManager delegate) {
+	public SpringResponseStateManager(final String renderKitId, ResponseStateManager wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping ResponseStateManager " + delegate.getClass() + " with renderKitId \""
+			this.logger.debug("Wrapping ResponseStateManager " + wrapped.getClass() + " with renderKitId \""
 					+ renderKitId + "\" to provide integration with Spring");
 		}
-		this.wrapperHandler = new WrapperHandler<ResponseStateManager>(ResponseStateManager.class, delegate) {
+		this.wrapperHandler = new WrapperHandler<ResponseStateManager>(ResponseStateManager.class, wrapped) {
 			@Override
 			protected void postProcessWrapper(ResponseStateManager wrapped) {
 				if (wrapped instanceof RenderKitIdAware) {

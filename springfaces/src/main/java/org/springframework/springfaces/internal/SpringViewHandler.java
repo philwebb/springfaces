@@ -32,11 +32,11 @@ public class SpringViewHandler extends ViewHandlerWrapper {
 
 	private WrapperHandler<ViewHandler> wrapperHandler;
 
-	public SpringViewHandler(ViewHandler delegate) {
+	public SpringViewHandler(ViewHandler wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping ViewHandler " + delegate.getClass() + " to provide integration with Spring");
+			this.logger.debug("Wrapping ViewHandler " + wrapped.getClass() + " to provide integration with Spring");
 		}
-		this.wrapperHandler = WrapperHandler.get(ViewHandler.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(ViewHandler.class, wrapped);
 		this.wrapperHandler.setWarnOnMissingSpringFaces(true);
 	}
 

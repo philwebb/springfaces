@@ -32,11 +32,11 @@ public class SpringActionListener extends ActionListenerWrapper {
 
 	private WrapperHandler<ActionListener> wrapperHandler;
 
-	public SpringActionListener(ActionListener delegate) {
+	public SpringActionListener(ActionListener wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping ActionListener " + delegate.getClass() + " to provide integration with Spring");
+			this.logger.debug("Wrapping ActionListener " + wrapped.getClass() + " to provide integration with Spring");
 		}
-		this.wrapperHandler = WrapperHandler.get(ActionListener.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(ActionListener.class, wrapped);
 	}
 
 	@Override

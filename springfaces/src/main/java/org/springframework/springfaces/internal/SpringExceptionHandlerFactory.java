@@ -30,19 +30,19 @@ public class SpringExceptionHandlerFactory extends ExceptionHandlerFactory {
 
 	private final Log logger = LogFactory.getLog(getClass());
 
-	private ExceptionHandlerFactory delegate;
+	private ExceptionHandlerFactory wrapped;
 
-	public SpringExceptionHandlerFactory(ExceptionHandlerFactory delegate) {
+	public SpringExceptionHandlerFactory(ExceptionHandlerFactory wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping ExceptionHandlerFactory " + delegate.getClass()
+			this.logger.debug("Wrapping ExceptionHandlerFactory " + wrapped.getClass()
 					+ " to provide integration with Spring");
 		}
-		this.delegate = delegate;
+		this.wrapped = wrapped;
 	}
 
 	@Override
 	public ExceptionHandlerFactory getWrapped() {
-		return this.delegate;
+		return this.wrapped;
 	}
 
 	@Override

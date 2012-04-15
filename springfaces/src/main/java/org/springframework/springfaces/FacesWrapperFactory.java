@@ -65,9 +65,9 @@ public interface FacesWrapperFactory<T> {
 	/**
 	 * Factory method that can be used to wrap the specified JSF object.
 	 * @param typeClass the JSF Object type being wrapped
-	 * @param delegate the existing JSF object that should be used as the delegate for the wrapper
+	 * @param wrapped the existing JSF object that should be wrapped
 	 * @return a {@link FacesWrapper wrapped} object that it is itself an implementation of <tt>typeClass</tt> or
 	 * <tt>null</tt> if no wrapping is required
 	 */
-	T newWrapper(Class<?> typeClass, T delegate);
+	T newWrapper(Class<?> typeClass, T wrapped);
 }

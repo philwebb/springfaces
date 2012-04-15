@@ -32,11 +32,11 @@ public class SpringExceptionHandler extends ExceptionHandlerWrapper {
 
 	private WrapperHandler<ExceptionHandler> wrapperHandler;
 
-	public SpringExceptionHandler(ExceptionHandler delegate) {
+	public SpringExceptionHandler(ExceptionHandler wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping Application " + delegate.getClass() + " to provide integration with Spring");
+			this.logger.debug("Wrapping Application " + wrapped.getClass() + " to provide integration with Spring");
 		}
-		this.wrapperHandler = WrapperHandler.get(ExceptionHandler.class, delegate);
+		this.wrapperHandler = WrapperHandler.get(ExceptionHandler.class, wrapped);
 	}
 
 	@Override
