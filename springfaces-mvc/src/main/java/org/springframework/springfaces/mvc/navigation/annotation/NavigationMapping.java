@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * Annotation for mapping JSF navigation onto specific navigation methods.
  * <p>
- * Navigation method which are annotated with this annotation are allowed to have very flexible signatures. They may
+ * Navigation methods which are annotated with this annotation are allowed to have very flexible signatures. They may
  * have arguments of the following types, in arbitrary order:
  * <ul>
  * <li>{@link java.lang.String} for access to the JSF outcome that triggered the navigation.</li>

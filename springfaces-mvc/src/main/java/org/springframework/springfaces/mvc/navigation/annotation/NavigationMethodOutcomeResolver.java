@@ -98,8 +98,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentR
  * @see AbstractHandlerMethodMapping
  * @see RequestMappingHandlerAdapter
  * 
- * @author Arjen Poutsma
- * @author Rossen Stoyanchev
  * @author Phillip Webb
  */
 public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver,
