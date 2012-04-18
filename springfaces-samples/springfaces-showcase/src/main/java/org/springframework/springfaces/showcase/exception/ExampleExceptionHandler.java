@@ -15,17 +15,32 @@
  */
 package org.springframework.springfaces.showcase.exception;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
+import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
+import javax.faces.el.EvaluationException;
 import javax.faces.event.ExceptionQueuedEvent;
 
+import org.springframework.util.Assert;
+
 public class ExampleExceptionHandler extends ExceptionHandlerWrapper {
+
+	private static Set<Class<?>> EXCEPTIONS_TO_UNWRAP;
+	static {
+		HashSet<Class<?>> unwrappedExceptions = new HashSet<Class<?>>();
+		unwrappedExceptions.add(FacesException.class);
+		unwrappedExceptions.add(ELException.class);
+		unwrappedExceptions.add(EvaluationException.class);
+		EXCEPTIONS_TO_UNWRAP = Collections.unmodifiableSet(unwrappedExceptions);
+	}
 
 	private ExceptionHandler wrapped;
 
@@ -43,8 +58,7 @@ public class ExampleExceptionHandler extends ExceptionHandlerWrapper {
 	 * 
 	 * @see javax.faces.context.ExceptionHandlerWrapper#handle()
 	 */
-	@Override
-	public void handle() throws FacesException {
+	public void xhandle() throws FacesException {
 		Iterator<ExceptionQueuedEvent> iterator = getUnhandledExceptionQueuedEvents().iterator();
 		while (iterator.hasNext()) {
 			ExceptionQueuedEvent event = iterator.next();
@@ -56,13 +70,67 @@ public class ExampleExceptionHandler extends ExceptionHandlerWrapper {
 				iterator.remove();
 				System.err.println("***************************************");
 				event.getContext().getException().printStackTrace();
-				// SpringFacesContext.getCurrentInstance().clearRendering();
-				UIViewRoot newRoot = context.getApplication().getViewHandler()
-						.createView(context, "/WEB-INF/pages/template/decorateall.xhtml");
-				context.setViewRoot(newRoot);
+				throw (FacesException) event.getContext().getException();
+
+				// // SpringFacesContext.getCurrentInstance().clearRendering();
+				// UIViewRoot newRoot = context.getApplication().getViewHandler()
+				// .createView(context, "/WEB-INF/pages/template/decorateall.xhtml");
+				// context.setViewRoot(newRoot);
+
 			}
 		}
 		super.handle();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.faces.context.ExceptionHandlerWrapper#handle()
+	 */
+	@Override
+	public void handle() throws FacesException {
+		// if (SpringFacesContext.getCurrentInstance() != null) {
+		// SpringFacesContext springFacesContext = SpringFacesContext.getCurrentInstance();
+		// WebApplicationContext context = springFacesContext.getWebApplicationContext();
+		// Map<String, HandlerExceptionResolver> matchingBeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+		// context, HandlerExceptionResolver.class, true, false);
+		// ArrayList<HandlerExceptionResolver> handlerExceptionResolvers = new ArrayList<HandlerExceptionResolver>(
+		// matchingBeans.values());
+		// OrderComparator.sort(handlerExceptionResolvers);
+		//
+		// Iterator<ExceptionQueuedEvent> events = getUnhandledExceptionQueuedEvents().iterator();
+		// while (events.hasNext()) {
+		// ExceptionQueuedEvent event = events.next();
+		// ExceptionQueuedEventContext eventContext = event.getContext();
+		// Throwable exception = getRootCause(eventContext.getException());
+		// if (exception != null && exception instanceof Exception) {
+		// HttpServletRequest request = (HttpServletRequest) eventContext.getContext().getExternalContext()
+		// .getRequest();
+		// HttpServletResponse response = (HttpServletResponse) eventContext.getContext().getExternalContext()
+		// .getResponse();
+		// Object handler = springFacesContext.getHandler();
+		// for (HandlerExceptionResolver handlerExceptionResolver : handlerExceptionResolvers) {
+		// ModelAndView modelAndView = handlerExceptionResolver.resolveException(request, response,
+		// handler, (Exception) exception);
+		// System.out.println(modelAndView);
+		// if (modelAndView != null) {
+		// events.remove();
+		// break;
+		// }
+		// }
+		// }
+		// }
+		// }
+		super.handle();
+	}
+
+	@Override
+	public Throwable getRootCause(Throwable throwable) {
+		Assert.notNull(throwable, "Throwable must not be null");
+		while (EXCEPTIONS_TO_UNWRAP.contains(throwable.getClass())) {
+			throwable = throwable.getCause();
+		}
+		return throwable;
 	}
 
 	/**
@@ -78,5 +146,4 @@ public class ExampleExceptionHandler extends ExceptionHandlerWrapper {
 		}
 		return isExampleException(exception.getCause());
 	}
-
 }

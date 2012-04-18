@@ -18,6 +18,7 @@ package org.springframework.springfaces.mvc.servlet;
 import javax.el.CompositeELResolver;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
+import javax.faces.context.ExceptionHandler;
 import javax.faces.event.ActionListener;
 import javax.faces.event.PreRenderComponentEvent;
 import javax.faces.render.ResponseStateManager;
@@ -28,6 +29,7 @@ import org.springframework.springfaces.event.PostConstructApplicationSpringFaces
 import org.springframework.springfaces.mvc.expression.el.ImplicitSpringFacesELResolver;
 import org.springframework.springfaces.mvc.expression.el.SpringFacesBeanELResolver;
 import org.springframework.springfaces.mvc.expression.el.SpringFacesModelELResolver;
+import org.springframework.springfaces.mvc.internal.MvcExceptionHandler;
 import org.springframework.springfaces.mvc.internal.MvcNavigationActionListener;
 import org.springframework.springfaces.mvc.internal.MvcNavigationHandler;
 import org.springframework.springfaces.mvc.internal.MvcNavigationSystemEventListener;
@@ -73,6 +75,9 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		}
 		if (ActionListener.class.equals(typeClass)) {
 			return new MvcNavigationActionListener((ActionListener) delegate);
+		}
+		if (ExceptionHandler.class.equals(typeClass)) {
+			return new MvcExceptionHandler((ExceptionHandler) delegate);
 		}
 		if (CompositeELResolver.class.equals(typeClass)) {
 			CompositeELResolver compositeELResolver = (CompositeELResolver) delegate;

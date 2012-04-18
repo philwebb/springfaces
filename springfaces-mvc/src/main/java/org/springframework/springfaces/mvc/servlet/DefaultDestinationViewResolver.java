@@ -37,6 +37,8 @@ import org.springframework.web.servlet.View;
 public class DefaultDestinationViewResolver implements DestinationViewResolver,
 		ApplicationListener<ContextRefreshedEvent> {
 
+	// FIXME another delegate, we need to consolidate
+
 	private DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {

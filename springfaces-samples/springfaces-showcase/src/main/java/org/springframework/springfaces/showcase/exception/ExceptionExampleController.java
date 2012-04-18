@@ -17,6 +17,7 @@ package org.springframework.springfaces.showcase.exception;
 
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -29,6 +30,11 @@ public class ExceptionExampleController {
 	@NavigationMapping
 	public String onMappedThrow() {
 		throw new ExampleException();
+	}
+
+	@ExceptionHandler
+	public String handle(ExampleException e) {
+		return "redirect:http://www.google.com";
 	}
 
 	public String action() {

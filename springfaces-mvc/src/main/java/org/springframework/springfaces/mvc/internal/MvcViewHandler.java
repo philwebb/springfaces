@@ -257,9 +257,17 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 		@Override
 		public void encodeAll(FacesContext context) throws IOException {
-			try {
-				View view = this.modelAndView.getView();
-				Map<String, Object> model = this.modelAndView.getModel();
+			render(context, this.modelAndView);
+		}
+	}
+
+	// FIXME hack to test @ExceptionHandler, rework
+	static void render(FacesContext context, ModelAndView modelAndView) {
+		try {
+			if (!modelAndView.isEmpty()) {
+				View view = modelAndView.getView();
+				Map<String, Object> model = modelAndView.getModel();
+				// FIXME what about FacesView here, will that work
 				if (view instanceof FacesRenderedView) {
 					// FIXME test
 					((FacesRenderedView) view).render(model, context);
@@ -274,9 +282,10 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 					}
 					view.render(model, request, response);
 				}
-			} catch (Exception e) {
-				throw new FacesException(e);
 			}
+		} catch (Exception e) {
+			throw new FacesException(e);
 		}
 	}
+
 }

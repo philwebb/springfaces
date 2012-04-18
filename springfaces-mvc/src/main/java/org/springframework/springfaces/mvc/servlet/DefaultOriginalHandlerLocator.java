@@ -30,6 +30,8 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 public class DefaultOriginalHandlerLocator implements OriginalHandlerLocator,
 		ApplicationListener<ContextRefreshedEvent> {
 
+	// FIXME expose setters or somehow mimic the real DispatcherServlet
+
 	private DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
 
 	public void onApplicationEvent(ContextRefreshedEvent event) {
