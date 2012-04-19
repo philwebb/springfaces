@@ -16,6 +16,7 @@
 package org.springframework.springfaces.traveladvisor.integrationtest;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -42,36 +43,38 @@ public class RequestMappingIT {
 
 	@Test
 	public void shouldGetSimpleRequestMapping() throws Exception {
-		PageObject page = pages.get(SimpleRequestMappingPage.class);
+		PageObject page = this.pages.get(SimpleRequestMappingPage.class);
 		assertThat(page.getBodyText(), is("Simple @RequestMapping"));
 	}
 
 	@Test
 	public void shouldGetStringRequestMapping() throws Exception {
-		PageObject page = pages.get(StringRequestMappingPage.class);
+		PageObject page = this.pages.get(StringRequestMappingPage.class);
 		assertThat(page.getBodyText(), is("@RequestMapping Mapped By String Name"));
 	}
 
 	@Test
 	public void shouldGetModelAndViewRequestMapping() throws Exception {
-		PageObject page = pages.get(ModelAndViewRequestMappingPage.class);
+		PageObject page = this.pages.get(ModelAndViewRequestMappingPage.class);
 		assertThat(page.getBodyText(), is("ModelAndView @RequestMapping"));
 	}
 
 	@Test
 	public void shouldGetVariablesRequestMapping() throws Exception {
 		String url = "/requestmapping/variables/example?argument=value";
-		VariablesRequestMappingPage page = pages.get(VariablesRequestMappingPage.class, url);
+		VariablesRequestMappingPage page = this.pages.get(VariablesRequestMappingPage.class, url);
 		assertThat(page.getPathText(), is("path = example"));
 		assertThat(page.getArgumentText(), is("argument = value"));
 	}
 
 	@Test
 	public void shouldSupportPostbackWithRequestMapping() throws Exception {
-		PostbackRequestMappingPage page = pages.get(PostbackRequestMappingPage.class);
+		PostbackRequestMappingPage page = this.pages.get(PostbackRequestMappingPage.class);
+		assertThat(page.getCreateDate(), is(not(0L)));
 		long date1 = page.getDate();
 		Thread.sleep(500);
 		page = page.clickPostbackButton();
+		assertThat(page.getCreateDate(), is(0L));
 		long date2 = page.getDate();
 		assertTrue(date1 < date2);
 	}

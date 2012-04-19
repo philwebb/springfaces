@@ -207,6 +207,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			if (this.rendering != null) {
 				throw new IllegalStateException("Unable to render " + modelAndViewArtifact.getViewArtifact()
 						+ "  as the SpringFacesContext is already rendering " + this.rendering.getViewArtifact());
+
 			}
 			this.rendering = modelAndViewArtifact;
 			try {
@@ -228,8 +229,9 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 
 		public void beforePhase(PhaseEvent event) {
-			if (PhaseId.APPLY_REQUEST_VALUES.equals(event.getPhaseId())) {
-				this.rendering = null;
+			if (PhaseId.INVOKE_APPLICATION.equals(event.getPhaseId())) {
+				// FIXME causes the state manager to not write? why was this here?
+				// this.rendering = null;
 			}
 		}
 

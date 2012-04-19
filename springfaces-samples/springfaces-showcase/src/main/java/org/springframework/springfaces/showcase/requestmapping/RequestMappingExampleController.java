@@ -18,6 +18,8 @@ package org.springframework.springfaces.showcase.requestmapping;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,13 +57,16 @@ public class RequestMappingExampleController {
 
 	@RequestMapping("/requestmapping/variables/{path}")
 	public ModelAndView variables(@PathVariable String path, @RequestParam String argument) {
-		// MVC Path variable and request parameters can be used, the model is availble from the page
+		// MVC Path variable and request parameters can be used, the model is available from the page
 		return new ModelAndView("requestmapping/variables", "argument", argument);
 	}
 
 	@RequestMapping("/requestmapping/postback")
-	public String postback() {
-		return "requestmapping/postback";
+	public String postback(HttpServletRequest request) {
+		// Postback is supported, note that the view name can differ from the URL and the request is only called once
+		// here the gettime attribute will be set initially but will not render after the postback
+		request.setAttribute("gettime", System.currentTimeMillis());
+		return "requestmapping/postbackwithdifferentname";
 	}
 
 }

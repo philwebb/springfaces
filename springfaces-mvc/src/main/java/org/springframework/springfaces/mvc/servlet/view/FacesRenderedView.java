@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import org.springframework.web.servlet.View;
 
 //FIXME DC
+//FIXME rename?
 public interface FacesRenderedView extends View {
 
 	void render(Map<String, ?> model, FacesContext facesContext) throws Exception;

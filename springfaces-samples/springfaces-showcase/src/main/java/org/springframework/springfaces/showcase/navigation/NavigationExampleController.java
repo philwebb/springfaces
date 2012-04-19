@@ -174,6 +174,17 @@ public class NavigationExampleController {
 		return new HttpEntity<String>("test", headers);
 	}
 
+	@RequestMapping("/navigation/annotationtofacesview")
+	public void annotationToFacesView() {
+		// @NavigationMapping methods can be mapped to other faces views.
+		// In this case the URL is not updated because the view is rendered directly
+	}
+
+	@NavigationMapping
+	public String onAnnotationToFacesView() {
+		return "navigation/destination";
+	}
+
 	@RequestMapping("/navigation/destination")
 	public void destination(@RequestParam(required = false) String s, ModelMap model) {
 		// This mapping does not demonstrate navigation, it is used as the destination of other examples

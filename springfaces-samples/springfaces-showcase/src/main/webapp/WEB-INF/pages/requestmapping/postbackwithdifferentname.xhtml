@@ -14,6 +14,9 @@
 	<h:body>
 		<h:form id="form">
 			<h:outputText value="Postback is supported with JSF @RequestMapping"/>
+			<p id="createText">
+				<h:outputText value="#{gettime}"/>
+			</p>
 			<p id="dateText">
 				<h:outputText value="#{timeBean.currentTimeMillis}"/>
 			</p>

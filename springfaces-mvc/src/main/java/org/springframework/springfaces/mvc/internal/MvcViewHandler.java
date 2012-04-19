@@ -40,6 +40,7 @@ import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
 import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,6 +105,11 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
 			ModelAndView modelAndView = getModelAndView(context, viewId, null);
 			if (modelAndView != null) {
+				if (modelAndView.getView() != null && modelAndView.getView() instanceof FacesView) {
+					// FIXME set the rendering property in SFC ?
+					FacesView facesView = (FacesView) modelAndView.getView();
+					return super.createView(context, facesView.getViewId());
+				}
 				UIViewRoot existingViewRoot = context.getViewRoot();
 				String renderKitId = existingViewRoot == null ? null : existingViewRoot.getRenderKitId();
 				return new NavigationResponseUIViewRoot(viewId, renderKitId, modelAndView);

@@ -19,6 +19,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
 import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
+import org.springframework.util.StringUtils;
 
 @PageURL("/requestmapping/postback")
 public class PostbackRequestMappingPage extends PageObject {
@@ -32,9 +33,20 @@ public class PostbackRequestMappingPage extends PageObject {
 		return title.equals("RequestMapping - Postback");
 	}
 
+	public long getCreateDate() {
+		return getDate("createText");
+	}
+
 	public long getDate() {
-		String dateText = getWebDriver().findElement(By.id("dateText")).getText();
-		return Long.valueOf(dateText);
+		return getDate("dateText");
+	}
+
+	private long getDate(String id) {
+		String dateText = getWebDriver().findElement(By.id(id)).getText();
+		if (StringUtils.hasLength(dateText)) {
+			return Long.valueOf(dateText);
+		}
+		return 0L;
 	}
 
 	public PostbackRequestMappingPage clickPostbackButton() {
