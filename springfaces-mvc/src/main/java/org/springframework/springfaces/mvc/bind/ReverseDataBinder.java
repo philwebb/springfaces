@@ -229,12 +229,7 @@ public class ReverseDataBinder {
 	protected PropertyEditor findDefaultEditor(PropertyEditorRegistrySupport propertyEditorRegistry,
 			Object targetObject, Class<?> requiredType, TypeDescriptor typeDescriptor) {
 		PropertyEditor editor = null;
-		// FIXME check 3.1 final to see if this is still commented
-		// if (typeDescriptor instanceof PropertyTypeDescriptor) {
-		// PropertyDescriptor pd = ((PropertyTypeDescriptor) typeDescriptor).getPropertyDescriptor();
-		// editor = pd.createPropertyEditor(targetObject);
-		// }
-		if (editor == null && requiredType != null) {
+		if (requiredType != null) {
 			// No custom editor -> check BeanWrapperImpl's default editors.
 			editor = propertyEditorRegistry.getDefaultEditor(requiredType);
 			if (editor == null && !String.class.equals(requiredType)) {
