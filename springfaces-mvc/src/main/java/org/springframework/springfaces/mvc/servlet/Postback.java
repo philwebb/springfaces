@@ -16,6 +16,7 @@
 package org.springframework.springfaces.mvc.servlet;
 
 import org.springframework.springfaces.mvc.render.ViewArtifact;
+import org.springframework.util.Assert;
 
 /**
  * Used to pass JSF postback data from the {@link FacesHandlerInterceptor} to the {@link FacesPostbackHandler}.
@@ -31,7 +32,8 @@ public class Postback {
 	private Object handler;
 
 	public Postback(ViewArtifact viewArtifact, Object handler) {
-		// FIXME ANN
+		Assert.notNull(viewArtifact, "ViewArtifact must not be null");
+		Assert.notNull(handler, "Handler must not be null");
 		this.viewArtifact = viewArtifact;
 		this.handler = handler;
 	}
