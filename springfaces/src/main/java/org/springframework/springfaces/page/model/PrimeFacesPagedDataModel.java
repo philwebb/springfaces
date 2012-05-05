@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.model.DataModel;
 import javax.faces.model.DataModelListener;
 
 import org.primefaces.model.LazyDataModel;
@@ -27,22 +26,17 @@ import org.primefaces.model.SortOrder;
 import org.springframework.util.Assert;
 
 /**
- * Adapts a {@link PagedDataModel} to a PrimeFaces {@link LazyDataModel}. NOTE: This implementation is unable to support
- * generic type arguments due to the fact that the PrimeFaces {@link LazyDataModel} does not pass generic types to the
- * inherited {@link DataModel}.
- * 
+ * Adapts a {@link PagedDataModel} to a PrimeFaces {@link LazyDataModel}.
+ * @param <E> The element type
  * @author Phillip Webb
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedDataRows {
-
-	// FIXME check status of http://code.google.com/p/primefaces/issues/detail?id=2642 when PF 3 final is released
+public class PrimeFacesPagedDataModel<E> extends LazyDataModel<E> implements PagedDataRows<E> {
 
 	private static final long serialVersionUID = 1L;
 
-	private PagedDataModel delegate;
+	private PagedDataModel<E> delegate;
 
-	public PrimeFacesPagedDataModel(PagedDataModel delegate) {
+	public PrimeFacesPagedDataModel(PagedDataModel<E> delegate) {
 		Assert.notNull(delegate, "Delegate must not be null");
 		this.delegate = delegate;
 	}
@@ -58,7 +52,7 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 	}
 
 	@Override
-	public Object getRowData() {
+	public E getRowData() {
 		return this.delegate.getRowData();
 	}
 
@@ -116,7 +110,7 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		return this.delegate.getFilters();
 	}
 
-	public void setFilters(Map filters) {
+	public void setFilters(Map<String, String> filters) {
 		this.delegate.setFilters(filters);
 	}
 
@@ -140,8 +134,15 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		throw new UnsupportedOperationException("Unable to set the row count for a PagedDataModel");
 	}
 
+	// Primefaces 3
+	@Override
+	public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
+		boolean sort = sortOrder == SortOrder.ASCENDING || sortOrder == SortOrder.UNSORTED;
+		return load(first, pageSize, sortField, sort, filters);
+	}
+
 	// Primefaces 2.1
-	public List load(int first, int pageSize, String sortField, boolean sortOrder, Map filters) {
+	public List<E> load(int first, int pageSize, String sortField, boolean sortOrder, Map<String, String> filters) {
 		setPageSize(pageSize);
 		if (sortField != null) {
 			setSortColumn(sortField);
@@ -150,12 +151,5 @@ public class PrimeFacesPagedDataModel extends LazyDataModel implements PagedData
 		setFilters(filters);
 		this.delegate.clearCachedRowCount(first);
 		return Collections.emptyList();
-	}
-
-	// Primefaces 3
-	@Override
-	public List load(int first, int pageSize, String sortField, org.primefaces.model.SortOrder sortOrder, Map filters) {
-		boolean sort = sortOrder == SortOrder.ASCENDING || sortOrder == SortOrder.UNSORTED;
-		return load(first, pageSize, sortField, sort, filters);
 	}
 }

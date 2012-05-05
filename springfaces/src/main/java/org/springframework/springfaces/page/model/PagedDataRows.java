@@ -26,10 +26,8 @@ import org.springframework.springfaces.page.ui.PageRequest;
 /**
  * Extension of {@link DataRows} that provides additional sorting, filtering and paging capabilities. This interface is
  * mainly provided to allow consistent access to paging functionality across different {@link DataModel} subclasses.
- * 
+ * @param <E> The element typ
  * @author Phillip Webb
- * 
- * @param <E>
  */
 public interface PagedDataRows<E> extends DataRows<E> {
 
