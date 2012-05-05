@@ -41,28 +41,27 @@ import org.primefaces.model.SortOrder;
  * 
  * @author Phillip Webb
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class PrimeFacesPagedDataModelTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Mock
-	private PagedDataModel delegate;
+	private PagedDataModel<Object> delegate;
 
-	private PrimeFacesPagedDataModel dataModel;
+	private PrimeFacesPagedDataModel<Object> dataModel;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.dataModel = new PrimeFacesPagedDataModel(this.delegate);
+		this.dataModel = new PrimeFacesPagedDataModel<Object>(this.delegate);
 	}
 
 	@Test
 	public void shouldNeedDelegate() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("Delegate must not be null");
-		new PrimeFacesPagedDataModel(null);
+		new PrimeFacesPagedDataModel<Object>(null);
 	}
 
 	@Test
@@ -163,7 +162,7 @@ public class PrimeFacesPagedDataModelTest {
 
 	@Test
 	public void shouldDelegateSetFilters() throws Exception {
-		Map filters = Collections.singletonMap("a", "b");
+		Map<String, String> filters = Collections.singletonMap("a", "b");
 		this.dataModel.setFilters(filters);
 		verify(this.delegate).setFilters(filters);
 	}
@@ -201,7 +200,7 @@ public class PrimeFacesPagedDataModelTest {
 		int pageSize = 100;
 		String sortField = "sort";
 		boolean sortOrder = true;
-		Map filters = Collections.singletonMap("a", "b");
+		Map<String, String> filters = Collections.singletonMap("a", "b");
 		Object rowData = new Object();
 		given(this.delegate.getRowData()).willReturn(rowData);
 		List loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
@@ -219,7 +218,7 @@ public class PrimeFacesPagedDataModelTest {
 		int pageSize = 100;
 		String sortField = "sort";
 		SortOrder sortOrder = SortOrder.ASCENDING;
-		Map filters = Collections.singletonMap("a", "b");
+		Map<String, String> filters = Collections.singletonMap("a", "b");
 		Object rowData = new Object();
 		given(this.delegate.getRowData()).willReturn(rowData);
 		List loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
