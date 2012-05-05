@@ -37,7 +37,7 @@ public class WebArgumentResolverMethodParameterFilter implements MethodParameter
 		this.webArgumentResolvers = webArgumentResolvers;
 	}
 
-	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
+	public boolean matches(NativeWebRequest request, MethodParameter methodParameter) {
 		if (this.webArgumentResolvers != null) {
 			for (WebArgumentResolver resolver : this.webArgumentResolvers) {
 				try {

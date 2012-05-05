@@ -58,10 +58,10 @@ public class AnnotationMethodParameterFilterTest {
 		Method method = ReflectionUtils
 				.findMethod(C.class, "m", Object.class, Object.class, Object.class, Object.class);
 		AnnotationMethodParameterFilter f = new AnnotationMethodParameterFilter(A1.class, A3.class);
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 0)));
-		assertFalse(f.isFiltered(this.request, new MethodParameter(method, 1)));
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 2)));
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 3)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 0)));
+		assertFalse(f.matches(this.request, new MethodParameter(method, 1)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 2)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 3)));
 
 	}
 

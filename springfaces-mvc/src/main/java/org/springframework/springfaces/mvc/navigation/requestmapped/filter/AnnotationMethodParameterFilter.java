@@ -42,7 +42,7 @@ public class AnnotationMethodParameterFilter implements MethodParameterFilter {
 		this.ignoredAnnotations = new HashSet<Class<?>>(Arrays.asList(ignoredAnnotations));
 	}
 
-	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
+	public boolean matches(NativeWebRequest request, MethodParameter methodParameter) {
 		for (Annotation ignoredAnnotation : methodParameter.getParameterAnnotations()) {
 			if (this.ignoredAnnotations.contains(ignoredAnnotation.annotationType())) {
 				return true;

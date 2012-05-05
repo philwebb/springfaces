@@ -49,7 +49,7 @@ public class WebArgumentResolverMethodParameterFilterTest {
 	public void shouldAcceptNullWebArgumentResolver() throws Exception {
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(
 				(WebArgumentResolver[]) null);
-		assertFalse(f.isFiltered(this.request, this.methodParameter));
+		assertFalse(f.matches(this.request, this.methodParameter));
 	}
 
 	@Test
@@ -60,7 +60,7 @@ public class WebArgumentResolverMethodParameterFilterTest {
 		given(w1.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
 		given(w3.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(w1, w2, w3);
-		assertTrue(f.isFiltered(this.request, this.methodParameter));
+		assertTrue(f.matches(this.request, this.methodParameter));
 		InOrder ordered = inOrder(w1, w2, w3);
 		ordered.verify(w1).resolveArgument(this.methodParameter, this.request);
 		ordered.verify(w2).resolveArgument(this.methodParameter, this.request);

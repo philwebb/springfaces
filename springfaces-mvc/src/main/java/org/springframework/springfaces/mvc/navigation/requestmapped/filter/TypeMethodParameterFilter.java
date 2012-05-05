@@ -40,7 +40,7 @@ public class TypeMethodParameterFilter implements MethodParameterFilter {
 		this.ignoredTypes = Arrays.asList(ignoredTypes);
 	}
 
-	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
+	public boolean matches(NativeWebRequest request, MethodParameter methodParameter) {
 		Class<?> parameterType = methodParameter.getParameterType();
 		for (Class<?> ignoredType : this.ignoredTypes) {
 			if (ignoredType.isAssignableFrom(parameterType)) {

@@ -55,10 +55,10 @@ public class TypeMethodParameterFilterTest {
 	public void shouldIgnoreTypes() throws Exception {
 		Method method = getMethod();
 		TypeMethodParameterFilter f = new TypeMethodParameterFilter(T1.class, T2.class);
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 0)));
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 1)));
-		assertTrue(f.isFiltered(this.request, new MethodParameter(method, 2)));
-		assertFalse(f.isFiltered(this.request, new MethodParameter(method, 3)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 0)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 1)));
+		assertTrue(f.matches(this.request, new MethodParameter(method, 2)));
+		assertFalse(f.matches(this.request, new MethodParameter(method, 3)));
 	}
 
 	private Method getMethod() {

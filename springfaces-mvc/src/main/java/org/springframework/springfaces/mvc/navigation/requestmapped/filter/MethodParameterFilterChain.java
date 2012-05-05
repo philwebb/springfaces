@@ -35,10 +35,10 @@ public class MethodParameterFilterChain implements MethodParameterFilter {
 		this.filters = filters;
 	}
 
-	public boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter) {
+	public boolean matches(NativeWebRequest request, MethodParameter methodParameter) {
 		if (this.filters != null) {
 			for (MethodParameterFilter filter : this.filters) {
-				if (filter.isFiltered(request, methodParameter)) {
+				if (filter.matches(request, methodParameter)) {
 					return true;
 				}
 			}

@@ -26,11 +26,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 public interface MethodParameterFilter {
 
 	/**
-	 * Determine if the specified parameter should be filtered.
+	 * Determine if the specified parameter matches.
 	 * @param request the current native web request
 	 * @param methodParameter the method parameter
-	 * @return if the parameter should be filtered
+	 * @return if the parameter matches
 	 */
-	boolean isFiltered(NativeWebRequest request, MethodParameter methodParameter);
-	// FIXME rename to matches for consistency with spring
+	boolean matches(NativeWebRequest request, MethodParameter methodParameter);
 }

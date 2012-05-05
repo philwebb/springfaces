@@ -155,7 +155,7 @@ public class RequestMappedRedirectViewModelBuilder {
 	 * @return <tt>true</tt> if the parameter should be ignored.
 	 */
 	protected boolean isIgnored(NativeWebRequest request, MethodParameter methodParameter) {
-		return this.methodParameterFilter.isFiltered(request, methodParameter);
+		return this.methodParameterFilter.matches(request, methodParameter);
 	}
 
 	/**
