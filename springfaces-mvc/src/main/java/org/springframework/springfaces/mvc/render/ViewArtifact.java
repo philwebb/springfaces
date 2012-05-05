@@ -19,10 +19,11 @@ import java.io.Serializable;
 
 import javax.faces.view.ViewDeclarationLanguage;
 
+import org.springframework.util.Assert;
+
 /**
  * A reference to an artifact that contains the {@link ViewDeclarationLanguage VDL} syntax of a JSF view. In most cases
- * a <tt>ViewArtifact</tt> will refer to the location of a facelet file, for example: <tt>/WEB-INF/pages/page.xhtml</tt>
- * .
+ * this will refer to the location of a facelet file, for example: <tt>/WEB-INF/pages/page.xhtml</tt> .
  * 
  * @author Phillip Webb
  */
@@ -34,12 +35,31 @@ public final class ViewArtifact implements Serializable {
 
 	public ViewArtifact(String artifact) {
 		super();
-		// FIXME ANN
+		Assert.notNull(artifact, "Artifact must not be null");
 		this.artifact = artifact;
 	}
 
 	@Override
 	public String toString() {
 		return this.artifact;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.artifact.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof ViewArtifact) {
+			return ((ViewArtifact) obj).artifact.equals(this.artifact);
+		}
+		return false;
 	}
 }
