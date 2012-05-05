@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.servlet.view;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,12 +53,6 @@ public class FacesView extends AbstractUrlBasedView {
 		}
 		ViewArtifact viewArtifact = new ViewArtifact(getUrl());
 		SpringFacesContext.getCurrentInstance(true).render(new ModelAndViewArtifact(viewArtifact, model));
-	}
-
-	@Override
-	public boolean checkResource(Locale locale) throws Exception {
-		// FIXME check if the resource exists
-		return super.checkResource(locale);
 	}
 
 	public String getViewId() {
