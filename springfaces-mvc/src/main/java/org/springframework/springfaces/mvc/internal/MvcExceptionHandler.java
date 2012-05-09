@@ -18,7 +18,6 @@ package org.springframework.springfaces.mvc.internal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.el.ELException;
@@ -32,17 +31,14 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -91,8 +87,7 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 
 	private void handle(SpringFacesContext springFacesContext) {
 		// FIXME should be injected singleton
-		DelegateDispatcherServlet delegate = new DelegateDispatcherServlet();
-		delegate.onApplicationEvent(new ContextRefreshedEvent(springFacesContext.getWebApplicationContext()));
+		Dispatcher dispatcher = null;
 
 		FacesContext facesContext = springFacesContext.getFacesContext();
 		ExternalContext externalContext = facesContext.getExternalContext();
@@ -106,13 +101,13 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 			Throwable cause = getRootCause(event.getContext().getException());
 			if (cause instanceof Exception) {
 				try {
-					ModelAndView modelAndView = delegate.processHandlerException(request, response, handler,
+					ModelAndView modelAndView = dispatcher.processHandlerException(request, response, handler,
 							(Exception) cause);
 					if (modelAndView != null) {
 						WebUtils.clearErrorRequestAttributes(request);
 						if (modelAndView.isReference()) {
-							modelAndView.setView(delegate.resolveViewId(modelAndView.getViewName(),
-									FacesUtils.getLocale(facesContext)));
+							modelAndView.setView(dispatcher.resolveViewName(modelAndView.getViewName(), null,
+									FacesUtils.getLocale(facesContext), null));
 						}
 						MvcViewHandler.render(facesContext, modelAndView);
 						// FIXME we may need to mark as complete
@@ -153,32 +148,6 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 			throwable = throwable.getCause();
 		}
 		return throwable;
-	}
-
-	// FIXME combine with DefaultOriginalHandlerLocator ? How to config
-
-	private static class DelegateDispatcherServlet extends DispatcherServlet {
-
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-			return super.getHandler(request);
-		}
-
-		@Override
-		public ModelAndView processHandlerException(HttpServletRequest request, HttpServletResponse response,
-				Object handler, Exception ex) throws Exception {
-			return super.processHandlerException(request, response, handler, ex);
-		}
-
-		public View resolveViewId(String viewName, Locale locale) {
-			try {
-				return resolveViewName(viewName, null, locale, null);
-			} catch (Exception e) {
-				throw new IllegalStateException(e);
-			}
-		}
 	}
 
 }

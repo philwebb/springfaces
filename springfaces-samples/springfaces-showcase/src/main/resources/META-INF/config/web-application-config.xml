@@ -19,6 +19,8 @@
 	</bean>
 
 	<mvc:annotation-driven conversion-service="conversionService" />
+	
+	<bean name="defaultDispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher"/>
 
 	<bean name="genericFacesConverter" class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
 	
@@ -62,7 +64,11 @@
 	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
 
 	<bean name="stateHandler" class="org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler" />
-	<bean name="defaultDestinationViewResolver" class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver" />
+	
+	<bean name="defaultDestinationViewResolver" class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver">
+		<constructor-arg ref="defaultDispatcher"/>
+	</bean>
+	
 	<bean name="requestMappedDestinationViewResolver" class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver" />
 
 	<bean name="destinationViewResolverChain" class="org.springframework.springfaces.mvc.navigation.DestinationViewResolverChain">
@@ -89,10 +95,9 @@
 		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver" />
 	</bean>
 
-	<bean name="originalHandlerLocator" class="org.springframework.springfaces.mvc.servlet.DefaultOriginalHandlerLocator" />
 	<bean name="postbackHandler" class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<constructor-arg ref="stateHandler" />
-		<constructor-arg ref="originalHandlerLocator" />
+		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 
 	<mvc:interceptors>
