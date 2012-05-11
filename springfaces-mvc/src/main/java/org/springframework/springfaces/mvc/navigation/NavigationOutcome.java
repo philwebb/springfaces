@@ -40,7 +40,7 @@ public final class NavigationOutcome implements Serializable {
 	private Map<String, Object> implicitModel;
 
 	/**
-	 * Constructor.
+	 * Create a new {@link NavigationOutcome} instance.
 	 * @param destination a non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be {@link DestinationViewResolver resolved} to a MVC view.
 	 */
@@ -49,7 +49,7 @@ public final class NavigationOutcome implements Serializable {
 	}
 
 	/**
-	 * Constructor.
+	 * Create a new {@link NavigationOutcome} instance.
 	 * @param destination a non-null outcome destination. The destination can be a MVC {@link View} or an object that
 	 * can be {@link DestinationViewResolver resolved} to a MVC view.
 	 * @param implicitModel An implicit model to be used with destination or <tt>null</tt>.
@@ -60,12 +60,20 @@ public final class NavigationOutcome implements Serializable {
 		this.implicitModel = implicitModel;
 	}
 
+	/**
+	 * Create a new {@link NavigationOutcome} instance with a single implicit model item.
+	 * @param destination a non-null outcome destination. The destination can be a MVC {@link View} or an object that
+	 * can be {@link DestinationViewResolver resolved} to a MVC view.
+	 * @param implicitModelName the name of implicit model item
+	 * @param implicitModelObject the value of the implicit model item
+	 */
 	public NavigationOutcome(Object destination, String implicitModelName, Object implicitModelObject) {
-		// FIXME Test
 		Assert.notNull(destination, "Destination must not be null");
-		// FIXME null rules
 		this.destination = destination;
-		this.implicitModel = Collections.singletonMap(implicitModelName, implicitModelObject);
+		if (implicitModelName != null) {
+			Assert.hasLength(implicitModelName, "ImplicitModelName must not be empty");
+			this.implicitModel = Collections.singletonMap(implicitModelName, implicitModelObject);
+		}
 	}
 
 	/**

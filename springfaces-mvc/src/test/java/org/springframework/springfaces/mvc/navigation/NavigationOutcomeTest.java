@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.mvc.navigation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 import java.util.Collections;
 import java.util.Map;
@@ -42,26 +44,48 @@ public class NavigationOutcomeTest {
 	@Test
 	public void shouldSetDestination() throws Exception {
 		NavigationOutcome outcome = new NavigationOutcome(this.destination);
-		assertEquals(this.destination, outcome.getDestination());
+		assertThat(this.destination, is(equalTo(outcome.getDestination())));
 	}
 
 	@Test
 	public void shouldSetDestinationAndModel() throws Exception {
 		NavigationOutcome outcome = new NavigationOutcome(this.destination, this.implicitModel);
-		assertEquals(this.destination, outcome.getDestination());
-		assertEquals(this.implicitModel, outcome.getImplicitModel());
+		assertThat(this.destination, is(equalTo(outcome.getDestination())));
+		assertThat(this.implicitModel, is(equalTo(outcome.getImplicitModel())));
 	}
 
 	@Test
 	public void shouldRequireDestination() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("Destination must not be null");
 		new NavigationOutcome(null, this.implicitModel);
 	}
 
 	@Test
 	public void shouldSupportNullModel() throws Exception {
 		NavigationOutcome outcome = new NavigationOutcome(this.destination, null);
-		assertEquals(this.destination, outcome.getDestination());
-		assertNull(outcome.getImplicitModel());
+		assertThat(this.destination, is(equalTo(outcome.getDestination())));
+		assertThat(outcome.getImplicitModel(), is(nullValue()));
+	}
+
+	@Test
+	public void shouldSupportSingleImplicitModelItem() throws Exception {
+		NavigationOutcome outcome = new NavigationOutcome(this.destination, "name", "value");
+		assertThat(this.destination, is(equalTo(outcome.getDestination())));
+		assertThat(outcome.getImplicitModel(), is(equalTo(Collections.<String, Object> singletonMap("name", "value"))));
+	}
+
+	@Test
+	public void shouldSupportNullImplicitModelName() throws Exception {
+		NavigationOutcome outcome = new NavigationOutcome(this.destination, null, "value");
+		assertThat(this.destination, is(equalTo(outcome.getDestination())));
+		assertThat(outcome.getImplicitModel(), is(nullValue()));
+	}
+
+	@Test
+	public void shouldNeedImplicitModelNameIfNotNull() throws Exception {
+		this.thrown.expect(IllegalArgumentException.class);
+		this.thrown.expectMessage("ImplicitModelName must not be empty");
+		new NavigationOutcome(this.destination, "", "value");
 	}
 }
