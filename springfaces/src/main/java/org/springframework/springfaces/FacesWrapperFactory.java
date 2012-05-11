@@ -62,8 +62,6 @@ import org.springframework.web.context.WebApplicationContext;
  */
 public interface FacesWrapperFactory<T> {
 
-	// FIXME this is a bit complex, would be nice if we could just define standard beans. Perhaps a faces scope?
-
 	/**
 	 * Factory method that can be used to wrap the specified JSF object.
 	 * @param typeClass the JSF Object type being wrapped

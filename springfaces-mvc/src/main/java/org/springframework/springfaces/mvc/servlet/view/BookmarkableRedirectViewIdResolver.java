@@ -18,11 +18,14 @@ package org.springframework.springfaces.mvc.servlet.view;
 import java.util.Locale;
 
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-//FIXME DC
-
+/**
+ * Drop-in replacement for {@link UrlBasedViewResolver} that handles <tt>redirect:</tt> prefixed views names using
+ * {@link BookmarkableRedirectView}. Allows JSF to render redirect links directly in the HTML output.
+ * 
+ * @author Phillip Webb
+ */
 public class BookmarkableRedirectViewIdResolver extends UrlBasedViewResolver {
 
 	public BookmarkableRedirectViewIdResolver() {
@@ -40,23 +43,4 @@ public class BookmarkableRedirectViewIdResolver extends UrlBasedViewResolver {
 		}
 		return super.createView(viewName, locale);
 	}
-
-	@Override
-	protected View loadView(String viewName, Locale locale) throws Exception {
-		AbstractUrlBasedView view = buildView(viewName);
-		if (view == null) {
-			return null;
-		}
-		View result = (View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName);
-		return (view.checkResource(locale) ? result : null);
-	}
-
-	@Override
-	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
-		if (getViewClass() == null) {
-			return null;
-		}
-		return super.buildView(viewName);
-	}
-
 }
