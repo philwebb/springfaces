@@ -17,6 +17,9 @@ package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Locale;
 
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.util.Assert;
@@ -39,9 +42,10 @@ public class DefaultDestinationViewResolver implements DestinationViewResolver {
 		this.dispatcher = dispatcher;
 	}
 
-	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
-		// FIXME HTTP request
-		View view = this.dispatcher.resolveViewName(destination.toString(), null, locale, null);
+	public ModelAndView resolveDestination(FacesContext context, Object destination, Locale locale,
+			SpringFacesModel model) throws Exception {
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+		View view = this.dispatcher.resolveViewName(destination.toString(), model, locale, request);
 		return new ModelAndView(view);
 	}
 }

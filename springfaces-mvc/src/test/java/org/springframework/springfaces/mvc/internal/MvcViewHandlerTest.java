@@ -352,7 +352,7 @@ public class MvcViewHandlerTest {
 		Map<String, Object> model = Collections.<String, Object> singletonMap("m", "v");
 		ModelAndView modelAndView = new ModelAndView(view, model);
 		given(
-				this.destinationViewResolver.resolveDestination(eq(destination), any(Locale.class),
+				this.destinationViewResolver.resolveDestination(eq(this.context), eq(destination), any(Locale.class),
 						any(SpringFacesModel.class))).willReturn(modelAndView);
 		UIViewRoot createdView = this.handler.createView(this.context, "/test");
 		assertSame(view, ((NavigationResponseUIViewRoot) createdView).getModelAndView().getView());

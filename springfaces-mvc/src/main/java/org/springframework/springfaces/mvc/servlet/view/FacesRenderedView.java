@@ -21,10 +21,20 @@ import javax.faces.context.FacesContext;
 
 import org.springframework.web.servlet.View;
 
-//FIXME DC
-//FIXME rename?
+/**
+ * A Spring {@link View} that can be rendered via JSF.
+ * 
+ * @author Phillip Webb
+ */
 public interface FacesRenderedView extends View {
 
+	/**
+	 * Render the view given the specified model.
+	 * @param model Map with name Strings as keys and corresponding model objects as values (Map can also be
+	 * <code>null</code> in case of empty model)
+	 * @param facesContext the faces context
+	 * @throws Exception if rendering failed
+	 */
 	void render(Map<String, ?> model, FacesContext facesContext) throws Exception;
 
 }

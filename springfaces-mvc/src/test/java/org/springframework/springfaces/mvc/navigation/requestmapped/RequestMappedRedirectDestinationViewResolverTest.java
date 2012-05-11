@@ -27,6 +27,8 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
 
+import javax.faces.context.FacesContext;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -71,6 +73,9 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	};
 
 	@Mock
+	private FacesContext facesContext;
+
+	@Mock
 	private SpringFacesContext springFacesContext;
 
 	@Mock
@@ -104,18 +109,18 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@Test
 	public void shouldOnlyResolveStrings() throws Exception {
-		assertNull(this.resolver.resolveDestination(new Object(), Locale.UK, null));
-		assertNull(this.resolver.resolveDestination(new Integer(4), Locale.US, null));
+		assertNull(this.resolver.resolveDestination(this.facesContext, new Object(), Locale.UK, null));
+		assertNull(this.resolver.resolveDestination(this.facesContext, new Integer(4), Locale.US, null));
 	}
 
 	@Test
 	public void shouldNotResolveIfNotPrefixedString() throws Exception {
-		assertNull(this.resolver.resolveDestination("bean.method", Locale.UK, null));
+		assertNull(this.resolver.resolveDestination(this.facesContext, "bean.method", Locale.UK, null));
 	}
 
 	@Test
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
-		this.resolver.resolveDestination("@method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
 		assertEquals(this.controllerBean, this.createdViewHandler);
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
@@ -126,12 +131,12 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@method' : "
 				+ "Unable to locate SpringFaces MVC Controller");
-		this.resolver.resolveDestination("@method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
 	}
 
 	@Test
 	public void shouldResolveAgainstSpecificBean() throws Exception {
-		this.resolver.resolveDestination("@bean.method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@bean.method", Locale.UK, null);
 		assertEquals(this.controllerBean, this.createdViewHandler);
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
@@ -139,14 +144,14 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldSupportCustomPrefix() throws Exception {
 		this.resolver.setPrefix("resove:");
-		this.resolver.resolveDestination("resove:bean.method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "resove:bean.method", Locale.UK, null);
 		assertEquals(this.controllerBean, this.createdViewHandler);
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldResolveWithExoticBeanNames() throws Exception {
-		this.resolver.resolveDestination("@exotic@be.an.method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@exotic@be.an.method", Locale.UK, null);
 		assertEquals(this.controllerBean, this.createdViewHandler);
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
@@ -156,7 +161,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@notMapped' : "
 				+ "Unable to find @RequestMapping annotated method 'notMapped'");
-		this.resolver.resolveDestination("@notMapped", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@notMapped", Locale.UK, null);
 	}
 
 	@Test
@@ -164,7 +169,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@doesNotExist' : "
 				+ "Unable to find @RequestMapping annotated method 'doesNotExist'");
-		this.resolver.resolveDestination("@doesNotExist", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@doesNotExist", Locale.UK, null);
 	}
 
 	@Test
@@ -172,7 +177,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@overloaded' : "
 				+ "More than one @RequestMapping annotated method with the name 'overloaded' exists");
-		this.resolver.resolveDestination("@overloaded", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@overloaded", Locale.UK, null);
 	}
 
 	@Test
@@ -180,7 +185,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("Unable to resolve @RequestMapped view from destination '@missing.method' : "
 				+ "No bean named 'missing' is defined");
-		this.resolver.resolveDestination("@missing.method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@missing.method", Locale.UK, null);
 	}
 
 	@Test
@@ -195,7 +200,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.resolver.setWebBindingInitializer(webBindingInitializer);
 		this.resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
 		this.resolver.setDispatcherServletPath("/cdp");
-		this.resolver.resolveDestination("@method", Locale.UK, null);
+		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
 		assertSame(customArgumentResolvers, this.createdViewContext.getCustomArgumentResolvers());
 		assertSame(pathMatcher, this.createdViewContext.getPathMatcher());
 		assertSame(webBindingInitializer, this.createdViewContext.getWebBindingInitializer());
@@ -206,7 +211,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldPropagateMap() throws Exception {
 		SpringFacesModel model = new SpringFacesModel(Collections.singletonMap("k", "v"));
-		ModelAndView resolved = this.resolver.resolveDestination("@method", Locale.UK, model);
+		ModelAndView resolved = this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, model);
 		assertSame(this.resolvedView, resolved.getView());
 		assertEquals("v", resolved.getModel().get("k"));
 	}

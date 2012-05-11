@@ -26,8 +26,16 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.validation.AbstractPropertyBindingResult;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
+/**
+ * A Spring {@link View} that can be used to render a JSF Page. In order to render the view a {@link SpringFacesContext}
+ * must be active.
+ * 
+ * @see SpringFacesContext
+ * @author Phillip Webb
+ */
 public class FacesView extends AbstractUrlBasedView {
 
 	public FacesView() {
