@@ -203,10 +203,17 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 	 * @return relevant model items
 	 */
 	protected Map<String, ?> getRelevantModel(NativeWebRequest request, String url, Map<String, ?> sourceModel) {
-		// FIXME perhaps better error if the model builder fails
-		Map<String, Object> model = this.modelBuilder.build(request, sourceModel);
+		Map<String, Object> model = buildModel(request, url, sourceModel);
 		addUriTemplateParameters(model, url, sourceModel);
 		return model;
+	}
+
+	private Map<String, Object> buildModel(NativeWebRequest request, String url, Map<String, ?> sourceModel) {
+		try {
+			return this.modelBuilder.build(request, sourceModel);
+		} catch (RuntimeException e) {
+			throw new IllegalStateException("Unable to build model for URL '" + url, e);
+		}
 	}
 
 	/**
