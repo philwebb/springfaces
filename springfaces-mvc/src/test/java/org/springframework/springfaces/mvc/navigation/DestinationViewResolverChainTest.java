@@ -26,7 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.faces.context.FacesContext;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,9 +40,13 @@ import org.springframework.web.servlet.ModelAndView;
  * 
  * @author Phillip Webb
  */
+@RunWith(MockitoJUnitRunner.class)
 public class DestinationViewResolverChainTest {
 
 	private DestinationViewResolverChain chain = new DestinationViewResolverChain();
+
+	@Mock
+	private FacesContext context;
 
 	private Locale locale = Locale.FRANCE;
 
@@ -47,7 +56,7 @@ public class DestinationViewResolverChainTest {
 
 	@Test
 	public void shouldReturnNullWhenNullResolvers() throws Exception {
-		assertNull(this.chain.resolveDestination(this.destination, this.locale, this.model));
+		assertNull(this.chain.resolveDestination(this.context, this.destination, this.locale, this.model));
 	}
 
 	@Test
@@ -60,11 +69,11 @@ public class DestinationViewResolverChainTest {
 		resolvers.add(r1);
 		resolvers.add(r2);
 		resolvers.add(r3);
-		given(r2.resolveDestination(this.destination, this.locale, this.model)).willReturn(modelAndView);
+		given(r2.resolveDestination(this.context, this.destination, this.locale, this.model)).willReturn(modelAndView);
 		this.chain.setResolvers(resolvers);
-		ModelAndView resolved = this.chain.resolveDestination(this.destination, this.locale, this.model);
+		ModelAndView resolved = this.chain.resolveDestination(this.context, this.destination, this.locale, this.model);
 		assertSame(modelAndView, resolved);
-		verify(r1).resolveDestination(this.destination, this.locale, this.model);
-		verify(r3, never()).resolveDestination(resolved, this.locale, this.model);
+		verify(r1).resolveDestination(this.context, this.destination, this.locale, this.model);
+		verify(r3, never()).resolveDestination(this.context, resolved, this.locale, this.model);
 	}
 }

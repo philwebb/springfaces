@@ -49,7 +49,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 
 	protected static final String METHOD_GET = "GET";
 
-	private OriginalHandlerLocator originalHandlerLocator;
+	private Dispatcher dispatcher;
 
 	/**
 	 * State handler used to obtain the {@link ViewArtifact} if the request is a JSF/MVC postback.
@@ -64,12 +64,12 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	/**
 	 * Create a new FacesPostbackHandler.
 	 * @param stateHandler the state handler
-	 * @param originalHandlerLocator used to locate the original handler.
+	 * @param dispatcher the dispatcher
 	 */
-	public FacesPostbackHandler(FacesViewStateHandler stateHandler, OriginalHandlerLocator originalHandlerLocator) {
+	public FacesPostbackHandler(FacesViewStateHandler stateHandler, Dispatcher dispatcher) {
 		super();
 		this.stateHandler = stateHandler;
-		this.originalHandlerLocator = originalHandlerLocator;
+		this.dispatcher = dispatcher;
 		setOrder(HIGHEST_PRECEDENCE);
 	}
 
@@ -135,7 +135,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 					return METHOD_GET;
 				}
 			};
-			HandlerExecutionChain chain = this.originalHandlerLocator.getOriginalHandler(request);
+			HandlerExecutionChain chain = this.dispatcher.getHandler(request);
 			return chain.getHandler();
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

@@ -17,6 +17,8 @@ package org.springframework.springfaces.mvc.navigation;
 
 import java.util.Locale;
 
+import javax.faces.context.FacesContext;
+
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,6 +38,7 @@ public interface DestinationViewResolver {
 	 * <p>
 	 * Note: To allow for DestinationViewResolver chaining, a DestinationViewResolver should return <code>null</code> if
 	 * the destination cannot be resolved .
+	 * @param context the faces context
 	 * @param destination the view destination (as obtained from a {@link NavigationOutcomeResolver})
 	 * @param locale the locale in which to resolve the view. ViewResolvers that support internationalization should
 	 * respect this
@@ -45,5 +48,6 @@ public interface DestinationViewResolver {
 	 * chaining)
 	 * @throws Exception if the view cannot be resolved (typically in case of problems creating an actual View object)
 	 */
-	ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception;
+	ModelAndView resolveDestination(FacesContext context, Object destination, Locale locale, SpringFacesModel model)
+			throws Exception;
 }

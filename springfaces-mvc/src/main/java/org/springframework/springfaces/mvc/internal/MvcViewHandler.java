@@ -241,7 +241,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		try {
 			Locale locale = FacesUtils.getLocale(context);
 			SpringFacesModel model = SpringFacesModelHolder.getModel(context.getViewRoot());
-			return this.destinationViewResolver.resolveDestination(destination, locale, model);
+			return this.destinationViewResolver.resolveDestination(context, destination, locale, model);
 		} catch (Exception e) {
 			throw new IllegalStateException("Unable to resolve destination '" + destination + "'", e);
 		}

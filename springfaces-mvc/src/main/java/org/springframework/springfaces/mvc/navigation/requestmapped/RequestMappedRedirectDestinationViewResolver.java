@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeansException;
@@ -87,7 +88,8 @@ public class RequestMappedRedirectDestinationViewResolver implements Destination
 
 	private String prefix = "@";
 
-	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
+	public ModelAndView resolveDestination(FacesContext context, Object destination, Locale locale,
+			SpringFacesModel model) throws Exception {
 		if ((destination instanceof String) && ((String) destination).startsWith(this.prefix)) {
 			try {
 				return resolvePrefixedDestination(((String) destination).substring(this.prefix.length()), locale, model);

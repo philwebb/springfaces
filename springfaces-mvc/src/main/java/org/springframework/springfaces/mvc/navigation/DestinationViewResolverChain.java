@@ -18,6 +18,8 @@ package org.springframework.springfaces.mvc.navigation;
 import java.util.List;
 import java.util.Locale;
 
+import javax.faces.context.FacesContext;
+
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -32,10 +34,11 @@ public class DestinationViewResolverChain implements DestinationViewResolver {
 
 	private List<DestinationViewResolver> resolvers;
 
-	public ModelAndView resolveDestination(Object destination, Locale locale, SpringFacesModel model) throws Exception {
+	public ModelAndView resolveDestination(FacesContext context, Object destination, Locale locale,
+			SpringFacesModel model) throws Exception {
 		if (this.resolvers != null) {
 			for (DestinationViewResolver resolver : this.resolvers) {
-				ModelAndView view = resolver.resolveDestination(destination, locale, model);
+				ModelAndView view = resolver.resolveDestination(context, destination, locale, model);
 				if (view != null) {
 					return view;
 				}
