@@ -11,10 +11,7 @@
 		<ui:param name="title" value="Cities"/>
 
 		<p:selectOneMenu value="#{model.selectedCity}" var="city" effect="fade">
-			<f:converter binding="#{selectItemsConverter}"/>
-			<f:selectItems value="#{cities}" var="city" itemLabel="#{city.name}, #{city.country}" itemValue="#{city}" />
-			<!-- FIXME replace with s:selectItems value=#{cities} itemLabel="#{item.name}, #{item.value}" -->
-
+			<s:selectItems value="#{cities}" itemLabel="#{item.name}, #{item.country}" includeNoSelectionOption="false"/>
 			<p:column>
 	           	<p:graphicImage value="/images/flags/24/#{city.country}.png" width="24" height="24"/>
 			</p:column>
