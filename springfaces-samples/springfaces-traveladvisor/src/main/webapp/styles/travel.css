@@ -11,6 +11,10 @@ td,table tbody tr.even td {
 	background: transparent;
 }
 
+input {
+	margin: 0 !important;
+}
+
 div.container {
 	background-color: #FFFFFF;
 }
