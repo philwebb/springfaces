@@ -105,4 +105,8 @@ public class BookmarkableRedirectViewTest {
 		verify(response).sendRedirect(expected);
 	}
 
+	@Test
+	public void shouldRenderWithFacesContext() throws Exception {
+
+	}
 }

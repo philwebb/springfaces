@@ -219,6 +219,11 @@ public class RequestMappedRedirectViewTest {
 		assertTrue(delegatge instanceof BookmarkableRedirectView);
 	}
 
+	@Test
+	public void shouldRenderViaFacesContext() throws Exception {
+		// FIXME test + also with two variants
+	}
+
 	private class RequestMappedRedirectViewSpy extends RequestMappedRedirectView {
 
 		public RequestMappedRedirectViewSpy(RequestMappedRedirectViewContext context, Object handler,

@@ -418,12 +418,12 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		if (modelAndViewContainer.isRequestHandled()) {
 			return null;
 		}
-		// FIXME will view names work here
+		// NOTE: in this instance we are subverting the use of the model and view container, the view here actually
+		// refers to the result of the method.
 		Object result = modelAndViewContainer.getView();
 		if (result == null) {
 			return null;
 		}
-		// FIXME should we deal with ModelAndView results
 		if (result instanceof NavigationOutcome) {
 			return (NavigationOutcome) result;
 		}

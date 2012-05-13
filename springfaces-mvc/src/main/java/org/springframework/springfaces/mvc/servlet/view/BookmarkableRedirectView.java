@@ -65,7 +65,6 @@ public class BookmarkableRedirectView extends RedirectView implements Bookmarkab
 		sendRedirect(request, response, targetUrl, this.http10Compatible);
 	}
 
-	// FIXME test
 	public void render(Map<String, ?> model, FacesContext facesContext) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		String targetUrl = doCreateTargetUrl(model, request);

@@ -130,7 +130,6 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 	}
 
 	public void render(Map<String, ?> model, FacesContext facesContext) throws Exception {
-		// FIXME test
 		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
 		String url = buildRedirectUrl(request);
