@@ -10,6 +10,14 @@
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>WEB-INF/messages</value>
+			</list>
+		</property>
+	</bean>
+
 	<mvc:annotation-driven conversion-service="conversionService" />
 
 	<bean name="defaultDispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher"/>
