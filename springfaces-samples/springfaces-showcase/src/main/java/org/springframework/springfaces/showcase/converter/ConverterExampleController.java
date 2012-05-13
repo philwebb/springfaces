@@ -15,10 +15,13 @@
  */
 package org.springframework.springfaces.showcase.converter;
 
+import javax.validation.Valid;
+
 import org.springframework.springfaces.mvc.converter.FacesConverterId;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -67,5 +70,9 @@ public class ConverterExampleController {
 		// In this example ForClassSpringConverter will be used as it is annotated with
 		// @ForClass and implements Converter<SpringConvertedObject>
 		return new ExtendedModelMap().addAttribute("converted", value.toString());
+	}
+
+	@RequestMapping("/converter/bindingerror")
+	public void bindingError(@ModelAttribute("vadidated") @Valid ValidatedObject validatedObject) {
 	}
 }
