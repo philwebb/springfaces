@@ -80,7 +80,7 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 	@Override
 	public void handle() throws FacesException {
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			handle(SpringFacesContext.getCurrentInstance());
+			// handle(SpringFacesContext.getCurrentInstance());
 		}
 		super.handle();
 	}
