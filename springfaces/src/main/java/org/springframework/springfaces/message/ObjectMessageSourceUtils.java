@@ -34,8 +34,8 @@ public abstract class ObjectMessageSourceUtils {
 	 * @param messageSource the message source (if <tt>null</tt> if the <tt>fallbackApplicationContext</tt> will be
 	 * used)
 	 * @param fallbackApplicationContext a fallback {@link ApplicationContext} to be used if the <tt>messageSource</tt>
-	 * parameter is <tt>null</tt>. This parameter may be <tt>null</tt> as long as the <tt>messageSource</tt> paramter is
-	 * not <tt>null</tt>
+	 * parameter is <tt>null</tt>. This parameter may be <tt>null</tt> as long as the <tt>messageSource</tt> parameter
+	 * is not <tt>null</tt>
 	 * @return a {@link ObjectMessageSource} instance
 	 */
 	public static ObjectMessageSource getObjectMessageSource(MessageSource messageSource,
