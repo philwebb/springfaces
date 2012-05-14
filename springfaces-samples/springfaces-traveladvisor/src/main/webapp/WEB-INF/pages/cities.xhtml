@@ -19,7 +19,8 @@
 				<h:outputText value="#{city.name}, #{city.country}"/>
 			</p:column>
 		</p:selectOneMenu>
-
+		
+		<br/>
 		<p:commandButton value="Continue" action="spring:@showCity">
 			<f:param name="country" value="#{model.selectedCity.country}"/>
 			<f:param name="name" value="#{model.selectedCity.name}"/>

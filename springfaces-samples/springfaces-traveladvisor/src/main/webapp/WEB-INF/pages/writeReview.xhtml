@@ -15,14 +15,14 @@
 		<s:decorateAll template="/WEB-INF/layouts/inputForm.xhtml">
 			<p:inputText label="Title" value="#{review.title}" required="true"/>
 			<p:rating label="Rating" value="#{reviewRating.value}" stars="4"/>
-			<p:selectOneMenu label="Trip Type" value="#{review.tripType}">
+			<p:selectOneMenu label="Trip Type" value="#{review.tripType}" effect="fade">
 				<s:selectItems/>
 			</p:selectOneMenu>
 			<p:calendar label="Check-In Date" value="#{review.checkInDate}"/>
 			<p:inputTextarea label="Details" value="#{review.details}"/>
 		</s:decorateAll>
 
-		<p:captcha/>
+		<p:captcha label="Captcha"/>
 		
 		<h:commandButton value="Submit" action="submitReview"/>
 

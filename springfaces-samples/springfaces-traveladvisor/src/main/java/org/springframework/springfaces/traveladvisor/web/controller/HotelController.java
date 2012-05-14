@@ -18,6 +18,10 @@ package org.springframework.springfaces.traveladvisor.web.controller;
 import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
+import org.springframework.springfaces.message.ObjectMessageSource;
+import org.springframework.springfaces.message.ObjectMessageSourceUtils;
 import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.springfaces.traveladvisor.domain.City;
@@ -36,24 +40,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class HotelController {
+public class HotelController implements MessageSourceAware {
 
 	private CityService cityService;
+
 	private HotelService hotelService;
+
+	private ObjectMessageSource messageSource;
 
 	@RequestMapping("/advisor/{country}/{city}/{name}")
 	public String hotel(@PathVariable String country, @PathVariable String city, @PathVariable String name, Model model) {
 		Hotel hotel = getHotel(country, city, name);
 		model.addAttribute(hotel);
-		model.addAttribute("reviewsSummary", toChartModel(hotelService.getReviewSummary(hotel)));
+		model.addAttribute("reviewsSummary", toChartModel(this.hotelService.getReviewSummary(hotel)));
 		return "hotel";
 	}
 
 	private CartesianChartModel toChartModel(ReviewsSummary reviewSummary) {
 		CartesianChartModel model = new CartesianChartModel();
-		ChartSeries chartSeries = new ChartSeries();
+		ChartSeries chartSeries = new ChartSeries(" ");
 		for (Rating rating : Rating.values()) {
-			chartSeries.set(rating.toString(), reviewSummary.getNumberOfReviewsWithRating(rating));
+			String string = this.messageSource.getMessage(rating, null, null);
+			chartSeries.set(string, reviewSummary.getNumberOfReviewsWithRating(rating));
 		}
 		model.addSeries(chartSeries);
 		return model;
@@ -62,7 +70,7 @@ public class HotelController {
 	@RequestMapping("/advisor/{country}/{city}/{name}/review/{index}")
 	public String hotelReview(@PathVariable String country, @PathVariable String city, @PathVariable String name,
 			@PathVariable int index, Model model) {
-		Review review = hotelService.getReview(getHotel(country, city, name), index);
+		Review review = this.hotelService.getReview(getHotel(country, city, name), index);
 		model.addAttribute(review);
 		return "review";
 	}
@@ -78,7 +86,7 @@ public class HotelController {
 
 	@NavigationMapping
 	public NavigationOutcome onSubmitReview(Hotel hotel, ReviewDetails details) {
-		/* Review review = */hotelService.addReview(hotel, details);
+		/* Review review = */this.hotelService.addReview(hotel, details);
 		// FIXME put something in flash scope to be displayed on hotel screen
 		ModelMap model = new ExtendedModelMap();
 		model.addAttribute("country", hotel.getCity().getCountry());
@@ -88,8 +96,8 @@ public class HotelController {
 	}
 
 	private Hotel getHotel(String country, String cityName, String hotelName) {
-		City city = cityService.getCity(cityName, country);
-		Hotel hotel = hotelService.getHotel(city, hotelName);
+		City city = this.cityService.getCity(cityName, country);
+		Hotel hotel = this.hotelService.getHotel(city, hotelName);
 		return hotel;
 	}
 
@@ -101,5 +109,9 @@ public class HotelController {
 	@Autowired
 	public void setHotelService(HotelService hotelService) {
 		this.hotelService = hotelService;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource, null);
 	}
 }

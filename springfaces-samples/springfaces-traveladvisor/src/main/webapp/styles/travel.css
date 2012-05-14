@@ -32,7 +32,6 @@ div.main {
 	min-height: 300px;
 }
 
-
 div.footer {
 	padding-top: 5px;
 	background: #EEEEEE;
@@ -54,10 +53,8 @@ div.footer ul li.first {
 	border-left: none;
 }
 
-div.footer ul li a:link,
-div.footer ul li a:visited,
-div.footer ul li a:active,
-div.footer ul li a:hover {
+div.footer ul li a:link,div.footer ul li a:visited,div.footer ul li a:active,div.footer ul li a:hover
+	{
 	color: black;
 	text-decoration: none;
 }
@@ -75,7 +72,7 @@ div.spaced {
 }
 
 .title-container .title-context img {
-	vertical-align:middle;
+	vertical-align: middle;
 	padding-right: 4px;
 	margin-bottom: 6px;
 }
@@ -97,4 +94,20 @@ div.spaced {
 
 .title-container .title {
 	font-size: 3em;
+}
+
+div.forminput {
+	display: block;
+	clear: both;
+	padding: 0 0 1em 1em;
+}
+
+.ui-messages {
+	clear: both;
+	padding: 0 20px;
+}
+
+.labelerror {
+	border-bottom: #D8000C;
+}
 }
