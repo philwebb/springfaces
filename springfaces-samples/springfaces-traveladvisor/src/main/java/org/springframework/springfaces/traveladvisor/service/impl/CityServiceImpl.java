@@ -49,18 +49,18 @@ public class CityServiceImpl implements CityService {
 		}
 		name = "%" + name.trim() + "%";
 		country = "%" + country.trim() + "%";
-		return cityRepository.findByNameAndCountryLikeAllIgnoringCase(name, country, pageable);
+		return this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase(name, country, pageable);
 	}
 
 	public City getCity(String name, String country) {
 		Assert.notNull(name, "Name must not be null");
 		Assert.notNull(country, "Country must not be null");
-		return cityRepository.findByNameAndCountry(name, country);
+		return this.cityRepository.findByNameAndCountryAllIgnoringCase(name, country);
 	}
 
 	public Page<HotelSummary> getHotels(City city, Pageable pageable) {
 		Assert.notNull(city, "City must not be null");
-		return hotelSummaryRepository.findByCity(city, pageable);
+		return this.hotelSummaryRepository.findByCity(city, pageable);
 	}
 
 	@Autowired

@@ -86,8 +86,8 @@ public class CityRepositoryTest {
 
 	@Test
 	public void shouldFindByNameAndCountry() throws Exception {
-		City melbourneUsa = cityRepository.findByNameAndCountry("Melbourne", "USA");
-		City melbourneAustralia = cityRepository.findByNameAndCountry("Melbourne", "Australia");
+		City melbourneUsa = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "USA");
+		City melbourneAustralia = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "Australia");
 		assertThat(melbourneUsa.getName(), is("Melbourne"));
 		assertThat(melbourneUsa.getCountry(), is("USA"));
 		assertThat(melbourneAustralia.getName(), is("Melbourne"));
@@ -96,7 +96,7 @@ public class CityRepositoryTest {
 
 	@Test
 	public void shouldReturnNullIfNotFoundByNameAndCountry() throws Exception {
-		City city = cityRepository.findByNameAndCountry("Melbourne", "UK");
+		City city = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "UK");
 		assertThat(city, is(nullValue()));
 	}
 }

@@ -88,7 +88,7 @@ public class CityServiceImplTest {
 
 	@Test
 	public void shouldGetCity() throws Exception {
-		given(cityRepository.findByNameAndCountry("name", "country")).willReturn(city);
+		given(cityRepository.findByNameAndCountryAllIgnoringCase("name", "country")).willReturn(city);
 		assertThat(cityService.getCity("name", "country"), is(city));
 	}
 
