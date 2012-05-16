@@ -15,7 +15,6 @@
  */
 package org.springframework.springfaces.message.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +22,7 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
@@ -78,7 +78,12 @@ public class UIMessageSource extends UIComponentBase {
 	}
 
 	@Override
-	public void encodeEnd(FacesContext context) throws IOException {
+	public void setParent(UIComponent parent) {
+		super.setParent(parent);
+		putMessageSourceInRequestMap(FacesContext.getCurrentInstance());
+	}
+
+	private void putMessageSourceInRequestMap(FacesContext context) {
 		MessageSourceMap messageSourceMap = createMessageSourceMap(context);
 		String var = getVar();
 		Assert.state(StringUtils.hasLength(var), "No 'var' attibute specified for UIMessageSource component");
@@ -88,7 +93,6 @@ public class UIMessageSource extends UIComponentBase {
 			this.logger.warn("The request scoped JSF variable '" + var + "' of type " + previous.getClass().getName()
 					+ " has been replaced by UIMessageSource");
 		}
-		super.encodeEnd(context);
 	}
 
 	/**

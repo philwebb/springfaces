@@ -35,9 +35,12 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIPanel;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,6 +52,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
+import org.springframework.springfaces.FacesContextSetter;
 import org.springframework.springfaces.SpringFacesMocks;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -78,6 +82,8 @@ public class UIMessageSourceTest {
 	@Captor
 	private ArgumentCaptor<FacesMessage> messageCaptor;
 
+	private UIComponent parent = new UIPanel();
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
@@ -86,6 +92,12 @@ public class UIMessageSourceTest {
 		given(this.facesContext.getExternalContext().getRequestMap()).willReturn(this.requestMap);
 		this.uiMessageSource = new UIMessageSource();
 		this.uiMessageSource.setVar("msg");
+		FacesContextSetter.setCurrentInstance(this.facesContext);
+	}
+
+	@After
+	public void cleanup() {
+		FacesContextSetter.setCurrentInstance(null);
 	}
 
 	@Test
@@ -96,7 +108,7 @@ public class UIMessageSourceTest {
 	@Test
 	public void shouldAddMessageMap() throws Exception {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		assertThat(messageSourceMap, is(notNullValue()));
 	}
 
@@ -130,14 +142,14 @@ public class UIMessageSourceTest {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		Object previous = new Object();
 		this.requestMap.put("msg", previous);
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		assertThat(messageSourceMap, is(not(previous)));
 	}
 
 	@Test
 	public void shouldUseApplicationContextAsSource() throws Exception {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		messageSourceMap.get("test").toString();
 		verify(this.applicationContext).getMessage((MessageSourceResolvable) any(), (Locale) any());
 	}
@@ -147,7 +159,7 @@ public class UIMessageSourceTest {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		MessageSource source = mock(MessageSource.class);
 		this.uiMessageSource.setSource(source);
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		messageSourceMap.get("test").toString();
 		verify(source).getMessage((MessageSourceResolvable) any(), (Locale) any());
 		verify(this.applicationContext, never()).getMessage((MessageSourceResolvable) any(), (Locale) any());
@@ -160,7 +172,7 @@ public class UIMessageSourceTest {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown
 				.expectMessage("Unable to find MessageSource, ensure that SpringFaces intergation is enabled or set the 'source' attribute");
-		callEncodeEnd();
+		callSetParent();
 	}
 
 	@Test
@@ -174,7 +186,7 @@ public class UIMessageSourceTest {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		Locale locale = Locale.CANADA_FRENCH;
 		given(this.viewRoot.getLocale()).willReturn(locale);
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		messageSourceMap.get("test").toString();
 		verify(this.applicationContext).getMessage((MessageSourceResolvable) any(), eq(locale));
 	}
@@ -183,7 +195,7 @@ public class UIMessageSourceTest {
 	public void shouldThrowOnMissingMessageWhenInProduction() throws Exception {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		given(this.facesContext.isProjectStage(ProjectStage.Production)).willReturn(true);
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		given(this.applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
 				new NoSuchMessageException("test"));
 		this.thrown.expect(NoSuchMessageException.class);
@@ -194,7 +206,7 @@ public class UIMessageSourceTest {
 	public void shouldAddFacesMessageOnMissingMessageWhenNotInProduction() throws Exception {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
 		given(this.facesContext.isProjectStage(ProjectStage.Production)).willReturn(false);
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		given(this.applicationContext.getMessage((MessageSourceResolvable) any(), (Locale) any())).willThrow(
 				new NoSuchMessageException("test"));
 		messageSourceMap.get("test").toString();
@@ -206,7 +218,7 @@ public class UIMessageSourceTest {
 	@Test
 	public void shouldWrapWithDefaultObjectMessageSource() throws Exception {
 		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		Convertable convertable = new Convertable();
 		given(
 				this.applicationContext.getMessage("org.springframework.springfaces.message.ui."
@@ -215,8 +227,8 @@ public class UIMessageSourceTest {
 		assertThat(actual, is("test"));
 	}
 
-	private MessageSourceMap callEncodeEnd() throws IOException {
-		this.uiMessageSource.encodeEnd(this.facesContext);
+	private MessageSourceMap callSetParent() throws IOException {
+		this.uiMessageSource.setParent(this.parent);
 		MessageSourceMap msg = (MessageSourceMap) this.requestMap.get("msg");
 		return msg;
 	}
@@ -227,7 +239,7 @@ public class UIMessageSourceTest {
 	}
 
 	private void assertCodes(String key, String[] expectedCodes) throws IOException {
-		MessageSourceMap messageSourceMap = callEncodeEnd();
+		MessageSourceMap messageSourceMap = callSetParent();
 		MessageSourceResolvable resolvable = (MessageSourceResolvable) messageSourceMap.get(key);
 		assertThat(resolvable.getCodes(), is(equalTo(expectedCodes)));
 	}

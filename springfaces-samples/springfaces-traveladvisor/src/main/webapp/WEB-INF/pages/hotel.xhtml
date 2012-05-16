@@ -46,10 +46,10 @@
 						<br/>
 						<h:outputText value="#{reviewUtils.getDetailsSummary(review)}"/>
 						<br/>
-						<h:outputText value="#{review.tripType}"/>
+						<h:outputText value="#{messages[review.tripType]}"/>
 					</p>
 					<p:rating value="#{reviewUtils.getRating(review)}" disabled="true" stars="4"/>
-					<h:outputText value=" (#{review.rating})"/>
+					<h:outputText value=" (#{messages[review.rating]})"/>
 				</p:column>
 			</p:dataTable>
 
