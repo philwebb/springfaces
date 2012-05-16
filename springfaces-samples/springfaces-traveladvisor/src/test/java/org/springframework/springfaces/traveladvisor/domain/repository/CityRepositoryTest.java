@@ -42,27 +42,29 @@ public class CityRepositoryTest {
 
 	@Test
 	public void shouldFindNotResultsByName() throws Exception {
-		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("notfound%", "%%", pageable);
+		Page<City> page = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("notfound%", "%%",
+				this.pageable);
 		assertThat(page.getTotalElements(), is(0L));
 	}
 
 	@Test
 	public void shouldFindSingleResultByName() throws Exception {
-		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Bath%", "%%", pageable);
+		Page<City> page = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Bath%", "%%", this.pageable);
 		assertThat(page.getTotalElements(), is(1L));
 		assertThat(page.getContent().get(0).getName(), is("Bath"));
 	}
 
 	@Test
 	public void shouldFindByNameIgnoringCase() throws Exception {
-		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("bAtH%", "%%", pageable);
+		Page<City> page = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("bAtH%", "%%", this.pageable);
 		assertThat(page.getTotalElements(), is(1L));
 		assertThat(page.getContent().get(0).getName(), is("Bath"));
 	}
 
 	@Test
 	public void shouldFindMoreThanOneCity() throws Exception {
-		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
+		Page<City> page = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%%",
+				this.pageable);
 		assertThat(page.getTotalElements(), is(2L));
 	}
 
@@ -70,24 +72,27 @@ public class CityRepositoryTest {
 	@Ignore("Spring data bug")
 	public void shouldSortFindingMoreThanOneCity() throws Exception {
 		// FIXME
-		pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
-		Page<City> page1 = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
-		pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "name"));
-		Page<City> page2 = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%%", pageable);
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
+		Page<City> page1 = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%%",
+				this.pageable);
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "name"));
+		Page<City> page2 = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%%",
+				this.pageable);
 		assertThat(page1.getTotalElements(), is(2L));
 		assertThat(page1.getContent().get(0).getCountry(), is(page2.getContent().get(1).getCountry()));
 	}
 
 	@Test
 	public void shouldFindByNameAndCountryLike() throws Exception {
-		Page<City> page = cityRepository.findByNameAndCountryLikeAllIgnoringCase("Melbourne%", "%Aus%", pageable);
+		Page<City> page = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%Aus%",
+				this.pageable);
 		assertThat(page.getTotalElements(), is(1L));
 	}
 
 	@Test
 	public void shouldFindByNameAndCountry() throws Exception {
-		City melbourneUsa = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "USA");
-		City melbourneAustralia = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "Australia");
+		City melbourneUsa = this.cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "USA");
+		City melbourneAustralia = this.cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "Australia");
 		assertThat(melbourneUsa.getName(), is("Melbourne"));
 		assertThat(melbourneUsa.getCountry(), is("USA"));
 		assertThat(melbourneAustralia.getName(), is("Melbourne"));
@@ -96,7 +101,7 @@ public class CityRepositoryTest {
 
 	@Test
 	public void shouldReturnNullIfNotFoundByNameAndCountry() throws Exception {
-		City city = cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "UK");
+		City city = this.cityRepository.findByNameAndCountryAllIgnoringCase("Melbourne", "UK");
 		assertThat(city, is(nullValue()));
 	}
 }

@@ -59,42 +59,44 @@ public class CityServiceImplTest {
 	@Test
 	public void shouldFindCitiesByName() throws Exception {
 		CitySearchCriteria criteria = new CitySearchCriteria("city");
-		given(cityRepository.findByNameAndCountryLikeAllIgnoringCase("%city%", "%%", pageable)).willReturn(cities);
-		assertThat(cityService.findCities(criteria, pageable), is(cities));
+		given(this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("%city%", "%%", this.pageable))
+				.willReturn(this.cities);
+		assertThat(this.cityService.findCities(criteria, this.pageable), is(this.cities));
 	}
 
 	@Test
 	public void shouldFindCitiesByNameRestrictedToCountry() throws Exception {
 		CitySearchCriteria criteria = new CitySearchCriteria("city, country");
-		given(cityRepository.findByNameAndCountryLikeAllIgnoringCase("%city%", "%country%", pageable)).willReturn(
-				cities);
-		assertThat(cityService.findCities(criteria, pageable), is(cities));
+		given(this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("%city%", "%country%", this.pageable))
+				.willReturn(this.cities);
+		assertThat(this.cityService.findCities(criteria, this.pageable), is(this.cities));
 	}
 
 	@Test
 	public void shouldFindCitiesByNameRestrictedToCountryWithExtraCommas() throws Exception {
 		CitySearchCriteria criteria = new CitySearchCriteria("ci,ty,country");
-		given(cityRepository.findByNameAndCountryLikeAllIgnoringCase("%ci,ty%", "%country%", pageable)).willReturn(
-				cities);
-		assertThat(cityService.findCities(criteria, pageable), is(cities));
+		given(this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("%ci,ty%", "%country%", this.pageable))
+				.willReturn(this.cities);
+		assertThat(this.cityService.findCities(criteria, this.pageable), is(this.cities));
 	}
 
 	@Test
 	public void shouldFindCitiesByCountry() throws Exception {
 		CitySearchCriteria criteria = new CitySearchCriteria(",country");
-		given(cityRepository.findByNameAndCountryLikeAllIgnoringCase("%%", "%country%", pageable)).willReturn(cities);
-		assertThat(cityService.findCities(criteria, pageable), is(cities));
+		given(this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("%%", "%country%", this.pageable))
+				.willReturn(this.cities);
+		assertThat(this.cityService.findCities(criteria, this.pageable), is(this.cities));
 	}
 
 	@Test
 	public void shouldGetCity() throws Exception {
-		given(cityRepository.findByNameAndCountryAllIgnoringCase("name", "country")).willReturn(city);
-		assertThat(cityService.getCity("name", "country"), is(city));
+		given(this.cityRepository.findByNameAndCountryAllIgnoringCase("name", "country")).willReturn(this.city);
+		assertThat(this.cityService.getCity("name", "country"), is(this.city));
 	}
 
 	@Test
 	public void shouldGetHotels() throws Exception {
-		given(hotelSummaryRepository.findByCity(city, pageable)).willReturn(hotels);
-		assertThat(cityService.getHotels(city, pageable), is(hotels));
+		given(this.hotelSummaryRepository.findByCity(this.city, this.pageable)).willReturn(this.hotels);
+		assertThat(this.cityService.getHotels(this.city, this.pageable), is(this.hotels));
 	}
 }
