@@ -22,6 +22,8 @@ import org.springframework.springfaces.traveladvisor.domain.City;
 
 public interface CityRepository extends Repository<City, Long> {
 
+	Page<City> findAll(Pageable pageable);
+
 	Page<City> findByNameLikeAndCountryLikeAllIgnoringCase(String name, String country, Pageable pageable);
 
 	City findByNameAndCountryAllIgnoringCase(String name, String country);
