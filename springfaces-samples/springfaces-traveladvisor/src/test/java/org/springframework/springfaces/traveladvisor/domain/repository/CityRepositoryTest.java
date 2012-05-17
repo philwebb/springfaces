@@ -19,7 +19,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,13 +68,11 @@ public class CityRepositoryTest {
 	}
 
 	@Test
-	@Ignore("Spring data bug")
 	public void shouldSortFindingMoreThanOneCity() throws Exception {
-		// FIXME
-		this.pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name", "country"));
 		Page<City> page1 = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%%",
 				this.pageable);
-		this.pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "name"));
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "name", "country"));
 		Page<City> page2 = this.cityRepository.findByNameLikeAndCountryLikeAllIgnoringCase("Melbourne%", "%%",
 				this.pageable);
 		assertThat(page1.getTotalElements(), is(2L));
