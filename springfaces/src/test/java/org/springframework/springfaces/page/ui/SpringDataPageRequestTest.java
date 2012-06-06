@@ -17,7 +17,6 @@ package org.springframework.springfaces.page.ui;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -101,7 +100,7 @@ public class SpringDataPageRequestTest {
 		Sort sort = this.request.getSort();
 		Iterator<Order> orderIterator = sort.iterator();
 		Order order = orderIterator.next();
-		assertFalse("Sort should only conain a single item", orderIterator.hasNext());
+		assertThat("Sort should only conain a single item", orderIterator.hasNext(), is(false));
 		assertThat(order.getDirection(), is(Sort.Direction.ASC));
 		assertThat(order.getProperty(), is("column"));
 	}

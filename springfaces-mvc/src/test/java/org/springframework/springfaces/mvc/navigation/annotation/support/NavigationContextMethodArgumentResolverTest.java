@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.navigation.annotation.support;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -84,7 +83,7 @@ public class NavigationContextMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportNavigationContext() throws Exception {
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(NavigationContext.class)), is(true));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)), is(false));
 		assertSame(this.navigationContext, this.resolver.resolveArgument(mockMethodParameter(NavigationContext.class),
 				this.mavContainer, this.webRequest, this.binderFactory));
 	}
@@ -94,7 +93,7 @@ public class NavigationContextMethodArgumentResolverTest {
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandButton.class)), is(true));
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(UICommand.class)), is(true));
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(UIComponent.class)), is(true));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandLink.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandLink.class)), is(false));
 		assertSame(this.component, this.resolver.resolveArgument(mockMethodParameter(UICommand.class),
 				this.mavContainer, this.webRequest, this.binderFactory));
 	}

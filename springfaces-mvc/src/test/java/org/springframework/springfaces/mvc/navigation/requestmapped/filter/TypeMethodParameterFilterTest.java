@@ -16,7 +16,6 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
@@ -59,7 +58,7 @@ public class TypeMethodParameterFilterTest {
 		assertThat(f.matches(this.request, new MethodParameter(method, 0)), is(true));
 		assertThat(f.matches(this.request, new MethodParameter(method, 1)), is(true));
 		assertThat(f.matches(this.request, new MethodParameter(method, 2)), is(true));
-		assertFalse(f.matches(this.request, new MethodParameter(method, 3)));
+		assertThat(f.matches(this.request, new MethodParameter(method, 3)), is(false));
 	}
 
 	private Method getMethod() {

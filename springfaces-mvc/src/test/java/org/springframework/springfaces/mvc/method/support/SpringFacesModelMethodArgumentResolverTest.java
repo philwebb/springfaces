@@ -16,7 +16,6 @@
 package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -109,7 +108,7 @@ public class SpringFacesModelMethodArgumentResolverTest {
 	public void shouldNotResolveWithoutFacesContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(null);
 		MethodParameter parameter = mockMethodParameter(Map.class);
-		assertFalse(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(false));
 	}
 
 	@Test
@@ -128,14 +127,14 @@ public class SpringFacesModelMethodArgumentResolverTest {
 		this.model.put("k1", v1);
 		this.model.put("k2", v2);
 		MethodParameter parameter = mockMethodParameter(ComplexType.class);
-		assertFalse(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(false));
 	}
 
 	@Test
 	public void shouldNotResolveSimpleTypes() throws Exception {
 		this.model.put("k", "v");
 		MethodParameter parameter = mockMethodParameter(String.class);
-		assertFalse(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(false));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

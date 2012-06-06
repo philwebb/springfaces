@@ -16,7 +16,6 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
@@ -50,7 +49,7 @@ public class WebArgumentResolverMethodParameterFilterTest {
 	public void shouldAcceptNullWebArgumentResolver() throws Exception {
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(
 				(WebArgumentResolver[]) null);
-		assertFalse(f.matches(this.request, this.methodParameter));
+		assertThat(f.matches(this.request, this.methodParameter), is(false));
 	}
 
 	@Test

@@ -18,7 +18,6 @@ package org.springframework.springfaces.mvc.converter;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
@@ -102,7 +101,7 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldNotMatchIfNotSpringFacesContext() throws Exception {
 		SpringFacesContextSetter.setCurrentInstance(null);
-		assertFalse(this.converter.matches(this.sourceType, TypeDescriptor.valueOf(Object.class)));
+		assertThat(this.converter.matches(this.sourceType, TypeDescriptor.valueOf(Object.class)), is(false));
 	}
 
 	@Test
@@ -126,7 +125,7 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldNotMatchIfNoConverterExists() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithoutConverter.class);
-		assertFalse(this.converter.matches(this.sourceType, targetType));
+		assertThat(this.converter.matches(this.sourceType, targetType), is(false));
 	}
 
 	@Test

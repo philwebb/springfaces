@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.navigation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -71,7 +70,7 @@ public class NavigationOutcomeResolverChainTest {
 
 	@Test
 	public void shouldNotResolveIfNullChain() throws Exception {
-		assertFalse(this.chain.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.chain.canResolve(this.facesContext, this.navigationContext), is(false));
 	}
 
 	@Test

@@ -17,7 +17,6 @@ package org.springframework.springfaces;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
@@ -100,13 +99,13 @@ public class SpringFacesIntegrationTest {
 
 	@Test
 	public void shouldNotBeInstalledUsing() throws Exception {
-		assertFalse(SpringFacesIntegration.isInstalled(this.servletContext));
+		assertThat(SpringFacesIntegration.isInstalled(this.servletContext), is(false));
 	}
 
 	@Test
 	public void shouldNotBeInstalledUsingExternalContext() throws Exception {
 		ExternalContext externalContext = mock(ExternalContext.class);
-		assertFalse(SpringFacesIntegration.isInstalled(externalContext));
+		assertThat(SpringFacesIntegration.isInstalled(externalContext), is(false));
 	}
 
 	@Test

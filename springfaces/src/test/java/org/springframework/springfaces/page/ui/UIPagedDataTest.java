@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasKey;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -202,7 +202,7 @@ public class UIPagedDataTest {
 			this.thrown.expect(RuntimeException.class);
 			rows.getRowData();
 		} finally {
-			assertFalse(this.requestMap.containsKey("pageRequest"));
+			assertThat(this.requestMap, not(hasKey("pageRequest")));
 		}
 	}
 

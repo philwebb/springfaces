@@ -18,7 +18,6 @@ package org.springframework.springfaces.expression.el;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
@@ -118,7 +117,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldNotBeReadOnlyWhenNonNullBase() throws Exception {
-		assertFalse(this.resolver.isReadOnly(this.elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertThat(this.resolver.isReadOnly(this.elContext, BASE_OBJECT, PROPERTY_NAME), is(false));
 	}
 
 	@Test
@@ -129,7 +128,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldNotBeReadOnlyWhenNotFound() throws Exception {
-		assertFalse(this.resolver.isReadOnly(this.elContext, null, MISSING_PROPERTY_NAME));
+		assertThat(this.resolver.isReadOnly(this.elContext, null, MISSING_PROPERTY_NAME), is(false));
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
@@ -151,7 +150,7 @@ public class AbstrctELResolverTest {
 	public void shouldSetValueOnReadOnlyNotFound() throws Exception {
 		this.resolver.setValue(this.elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
-		assertFalse(this.map.containsKey(MISSING_PROPERTY_NAME));
+		assertThat(this.map.containsKey(MISSING_PROPERTY_NAME), is(false));
 	}
 
 	@Test

@@ -16,7 +16,6 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import java.lang.annotation.Retention;
@@ -60,7 +59,7 @@ public class AnnotationMethodParameterFilterTest {
 				.findMethod(C.class, "m", Object.class, Object.class, Object.class, Object.class);
 		AnnotationMethodParameterFilter f = new AnnotationMethodParameterFilter(A1.class, A3.class);
 		assertThat(f.matches(this.request, new MethodParameter(method, 0)), is(true));
-		assertFalse(f.matches(this.request, new MethodParameter(method, 1)));
+		assertThat(f.matches(this.request, new MethodParameter(method, 1)), is(false));
 		assertThat(f.matches(this.request, new MethodParameter(method, 2)), is(true));
 		assertThat(f.matches(this.request, new MethodParameter(method, 3)), is(true));
 

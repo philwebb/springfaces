@@ -18,7 +18,6 @@ package org.springframework.springfaces.selectitems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -32,7 +31,6 @@ import javax.faces.model.SelectItem;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.springframework.springfaces.selectitems.SelectItems;
 
 /**
  * Tests for {@link SelectItems}.
@@ -47,7 +45,7 @@ public class SelectItemsTest {
 	@Test
 	public void shouldSupportNullValue() throws Exception {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(null);
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 		this.thrown.expect(NoSuchElementException.class);
 		iterator.next();
 	}
@@ -57,7 +55,7 @@ public class SelectItemsTest {
 		SelectItem selectItem = new SelectItem();
 		Iterator<SelectItem> iterator = newSelectItemsIterator(selectItem);
 		assertThat(iterator.next(), is(sameInstance(selectItem)));
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 	}
 
 	@Test
@@ -70,7 +68,7 @@ public class SelectItemsTest {
 		SelectItem a = iterator.next();
 		SelectItem b = iterator.next();
 		SelectItem c = iterator.next();
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 
 		assertThat(a.getLabel(), is("ka"));
 		assertThat(a.getValue(), is((Object) "va"));
@@ -89,7 +87,7 @@ public class SelectItemsTest {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(new SelectItem[] { a, b });
 		assertThat(iterator.next(), is(sameInstance(a)));
 		assertThat(iterator.next(), is(sameInstance(b)));
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 	}
 
 	@Test
@@ -97,7 +95,7 @@ public class SelectItemsTest {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(new String[] { "a", "b" });
 		assertThat(iterator.next().getValue(), is((Object) "a"));
 		assertThat(iterator.next().getValue(), is((Object) "b"));
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 	}
 
 	@Test
@@ -107,7 +105,7 @@ public class SelectItemsTest {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(Arrays.asList(a, b));
 		assertThat(iterator.next(), is(sameInstance(a)));
 		assertThat(iterator.next(), is(sameInstance(b)));
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 
 	}
 
@@ -116,7 +114,7 @@ public class SelectItemsTest {
 		Iterator<SelectItem> iterator = newSelectItemsIterator(Arrays.asList("a", "b"));
 		assertThat(iterator.next().getValue(), is((Object) "a"));
 		assertThat(iterator.next().getValue(), is((Object) "b"));
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 	}
 
 	@Test

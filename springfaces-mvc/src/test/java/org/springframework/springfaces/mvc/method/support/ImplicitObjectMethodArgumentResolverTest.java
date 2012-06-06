@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -73,7 +72,7 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)), is(true));
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(Type.class)), is(true));
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)), is(true));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SubType.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(SubType.class)), is(false));
 	}
 
 	@Test
@@ -85,9 +84,9 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		assertThat(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)), is(true));
 		reset(this.condition);
 		given(this.condition.call()).willReturn(false);
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Type.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)), is(false));
 	}
 
 	@Test

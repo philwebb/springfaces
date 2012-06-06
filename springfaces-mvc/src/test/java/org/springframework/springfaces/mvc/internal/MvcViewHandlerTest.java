@@ -18,8 +18,8 @@ package org.springframework.springfaces.mvc.internal;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -186,7 +186,7 @@ public class MvcViewHandlerTest {
 		given(this.context.getCurrentPhaseId()).willReturn(PhaseId.RENDER_RESPONSE);
 		UIViewRoot view = this.handler.createView(this.context, "/test");
 		verify(this.delegate).createView(this.context, "/test");
-		assertFalse(view instanceof NavigationResponseUIViewRoot);
+		assertThat(view, is(not(instanceOf(NavigationResponseUIViewRoot.class))));
 	}
 
 	private DestinationAndModel setupDestination(String viewId, Object destination) {

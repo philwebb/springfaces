@@ -16,7 +16,6 @@
 package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -88,14 +87,14 @@ public class FacesContextMethodArgumentResolverTest {
 	@Test
 	public void shouldNotSupportWhenNoFacesContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(null);
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(FacesContext.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExternalContext.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(PartialViewContext.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Application.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ResourceHandler.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExceptionHandler.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Locale.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(FacesContext.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(ExternalContext.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(PartialViewContext.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Application.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(ResourceHandler.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(ExceptionHandler.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Locale.class)), is(false));
 	}
 
 	@Test
@@ -157,8 +156,8 @@ public class FacesContextMethodArgumentResolverTest {
 	@Test
 	public void shouldNotSupportWhenNoViewRoot() throws Exception {
 		setupMocks(false);
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)));
-		assertFalse(this.resolver.supportsParameter(mockMethodParameter(Locale.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(UIViewRoot.class)), is(false));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Locale.class)), is(false));
 	}
 
 	private void setupMocks(boolean hasViewRoot) {

@@ -17,7 +17,6 @@ package org.springframework.springfaces.expression.el;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -89,7 +88,7 @@ public class ELPropertyAccessorTest {
 
 	@Test
 	public void shouldNotReadIfNotInEl() throws Exception {
-		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(false));
 		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name), is(nullValue()));
 	}
 
@@ -102,7 +101,7 @@ public class ELPropertyAccessorTest {
 
 	@Test
 	public void shouldNotWrite() throws Exception {
-		assertFalse(this.elPropertyAccessor.canWrite(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.canWrite(this.context, this.target, this.name), is(false));
 		this.elPropertyAccessor.write(this.context, this.target, this.name, this.value);
 	}
 
@@ -127,7 +126,7 @@ public class ELPropertyAccessorTest {
 	@Test
 	public void shouldWorkWithoutElContext() throws Exception {
 		this.elContext = null;
-		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(false));
 		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name), is(nullValue()));
 	}
 }

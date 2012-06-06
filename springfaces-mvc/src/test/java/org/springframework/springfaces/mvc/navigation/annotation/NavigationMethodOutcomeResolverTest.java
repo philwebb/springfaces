@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -396,7 +395,7 @@ public class NavigationMethodOutcomeResolverTest {
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.afterPropertiesSet();
 		assertThat(this.resolver.canResolve(this.facesContext, this.context), is(true));
-		assertFalse(this.resolver.canResolve(this.facesContext, this.context));
+		assertThat(this.resolver.canResolve(this.facesContext, this.context), is(false));
 	}
 
 	@Test

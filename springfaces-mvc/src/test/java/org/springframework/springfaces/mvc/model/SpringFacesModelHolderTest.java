@@ -18,7 +18,6 @@ package org.springframework.springfaces.mvc.model;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -86,7 +85,7 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldSupportTransient() throws Exception {
-		assertFalse(this.h.isTransient());
+		assertThat(this.h.isTransient(), is(false));
 		this.h.setTransient(true);
 		assertThat(this.h.isTransient(), is(true));
 	}

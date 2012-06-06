@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
@@ -248,7 +247,7 @@ public class MvcNavigationHandlerTest {
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
 		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
-		assertFalse(navigationContext.isPreemptive());
+		assertThat(navigationContext.isPreemptive(), is(false));
 		assertSame(component, navigationContext.getComponent());
 		assertSame(this.handler, navigationContext.getHandler());
 		assertSame(this.controller, navigationContext.getController());

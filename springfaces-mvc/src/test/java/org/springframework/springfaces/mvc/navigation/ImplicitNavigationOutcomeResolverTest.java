@@ -18,7 +18,6 @@ package org.springframework.springfaces.mvc.navigation;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -81,7 +80,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 	@Test
 	public void shouldNotResolvedNonPrefixed() throws Exception {
 		given(this.navigationContext.getOutcome()).willReturn("xspring:view");
-		assertFalse(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.resolver.canResolve(this.facesContext, this.navigationContext), is(false));
 	}
 
 	@Test

@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.navigation.annotation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -92,7 +91,7 @@ public class NavigationMappingMethodTest {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("noMatch", "defaults");
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 		assertThat(o.canResolve(this.context), is(true));
 	}
 
@@ -101,7 +100,7 @@ public class NavigationMappingMethodTest {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.onDefaults, true);
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("noMatch", "defaults");
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 		assertThat(o.canResolve(this.context), is(true));
 	}
 
@@ -110,7 +109,7 @@ public class NavigationMappingMethodTest {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.on, true);
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("noMatch", "on");
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 		assertThat(o.canResolve(this.context), is(true));
 	}
 
@@ -119,11 +118,11 @@ public class NavigationMappingMethodTest {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.specified, true);
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("zero", "one", "two", "three", "four");
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 		assertThat(o.canResolve(this.context), is(true));
 		assertThat(o.canResolve(this.context), is(true));
 		assertThat(o.canResolve(this.context), is(true));
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 	}
 
 	@Test
@@ -141,7 +140,7 @@ public class NavigationMappingMethodTest {
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("fromAction");
 		given(this.context.getFromAction()).willReturn("noMatch", "#{action}");
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 		assertThat(o.canResolve(this.context), is(true));
 	}
 
@@ -153,8 +152,8 @@ public class NavigationMappingMethodTest {
 		given(this.context.getController()).willReturn(this.bean, h1, h2);
 		given(this.context.getOutcome()).willReturn("defaults");
 		assertThat(o.canResolve(this.context), is(true));
-		assertFalse(o.canResolve(this.context));
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
+		assertThat(o.canResolve(this.context), is(false));
 	}
 
 	@Test
@@ -182,7 +181,7 @@ public class NavigationMappingMethodTest {
 		given(this.context.getController()).willReturn(this.bean);
 		given(this.context.getOutcome()).willReturn("filter");
 		assertThat(o.canResolve(this.context), is(true));
-		assertFalse(o.canResolve(this.context));
+		assertThat(o.canResolve(this.context), is(false));
 	}
 
 	public static abstract class AbstractFilter implements NavigationMappingFilter {

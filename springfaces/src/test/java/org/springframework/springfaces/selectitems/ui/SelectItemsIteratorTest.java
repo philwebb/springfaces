@@ -17,7 +17,6 @@ package org.springframework.springfaces.selectitems.ui;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -130,7 +129,7 @@ public class SelectItemsIteratorTest {
 		SelectItem i5 = iterator.next();
 		assertThat(iterator.hasNext(), is(true));
 		SelectItem i6 = iterator.next();
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 		try {
 			iterator.next();
 			fail("Did not throw");
@@ -241,7 +240,7 @@ public class SelectItemsIteratorTest {
 	private SelectItem getSingleSelectItems() {
 		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
 		SelectItem item = iterator.next();
-		assertFalse(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(false));
 		return item;
 	}
 

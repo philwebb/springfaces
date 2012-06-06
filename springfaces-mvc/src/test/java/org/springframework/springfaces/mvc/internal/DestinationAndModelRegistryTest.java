@@ -15,9 +15,10 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -64,7 +65,7 @@ public class DestinationAndModelRegistryTest {
 		String k1 = this.registry.put(this.context, d1);
 		String k2 = this.registry.put(this.context, d2);
 
-		assertFalse(k1.equals(k2));
+		assertThat(k1, is(not(equalTo(k2))));
 		assertSame(d1, this.registry.get(this.context, k1));
 		assertSame(d2, this.registry.get(this.context, k2));
 	}
