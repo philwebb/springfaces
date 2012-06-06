@@ -17,8 +17,8 @@ package org.springframework.springfaces.mvc.model;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -54,7 +54,7 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldSupportNullModel() throws Exception {
-		assertNull(new SpringFacesModelHolder(null).getModel());
+		assertThat(new SpringFacesModelHolder(null).getModel(), is(nullValue()));
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldHaveNullRenderer() throws Exception {
-		assertNull(this.h.getRenderer());
+		assertThat(this.h.getRenderer(), is(nullValue()));
 	}
 
 	@Test
@@ -115,13 +115,13 @@ public class SpringFacesModelHolderTest {
 
 	@Test
 	public void shouldGetModelFromNullViewRoot() throws Exception {
-		assertNull(SpringFacesModelHolder.getModel(null));
+		assertThat(SpringFacesModelHolder.getModel(null), is(nullValue()));
 	}
 
 	@Test
 	public void shouldGetModelFromEmptyViewRoot() throws Exception {
 		UIViewRoot viewRoot = mock(UIViewRoot.class);
-		assertNull(SpringFacesModelHolder.getModel(viewRoot));
+		assertThat(SpringFacesModelHolder.getModel(viewRoot), is(nullValue()));
 	}
 
 	@Test

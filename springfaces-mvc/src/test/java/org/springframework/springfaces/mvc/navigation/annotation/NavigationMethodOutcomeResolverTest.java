@@ -17,8 +17,8 @@ package org.springframework.springfaces.mvc.navigation.annotation;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -402,7 +402,7 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldResolveToNullWhenNotIsResolveView() throws Exception {
 		final Object view = new Object();
 		NavigationOutcome resolved = doCustomResolve(view, null, true);
-		assertNull(resolved);
+		assertThat(resolved, is(nullValue()));
 	}
 
 	@Test

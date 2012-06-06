@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.expression.el;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -55,13 +55,13 @@ public class SpringFacesModelELResolverTest {
 
 	@Test
 	public void shouldReturnNullWhenNoFacesContext() throws Exception {
-		assertNull(this.resolver.get("key"));
+		assertThat(this.resolver.get("key"), is(nullValue()));
 	}
 
 	@Test
 	public void shouldReturnNullWhenNoModel() throws Exception {
 		setupFacesContext();
-		assertNull(this.resolver.get("key"));
+		assertThat(this.resolver.get("key"), is(nullValue()));
 	}
 
 	@Test

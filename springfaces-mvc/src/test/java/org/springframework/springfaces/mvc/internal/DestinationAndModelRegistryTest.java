@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -69,7 +71,7 @@ public class DestinationAndModelRegistryTest {
 
 	@Test
 	public void shouldReturnNullWhenNotInRegistry() throws Exception {
-		assertNull(this.registry.get(this.context, "missing"));
+		assertThat(this.registry.get(this.context, "missing"), is(nullValue()));
 	}
 
 	@Test

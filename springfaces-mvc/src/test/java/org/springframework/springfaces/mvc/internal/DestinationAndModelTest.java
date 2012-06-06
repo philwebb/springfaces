@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
@@ -72,7 +74,7 @@ public class DestinationAndModelTest {
 	public void shouldAllowNullPreRenderComponentEvent() throws Exception {
 		NavigationOutcome outcome = new NavigationOutcome(new Object());
 		DestinationAndModel dam = new DestinationAndModel(outcome, (PreRenderComponentEvent) null);
-		assertNull(dam.getComponent());
+		assertThat(dam.getComponent(), is(nullValue()));
 	}
 
 	@Test
@@ -88,7 +90,7 @@ public class DestinationAndModelTest {
 	public void shouldAllowNullActionEvent() throws Exception {
 		NavigationOutcome outcome = new NavigationOutcome(new Object());
 		DestinationAndModel dam = new DestinationAndModel(outcome, (ActionEvent) null);
-		assertNull(dam.getComponent());
+		assertThat(dam.getComponent(), is(nullValue()));
 	}
 
 	@Test

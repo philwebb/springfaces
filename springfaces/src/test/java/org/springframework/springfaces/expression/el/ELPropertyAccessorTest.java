@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.expression.el;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -89,7 +91,7 @@ public class ELPropertyAccessorTest {
 	@Test
 	public void shouldNotReadIfNotInEl() throws Exception {
 		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
-		assertNull(this.elPropertyAccessor.read(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name), is(nullValue()));
 	}
 
 	@Test
@@ -126,6 +128,6 @@ public class ELPropertyAccessorTest {
 	public void shouldWorkWithoutElContext() throws Exception {
 		this.elContext = null;
 		assertFalse(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
-		assertNull(this.elPropertyAccessor.read(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name), is(nullValue()));
 	}
 }

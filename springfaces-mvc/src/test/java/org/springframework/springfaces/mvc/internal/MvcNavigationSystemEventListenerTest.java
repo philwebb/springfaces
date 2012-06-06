@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -81,6 +83,6 @@ public class MvcNavigationSystemEventListenerTest {
 		UIComponent component = mock(UIComponent.class);
 		SystemEvent event = new PreRemoveFromViewEvent(component);
 		this.listener.processEvent(event);
-		assertNull(MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context));
+		assertThat(MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context), is(nullValue()));
 	}
 }

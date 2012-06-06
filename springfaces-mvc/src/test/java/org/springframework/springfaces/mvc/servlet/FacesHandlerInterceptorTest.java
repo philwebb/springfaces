@@ -29,7 +29,7 @@ public class FacesHandlerInterceptorTest {
 	//
 	// @Test
 	// public void shouldSupportNullHandlerBean() throws Exception {
-	// assertNull(HandlerUtils.getHandlerBean(null));
+	// assertThat(HandlerUtils.getHandlerBean(null));
 	// }
 	//
 	// @Test

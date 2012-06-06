@@ -19,7 +19,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
@@ -80,13 +79,13 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetFeatureDescriptors() throws Exception {
-		assertNull(this.resolver.getFeatureDescriptors(this.elContext, null));
-		assertNull(this.resolver.getFeatureDescriptors(this.elContext, BASE_OBJECT));
+		assertThat(this.resolver.getFeatureDescriptors(this.elContext, null), is(nullValue()));
+		assertThat(this.resolver.getFeatureDescriptors(this.elContext, BASE_OBJECT), is(nullValue()));
 	}
 
 	@Test
 	public void shouldGetTypeForNonNullBase() throws Exception {
-		assertNull(this.resolver.getType(this.elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertThat(this.resolver.getType(this.elContext, BASE_OBJECT, PROPERTY_NAME), is(nullValue()));
 	}
 
 	@Test
@@ -97,13 +96,13 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetTypeWhenNotFound() throws Exception {
-		assertNull(this.resolver.getType(this.elContext, null, MISSING_PROPERTY_NAME));
+		assertThat(this.resolver.getType(this.elContext, null, MISSING_PROPERTY_NAME), is(nullValue()));
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
 	@Test
 	public void shouldGetValueWhenNonNullBase() throws Exception {
-		assertNull(this.resolver.getValue(this.elContext, BASE_OBJECT, PROPERTY_NAME));
+		assertThat(this.resolver.getValue(this.elContext, BASE_OBJECT, PROPERTY_NAME), is(nullValue()));
 	}
 
 	@Test
@@ -114,7 +113,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetValueWhenNotFound() throws Exception {
-		assertNull(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME));
+		assertThat(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME), is(nullValue()));
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 
@@ -169,20 +168,20 @@ public class AbstrctELResolverTest {
 		this.readOnly = Boolean.FALSE;
 		this.resolver.setValue(this.elContext, null, MISSING_PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
-		assertNull(this.map.get(MISSING_PROPERTY_NAME));
+		assertThat(this.map.get(MISSING_PROPERTY_NAME), is(nullValue()));
 	}
 
 	@Test
 	public void shouldReturnNullOnMissingProperty() throws Exception {
 		this.handles = Boolean.TRUE;
-		assertNull(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME));
+		assertThat(this.resolver.getValue(this.elContext, null, MISSING_PROPERTY_NAME), is(nullValue()));
 		verify(this.elContext).setPropertyResolved(true);
 	}
 
 	@Test
 	public void shouldGetNullValueWhenNotAvailable() throws Exception {
 		this.available = Boolean.FALSE;
-		assertNull(this.resolver.getValue(this.elContext, null, PROPERTY_NAME));
+		assertThat(this.resolver.getValue(this.elContext, null, PROPERTY_NAME), is(nullValue()));
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
 	}
 

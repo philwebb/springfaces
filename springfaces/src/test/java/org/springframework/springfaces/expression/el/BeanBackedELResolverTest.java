@@ -17,8 +17,8 @@ package org.springframework.springfaces.expression.el;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -69,7 +69,7 @@ public class BeanBackedELResolverTest {
 	@Test
 	public void testNotMapped() throws Exception {
 		assertFalse(this.resolver.handles("missing"));
-		assertNull(this.resolver.get("missing"));
+		assertThat(this.resolver.get("missing"), is(nullValue()));
 	}
 
 	private class TestBeanBackedElResolver extends BeanBackedELResolver {

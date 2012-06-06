@@ -17,8 +17,8 @@ package org.springframework.springfaces.mvc.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -267,7 +267,7 @@ public class MvcViewHandlerTest {
 		given(this.destinationAndModelRegistry.get(this.context, this.viewId)).willReturn(destinationAndModel);
 		ViewDeclarationLanguage vdl = this.handler.getViewDeclarationLanguage(this.context, this.viewId);
 		verify(this.delegate, never()).getViewDeclarationLanguage(eq(this.context), anyString());
-		assertNull(vdl);
+		assertThat(vdl, is(nullValue()));
 	}
 
 	@Test

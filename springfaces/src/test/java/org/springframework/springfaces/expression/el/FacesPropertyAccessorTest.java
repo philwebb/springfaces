@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.expression.el;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -46,7 +48,7 @@ public class FacesPropertyAccessorTest {
 
 	@Test
 	public void shouldWorkWithoutFacesContext() throws Exception {
-		assertNull(this.facesPropertyAccessor.getElContext(this.context, this.target));
+		assertThat(this.facesPropertyAccessor.getElContext(this.context, this.target), is(nullValue()));
 	}
 
 	@Test

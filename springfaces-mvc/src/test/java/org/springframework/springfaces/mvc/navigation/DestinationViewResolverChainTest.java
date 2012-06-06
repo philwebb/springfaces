@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.mvc.navigation;
 
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -56,7 +58,8 @@ public class DestinationViewResolverChainTest {
 
 	@Test
 	public void shouldReturnNullWhenNullResolvers() throws Exception {
-		assertNull(this.chain.resolveDestination(this.context, this.destination, this.locale, this.model));
+		assertThat(this.chain.resolveDestination(this.context, this.destination, this.locale, this.model),
+				is(nullValue()));
 	}
 
 	@Test

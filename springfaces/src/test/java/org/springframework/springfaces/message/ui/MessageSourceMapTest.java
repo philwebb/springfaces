@@ -18,7 +18,6 @@ package org.springframework.springfaces.message.ui;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -167,7 +166,7 @@ public class MessageSourceMapTest {
 	public void shouldHaveNullDefaultMessage() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
-		assertNull(value.getDefaultMessage());
+		assertThat(value.getDefaultMessage(), is(nullValue()));
 	}
 
 	@Test

@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -111,13 +111,14 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 
 	@Test
 	public void shouldOnlyResolveStrings() throws Exception {
-		assertNull(this.resolver.resolveDestination(this.facesContext, new Object(), Locale.UK, null));
-		assertNull(this.resolver.resolveDestination(this.facesContext, new Integer(4), Locale.US, null));
+		assertThat(this.resolver.resolveDestination(this.facesContext, new Object(), Locale.UK, null), is(nullValue()));
+		assertThat(this.resolver.resolveDestination(this.facesContext, new Integer(4), Locale.US, null),
+				is(nullValue()));
 	}
 
 	@Test
 	public void shouldNotResolveIfNotPrefixedString() throws Exception {
-		assertNull(this.resolver.resolveDestination(this.facesContext, "bean.method", Locale.UK, null));
+		assertThat(this.resolver.resolveDestination(this.facesContext, "bean.method", Locale.UK, null), is(nullValue()));
 	}
 
 	@Test
