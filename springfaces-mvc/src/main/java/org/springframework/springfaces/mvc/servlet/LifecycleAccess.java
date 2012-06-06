@@ -21,7 +21,7 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 
-import org.springframework.util.Assert;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.DispatcherServlet;
 
 /**
@@ -31,14 +31,13 @@ import org.springframework.web.servlet.DispatcherServlet;
  * 
  * @author Phillip Webb
  */
-public class LifecycleAccess {
+public class LifecycleAccess implements ServletContextAware {
 
 	private ServletContext servletContext;
 	private Lifecycle lifecycle;
 	private String lifecycleId;
 
-	public LifecycleAccess(ServletContext servletContext) {
-		Assert.notNull(servletContext, "ServletContext must not be null");
+	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
 	}
 

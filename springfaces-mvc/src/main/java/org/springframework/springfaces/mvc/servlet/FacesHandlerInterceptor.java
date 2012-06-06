@@ -40,12 +40,13 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  */
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
 
-	private LifecycleAccess lifecycleAccess;
+	private LifecycleAccess lifecycleAccess = createLifecycleAccess();
+
 	private ServletContext servletContext;
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
-		this.lifecycleAccess = new LifecycleAccess(servletContext);
+		this.lifecycleAccess.setServletContext(servletContext);
 	}
 
 	@Override
@@ -82,6 +83,14 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 			WebApplicationContext webApplicationContext, HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
 		new DefaultSpringFacesContext(this.lifecycleAccess, webApplicationContext, request, response, handler);
+	}
+
+	/**
+	 * Factory method used to create the {@link LifecycleAccess}.
+	 * @return the {@link LifecycleAccess}.
+	 */
+	protected LifecycleAccess createLifecycleAccess() {
+		return new LifecycleAccess();
 	}
 
 	/**
