@@ -20,7 +20,6 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -51,7 +50,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
-import org.springframework.springfaces.selectitems.ui.SelectItemsIterator;
 
 /**
  * Tests for {@link SelectItemsIterator}.
@@ -120,17 +118,17 @@ public class SelectItemsIteratorTest {
 		this.component.getChildren().add(uiSelectItem);
 
 		Iterator<SelectItem> iterator = new SelectItemsIterator(this.context, this.component);
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i1 = iterator.next();
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i2 = iterator.next();
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i3 = iterator.next();
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i4 = iterator.next();
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i5 = iterator.next();
-		assertTrue(iterator.hasNext());
+		assertThat(iterator.hasNext(), is(true));
 		SelectItem i6 = iterator.next();
 		assertFalse(iterator.hasNext());
 		try {
@@ -213,8 +211,7 @@ public class SelectItemsIteratorTest {
 		given(map.get(any())).willAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				if ("itemLabel".equals(invocation.getArguments()[0])) {
-					assertNotNull(SelectItemsIteratorTest.this.context.getExternalContext().getRequestMap()
-							.get("var"));
+					assertNotNull(SelectItemsIteratorTest.this.context.getExternalContext().getRequestMap().get("var"));
 					return "label";
 				}
 				return invocation.callRealMethod();

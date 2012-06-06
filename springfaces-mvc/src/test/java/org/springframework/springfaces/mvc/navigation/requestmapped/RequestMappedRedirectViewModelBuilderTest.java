@@ -18,7 +18,6 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -198,7 +197,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		given(this.context.getCustomArgumentResolvers()).willReturn(resolvers);
 		setHandlerMethod("ignore");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertTrue(model.isEmpty());
+		assertThat(model.size(), is(0));
 	}
 
 	@Test

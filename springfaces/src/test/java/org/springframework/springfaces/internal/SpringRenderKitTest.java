@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.internal;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -46,7 +48,7 @@ public class SpringRenderKitTest extends AbstractFacesWrapperTest<RenderKit, Spr
 		given(delegate.getResponseStateManager()).willReturn(responseStateManager);
 		SpringRenderKit springRenderKit = new SpringRenderKit("rid", delegate);
 		ResponseStateManager actual = springRenderKit.getResponseStateManager();
-		assertTrue(actual instanceof SpringResponseStateManager);
+		assertThat(actual, is(instanceOf(SpringResponseStateManager.class)));
 		verify(delegate).getResponseStateManager();
 	}
 }

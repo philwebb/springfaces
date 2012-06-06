@@ -18,7 +18,6 @@ package org.springframework.springfaces.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,7 @@ public class FilteredIteratorTest {
 		EvenNumbersIterator evenNumbers = new EvenNumbersIterator(NUMBERS.iterator());
 		int i = 0;
 		while (evenNumbers.hasNext()) {
-			assertTrue(evenNumbers.hasNext());
+			assertThat(evenNumbers.hasNext(), is(true));
 			assertThat(evenNumbers.next(), is(new Integer(i)));
 			i += 2;
 		}

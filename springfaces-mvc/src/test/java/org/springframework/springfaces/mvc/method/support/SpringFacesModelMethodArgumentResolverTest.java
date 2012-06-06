@@ -15,9 +15,10 @@
  */
 package org.springframework.springfaces.mvc.method.support;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
@@ -72,35 +73,35 @@ public class SpringFacesModelMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportSpringFacesModel() throws Exception {
 		MethodParameter parameter = mockMethodParameter(SpringFacesModel.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportExtendedModelMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExtendedModelMap.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportModelMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ModelMap.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportModel() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Model.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldSupportMap() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Map.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.model, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
@@ -116,7 +117,7 @@ public class SpringFacesModelMethodArgumentResolverTest {
 		ComplexType v = new ComplexType();
 		this.model.put("k", v);
 		MethodParameter parameter = mockMethodParameter(ComplexType.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(v, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 

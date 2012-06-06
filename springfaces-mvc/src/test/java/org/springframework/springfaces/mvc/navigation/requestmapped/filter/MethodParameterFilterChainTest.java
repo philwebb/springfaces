@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -58,7 +59,7 @@ public class MethodParameterFilterChainTest {
 		MethodParameterFilter f3 = mock(MethodParameterFilter.class);
 		given(f2.matches(this.request, this.methodParameter)).willReturn(true);
 		MethodParameterFilterChain c = new MethodParameterFilterChain(f1, f2, f3);
-		assertTrue(c.matches(this.request, this.methodParameter));
+		assertThat(c.matches(this.request, this.methodParameter), is(true));
 		InOrder ordered = inOrder(f1, f2, f3);
 		ordered.verify(f1).matches(this.request, this.methodParameter);
 		ordered.verify(f2).matches(this.request, this.methodParameter);

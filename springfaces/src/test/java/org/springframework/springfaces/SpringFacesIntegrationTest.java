@@ -15,10 +15,12 @@
  */
 package org.springframework.springfaces;
 
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -110,13 +112,13 @@ public class SpringFacesIntegrationTest {
 	@Test
 	public void shouldBeInstalledUsing() throws Exception {
 		createSpringFacesIntegration();
-		assertTrue(SpringFacesIntegration.isInstalled(this.servletContext));
+		assertThat(SpringFacesIntegration.isInstalled(this.servletContext), is(true));
 	}
 
 	@Test
 	public void shouldBeInstalledUsingExternalContext() throws Exception {
 		createSpringFacesIntegration();
-		assertTrue(SpringFacesIntegration.isInstalled(this.externalContext));
+		assertThat(SpringFacesIntegration.isInstalled(this.externalContext), is(true));
 	}
 
 	@Test
@@ -147,8 +149,8 @@ public class SpringFacesIntegrationTest {
 		Thread.sleep(100);
 		ContextRefreshedEvent event = mock(ContextRefreshedEvent.class);
 		this.springFacesIntegration.onApplicationEvent(event);
-		assertTrue(SpringFacesIntegration.getLastRefreshedDate(this.servletContext).after(initialDate));
-		assertTrue(SpringFacesIntegration.getLastRefreshedDate(this.externalContext).after(initialDate));
+		assertThat(SpringFacesIntegration.getLastRefreshedDate(this.servletContext), is(greaterThan(initialDate)));
+		assertThat(SpringFacesIntegration.getLastRefreshedDate(this.externalContext), is(greaterThan(initialDate)));
 	}
 
 	@Test

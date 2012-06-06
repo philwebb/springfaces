@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.internal;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -88,7 +90,7 @@ public class SpringRenderKitFactoryTest {
 		new SpringRenderKitFactory(this.delegate);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(this.delegate).addRenderKit(eq("b"), renderKitCaptor.capture());
-		assertTrue(renderKitCaptor.getValue() instanceof SpringRenderKit);
+		assertThat(renderKitCaptor.getValue(), is(instanceOf(SpringRenderKit.class)));
 		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 
@@ -97,7 +99,7 @@ public class SpringRenderKitFactoryTest {
 		this.factory.addRenderKit(this.renderKitId, this.renderKit);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(this.delegate).addRenderKit(eq(this.renderKitId), renderKitCaptor.capture());
-		assertTrue(renderKitCaptor.getValue() instanceof SpringRenderKit);
+		assertThat(renderKitCaptor.getValue(), is(instanceOf(SpringRenderKit.class)));
 		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
 	}
 

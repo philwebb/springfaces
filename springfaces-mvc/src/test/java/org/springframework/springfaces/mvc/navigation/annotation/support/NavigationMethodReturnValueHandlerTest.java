@@ -15,7 +15,8 @@
  */
 package org.springframework.springfaces.mvc.navigation.annotation.support;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -36,8 +37,8 @@ public class NavigationMethodReturnValueHandlerTest {
 
 	@Test
 	public void shouldSupportAllTypes() throws Exception {
-		assertTrue(this.handler.supportsReturnType(mockMethodParameter(Object.class)));
-		assertTrue(this.handler.supportsReturnType(mockMethodParameter(String.class)));
+		assertThat(this.handler.supportsReturnType(mockMethodParameter(Object.class)), is(true));
+		assertThat(this.handler.supportsReturnType(mockMethodParameter(String.class)), is(true));
 	}
 
 	@Test

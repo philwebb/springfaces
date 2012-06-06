@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 
@@ -109,19 +108,19 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldMatchIfHasAnnotationOnField() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		assertTrue(this.converter.matches(this.sourceType, targetType));
+		assertThat(this.converter.matches(this.sourceType, targetType), is(true));
 	}
 
 	@Test
 	public void shouldMatchIfHasAnnotationOnMethod() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getMethodParamTypeDescriptor();
-		assertTrue(this.converter.matches(this.sourceType, targetType));
+		assertThat(this.converter.matches(this.sourceType, targetType), is(true));
 	}
 
 	@Test
 	public void shouldMatchIfConverterExists() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithConverter.class);
-		assertTrue(this.converter.matches(this.sourceType, targetType));
+		assertThat(this.converter.matches(this.sourceType, targetType), is(true));
 	}
 
 	@Test

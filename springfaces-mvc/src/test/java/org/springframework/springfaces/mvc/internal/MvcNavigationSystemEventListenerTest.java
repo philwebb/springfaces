@@ -19,7 +19,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -67,7 +66,7 @@ public class MvcNavigationSystemEventListenerTest {
 	@Test
 	public void shouldListenForAllSources() throws Exception {
 		Object source = new Object();
-		assertTrue(this.listener.isListenerForSource(source));
+		assertThat(this.listener.isListenerForSource(source), is(true));
 	}
 
 	@Test

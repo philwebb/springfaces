@@ -15,7 +15,8 @@
  */
 package org.springframework.springfaces.expression.spel.support;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanExpressionContext;
@@ -42,7 +43,7 @@ public class StandardEvaluationContextPostProcessorSupportTest {
 		ConfigurableListableBeanFactory bf = applicationContext.getBeanFactory();
 		BeanExpressionResolver resolver = bf.getBeanExpressionResolver();
 		resolver.evaluate("#{support}", new BeanExpressionContext(bf, null));
-		assertTrue(postProcessCalled);
+		assertThat(postProcessCalled, is(true));
 
 	}
 

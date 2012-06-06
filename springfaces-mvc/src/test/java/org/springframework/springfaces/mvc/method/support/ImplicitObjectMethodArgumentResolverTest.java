@@ -16,9 +16,10 @@
 package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -69,9 +70,9 @@ public class ImplicitObjectMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportOnType() throws Exception {
 		this.resolver.add(Type.class, this.call);
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Type.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)), is(true));
 		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SubType.class)));
 	}
 
@@ -79,9 +80,9 @@ public class ImplicitObjectMethodArgumentResolverTest {
 	public void shouldSupportOnTypeMatchAndCondition() throws Exception {
 		given(this.condition.call()).willReturn(true);
 		this.resolver.add(Type.class, this.condition, this.call);
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(Type.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(Type.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(TypeInterface.class)), is(true));
 		reset(this.condition);
 		given(this.condition.call()).willReturn(false);
 		assertFalse(this.resolver.supportsParameter(mockMethodParameter(SuperType.class)));

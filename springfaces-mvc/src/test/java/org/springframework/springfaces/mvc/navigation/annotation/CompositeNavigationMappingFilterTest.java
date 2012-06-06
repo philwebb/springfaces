@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.annotation;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -65,7 +66,7 @@ public class CompositeNavigationMappingFilterTest {
 		given(f2.matches(this.context)).willReturn(true);
 		given(f3.matches(this.context)).willReturn(true);
 		CompositeNavigationMappingFilter composite = new CompositeNavigationMappingFilter(f1, f2, f3);
-		assertTrue(composite.matches(this.context));
+		assertThat(composite.matches(this.context), is(true));
 	}
 
 	@Test

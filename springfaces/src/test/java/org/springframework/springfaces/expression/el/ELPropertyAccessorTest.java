@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -97,7 +96,7 @@ public class ELPropertyAccessorTest {
 	@Test
 	public void shouldReadIfInEl() throws Exception {
 		willResolve(null, this.name, this.value);
-		assertTrue(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(true));
 		assertSame(this.value, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
 	}
 
@@ -109,8 +108,9 @@ public class ELPropertyAccessorTest {
 
 	@Test
 	public void shouldDefaultToBeanExpressionContext() throws Exception {
-		assertTrue(Arrays.equals(new Class<?>[] { BeanExpressionContext.class },
-				this.elPropertyAccessor.getSpecificTargetClasses()));
+		assertThat(
+				Arrays.equals(new Class<?>[] { BeanExpressionContext.class },
+						this.elPropertyAccessor.getSpecificTargetClasses()), is(true));
 	}
 
 	@Test
@@ -120,7 +120,7 @@ public class ELPropertyAccessorTest {
 		Object expected = new Object();
 		willResolve(null, this.name, this.value);
 		willResolve(this.resolveBase, this.resolveProperty, expected);
-		assertTrue(this.elPropertyAccessor.canRead(this.context, this.target, this.name));
+		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(true));
 		assertSame(expected, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
 	}
 

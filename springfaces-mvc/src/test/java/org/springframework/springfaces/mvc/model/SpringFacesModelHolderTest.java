@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
@@ -89,7 +88,7 @@ public class SpringFacesModelHolderTest {
 	public void shouldSupportTransient() throws Exception {
 		assertFalse(this.h.isTransient());
 		this.h.setTransient(true);
-		assertTrue(this.h.isTransient());
+		assertThat(this.h.isTransient(), is(true));
 	}
 
 	@Test

@@ -19,7 +19,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -80,7 +79,7 @@ public class NavigationOutcomeResolverChainTest {
 		this.chain.setResolvers(Arrays.asList(this.c1, this.c2, this.c3));
 		given(this.c2.canResolve(this.facesContext, this.navigationContext)).willReturn(true);
 		given(this.c2.resolve(this.facesContext, this.navigationContext)).willReturn(this.outcome);
-		assertTrue(this.chain.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.chain.canResolve(this.facesContext, this.navigationContext), is(true));
 		assertThat(this.chain.resolve(this.facesContext, this.navigationContext), is(equalTo(this.outcome)));
 		verify(this.c1, never()).resolve(this.facesContext, this.navigationContext);
 		verify(this.c2).resolve(this.facesContext, this.navigationContext);

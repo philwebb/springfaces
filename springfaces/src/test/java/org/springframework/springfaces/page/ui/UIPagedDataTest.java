@@ -19,10 +19,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -114,20 +114,20 @@ public class UIPagedDataTest {
 	public void shouldSetupPageDataOnRestoreState() throws Exception {
 		Object state = this.uiPagedData.saveState(this.context);
 		this.uiPagedData.restoreState(this.context, state);
-		assertTrue(this.requestMap.containsKey("pagedData"));
+		assertThat(this.requestMap, hasKey("pagedData"));
 	}
 
 	@Test
 	public void shouldSetupPageDataOnEncodeEnd() throws Exception {
 		this.uiPagedData.encodeEnd(this.context);
-		assertTrue(this.requestMap.containsKey("pagedData"));
+		assertThat(this.requestMap, hasKey("pagedData"));
 	}
 
 	@Test
 	public void shouldSupportCustomVaraibleName() throws Exception {
 		this.uiPagedData.setVar("custom");
 		this.uiPagedData.encodeEnd(this.context);
-		assertTrue(this.requestMap.containsKey("custom"));
+		assertThat(this.requestMap, hasKey("custom"));
 	}
 
 	@Test

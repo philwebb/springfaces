@@ -15,11 +15,11 @@
  */
 package org.springframework.springfaces.message.ui;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -144,8 +144,8 @@ public class MessageSourceMapTest {
 	@Test
 	public void shouldHaveToString() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
-		assertTrue(map.toString().contains(
-				"messageSource = messageSource, prefixCodes = array<String>['a.', 'b.', 'c.']]"));
+		assertThat(map.toString(),
+				containsString("messageSource = messageSource, prefixCodes = array<String>['a.', 'b.', 'c.']]"));
 	}
 
 	@Test

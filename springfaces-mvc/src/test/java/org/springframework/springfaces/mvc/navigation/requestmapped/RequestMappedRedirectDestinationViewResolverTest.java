@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -125,7 +124,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
 		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
-		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
+		assertThat(this.createdViewHandlerMethod.getName(), is(equalTo("method")));
 	}
 
 	@Test
@@ -141,7 +140,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	public void shouldResolveAgainstSpecificBean() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@bean.method", Locale.UK, null);
 		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
-		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
+		assertThat(this.createdViewHandlerMethod.getName(), is(equalTo("method")));
 	}
 
 	@Test
@@ -149,14 +148,14 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.resolver.setPrefix("resove:");
 		this.resolver.resolveDestination(this.facesContext, "resove:bean.method", Locale.UK, null);
 		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
-		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
+		assertThat(this.createdViewHandlerMethod.getName(), is(equalTo("method")));
 	}
 
 	@Test
 	public void shouldResolveWithExoticBeanNames() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@exotic@be.an.method", Locale.UK, null);
 		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
-		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
+		assertThat(this.createdViewHandlerMethod.getName(), is(equalTo("method")));
 	}
 
 	@Test

@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockMethodParameter;
 
@@ -84,7 +83,7 @@ public class NavigationContextMethodArgumentResolverTest {
 
 	@Test
 	public void shouldSupportNavigationContext() throws Exception {
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(NavigationContext.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(NavigationContext.class)), is(true));
 		assertFalse(this.resolver.supportsParameter(mockMethodParameter(ExtendsNavigationContext.class)));
 		assertSame(this.navigationContext, this.resolver.resolveArgument(mockMethodParameter(NavigationContext.class),
 				this.mavContainer, this.webRequest, this.binderFactory));
@@ -92,9 +91,9 @@ public class NavigationContextMethodArgumentResolverTest {
 
 	@Test
 	public void shouldSupportComponent() throws Exception {
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandButton.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(UICommand.class)));
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(UIComponent.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandButton.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(UICommand.class)), is(true));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(UIComponent.class)), is(true));
 		assertFalse(this.resolver.supportsParameter(mockMethodParameter(HtmlCommandLink.class)));
 		assertSame(this.component, this.resolver.resolveArgument(mockMethodParameter(UICommand.class),
 				this.mavContainer, this.webRequest, this.binderFactory));
@@ -102,7 +101,7 @@ public class NavigationContextMethodArgumentResolverTest {
 
 	@Test
 	public void shouldSupportOutcome() throws Exception {
-		assertTrue(this.resolver.supportsParameter(mockMethodParameter(String.class)));
+		assertThat(this.resolver.supportsParameter(mockMethodParameter(String.class)), is(true));
 		assertThat(this.resolver.resolveArgument(mockMethodParameter(String.class), this.mavContainer, this.webRequest,
 				this.binderFactory), is(equalTo((Object) "outcome")));
 	}

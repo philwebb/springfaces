@@ -15,9 +15,10 @@
  */
 package org.springframework.springfaces.mvc.method.support;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockMethodParameter;
@@ -100,56 +101,56 @@ public class FacesContextMethodArgumentResolverTest {
 	@Test
 	public void shouldResolveFacesContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(FacesContext.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.facesContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveExternalContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExternalContext.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.externalContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolvePartialViewContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(PartialViewContext.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.partialViewContext, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveApplication() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Application.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.application, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveResourceHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ResourceHandler.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.resourceHandler, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveExceptionHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExceptionHandler.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.exceptionHandler, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveUIViewRoot() throws Exception {
 		MethodParameter parameter = mockMethodParameter(UIViewRoot.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.viewRoot, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 
 	@Test
 	public void shouldResolveLocale() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Locale.class);
-		assertTrue(this.resolver.supportsParameter(parameter));
+		assertThat(this.resolver.supportsParameter(parameter), is(true));
 		assertSame(this.locale, this.resolver.resolveArgument(parameter, null, null, null));
 	}
 

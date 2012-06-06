@@ -16,12 +16,13 @@
 package org.springframework.springfaces.mvc.navigation.annotation;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -196,8 +197,8 @@ public class NavigationMethodOutcomeResolverTest {
 		verify(this.invocableNavigationMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
 		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
 				"argumentResolvers");
-		assertTrue(actual.size() > 1);
-		assertTrue(actual.contains(customArgumentResolver));
+		assertThat(actual.size(), is(greaterThan(1)));
+		assertThat(actual, hasItem(customArgumentResolver));
 	}
 
 	@Test
@@ -211,8 +212,8 @@ public class NavigationMethodOutcomeResolverTest {
 		verify(this.invocableNavigationMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
 		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
 				"argumentResolvers");
-		assertTrue(actual.size() == 2);
-		assertTrue(actual.contains(customArgumentResolver));
+		assertThat(actual.size(), is(2));
+		assertThat(actual, hasItem(customArgumentResolver));
 	}
 
 	@Test
@@ -226,8 +227,8 @@ public class NavigationMethodOutcomeResolverTest {
 		verify(this.invocableBinderMethod).setHandlerMethodArgumentResolvers(this.argumentResolvers.capture());
 		List<HandlerMethodArgumentResolver> actual = fieldValueAsList(this.argumentResolvers.getValue(),
 				"argumentResolvers");
-		assertTrue(actual.size() == 1);
-		assertTrue(actual.contains(customArgumentResolver));
+		assertThat(actual.size(), is(1));
+		assertThat(actual, hasItem(customArgumentResolver));
 	}
 
 	@Test
@@ -241,8 +242,8 @@ public class NavigationMethodOutcomeResolverTest {
 		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
 		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
-		assertTrue(actual.size() > 1);
-		assertTrue(actual.contains(customReturnValueHandler));
+		assertThat(actual.size(), is(greaterThan(1)));
+		assertThat(actual, hasItem(customReturnValueHandler));
 	}
 
 	@Test
@@ -257,8 +258,8 @@ public class NavigationMethodOutcomeResolverTest {
 		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
 		List<HandlerMethodReturnValueHandler> actual = fieldValueAsList(this.returnValueHandlers.getValue(),
 				"returnValueHandlers");
-		assertTrue(actual.size() == 1);
-		assertTrue(actual.contains(customReturnValueHandler));
+		assertThat(actual.size(), is(1));
+		assertThat(actual, hasItem(customReturnValueHandler));
 	}
 
 	@Test
@@ -394,7 +395,7 @@ public class NavigationMethodOutcomeResolverTest {
 		given(this.context.getController()).willReturn(controllerBean, otherBean);
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.afterPropertiesSet();
-		assertTrue(this.resolver.canResolve(this.facesContext, this.context));
+		assertThat(this.resolver.canResolve(this.facesContext, this.context), is(true));
 		assertFalse(this.resolver.canResolve(this.facesContext, this.context));
 	}
 
@@ -463,7 +464,7 @@ public class NavigationMethodOutcomeResolverTest {
 			Class<?> objectClass = (o instanceof Class ? (Class<?>) o : o.getClass());
 			classes.remove(objectClass);
 		}
-		assertTrue(classes.isEmpty());
+		assertThat(classes.size(), is(0));
 	}
 
 	private static Object unwrapFacesResponseCompleteReturnValueHandler(Object handler) {

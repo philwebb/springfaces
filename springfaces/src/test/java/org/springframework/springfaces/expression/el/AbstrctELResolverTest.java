@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -124,7 +123,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldBeReadOnly() throws Exception {
-		assertTrue(this.resolver.isReadOnly(this.elContext, null, PROPERTY_NAME));
+		assertThat(this.resolver.isReadOnly(this.elContext, null, PROPERTY_NAME), is(true));
 		verify(this.elContext).setPropertyResolved(true);
 	}
 

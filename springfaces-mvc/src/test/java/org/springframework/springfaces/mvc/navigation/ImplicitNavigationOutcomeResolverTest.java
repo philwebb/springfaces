@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import javax.faces.context.FacesContext;
@@ -54,7 +53,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 	@Test
 	public void shouldResolvePrefixedDefaultDestinationViewId() throws Exception {
 		given(this.navigationContext.getDefaultDestinationViewId()).willReturn("spring:view");
-		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.resolver.canResolve(this.facesContext, this.navigationContext), is(true));
 		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertThat(outcome.getDestination(), is(equalTo((Object) "view")));
 		assertThat(outcome.getImplicitModel(), is(nullValue()));
@@ -63,7 +62,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 	@Test
 	public void shouldResolvePrefixedOutcome() throws Exception {
 		given(this.navigationContext.getOutcome()).willReturn("spring:view");
-		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.resolver.canResolve(this.facesContext, this.navigationContext), is(true));
 		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertThat(outcome.getDestination(), is(equalTo((Object) "view")));
 		assertThat(outcome.getImplicitModel(), is(nullValue()));
@@ -73,7 +72,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 	public void shouldResolveCustomPrefix() throws Exception {
 		this.resolver.setPrefix("springFaces:");
 		given(this.navigationContext.getOutcome()).willReturn("springFaces:view");
-		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.resolver.canResolve(this.facesContext, this.navigationContext), is(true));
 		NavigationOutcome outcome = this.resolver.resolve(this.facesContext, this.navigationContext);
 		assertThat(outcome.getDestination(), is(equalTo((Object) "view")));
 		assertThat(outcome.getImplicitModel(), is(nullValue()));
@@ -88,7 +87,7 @@ public class ImplicitNavigationOutcomeResolverTest {
 	@Test
 	public void shouldRequireDestinationText() throws Exception {
 		given(this.navigationContext.getOutcome()).willReturn("spring:");
-		assertTrue(this.resolver.canResolve(this.facesContext, this.navigationContext));
+		assertThat(this.resolver.canResolve(this.facesContext, this.navigationContext), is(true));
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown
 				.expectMessage("The destination must be specified for an implicit MVC navigation prefixed 'spring:'");

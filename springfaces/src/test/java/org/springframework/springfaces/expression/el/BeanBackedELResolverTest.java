@@ -20,7 +20,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,12 +42,12 @@ public class BeanBackedELResolverTest {
 
 	@Test
 	public void shouldBeReadOnly() throws Exception {
-		assertTrue(this.resolver.isReadOnly("string"));
+		assertThat(this.resolver.isReadOnly("string"), is(true));
 	}
 
 	@Test
 	public void shouldBeAvailableOnlyWhenHasBean() throws Exception {
-		assertTrue(this.resolver.isAvailable());
+		assertThat(this.resolver.isAvailable(), is(true));
 		this.bean = null;
 		assertFalse(this.resolver.isAvailable());
 	}

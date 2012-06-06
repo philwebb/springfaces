@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -60,7 +61,7 @@ public class WebArgumentResolverMethodParameterFilterTest {
 		given(w1.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
 		given(w3.resolveArgument(this.methodParameter, this.request)).willReturn(WebArgumentResolver.UNRESOLVED);
 		WebArgumentResolverMethodParameterFilter f = new WebArgumentResolverMethodParameterFilter(w1, w2, w3);
-		assertTrue(f.matches(this.request, this.methodParameter));
+		assertThat(f.matches(this.request, this.methodParameter), is(true));
 		InOrder ordered = inOrder(w1, w2, w3);
 		ordered.verify(w1).resolveArgument(this.methodParameter, this.request);
 		ordered.verify(w2).resolveArgument(this.methodParameter, this.request);

@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.internal;
 
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -39,7 +41,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 
 	@Test
 	public void shouldListenForAllSource() throws Exception {
-		assertTrue(this.listener.isListenerForSource(new Object()));
+		assertThat(this.listener.isListenerForSource(new Object()), is(true));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -54,7 +56,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 			MockApplicationFactory applicationFactory = (MockApplicationFactory) FactoryFinder
 					.getFactory(FactoryFinder.APPLICATION_FACTORY);
 			Application actual = applicationFactory.getApplication();
-			assertTrue(actual instanceof SpringApplication);
+			assertThat(actual, is(instanceOf(SpringApplication.class)));
 			assertSame(application, ((FacesWrapper<Application>) actual).getWrapped());
 		} finally {
 			FactoryFinder.releaseFactories();

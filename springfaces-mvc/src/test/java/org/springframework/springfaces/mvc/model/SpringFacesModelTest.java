@@ -16,9 +16,9 @@
 package org.springframework.springfaces.mvc.model;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,12 +56,11 @@ public class SpringFacesModelTest {
 	}
 
 	@Test
-	@SuppressWarnings("cast")
 	public void shouldSupportSpringTypes() throws Exception {
 		SpringFacesModel model = new SpringFacesModel();
-		assertTrue(model instanceof ExtendedModelMap);
-		assertTrue(model instanceof ModelMap);
-		assertTrue(model instanceof Model);
-		assertTrue(model instanceof Map);
+		assertThat(model, is(instanceOf(ExtendedModelMap.class)));
+		assertThat(model, is(instanceOf(ModelMap.class)));
+		assertThat(model, is(instanceOf(Model.class)));
+		assertThat(model, is(instanceOf(Map.class)));
 	}
 }

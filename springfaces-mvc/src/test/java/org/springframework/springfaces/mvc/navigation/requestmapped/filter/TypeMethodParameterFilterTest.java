@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped.filter;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 
 import java.lang.reflect.Method;
 
@@ -55,9 +56,9 @@ public class TypeMethodParameterFilterTest {
 	public void shouldIgnoreTypes() throws Exception {
 		Method method = getMethod();
 		TypeMethodParameterFilter f = new TypeMethodParameterFilter(T1.class, T2.class);
-		assertTrue(f.matches(this.request, new MethodParameter(method, 0)));
-		assertTrue(f.matches(this.request, new MethodParameter(method, 1)));
-		assertTrue(f.matches(this.request, new MethodParameter(method, 2)));
+		assertThat(f.matches(this.request, new MethodParameter(method, 0)), is(true));
+		assertThat(f.matches(this.request, new MethodParameter(method, 1)), is(true));
+		assertThat(f.matches(this.request, new MethodParameter(method, 2)), is(true));
 		assertFalse(f.matches(this.request, new MethodParameter(method, 3)));
 	}
 

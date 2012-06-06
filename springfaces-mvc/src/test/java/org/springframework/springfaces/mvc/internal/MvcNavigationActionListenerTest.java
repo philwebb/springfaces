@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -71,7 +72,7 @@ public class MvcNavigationActionListenerTest {
 	@Test
 	public void shouldStoreActionEvent() throws Exception {
 		this.listener.processAction(this.event);
-		assertTrue(this.attributes.size() == 1);
+		assertThat(this.attributes.size(), is(1));
 		assertSame(this.event, MvcNavigationActionListener.getLastActionEvent(this.facesContext));
 	}
 

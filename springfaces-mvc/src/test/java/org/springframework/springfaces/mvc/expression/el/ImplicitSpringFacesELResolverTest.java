@@ -19,7 +19,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
 
@@ -77,7 +76,7 @@ public class ImplicitSpringFacesELResolverTest {
 		Object handler = new Object();
 		given(this.springFacesContext.getHandler()).willReturn(handler);
 		Object value = this.resolver.getValue(this.context, null, "handler");
-		assertTrue(this.context.isPropertyResolved());
+		assertThat(this.context.isPropertyResolved(), is(true));
 		assertSame(handler, value);
 	}
 
@@ -86,7 +85,7 @@ public class ImplicitSpringFacesELResolverTest {
 		Object controller = new Object();
 		given(this.springFacesContext.getController()).willReturn(controller);
 		Object value = this.resolver.getValue(this.context, null, "controller");
-		assertTrue(this.context.isPropertyResolved());
+		assertThat(this.context.isPropertyResolved(), is(true));
 		assertSame(controller, value);
 	}
 
@@ -96,7 +95,7 @@ public class ImplicitSpringFacesELResolverTest {
 		model.put("key", "value");
 		SpringFacesModelHolder.attach(this.facesContext, this.facesContext.getViewRoot(), model);
 		Object value = this.resolver.getValue(this.context, null, "model");
-		assertTrue(this.context.isPropertyResolved());
+		assertThat(this.context.isPropertyResolved(), is(true));
 		assertThat(value, is(equalTo((Object) model)));
 	}
 }

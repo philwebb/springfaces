@@ -16,9 +16,9 @@
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -218,7 +218,7 @@ public class RequestMappedRedirectViewTest {
 	public void shouldCreateBookmarkableRedirectViewDelegate() throws Exception {
 		RequestMappedRedirectView view = new RequestMappedRedirectView(this.context, this.handler, this.handlerMethod);
 		BookmarkableView delegatge = view.createDelegateRedirector("/url");
-		assertTrue(delegatge instanceof BookmarkableRedirectView);
+		assertThat(delegatge, is(instanceOf(BookmarkableRedirectView.class)));
 	}
 
 	@Test

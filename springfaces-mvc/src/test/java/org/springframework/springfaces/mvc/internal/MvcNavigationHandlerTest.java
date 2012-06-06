@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -195,7 +194,7 @@ public class MvcNavigationHandlerTest {
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
 		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
-		assertTrue(navigationContext.isPreemptive());
+		assertThat(navigationContext.isPreemptive(), is(true));
 		assertSame(component, navigationContext.getComponent());
 		assertSame(this.handler, navigationContext.getHandler());
 		assertSame(this.controller, navigationContext.getController());
