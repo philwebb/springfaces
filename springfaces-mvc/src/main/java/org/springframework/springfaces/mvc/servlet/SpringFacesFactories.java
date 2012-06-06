@@ -44,7 +44,7 @@ import org.springframework.util.Assert;
 public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		ApplicationListener<PostConstructApplicationSpringFacesEvent> {
 
-	// FIXME rename this to MVC?
+	// FIXME M1 rename this to MVC?
 
 	private FacesViewStateHandler facesViewStateHandler;
 	private DestinationViewResolver destinationViewResolver;
@@ -56,12 +56,12 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		Assert.notNull(facesViewStateHandler, "FacesViewStateHandler must not be null");
 		Assert.notNull(destinationViewResolver, "DestinationViewResolver must not be null");
 		this.facesViewStateHandler = facesViewStateHandler;
-		// FIXME
+		// FIXME M1
 		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
 		this.destinationViewResolver = destinationViewResolver;
 	}
 
-	// FIXME consider rename of internal package
+	// FIXME M1 consider rename of internal package
 
 	public Object newWrapper(Class<?> typeClass, Object delegate) {
 		if (delegate instanceof ResponseStateManager) {
