@@ -188,7 +188,7 @@ public class MvcNavigationHandlerTest {
 		assertNotNull(navigationCase);
 		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
 		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
-		// FIXME test model?
+		assertEquals(component, this.destinationAndModel.getValue().getComponent());
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertEquals(this.outcome, navigationContext.getOutcome());
 		assertEquals(this.fromAction, navigationContext.getFromAction());
@@ -220,7 +220,6 @@ public class MvcNavigationHandlerTest {
 		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
 		verify(this.navigationOutcomeResolver).canResolve(any(FacesContext.class), this.navigationContext.capture());
 		verify(this.delegate, never()).handleNavigation(this.context, this.fromAction, this.outcome);
-		// FIXME double check this
 	}
 
 	@Test
@@ -241,7 +240,7 @@ public class MvcNavigationHandlerTest {
 
 		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
 		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
-		// FIXME verify model?
+		assertEquals(component, this.destinationAndModel.getValue().getComponent());
 		verify(this.context).setViewRoot(viewRoot);
 		NavigationContext navigationContext = this.navigationContext.getValue();
 		assertEquals(this.outcome, navigationContext.getOutcome());
