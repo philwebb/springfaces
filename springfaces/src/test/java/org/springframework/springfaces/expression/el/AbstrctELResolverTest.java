@@ -15,11 +15,13 @@
  */
 package org.springframework.springfaces.expression.el;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -32,7 +34,9 @@ import javax.el.ELContext;
 import javax.el.PropertyNotWritableException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link AbstractELResolver}.
@@ -41,11 +45,14 @@ import org.junit.Test;
  */
 public class AbstrctELResolverTest {
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
 	private static final String BASE_OBJECT = "baseObject";
 	private static final Object PROPERTY_NAME = "myObject";
 	private static final Object MISSING_PROPERTY_NAME = "doesNotExist";
-	private static final Long PROPERTY_VALUE = new Long(123);
-	private static final Long REPLACED_PROPERTY_VALUE = new Long(321);
+	private static final Object PROPERTY_VALUE = new Long(123);
+	private static final Object REPLACED_PROPERTY_VALUE = new Long(321);
 
 	private AbstractELResolver resolver;
 	private ELContext elContext;
@@ -67,8 +74,8 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetCommonPropertyType() throws Exception {
-		assertEquals(Object.class, this.resolver.getCommonPropertyType(this.elContext, null));
-		assertEquals(null, this.resolver.getCommonPropertyType(this.elContext, BASE_OBJECT));
+		assertThat(this.resolver.getCommonPropertyType(this.elContext, null), is(equalTo((Class) Object.class)));
+		assertThat(this.resolver.getCommonPropertyType(this.elContext, BASE_OBJECT), is(nullValue()));
 	}
 
 	@Test
@@ -84,7 +91,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetTypeWhenFound() throws Exception {
-		assertEquals(Long.class, this.resolver.getType(this.elContext, null, PROPERTY_NAME));
+		assertThat(this.resolver.getType(this.elContext, null, PROPERTY_NAME), is(equalTo((Class) Long.class)));
 		verify(this.elContext).setPropertyResolved(true);
 	}
 
@@ -101,7 +108,7 @@ public class AbstrctELResolverTest {
 
 	@Test
 	public void shouldGetValueWhenFound() throws Exception {
-		assertEquals(PROPERTY_VALUE, this.resolver.getValue(this.elContext, null, PROPERTY_NAME));
+		assertThat(this.resolver.getValue(this.elContext, null, PROPERTY_NAME), is(equalTo(PROPERTY_VALUE)));
 		verify(this.elContext).setPropertyResolved(true);
 	}
 
@@ -132,17 +139,14 @@ public class AbstrctELResolverTest {
 	public void shouldSetValueOnReadOnlyNonNullBase() throws Exception {
 		this.resolver.setValue(this.elContext, BASE_OBJECT, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 		verify(this.elContext, never()).setPropertyResolved(anyBoolean());
-		assertEquals(PROPERTY_VALUE, this.map.get(PROPERTY_NAME));
+		assertThat(this.map.get(PROPERTY_NAME), is(equalTo(PROPERTY_VALUE)));
 	}
 
 	@Test
 	public void shouldThrowThenSetValueOnReadOnly() throws Exception {
-		try {
-			this.resolver.setValue(this.elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
-			fail();
-		} catch (PropertyNotWritableException e) {
-			assertEquals("The property myObject is not writable.", e.getMessage());
-		}
+		this.thrown.expect(PropertyNotWritableException.class);
+		this.thrown.expectMessage("The property myObject is not writable.");
+		this.resolver.setValue(this.elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 	}
 
 	@Test
@@ -157,7 +161,7 @@ public class AbstrctELResolverTest {
 		this.readOnly = Boolean.FALSE;
 		this.resolver.setValue(this.elContext, null, PROPERTY_NAME, REPLACED_PROPERTY_VALUE);
 		verify(this.elContext).setPropertyResolved(true);
-		assertEquals(REPLACED_PROPERTY_VALUE, this.map.get(PROPERTY_NAME));
+		assertThat(this.map.get(PROPERTY_NAME), is(equalTo(REPLACED_PROPERTY_VALUE)));
 	}
 
 	@Test

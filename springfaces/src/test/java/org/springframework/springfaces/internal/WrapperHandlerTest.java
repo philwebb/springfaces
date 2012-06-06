@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -203,7 +205,7 @@ public class WrapperHandlerTest {
 		WrapperHandler<Integer> wrapperHandler = WrapperHandler.get(Integer.class, 0);
 		Integer actual = wrapperHandler.getWrapped();
 
-		assertEquals(new Integer(1), actual);
+		assertThat(actual, is(equalTo(1)));
 	}
 
 	@Test

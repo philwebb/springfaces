@@ -15,8 +15,10 @@
  */
 package org.springframework.springfaces.mvc.expression.el;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
@@ -95,6 +97,6 @@ public class ImplicitSpringFacesELResolverTest {
 		SpringFacesModelHolder.attach(this.facesContext, this.facesContext.getViewRoot(), model);
 		Object value = this.resolver.getValue(this.context, null, "model");
 		assertTrue(this.context.isPropertyResolved());
-		assertEquals(model, value);
+		assertThat(value, is(equalTo((Object) model)));
 	}
 }

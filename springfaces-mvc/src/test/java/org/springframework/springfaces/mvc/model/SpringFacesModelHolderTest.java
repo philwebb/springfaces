@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -58,24 +60,24 @@ public class SpringFacesModelHolderTest {
 	@Test
 	public void shouldCopyModel() throws Exception {
 		Map<String, String> m = Collections.singletonMap("k", "v");
-		assertEquals("v", new SpringFacesModelHolder(m).getModel().get("k"));
+		assertThat(new SpringFacesModelHolder(m).getModel().get("k"), is(equalTo((Object) "v")));
 	}
 
 	@Test
 	public void shouldHaveStaticComponentId() throws Exception {
 		String componentId = this.h.getId();
 		this.h.setId("madeup");
-		assertEquals(componentId, this.h.getId());
+		assertThat(this.h.getId(), is(equalTo(componentId)));
 	}
 
 	@Test
 	public void shouldHaveSameClientIdAsComponentId() throws Exception {
-		assertEquals(this.h.getId(), this.h.getClientId());
+		assertThat(this.h.getClientId(), is(equalTo(this.h.getId())));
 	}
 
 	@Test
 	public void shouldBeParameterFamily() throws Exception {
-		assertEquals("javax.faces.Parameter", this.h.getFamily());
+		assertThat(this.h.getFamily(), is(equalTo("javax.faces.Parameter")));
 	}
 
 	@Test
@@ -98,7 +100,7 @@ public class SpringFacesModelHolderTest {
 		// Restore : Note default constructor is required
 		SpringFacesModelHolder h2 = SpringFacesModelHolder.class.newInstance();
 		h2.restoreState(this.context, state);
-		assertEquals("v", h2.getModel().get("k"));
+		assertThat(h2.getModel().get("k"), is(equalTo((Object) "v")));
 	}
 
 	@Test
@@ -108,7 +110,7 @@ public class SpringFacesModelHolderTest {
 		List<UIComponent> children = new ArrayList<UIComponent>();
 		given(viewRoot.getChildren()).willReturn(children);
 		SpringFacesModelHolder.attach(this.context, viewRoot, m);
-		assertEquals("v", ((SpringFacesModelHolder) children.get(0)).getModel().get("k"));
+		assertThat(((SpringFacesModelHolder) children.get(0)).getModel().get("k"), is(equalTo((Object) "v")));
 	}
 
 	@Test
@@ -127,6 +129,6 @@ public class SpringFacesModelHolderTest {
 		UIViewRoot viewRoot = mockUIViewRootWithModelSupport();
 		Map<String, String> m = Collections.singletonMap("k", "v");
 		SpringFacesModelHolder.attach(this.context, viewRoot, m);
-		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("k"));
+		assertThat(SpringFacesModelHolder.getModel(viewRoot).get("k"), is(equalTo((Object) "v")));
 	}
 }

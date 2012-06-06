@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.mvc.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -50,7 +52,7 @@ public class SpringFacesModelTest {
 		Map<String, String> source = new HashMap<String, String>();
 		source.put("k", "v");
 		SpringFacesModel model = new SpringFacesModel(source);
-		assertEquals("v", model.get("k"));
+		assertThat(model.get("k"), is(equalTo((Object) "v")));
 	}
 
 	@Test

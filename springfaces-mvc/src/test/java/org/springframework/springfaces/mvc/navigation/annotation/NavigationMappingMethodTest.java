@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.navigation.annotation;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 
@@ -81,8 +83,8 @@ public class NavigationMappingMethodTest {
 	@Test
 	public void shouldGetDetails() throws Exception {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
-		assertEquals(this.beanName, o.getBeanName());
-		assertEquals(Bean.class, o.getBeanType());
+		assertThat(o.getBeanName(), is(equalTo(this.beanName)));
+		assertThat(o.getBeanType(), is(equalTo((Class) Bean.class)));
 		assertSame(Bean.defaults, o.getMethod());
 	}
 

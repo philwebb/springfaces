@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -121,7 +123,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldResolveAgainstCurrentHandler() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
-		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -137,7 +139,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	@Test
 	public void shouldResolveAgainstSpecificBean() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@bean.method", Locale.UK, null);
-		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -145,14 +147,14 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	public void shouldSupportCustomPrefix() throws Exception {
 		this.resolver.setPrefix("resove:");
 		this.resolver.resolveDestination(this.facesContext, "resove:bean.method", Locale.UK, null);
-		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
 	@Test
 	public void shouldResolveWithExoticBeanNames() throws Exception {
 		this.resolver.resolveDestination(this.facesContext, "@exotic@be.an.method", Locale.UK, null);
-		assertEquals(this.controllerBean, this.createdViewHandler);
+		assertThat(this.createdViewHandler, is(equalTo((Object) this.controllerBean)));
 		assertTrue(this.createdViewHandlerMethod.getName().equals("method"));
 	}
 
@@ -205,7 +207,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		assertSame(pathMatcher, this.createdViewContext.getPathMatcher());
 		assertSame(webBindingInitializer, this.createdViewContext.getWebBindingInitializer());
 		assertSame(parameterNameDiscoverer, this.createdViewContext.getParameterNameDiscoverer());
-		assertEquals("/cdp", this.createdViewContext.getDispatcherServletPath());
+		assertThat(this.createdViewContext.getDispatcherServletPath(), is(equalTo("/cdp")));
 	}
 
 	@Test
@@ -213,7 +215,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		SpringFacesModel model = new SpringFacesModel(Collections.singletonMap("k", "v"));
 		ModelAndView resolved = this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, model);
 		assertSame(this.resolvedView, resolved.getView());
-		assertEquals("v", resolved.getModel().get("k"));
+		assertThat(resolved.getModel().get("k"), is(equalTo((Object) "v")));
 	}
 
 	@Controller

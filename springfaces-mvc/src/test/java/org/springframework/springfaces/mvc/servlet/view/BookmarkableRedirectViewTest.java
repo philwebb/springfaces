@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.mvc.servlet.view;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -51,7 +53,7 @@ public class BookmarkableRedirectViewTest {
 		model.put("cd", "CD");
 		model.put("gh", "GH");
 		String actual = view.getBookmarkUrl(model, this.request);
-		assertEquals("/ab/CD/ef/GH", actual);
+		assertThat(actual, is(equalTo("/ab/CD/ef/GH")));
 	}
 
 	@Test
@@ -61,7 +63,7 @@ public class BookmarkableRedirectViewTest {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("cd", "C D");
 		String actual = view.getBookmarkUrl(model, this.request);
-		assertEquals("/ab/C%20D", actual);
+		assertThat(actual, is(equalTo("/ab/C%20D")));
 	}
 
 	@Test
@@ -71,7 +73,7 @@ public class BookmarkableRedirectViewTest {
 		model.put("cd", "CD");
 		model.put("gh", "GH");
 		String actual = view.getBookmarkUrl(model, this.request);
-		assertEquals("/ab/CD?gh=GH", actual);
+		assertThat(actual, is(equalTo("/ab/CD?gh=GH")));
 	}
 
 	@Test
@@ -83,14 +85,14 @@ public class BookmarkableRedirectViewTest {
 	public void shouldAddContextPath() throws Exception {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("/ab", true);
 		String actual = view.getBookmarkUrl(null, this.request);
-		assertEquals("/context/ab", actual);
+		assertThat(actual, is(equalTo("/context/ab")));
 	}
 
 	@Test
 	public void shouldNotAddContextPathIfNotSlashPrefixed() throws Exception {
 		BookmarkableRedirectView view = new BookmarkableRedirectView("ab", true);
 		String actual = view.getBookmarkUrl(null, this.request);
-		assertEquals("ab", actual);
+		assertThat(actual, is(equalTo("ab")));
 	}
 
 	@Test

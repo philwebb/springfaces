@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.converter;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
@@ -92,10 +94,10 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldConvertStringToObject() throws Exception {
 		Set<ConvertiblePair> types = this.converter.getConvertibleTypes();
-		assertEquals(1, types.size());
+		assertThat(types.size(), is(1));
 		ConvertiblePair pair = types.iterator().next();
-		assertEquals(String.class, pair.getSourceType());
-		assertEquals(Object.class, pair.getTargetType());
+		assertThat(pair.getSourceType(), is(equalTo((Class) String.class)));
+		assertThat(pair.getTargetType(), is(equalTo((Class) Object.class)));
 	}
 
 	@Test
@@ -136,19 +138,19 @@ public class GenericFacesConverterTest {
 	@Test
 	public void shouldConvertAnnotationOnField() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getFieldTypeDescriptor();
-		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
+		assertThat(this.converter.convert(this.source, this.sourceType, targetType), is(equalTo(this.converted)));
 	}
 
 	@Test
 	public void shouldConvertAnnotationOnMethod() throws Exception {
 		TypeDescriptor targetType = AnnotatedClass.getMethodParamTypeDescriptor();
-		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
+		assertThat(this.converter.convert(this.source, this.sourceType, targetType), is(equalTo(this.converted)));
 	}
 
 	@Test
 	public void shouldConvertByType() throws Exception {
 		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithConverter.class);
-		assertEquals(this.converted, this.converter.convert(this.source, this.sourceType, targetType));
+		assertThat(this.converter.convert(this.source, this.sourceType, targetType), is(equalTo(this.converted)));
 	}
 
 	@Test

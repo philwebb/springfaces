@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.expression.el;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -53,7 +54,7 @@ public class SpringFacesBeanELResolverTest {
 	@Test
 	public void shouldHaveEmptyBeanFactoryWhenActive() throws Exception {
 		BeanFactory factory = this.resolver.getBeanFactory(this.elContext);
-		assertEquals(0, ((ListableBeanFactory) factory).getBeanDefinitionCount());
+		assertThat(((ListableBeanFactory) factory).getBeanDefinitionCount(), is(0));
 	}
 
 	@Test

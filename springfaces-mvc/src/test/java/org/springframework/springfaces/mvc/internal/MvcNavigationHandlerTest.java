@@ -15,10 +15,12 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -187,11 +189,12 @@ public class MvcNavigationHandlerTest {
 				this.outcome);
 		assertNotNull(navigationCase);
 		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
-		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
-		assertEquals(component, this.destinationAndModel.getValue().getComponent());
+		assertThat(this.destinationAndModel.getValue().getDestination(),
+				is(equalTo(this.navigationOutcome.getDestination())));
+		assertThat(this.destinationAndModel.getValue().getComponent(), is(equalTo(component)));
 		NavigationContext navigationContext = this.navigationContext.getValue();
-		assertEquals(this.outcome, navigationContext.getOutcome());
-		assertEquals(this.fromAction, navigationContext.getFromAction());
+		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
+		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
 		assertTrue(navigationContext.isPreemptive());
 		assertSame(component, navigationContext.getComponent());
 		assertSame(this.handler, navigationContext.getHandler());
@@ -239,12 +242,13 @@ public class MvcNavigationHandlerTest {
 		this.navigationHandler.handleNavigation(this.context, this.fromAction, this.outcome);
 
 		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
-		assertEquals(this.navigationOutcome.getDestination(), this.destinationAndModel.getValue().getDestination());
-		assertEquals(component, this.destinationAndModel.getValue().getComponent());
+		assertThat(this.destinationAndModel.getValue().getDestination(),
+				is(equalTo(this.navigationOutcome.getDestination())));
+		assertThat(this.destinationAndModel.getValue().getComponent(), is(equalTo(component)));
 		verify(this.context).setViewRoot(viewRoot);
 		NavigationContext navigationContext = this.navigationContext.getValue();
-		assertEquals(this.outcome, navigationContext.getOutcome());
-		assertEquals(this.fromAction, navigationContext.getFromAction());
+		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
+		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
 		assertFalse(navigationContext.isPreemptive());
 		assertSame(component, navigationContext.getComponent());
 		assertSame(this.handler, navigationContext.getHandler());
@@ -260,7 +264,7 @@ public class MvcNavigationHandlerTest {
 				defaultNavigationCase);
 		given(defaultNavigationCase.getToViewId(this.context)).willReturn("/example");
 		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
-		assertEquals("example", this.navigationContext.getValue().getDefaultDestinationViewId());
+		assertThat(this.navigationContext.getValue().getDefaultDestinationViewId(), is(equalTo("example")));
 	}
 
 	@Test
@@ -276,8 +280,8 @@ public class MvcNavigationHandlerTest {
 					}
 				});
 		this.navigationHandler.getNavigationCase(this.context, this.fromAction, this.outcome);
-		assertEquals(1, this.messageList.size());
-		assertEquals("existing", this.messageList.get(0).getSummary());
+		assertThat(this.messageList.size(), is(1));
+		assertThat(this.messageList.get(0).getSummary(), is(equalTo("existing")));
 	}
 
 }

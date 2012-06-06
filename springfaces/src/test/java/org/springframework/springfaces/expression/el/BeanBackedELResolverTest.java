@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.expression.el;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -53,15 +55,15 @@ public class BeanBackedELResolverTest {
 
 	@Test
 	public void testHandlesAndResolve() throws Exception {
-		assertTrue(this.resolver.handles("stringValue"));
-		assertEquals("string", this.resolver.get("stringValue"));
-		assertTrue(this.resolver.handles("longValue"));
-		assertEquals(new Long(12345), this.resolver.get("longValue"));
-		assertTrue(this.resolver.handles("intValue"));
-		assertEquals(new Integer(1), this.resolver.get("intValue"));
-		assertTrue(this.resolver.handles("alias"));
-		assertEquals("string", this.resolver.get("alias"));
-		assertFalse(this.resolver.handles("unmapped"));
+		assertThat(this.resolver.handles("stringValue"), is(true));
+		assertThat(this.resolver.get("stringValue"), is(equalTo((Object) "string")));
+		assertThat(this.resolver.handles("longValue"), is(true));
+		assertThat(this.resolver.get("longValue"), is(equalTo((Object) new Long(12345))));
+		assertThat(this.resolver.handles("intValue"), is(true));
+		assertThat(this.resolver.get("intValue"), is(equalTo((Object) new Integer(1))));
+		assertThat(this.resolver.handles("alias"), is(true));
+		assertThat(this.resolver.get("alias"), is(equalTo((Object) "string")));
+		assertThat(this.resolver.handles("unmapped"), is(false));
 	}
 
 	@Test

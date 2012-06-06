@@ -15,8 +15,9 @@
  */
 package org.springframework.springfaces.mvc.bind;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.beans.PropertyEditorSupport;
 import java.text.DateFormat;
@@ -27,7 +28,9 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
@@ -44,6 +47,9 @@ import org.springframework.validation.DataBinder;
 public class ReverseDataBinderTest {
 
 	Log logger = LogFactory.getLog(getClass());
+
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
 
 	private static final Date D01_12_2009;
 	static {
@@ -94,10 +100,10 @@ public class ReverseDataBinderTest {
 		DataBinder dataBinder = new DataBinder(null);
 		initBinder(dataBinder);
 		Object converted = (value == null ? null : dataBinder.convertIfNecessary(value, expected.getClass()));
-		assertEquals(expected, converted);
+		assertThat(converted, is(equalTo(expected)));
 		ReverseDataBinder reverseDataBinder = new ReverseDataBinder(dataBinder);
 		String reversed = reverseDataBinder.reverseConvert(converted);
-		assertEquals(value, reversed);
+		assertThat(reversed, is(equalTo(value)));
 	}
 
 	@Test
@@ -112,10 +118,10 @@ public class ReverseDataBinderTest {
 		pvs.addPropertyValue("stringValue", "string");
 		dataBinder.bind(pvs);
 
-		assertEquals(new Integer(123), target.getIntegerValue());
-		assertEquals("string", target.getStringValue());
-		assertEquals(D01_12_2009, target.getDateValue());
-		assertEquals(new CustomType("custom"), target.getCustomTypeValue());
+		assertThat(target.getIntegerValue(), is(equalTo(new Integer(123))));
+		assertThat(target.getStringValue(), is(equalTo("string")));
+		assertThat(target.getDateValue(), is(equalTo(D01_12_2009)));
+		assertThat(target.getCustomTypeValue(), is(equalTo(new CustomType("custom"))));
 
 		ReverseDataBinder reverseDataBinder = new ReverseDataBinder(dataBinder);
 		PropertyValues result = reverseDataBinder.reverseBind();
@@ -123,7 +129,7 @@ public class ReverseDataBinderTest {
 			PropertyValue pv = result.getPropertyValues()[i];
 			this.logger.info(pv.getName() + "=" + pv.getValue());
 		}
-		assertEquals(pvs, result);
+		assertThat(result, is(equalTo((Object) pvs)));
 	}
 
 	@Test
@@ -132,18 +138,14 @@ public class ReverseDataBinderTest {
 		DataBinder dataBinder = new DataBinder(target);
 		dataBinder.setRequiredFields(new String[] { "integerValue" });
 		ReverseDataBinder reverseDataBinder = new ReverseDataBinder(dataBinder);
-		try {
-			reverseDataBinder.reverseBind();
-			fail();
-		} catch (IllegalStateException e) {
-			assertEquals(
-					"Unable to reverse bind from target 'target', the properties 'PropertyValues: length=0' will result in binding errors "
-							+ "when re-bound [Field error in object 'target' on field 'integerValue': rejected value []; codes "
-							+ "[required.target.integerValue,required.integerValue,required.java.lang.Integer,required]; arguments "
-							+ "[org.springframework.context.support.DefaultMessageSourceResolvable: codes [target.integerValue,integerValue]; "
-							+ "arguments []; default message [integerValue]]; default message [Field 'integerValue' is required]]",
-					e.getMessage());
-		}
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown
+				.expectMessage("Unable to reverse bind from target 'target', the properties 'PropertyValues: length=0' will result in binding errors "
+						+ "when re-bound [Field error in object 'target' on field 'integerValue': rejected value []; codes "
+						+ "[required.target.integerValue,required.integerValue,required.java.lang.Integer,required]; arguments "
+						+ "[org.springframework.context.support.DefaultMessageSourceResolvable: codes [target.integerValue,integerValue]; "
+						+ "arguments []; default message [integerValue]]; default message [Field 'integerValue' is required]]");
+		reverseDataBinder.reverseBind();
 	}
 
 	@Test
@@ -172,10 +174,10 @@ public class ReverseDataBinderTest {
 		}
 		PropertyValues result = reverseDataBinder.reverseBind();
 		boolean fullBindExpected = dontSkip || noConstructor;
-		assertEquals(fullBindExpected ? 2 : 1, result.getPropertyValues().length);
-		assertEquals("123", result.getPropertyValue("integerValue").getValue());
+		assertThat(result.getPropertyValues().length, is(equalTo(fullBindExpected ? 2 : 1)));
+		assertThat(result.getPropertyValue("integerValue").getValue(), is(equalTo((Object) "123")));
 		if (fullBindExpected) {
-			assertEquals("default", result.getPropertyValue("stringValue").getValue());
+			assertThat(result.getPropertyValue("stringValue").getValue(), is(equalTo((Object) "default")));
 		}
 	}
 

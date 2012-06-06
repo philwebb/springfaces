@@ -18,7 +18,7 @@ package org.springframework.springfaces.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -94,7 +94,7 @@ public class FacesUtilsTest {
 		given(facesContext.getExternalContext()).willReturn(externalContext);
 		given(viewRoot.getLocale()).willReturn(Locale.CANADA);
 		given(externalContext.getRequestLocale()).willReturn(Locale.GERMAN);
-		assertEquals(Locale.CANADA, FacesUtils.getLocale(facesContext));
+		assertThat(FacesUtils.getLocale(facesContext), is(equalTo(Locale.CANADA)));
 	}
 
 	@Test
@@ -103,7 +103,7 @@ public class FacesUtilsTest {
 		ExternalContext externalContext = mock(ExternalContext.class);
 		given(facesContext.getExternalContext()).willReturn(externalContext);
 		given(externalContext.getRequestLocale()).willReturn(Locale.GERMAN);
-		assertEquals(Locale.GERMAN, FacesUtils.getLocale(facesContext));
+		assertThat(FacesUtils.getLocale(facesContext), is(equalTo(Locale.GERMAN)));
 	}
 
 	@Test

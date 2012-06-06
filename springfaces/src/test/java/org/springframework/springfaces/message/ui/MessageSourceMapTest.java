@@ -18,7 +18,6 @@ package org.springframework.springfaces.message.ui;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -93,14 +92,14 @@ public class MessageSourceMapTest {
 	public void shouldGetValue() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
-		assertEquals("x", value.getCodes()[0]);
+		assertThat(value.getCodes()[0], is(equalTo("x")));
 	}
 
 	@Test
 	public void shouldUsePrefixCodes() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x");
-		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
+		assertThat(Arrays.asList(value.getCodes()), is(equalTo(Arrays.asList("a.x", "b.x", "c.x"))));
 	}
 
 	@Test
@@ -108,7 +107,7 @@ public class MessageSourceMapTest {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, null);
 		Value value = map.get("x");
 		given(this.messageSource.getMessage(msr("x"), nullLocale())).willReturn("message");
-		assertEquals("message", value.toString());
+		assertThat(value.toString(), is(equalTo("message")));
 	}
 
 	@Test
@@ -116,31 +115,31 @@ public class MessageSourceMapTest {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		Value value = map.get("x");
 		given(this.messageSource.getMessage(msr("a.x", "b.x", "c.x"), nullLocale())).willReturn("message");
-		assertEquals("message", value.toString());
+		assertThat(value.toString(), is(equalTo("message")));
 	}
 
 	@Test
 	public void shouldAllowNesting() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource);
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
-		assertEquals("x", value.getCodes()[0]);
-		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
+		assertThat(value.getCodes()[0], is(equalTo("x")));
+		assertThat(Arrays.asList(value.getArguments()), is(equalTo(Arrays.<Object> asList("y", "z"))));
 	}
 
 	@Test
 	public void shouldUsePrefixCodesWhenNesting() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", "b.", "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
-		assertEquals(Arrays.asList("a.x", "b.x", "c.x"), Arrays.asList(value.getCodes()));
-		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
+		assertThat(Arrays.asList(value.getCodes()), is(equalTo(Arrays.asList("a.x", "b.x", "c.x"))));
+		assertThat(Arrays.asList(value.getArguments()), is(equalTo(Arrays.<Object> asList("y", "z"))));
 	}
 
 	@Test
 	public void shouldSupportNullPrefixCodesWhenNesting() throws Exception {
 		MessageSourceMap map = new MessageSourceMap(this.messageSource, new String[] { "a.", null, "c." });
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x").get("y").get("z");
-		assertEquals(Arrays.asList("a.x", "x", "c.x"), Arrays.asList(value.getCodes()));
-		assertEquals(Arrays.asList("y", "z"), Arrays.asList(value.getArguments()));
+		assertThat(Arrays.asList(value.getCodes()), is(equalTo(Arrays.asList("a.x", "x", "c.x"))));
+		assertThat(Arrays.asList(value.getArguments()), is(equalTo(Arrays.<Object> asList("y", "z"))));
 	}
 
 	@Test
@@ -161,7 +160,7 @@ public class MessageSourceMapTest {
 		};
 		Value value = map.get("x");
 		given(this.messageSource.getMessage(msr("x"), eq(locale))).willReturn("message");
-		assertEquals("message", value.toString());
+		assertThat(value.toString(), is(equalTo("message")));
 	}
 
 	@Test

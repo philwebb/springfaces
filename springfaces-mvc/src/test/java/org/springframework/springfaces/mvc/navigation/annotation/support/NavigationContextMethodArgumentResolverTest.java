@@ -15,9 +15,11 @@
  */
 package org.springframework.springfaces.mvc.navigation.annotation.support;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockMethodParameter;
@@ -101,8 +103,8 @@ public class NavigationContextMethodArgumentResolverTest {
 	@Test
 	public void shouldSupportOutcome() throws Exception {
 		assertTrue(this.resolver.supportsParameter(mockMethodParameter(String.class)));
-		assertEquals("outcome", this.resolver.resolveArgument(mockMethodParameter(String.class), this.mavContainer,
-				this.webRequest, this.binderFactory));
+		assertThat(this.resolver.resolveArgument(mockMethodParameter(String.class), this.mavContainer, this.webRequest,
+				this.binderFactory), is(equalTo((Object) "outcome")));
 	}
 
 	private static interface ExtendsNavigationContext extends NavigationContext {

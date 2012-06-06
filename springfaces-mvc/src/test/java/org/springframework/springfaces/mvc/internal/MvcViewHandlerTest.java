@@ -15,10 +15,12 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -204,7 +206,7 @@ public class MvcViewHandlerTest {
 		UIViewRoot actual = this.handler.createView(this.context, "anything");
 		assertSame(viewRoot, actual);
 		verify(this.delegate).createView(this.context, "mvc");
-		assertEquals("v", SpringFacesModelHolder.getModel(viewRoot).get("mk"));
+		assertThat(SpringFacesModelHolder.getModel(viewRoot).get("mk"), is(equalTo((Object) "v")));
 	}
 
 	@Test
@@ -237,7 +239,7 @@ public class MvcViewHandlerTest {
 		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
 		this.handler.createView(this.context, "anything");
 		String actionUrl = this.handler.getActionURL(this.context, "mvc");
-		assertEquals("/rc/sp/si", actionUrl);
+		assertThat(actionUrl, is(equalTo("/rc/sp/si")));
 	}
 
 	@Test
@@ -249,7 +251,7 @@ public class MvcViewHandlerTest {
 		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
 		this.handler.restoreView(this.context, "anything");
 		String actionUrl = this.handler.getActionURL(this.context, "mvc");
-		assertEquals("/rc/sp/si", actionUrl);
+		assertThat(actionUrl, is(equalTo("/rc/sp/si")));
 	}
 
 	@Test
@@ -302,7 +304,7 @@ public class MvcViewHandlerTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
 		String bookmark = this.handler.getBookmarkableURL(this.context, this.viewId, parameters, includeViewParams);
-		assertEquals("/bookmark", bookmark);
+		assertThat(bookmark, is(equalTo("/bookmark")));
 	}
 
 	@Test
@@ -338,7 +340,7 @@ public class MvcViewHandlerTest {
 		Map<String, List<String>> parameters = new HashMap<String, List<String>>();
 		boolean includeViewParams = false;
 		String redirect = this.handler.getRedirectURL(this.context, this.viewId, parameters, includeViewParams);
-		assertEquals("/bookmark", redirect);
+		assertThat(redirect, is(equalTo("/bookmark")));
 	}
 
 	@Test

@@ -15,10 +15,12 @@
  */
 package org.springframework.springfaces.mvc.navigation.annotation;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -267,7 +269,7 @@ public class NavigationMethodOutcomeResolverTest {
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.setMessageConverters(messageConverters);
 		this.resolver.afterPropertiesSet();
-		assertEquals(messageConverters, this.resolver.getMessageConverters());
+		assertThat(this.resolver.getMessageConverters(), is(equalTo(messageConverters)));
 		this.resolver.resolve(this.facesContext, this.context);
 		verify(this.invocableNavigationMethod).setHandlerMethodReturnValueHandlers(this.returnValueHandlers.capture());
 		List<HandlerMethodReturnValueHandler> returnHandlers = fieldValueAsList(this.returnValueHandlers.getValue(),
@@ -276,11 +278,12 @@ public class NavigationMethodOutcomeResolverTest {
 		for (HandlerMethodReturnValueHandler handler : returnHandlers) {
 			handler = (HandlerMethodReturnValueHandler) unwrapFacesResponseCompleteReturnValueHandler(handler);
 			if (handler instanceof AbstractMessageConverterMethodProcessor) {
-				assertEquals(messageConverters, new DirectFieldAccessor(handler).getPropertyValue("messageConverters"));
+				assertThat(new DirectFieldAccessor(handler).getPropertyValue("messageConverters"),
+						is(equalTo((Object) messageConverters)));
 				i++;
 			}
 		}
-		assertEquals(2, i);
+		assertThat(i, is(2));
 	}
 
 	@Test
@@ -332,9 +335,9 @@ public class NavigationMethodOutcomeResolverTest {
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.afterPropertiesSet();
 		Set<NavigationMappingMethod> mappings = fieldValueAsSet(this.resolver, "navigationMethods");
-		assertEquals(expectedSize, mappings.size());
+		assertThat(mappings.size(), is(expectedSize));
 		for (NavigationMappingMethod mapping : mappings) {
-			assertEquals(expectController, mapping.isControllerBeanMethod());
+			assertThat(mapping.isControllerBeanMethod(), is(equalTo(expectController)));
 		}
 	}
 
@@ -415,7 +418,7 @@ public class NavigationMethodOutcomeResolverTest {
 		final Map<String, ?> model = Collections.singletonMap("k", "v");
 		NavigationOutcome resolved = doCustomResolve(view, model, false);
 		assertSame(view, resolved.getDestination());
-		assertEquals("v", resolved.getImplicitModel().get("k"));
+		assertThat(resolved.getImplicitModel().get("k"), is(equalTo((Object) "v")));
 	}
 
 	private NavigationOutcome doCustomResolve(final Object view, final Map<String, ?> model,

@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -144,7 +146,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		given(annotationMock.annotationType()).willReturn((Class) annotation);
 		given(methodParameter.getParameterAnnotations()).willReturn(new Annotation[] { annotationMock });
 		given(methodParameter.getParameterType()).willReturn((Class) Object.class);
-		assertEquals(expected, this.builder.isIgnored(this.nativeRequest, methodParameter));
+		assertThat(this.builder.isIgnored(this.nativeRequest, methodParameter), is(equalTo(expected)));
 	}
 
 	@Test
@@ -174,7 +176,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		MethodParameter methodParameter = mock(MethodParameter.class);
 		given(methodParameter.getParameterAnnotations()).willReturn(new Annotation[] {});
 		given(methodParameter.getParameterType()).willReturn((Class) type);
-		assertEquals(expected, this.builder.isIgnored(this.nativeRequest, methodParameter));
+		assertThat(this.builder.isIgnored(this.nativeRequest, methodParameter), is(equalTo(expected)));
 	}
 
 	@Test
@@ -206,9 +208,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("p2", "2");
 		setHandlerMethod("pathVariable");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(2, model.size());
-		assertEquals("1", model.get("pv1"));
-		assertEquals("2", model.get("p2"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("pv1"), is(equalTo((Object) "1")));
+		assertThat(model.get("p2"), is(equalTo((Object) "2")));
 	}
 
 	@Test
@@ -218,9 +220,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xb", new Integer(2));
 		setHandlerMethod("pathVariableByType");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(2, model.size());
-		assertEquals(new Long(1), model.get("p1"));
-		assertEquals(new Integer(2), model.get("p2"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("p1"), is(equalTo((Object) new Long(1))));
+		assertThat(model.get("p2"), is(equalTo((Object) new Integer(2))));
 	}
 
 	@Test
@@ -267,10 +269,10 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("p3", "3");
 		setHandlerMethod("requestParam");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(3, model.size());
-		assertEquals("1", model.get("pv1"));
-		assertEquals("2", model.get("p2"));
-		assertEquals("3", model.get("p3"));
+		assertThat(model.size(), is(3));
+		assertThat(model.get("pv1"), is(equalTo((Object) "1")));
+		assertThat(model.get("p2"), is(equalTo((Object) "2")));
+		assertThat(model.get("p3"), is(equalTo((Object) "3")));
 	}
 
 	@Test
@@ -281,10 +283,10 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xc", new Byte((byte) 3));
 		setHandlerMethod("requestParamByType");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(3, model.size());
-		assertEquals(new Long(1), model.get("p1"));
-		assertEquals(new Integer(2), model.get("p2"));
-		assertEquals(new Byte((byte) 3), model.get("p3"));
+		assertThat(model.size(), is(3));
+		assertThat(model.get("p1"), is(equalTo((Object) new Long(1))));
+		assertThat(model.get("p2"), is(equalTo((Object) new Integer(2))));
+		assertThat(model.get("p3"), is(equalTo((Object) new Byte((byte) 3))));
 	}
 
 	@Test
@@ -293,9 +295,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("x", new ComplexType(1, 2L));
 		setHandlerMethod("requestParamComplexType");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(2, model.size());
-		assertEquals("1", model.get("a"));
-		assertEquals("2", model.get("b"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("a"), is(equalTo((Object) "1")));
+		assertThat(model.get("b"), is(equalTo((Object) "2")));
 	}
 
 	@Test
@@ -332,9 +334,9 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xa", new ComplexType(1, 2L));
 		setHandlerMethod("requestParamComplexType");
 		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
-		assertEquals(2, model.size());
-		assertEquals("1", model.get("a"));
-		assertEquals("2", model.get("b"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("a"), is(equalTo((Object) "1")));
+		assertThat(model.get("b"), is(equalTo((Object) "2")));
 	}
 
 	// FIXME remaining test

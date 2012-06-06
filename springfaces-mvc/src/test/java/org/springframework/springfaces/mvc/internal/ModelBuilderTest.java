@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -77,7 +79,7 @@ public class ModelBuilderTest {
 	@Test
 	public void shouldSkipNullComponent() throws Exception {
 		this.modelBuilder.addFromComponent(null);
-		assertEquals(0, this.modelBuilder.getModel().size());
+		assertThat(this.modelBuilder.getModel().size(), is(0));
 	}
 
 	@Test
@@ -88,9 +90,9 @@ public class ModelBuilderTest {
 		component.getChildren().add(newUIParameter("p2", "v2"));
 		this.modelBuilder.addFromComponent(component);
 		Map<String, Object> model = this.modelBuilder.getModel();
-		assertEquals(2, model.size());
-		assertEquals("v1", model.get("p1"));
-		assertEquals("v2", model.get("p2"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("p1"), is(equalTo((Object) "v1")));
+		assertThat(model.get("p2"), is(equalTo((Object) "v2")));
 	}
 
 	@Test
@@ -101,7 +103,7 @@ public class ModelBuilderTest {
 		component.getChildren().add(newUIParameter("p1", "#{expression}"));
 		this.modelBuilder.addFromComponent(component);
 		Map<String, Object> model = this.modelBuilder.getModel();
-		assertEquals("#{expression}", model.get("p1"));
+		assertThat(model.get("p1"), is(equalTo((Object) "#{expression}")));
 	}
 
 	@Test
@@ -111,7 +113,7 @@ public class ModelBuilderTest {
 		component.getChildren().add(newUIParameter(null, person));
 		this.modelBuilder.addFromComponent(component);
 		Map<String, Object> model = this.modelBuilder.getModel();
-		assertEquals(person, model.get("person"));
+		assertThat(model.get("person"), is(equalTo((Object) person)));
 
 	}
 
@@ -123,7 +125,7 @@ public class ModelBuilderTest {
 		sourceModel.put("m2", "v2");
 		component.getChildren().add(newUIParameter(null, new SpringFacesModel(sourceModel)));
 		this.modelBuilder.addFromComponent(component);
-		assertEquals(sourceModel, this.modelBuilder.getModel());
+		assertThat(this.modelBuilder.getModel(), is(equalTo((Object) sourceModel)));
 	}
 
 	@Test
@@ -131,7 +133,7 @@ public class ModelBuilderTest {
 		UIComponent component = new UIPanel();
 		component.getChildren().add(newUIParameter("p1", null));
 		this.modelBuilder.addFromComponent(component);
-		assertEquals(0, this.modelBuilder.getModel().size());
+		assertThat(this.modelBuilder.getModel().size(), is(0));
 	}
 
 	@Test
@@ -141,7 +143,7 @@ public class ModelBuilderTest {
 		p.setDisable(true);
 		component.getChildren().add(p);
 		this.modelBuilder.addFromComponent(component);
-		assertEquals(0, this.modelBuilder.getModel().size());
+		assertThat(this.modelBuilder.getModel().size(), is(0));
 	}
 
 	@Test
@@ -150,13 +152,13 @@ public class ModelBuilderTest {
 		map.put("m1", "v1");
 		map.put("m2", "v2");
 		this.modelBuilder.add(map, false);
-		assertEquals(map, this.modelBuilder.getModel());
+		assertThat(this.modelBuilder.getModel(), is(equalTo(map)));
 	}
 
 	@Test
 	public void shouldSkipNullMap() throws Exception {
 		this.modelBuilder.add(null, false);
-		assertEquals(0, this.modelBuilder.getModel().size());
+		assertThat(this.modelBuilder.getModel().size(), is(0));
 	}
 
 	@Test
@@ -164,7 +166,7 @@ public class ModelBuilderTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("m1", "#{expression}");
 		this.modelBuilder.add(map, false);
-		assertEquals("#{expression}", this.modelBuilder.getModel().get("m1"));
+		assertThat(this.modelBuilder.getModel().get("m1"), is(equalTo((Object) "#{expression}")));
 	}
 
 	@Test
@@ -174,7 +176,7 @@ public class ModelBuilderTest {
 		given(this.application.evaluateExpressionGet(this.context, "#{expression}", Object.class)).willReturn(
 				"resolved");
 		this.modelBuilder.add(map, true);
-		assertEquals("resolved", this.modelBuilder.getModel().get("m1"));
+		assertThat(this.modelBuilder.getModel().get("m1"), is(equalTo((Object) "resolved")));
 	}
 
 	@Test
@@ -195,15 +197,15 @@ public class ModelBuilderTest {
 		parameters.put("m2", Collections.singletonList("v2"));
 		this.modelBuilder.addFromParameterList(parameters);
 		Map<String, Object> model = this.modelBuilder.getModel();
-		assertEquals(2, model.size());
-		assertEquals("v1", model.get("m1"));
-		assertEquals("v2", model.get("m2"));
+		assertThat(model.size(), is(2));
+		assertThat(model.get("m1"), is(equalTo((Object) "v1")));
+		assertThat(model.get("m2"), is(equalTo((Object) "v2")));
 	}
 
 	@Test
 	public void shouldSkipNullParametersList() throws Exception {
 		this.modelBuilder.addFromParameterList(null);
-		assertEquals(0, this.modelBuilder.getModel().size());
+		assertThat(this.modelBuilder.getModel().size(), is(0));
 	}
 
 	@Test
@@ -213,7 +215,7 @@ public class ModelBuilderTest {
 		given(this.application.evaluateExpressionGet(this.context, "#{expression}", Object.class)).willReturn(
 				"resolved");
 		this.modelBuilder.addFromParameterList(parameters);
-		assertEquals("resolved", this.modelBuilder.getModel().get("m1"));
+		assertThat(this.modelBuilder.getModel().get("m1"), is(equalTo((Object) "resolved")));
 	}
 
 	@Test
@@ -223,8 +225,8 @@ public class ModelBuilderTest {
 		parameters.put("m2", Arrays.asList("v2a", "v2b"));
 		this.modelBuilder.addFromParameterList(parameters);
 		Map<String, Object> model = this.modelBuilder.getModel();
-		assertEquals(1, model.size());
-		assertEquals("v1", model.get("m1"));
+		assertThat(model.size(), is(1));
+		assertThat(model.get("m1"), is(equalTo((Object) "v1")));
 	}
 
 	@Test
@@ -247,10 +249,10 @@ public class ModelBuilderTest {
 
 		Map<String, Object> model = this.modelBuilder.getModel();
 
-		assertEquals(3, model.size());
-		assertEquals("a1", model.get("m1"));
-		assertEquals("b2", model.get("m2"));
-		assertEquals("c3", model.get("m3"));
+		assertThat(model.size(), is(3));
+		assertThat(model.get("m1"), is(equalTo((Object) "a1")));
+		assertThat(model.get("m2"), is(equalTo((Object) "b2")));
+		assertThat(model.get("m3"), is(equalTo((Object) "c3")));
 	}
 
 	private UIParameter newUIParameter(String name, Object value) {

@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.mvc.navigation.requestmapped;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -119,7 +121,7 @@ public class RequestMappedRedirectViewTest {
 	public void shouldReturnDefaultContentType() throws Exception {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
-		assertEquals(AbstractView.DEFAULT_CONTENT_TYPE, view.getContentType());
+		assertThat(view.getContentType(), is(equalTo(AbstractView.DEFAULT_CONTENT_TYPE)));
 	}
 
 	@Test
@@ -127,7 +129,7 @@ public class RequestMappedRedirectViewTest {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
 		view.render(this.model, this.request, this.response);
-		assertEquals("/context/dispatcher/method", this.url);
+		assertThat(this.url, is(equalTo("/context/dispatcher/method")));
 	}
 
 	@Test
@@ -137,7 +139,7 @@ public class RequestMappedRedirectViewTest {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
 		view.render(this.model, this.request, this.response);
-		assertEquals("/context/dispatcher/type/method", this.url);
+		assertThat(this.url, is(equalTo("/context/dispatcher/type/method")));
 	}
 
 	@Test
@@ -146,7 +148,7 @@ public class RequestMappedRedirectViewTest {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
 		view.render(this.model, this.request, this.response);
-		assertEquals("/context/customdispatcher/method", this.url);
+		assertThat(this.url, is(equalTo("/context/customdispatcher/method")));
 	}
 
 	@Test
@@ -189,7 +191,7 @@ public class RequestMappedRedirectViewTest {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
 		view.render(this.model, this.request, this.response);
-		assertEquals("/context/dispatcher/method/1/2/3", this.url);
+		assertThat(this.url, is(equalTo("/context/dispatcher/method/1/2/3")));
 	}
 
 	@Test
@@ -209,7 +211,7 @@ public class RequestMappedRedirectViewTest {
 		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
 				this.handlerMethod);
 		String url = view.getBookmarkUrl(this.model, this.request);
-		assertEquals("/context/dispatcher/method", url);
+		assertThat(url, is(equalTo("/context/dispatcher/method")));
 	}
 
 	@Test
