@@ -16,8 +16,9 @@
 package org.springframework.springfaces.selectitems.ui;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
@@ -210,7 +211,8 @@ public class SelectItemsIteratorTest {
 		given(map.get(any())).willAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				if ("itemLabel".equals(invocation.getArguments()[0])) {
-					assertNotNull(SelectItemsIteratorTest.this.context.getExternalContext().getRequestMap().get("var"));
+					assertThat(SelectItemsIteratorTest.this.context.getExternalContext().getRequestMap().get("var"),
+							is(not(nullValue())));
 					return "label";
 				}
 				return invocation.callRealMethod();

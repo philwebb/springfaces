@@ -15,10 +15,11 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -185,7 +186,7 @@ public class MvcNavigationHandlerTest {
 		handleOutcome();
 		NavigationCase navigationCase = this.navigationHandler.getNavigationCase(this.context, this.fromAction,
 				this.outcome);
-		assertNotNull(navigationCase);
+		assertThat(navigationCase, is(not(nullValue())));
 		verify(this.destinationAndModelRegistry).put(eq(this.context), this.destinationAndModel.capture());
 		assertThat(this.destinationAndModel.getValue().getDestination(),
 				is(equalTo(this.navigationOutcome.getDestination())));

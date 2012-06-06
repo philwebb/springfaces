@@ -21,7 +21,6 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -186,7 +185,7 @@ public class UIPagedDataTest {
 		rows.setRowIndex(0);
 		rows.getRowData();
 		assertThat(this.requestMap.get("pageRequest"), is(equalTo((Object) "custom")));
-		assertNotNull(this.pageRequest);
+		assertThat(this.pageRequest, is(not(nullValue())));
 	}
 
 	@Test

@@ -15,10 +15,11 @@
  */
 package org.springframework.springfaces;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -137,8 +138,8 @@ public class SpringFacesIntegrationTest {
 	@Test
 	public void shouldHaveSetLastRefreshedDateOnLoad() throws Exception {
 		createSpringFacesIntegration();
-		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(this.servletContext));
-		assertNotNull(SpringFacesIntegration.getLastRefreshedDate(this.externalContext));
+		assertThat(SpringFacesIntegration.getLastRefreshedDate(this.servletContext), is(not(nullValue())));
+		assertThat(SpringFacesIntegration.getLastRefreshedDate(this.externalContext), is(not(nullValue())));
 	}
 
 	@Test
