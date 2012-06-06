@@ -15,7 +15,9 @@
  */
 package org.springframework.springfaces.internal;
 
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -56,6 +58,6 @@ public abstract class AbstractFacesWrapperTest<T, W extends FacesWrapper<T>> ext
 		T wrapped = mock(getTypeClass());
 		given(wrapperFactory.newWrapper(getTypeClass(), delegate)).willReturn(wrapped);
 		T actual = wrapper.getWrapped();
-		assertSame(wrapped, actual);
+		assertThat(actual, is(sameInstance(wrapped)));
 	}
 }

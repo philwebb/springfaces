@@ -17,8 +17,8 @@ package org.springframework.springfaces;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -155,8 +155,10 @@ public class SpringFacesIntegrationTest {
 	@Test
 	public void shouldGetCurrentInstace() throws Exception {
 		createSpringFacesIntegration();
-		assertSame(this.springFacesIntegration, SpringFacesIntegration.getCurrentInstance(this.servletContext));
-		assertSame(this.springFacesIntegration, SpringFacesIntegration.getCurrentInstance(this.externalContext));
+		assertThat(SpringFacesIntegration.getCurrentInstance(this.servletContext),
+				is(sameInstance(this.springFacesIntegration)));
+		assertThat(SpringFacesIntegration.getCurrentInstance(this.externalContext),
+				is(sameInstance(this.springFacesIntegration)));
 	}
 
 	@Test
@@ -165,7 +167,7 @@ public class SpringFacesIntegrationTest {
 		Application application = mock(Application.class);
 		SpringFacesIntegration.postConstructApplicationEvent(this.externalContext, application);
 		verify(this.applicationContext).publishEvent(this.applicationEventCaptor.capture());
-		assertSame(application, this.applicationEventCaptor.getValue().getSource());
+		assertThat(this.applicationEventCaptor.getValue().getSource(), is(sameInstance((Object) application)));
 	}
 
 	@Test
@@ -175,6 +177,6 @@ public class SpringFacesIntegrationTest {
 		createSpringFacesIntegration();
 		this.springFacesIntegration.onApplicationEvent(new ContextRefreshedEvent(this.applicationContext));
 		verify(this.applicationContext).publishEvent(this.applicationEventCaptor.capture());
-		assertSame(application, this.applicationEventCaptor.getValue().getSource());
+		assertThat(this.applicationEventCaptor.getValue().getSource(), is(sameInstance((Object) application)));
 	}
 }

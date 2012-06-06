@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -292,7 +292,7 @@ public class NavigationMethodOutcomeResolverTest {
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.setWebBindingInitializer(webBindingInitializer);
 		this.resolver.afterPropertiesSet();
-		assertSame(webBindingInitializer, this.resolver.getWebBindingInitializer());
+		assertThat(this.resolver.getWebBindingInitializer(), is(sameInstance(webBindingInitializer)));
 		this.resolver.resolve(this.facesContext, this.context);
 		verify(this.invocableNavigationMethod).setDataBinderFactory(this.dataBinderFactory.capture());
 		NativeWebRequest webRequest = mock(NativeWebRequest.class);
@@ -409,7 +409,7 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldNotWrapResolvedNavigationOutcome() throws Exception {
 		final NavigationOutcome view = new NavigationOutcome("");
 		NavigationOutcome resolved = doCustomResolve(view, null, false);
-		assertSame(view, resolved);
+		assertThat(resolved, is(sameInstance(view)));
 	}
 
 	@Test
@@ -417,7 +417,7 @@ public class NavigationMethodOutcomeResolverTest {
 		final Object view = "";
 		final Map<String, ?> model = Collections.singletonMap("k", "v");
 		NavigationOutcome resolved = doCustomResolve(view, model, false);
-		assertSame(view, resolved.getDestination());
+		assertThat(resolved.getDestination(), is(sameInstance(view)));
 		assertThat(resolved.getImplicitModel().get("k"), is(equalTo((Object) "v")));
 	}
 

@@ -16,7 +16,7 @@
 package org.springframework.springfaces.page.ui;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -49,7 +49,7 @@ public class PagedPrimeFacesSupportTest {
 	public void shouldNotWrapWithoutPrimeFaces() throws Exception {
 		PagedPrimeFacesSupport.setHasPrimeFaces(false);
 		PagedDataRows<Object> wrapped = PagedPrimeFacesSupport.getInstance().wrapPagedDataRows(this.pagedDataRows);
-		assertSame(wrapped, this.pagedDataRows);
+		assertThat(this.pagedDataRows, is(sameInstance(wrapped)));
 	}
 
 	@Test

@@ -17,7 +17,7 @@ package org.springframework.springfaces.expression.el;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -96,7 +96,8 @@ public class ELPropertyAccessorTest {
 	public void shouldReadIfInEl() throws Exception {
 		willResolve(null, this.name, this.value);
 		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(true));
-		assertSame(this.value, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
+		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name).getValue(),
+				is(sameInstance(this.value)));
 	}
 
 	@Test
@@ -120,7 +121,8 @@ public class ELPropertyAccessorTest {
 		willResolve(null, this.name, this.value);
 		willResolve(this.resolveBase, this.resolveProperty, expected);
 		assertThat(this.elPropertyAccessor.canRead(this.context, this.target, this.name), is(true));
-		assertSame(expected, this.elPropertyAccessor.read(this.context, this.target, this.name).getValue());
+		assertThat(this.elPropertyAccessor.read(this.context, this.target, this.name).getValue(),
+				is(sameInstance(expected)));
 	}
 
 	@Test

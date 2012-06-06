@@ -17,7 +17,7 @@ package org.springframework.springfaces.expression.el;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -57,6 +57,6 @@ public class FacesPropertyAccessorTest {
 		FacesContextSetter.setCurrentInstance(facesContext);
 		ELContext elContext = mock(ELContext.class);
 		given(facesContext.getELContext()).willReturn(elContext);
-		assertSame(elContext, this.facesPropertyAccessor.getElContext(this.context, elContext));
+		assertThat(this.facesPropertyAccessor.getElContext(this.context, elContext), is(sameInstance(elContext)));
 	}
 }

@@ -35,7 +35,7 @@ public class FacesHandlerInterceptorTest {
 	// @Test
 	// public void shouldReturnHandlerIfNotHandlerMethod() throws Exception {
 	// Object handler = new Object();
-	// assertSame(handler, HandlerUtils.getHandlerBean(handler));
+	// assertThat(handler, HandlerUtils.getHandlerBean(handler));
 	// }
 	//
 	// @Test
@@ -45,13 +45,13 @@ public class FacesHandlerInterceptorTest {
 	// given(beanFactory.containsBean("beanName")).willReturn(true);
 	// given(beanFactory.getBean("beanName")).willReturn(handler);
 	// HandlerMethod handlerMethod = new HandlerMethod("beanName", beanFactory, method);
-	// assertSame(handler, HandlerUtils.getHandlerBean(handlerMethod));
+	// assertThat(handler, HandlerUtils.getHandlerBean(handlerMethod));
 	// }
 	//
 	// @Test
 	// public void shouldUnwrapHandlerMethod() throws Exception {
 	// Object handler = new Object();
 	// HandlerMethod handlerMethod = new HandlerMethod(handler, method);
-	// assertSame(handler, HandlerUtils.getHandlerBean(handlerMethod));
+	// assertThat(handler, HandlerUtils.getHandlerBean(handlerMethod));
 	// }
 }

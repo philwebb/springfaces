@@ -18,7 +18,7 @@ package org.springframework.springfaces.mvc.navigation.requestmapped;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -203,10 +203,10 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 		this.resolver.setParameterNameDiscoverer(parameterNameDiscoverer);
 		this.resolver.setDispatcherServletPath("/cdp");
 		this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, null);
-		assertSame(customArgumentResolvers, this.createdViewContext.getCustomArgumentResolvers());
-		assertSame(pathMatcher, this.createdViewContext.getPathMatcher());
-		assertSame(webBindingInitializer, this.createdViewContext.getWebBindingInitializer());
-		assertSame(parameterNameDiscoverer, this.createdViewContext.getParameterNameDiscoverer());
+		assertThat(this.createdViewContext.getCustomArgumentResolvers(), is(sameInstance(customArgumentResolvers)));
+		assertThat(this.createdViewContext.getPathMatcher(), is(sameInstance(pathMatcher)));
+		assertThat(this.createdViewContext.getWebBindingInitializer(), is(sameInstance(webBindingInitializer)));
+		assertThat(this.createdViewContext.getParameterNameDiscoverer(), is(sameInstance(parameterNameDiscoverer)));
 		assertThat(this.createdViewContext.getDispatcherServletPath(), is(equalTo("/cdp")));
 	}
 
@@ -214,7 +214,7 @@ public class RequestMappedRedirectDestinationViewResolverTest {
 	public void shouldPropagateMap() throws Exception {
 		SpringFacesModel model = new SpringFacesModel(Collections.singletonMap("k", "v"));
 		ModelAndView resolved = this.resolver.resolveDestination(this.facesContext, "@method", Locale.UK, model);
-		assertSame(this.resolvedView, resolved.getView());
+		assertThat(resolved.getView(), is(sameInstance(this.resolvedView)));
 		assertThat(resolved.getModel().get("k"), is(equalTo((Object) "v")));
 	}
 

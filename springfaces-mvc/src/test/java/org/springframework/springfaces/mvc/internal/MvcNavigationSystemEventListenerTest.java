@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.internal;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -74,7 +74,8 @@ public class MvcNavigationSystemEventListenerTest {
 		UIComponent component = mock(UIComponent.class);
 		SystemEvent event = new PreRenderComponentEvent(component);
 		this.listener.processEvent(event);
-		assertSame(event, MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context));
+		assertThat(MvcNavigationSystemEventListener.getLastPreRenderComponentEvent(this.context),
+				is(sameInstance(event)));
 	}
 
 	@Test

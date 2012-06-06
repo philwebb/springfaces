@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.expression.el;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.springfaces.mvc.SpringFacesMocks.mockUIViewRootWithModelSupport;
@@ -77,7 +77,7 @@ public class ImplicitSpringFacesELResolverTest {
 		given(this.springFacesContext.getHandler()).willReturn(handler);
 		Object value = this.resolver.getValue(this.context, null, "handler");
 		assertThat(this.context.isPropertyResolved(), is(true));
-		assertSame(handler, value);
+		assertThat(value, is(sameInstance(handler)));
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class ImplicitSpringFacesELResolverTest {
 		given(this.springFacesContext.getController()).willReturn(controller);
 		Object value = this.resolver.getValue(this.context, null, "controller");
 		assertThat(this.context.isPropertyResolved(), is(true));
-		assertSame(controller, value);
+		assertThat(value, is(sameInstance(controller)));
 	}
 
 	@Test

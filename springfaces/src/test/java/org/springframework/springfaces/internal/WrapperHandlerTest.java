@@ -17,7 +17,7 @@ package org.springframework.springfaces.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -143,21 +143,21 @@ public class WrapperHandlerTest {
 	public void shouldReturnDelegateWithoutApplicationContext() throws Exception {
 		FacesContextSetter.setCurrentInstance(this.facesContext);
 		Object actual = this.wrapperHandler.getWrapped();
-		assertSame(this.delegate, actual);
+		assertThat(actual, is(sameInstance(this.delegate)));
 	}
 
 	@Test
 	public void shouldReturnDelegateWithoutFacesContext() throws Exception {
 		cleanupFacesContext();
 		Object actual = this.wrapperHandler.getWrapped();
-		assertSame(this.delegate, actual);
+		assertThat(actual, is(sameInstance(this.delegate)));
 	}
 
 	@Test
 	public void shouldWrap() throws Exception {
 		Object wrapped = setupWrapperFactory();
 		Object actual = this.wrapperHandler.getWrapped();
-		assertSame(wrapped, actual);
+		assertThat(actual, sameInstance(wrapped));
 	}
 
 	@Test

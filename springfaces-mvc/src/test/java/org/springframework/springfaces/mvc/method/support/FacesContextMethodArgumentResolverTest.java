@@ -16,7 +16,7 @@
 package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
@@ -101,56 +101,62 @@ public class FacesContextMethodArgumentResolverTest {
 	public void shouldResolveFacesContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(FacesContext.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.facesContext, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.facesContext)));
 	}
 
 	@Test
 	public void shouldResolveExternalContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExternalContext.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.externalContext, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.externalContext)));
 	}
 
 	@Test
 	public void shouldResolvePartialViewContext() throws Exception {
 		MethodParameter parameter = mockMethodParameter(PartialViewContext.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.partialViewContext, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.partialViewContext)));
 	}
 
 	@Test
 	public void shouldResolveApplication() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Application.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.application, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.application)));
 	}
 
 	@Test
 	public void shouldResolveResourceHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ResourceHandler.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.resourceHandler, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.resourceHandler)));
 	}
 
 	@Test
 	public void shouldResolveExceptionHandler() throws Exception {
 		MethodParameter parameter = mockMethodParameter(ExceptionHandler.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.exceptionHandler, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null),
+				is(sameInstance((Object) this.exceptionHandler)));
 	}
 
 	@Test
 	public void shouldResolveUIViewRoot() throws Exception {
 		MethodParameter parameter = mockMethodParameter(UIViewRoot.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.viewRoot, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null), is(sameInstance((Object) this.viewRoot)));
 	}
 
 	@Test
 	public void shouldResolveLocale() throws Exception {
 		MethodParameter parameter = mockMethodParameter(Locale.class);
 		assertThat(this.resolver.supportsParameter(parameter), is(true));
-		assertSame(this.locale, this.resolver.resolveArgument(parameter, null, null, null));
+		assertThat(this.resolver.resolveArgument(parameter, null, null, null), is(sameInstance((Object) this.locale)));
 	}
 
 	@Test

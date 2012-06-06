@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.navigation;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -75,7 +75,7 @@ public class DestinationViewResolverChainTest {
 		given(r2.resolveDestination(this.context, this.destination, this.locale, this.model)).willReturn(modelAndView);
 		this.chain.setResolvers(resolvers);
 		ModelAndView resolved = this.chain.resolveDestination(this.context, this.destination, this.locale, this.model);
-		assertSame(modelAndView, resolved);
+		assertThat(resolved, is(sameInstance(modelAndView)));
 		verify(r1).resolveDestination(this.context, this.destination, this.locale, this.model);
 		verify(r3, never()).resolveDestination(this.context, resolved, this.locale, this.model);
 	}

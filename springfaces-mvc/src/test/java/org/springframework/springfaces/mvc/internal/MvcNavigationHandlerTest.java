@@ -17,8 +17,8 @@ package org.springframework.springfaces.mvc.internal;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -194,9 +194,9 @@ public class MvcNavigationHandlerTest {
 		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
 		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
 		assertThat(navigationContext.isPreemptive(), is(true));
-		assertSame(component, navigationContext.getComponent());
-		assertSame(this.handler, navigationContext.getHandler());
-		assertSame(this.controller, navigationContext.getController());
+		assertThat(navigationContext.getComponent(), is(sameInstance(component)));
+		assertThat(navigationContext.getHandler(), is(sameInstance(this.handler)));
+		assertThat(navigationContext.getController(), is(sameInstance(this.controller)));
 	}
 
 	@Test
@@ -248,9 +248,9 @@ public class MvcNavigationHandlerTest {
 		assertThat(navigationContext.getOutcome(), is(equalTo(this.outcome)));
 		assertThat(navigationContext.getFromAction(), is(equalTo(this.fromAction)));
 		assertThat(navigationContext.isPreemptive(), is(false));
-		assertSame(component, navigationContext.getComponent());
-		assertSame(this.handler, navigationContext.getHandler());
-		assertSame(this.controller, navigationContext.getController());
+		assertThat(navigationContext.getComponent(), is(sameInstance(component)));
+		assertThat(navigationContext.getHandler(), is(sameInstance(this.handler)));
+		assertThat(navigationContext.getController(), is(sameInstance(this.controller)));
 	}
 
 	@Test

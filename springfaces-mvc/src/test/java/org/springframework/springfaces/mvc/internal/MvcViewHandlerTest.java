@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -160,7 +160,7 @@ public class MvcViewHandlerTest {
 
 	@Test
 	public void shouldWrapDelegate() throws Exception {
-		assertSame(this.delegate, this.handler.getWrapped());
+		assertThat(this.handler.getWrapped(), is(sameInstance(this.delegate)));
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class MvcViewHandlerTest {
 		given(this.springFacesContext.getRendering()).willReturn(modelAndViewArtifact);
 		given(this.delegate.createView(this.context, "mvc")).willReturn(viewRoot);
 		UIViewRoot actual = this.handler.createView(this.context, "anything");
-		assertSame(viewRoot, actual);
+		assertThat(actual, is(sameInstance(viewRoot)));
 		verify(this.delegate).createView(this.context, "mvc");
 		assertThat(SpringFacesModelHolder.getModel(viewRoot).get("mk"), is(equalTo((Object) "v")));
 	}
@@ -357,7 +357,7 @@ public class MvcViewHandlerTest {
 				this.destinationViewResolver.resolveDestination(eq(this.context), eq(destination), any(Locale.class),
 						any(SpringFacesModel.class))).willReturn(modelAndView);
 		UIViewRoot createdView = this.handler.createView(this.context, "/test");
-		assertSame(view, ((NavigationResponseUIViewRoot) createdView).getModelAndView().getView());
+		assertThat(((NavigationResponseUIViewRoot) createdView).getModelAndView().getView(), is(sameInstance(view)));
 		verify(destinationAndModel).getModel(any(FacesContext.class), anyMap(), eq(model));
 	}
 

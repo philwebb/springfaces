@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.method.support;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
@@ -98,7 +98,7 @@ public class ImplicitObjectMethodArgumentResolverTest {
 			this.resolver.supportsParameter(mockMethodParameter(Type.class));
 			fail("did not throw");
 		} catch (RuntimeException e) {
-			assertSame(ex, e.getCause());
+			assertThat(e.getCause(), is(sameInstance((Throwable) ex)));
 		}
 	}
 
@@ -107,8 +107,8 @@ public class ImplicitObjectMethodArgumentResolverTest {
 		Type resolved = mock(Type.class);
 		given(this.call.call()).willReturn(resolved);
 		this.resolver.add(Type.class, this.call);
-		assertSame(resolved, this.resolver.resolveArgument(mockMethodParameter(Type.class), this.mavContainer,
-				this.webRequest, this.binderFactory));
+		assertThat(this.resolver.resolveArgument(mockMethodParameter(Type.class), this.mavContainer, this.webRequest,
+				this.binderFactory), is(sameInstance((Object) resolved)));
 	}
 
 	@Test

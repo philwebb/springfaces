@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -66,8 +66,8 @@ public class DestinationAndModelRegistryTest {
 		String k2 = this.registry.put(this.context, d2);
 
 		assertThat(k1, is(not(equalTo(k2))));
-		assertSame(d1, this.registry.get(this.context, k1));
-		assertSame(d2, this.registry.get(this.context, k2));
+		assertThat(this.registry.get(this.context, k1), is(sameInstance(d1)));
+		assertThat(this.registry.get(this.context, k2), is(sameInstance(d2)));
 	}
 
 	@Test

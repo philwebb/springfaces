@@ -17,7 +17,7 @@ package org.springframework.springfaces.internal;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.eq;
@@ -79,7 +79,7 @@ public class SpringRenderKitFactoryTest {
 	@Test
 	public void shouldWrapDelegate() throws Exception {
 		SpringRenderKitFactory factory = new SpringRenderKitFactory(this.delegate);
-		assertSame(this.delegate, factory.getWrapped());
+		assertThat(factory.getWrapped(), is(sameInstance(this.delegate)));
 	}
 
 	@Test
@@ -91,7 +91,7 @@ public class SpringRenderKitFactoryTest {
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(this.delegate).addRenderKit(eq("b"), renderKitCaptor.capture());
 		assertThat(renderKitCaptor.getValue(), is(instanceOf(SpringRenderKit.class)));
-		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		assertThat(((SpringRenderKit) renderKitCaptor.getValue()).getWrapped(), is(sameInstance(this.renderKit)));
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class SpringRenderKitFactoryTest {
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(this.delegate).addRenderKit(eq(this.renderKitId), renderKitCaptor.capture());
 		assertThat(renderKitCaptor.getValue(), is(instanceOf(SpringRenderKit.class)));
-		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		assertThat(((SpringRenderKit) renderKitCaptor.getValue()).getWrapped(), is(sameInstance(this.renderKit)));
 	}
 
 	@Test
@@ -109,6 +109,6 @@ public class SpringRenderKitFactoryTest {
 		this.factory.addRenderKit(this.renderKitId, springRenderKit);
 		ArgumentCaptor<RenderKit> renderKitCaptor = ArgumentCaptor.forClass(RenderKit.class);
 		verify(this.delegate).addRenderKit(eq(this.renderKitId), renderKitCaptor.capture());
-		assertSame(this.renderKit, ((SpringRenderKit) renderKitCaptor.getValue()).getWrapped());
+		assertThat(((SpringRenderKit) renderKitCaptor.getValue()).getWrapped(), is(sameInstance(this.renderKit)));
 	}
 }

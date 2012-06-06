@@ -16,7 +16,7 @@
 package org.springframework.springfaces.mvc.expression.el;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -66,7 +66,7 @@ public class SpringFacesBeanELResolverTest {
 			given(this.springFacesContext.getRendering()).willReturn(rendering);
 			WebApplicationContext applicationContext = mock(WebApplicationContext.class);
 			given(this.springFacesContext.getWebApplicationContext()).willReturn(applicationContext);
-			assertSame(applicationContext, this.resolver.getBeanFactory(this.elContext));
+			assertThat(this.resolver.getBeanFactory(this.elContext), is(sameInstance((Object) applicationContext)));
 		} finally {
 			SpringFacesContextSetter.setCurrentInstance(null);
 		}

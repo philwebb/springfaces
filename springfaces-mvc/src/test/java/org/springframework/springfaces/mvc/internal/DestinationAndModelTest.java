@@ -17,7 +17,7 @@ package org.springframework.springfaces.mvc.internal;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -67,7 +67,7 @@ public class DestinationAndModelTest {
 		Object destination = new Object();
 		NavigationOutcome outcome = new NavigationOutcome(destination);
 		DestinationAndModel dam = new DestinationAndModel(outcome, (ActionEvent) null);
-		assertSame(destination, dam.getDestination());
+		assertThat(dam.getDestination(), is(sameInstance(destination)));
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class DestinationAndModelTest {
 		UIComponent component = mock(UIComponent.class);
 		PreRenderComponentEvent preRenderComponentEvent = new PreRenderComponentEvent(component);
 		DestinationAndModel dam = new DestinationAndModel(outcome, preRenderComponentEvent);
-		assertSame(component, dam.getComponent());
+		assertThat(dam.getComponent(), is(sameInstance(component)));
 	}
 
 	@Test
@@ -99,7 +99,7 @@ public class DestinationAndModelTest {
 		UIComponent component = mock(UIComponent.class);
 		ActionEvent actionEvent = new ActionEvent(component);
 		DestinationAndModel dam = new DestinationAndModel(outcome, actionEvent);
-		assertSame(component, dam.getComponent());
+		assertThat(dam.getComponent(), is(sameInstance(component)));
 	}
 
 	@Test

@@ -17,7 +17,7 @@ package org.springframework.springfaces.internal;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertSame;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -57,7 +57,7 @@ public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTe
 					.getFactory(FactoryFinder.APPLICATION_FACTORY);
 			Application actual = applicationFactory.getApplication();
 			assertThat(actual, is(instanceOf(SpringApplication.class)));
-			assertSame(application, ((FacesWrapper<Application>) actual).getWrapped());
+			assertThat(((FacesWrapper<Application>) actual).getWrapped(), is(sameInstance(application)));
 		} finally {
 			FactoryFinder.releaseFactories();
 			FactoryFinder.setFactory(FactoryFinder.APPLICATION_FACTORY, null);
