@@ -30,7 +30,7 @@
 			<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
 				sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
 
-			<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" lazy="true" var="hotel">
+			<p:dataTable value="#{hotels}" paginator="true" rows="#{hotels.pageSize}" var="hotel">
 				<p:column headerText="Name">
 					<h:link value="#{hotel.name}" outcome="spring:@hotelController.hotel">
 						<f:param name="country" value="#{hotel.city.country}"/>

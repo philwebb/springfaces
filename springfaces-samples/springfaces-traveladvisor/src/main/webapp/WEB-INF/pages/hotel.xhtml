@@ -34,7 +34,7 @@
 				<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
 			</div>
 
-			<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" lazy="true" var="review">
+			<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" var="review">
 				<p:column headerText="Reviews">
 					<p>
 						<h:link value="#{review.title}" outcome="spring:@hotelReview">
