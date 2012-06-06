@@ -19,12 +19,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -248,7 +248,7 @@ public class FacesUtilsTest {
 		}
 
 		public void assertCalled() {
-			assertThat("Expected to be called", this.requestMapAtTimeOfCall, is(notNull()));
+			assertThat("Expected to be called", this.requestMapAtTimeOfCall, is(not(nullValue())));
 		}
 	}
 }
