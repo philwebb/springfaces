@@ -40,13 +40,13 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  */
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {
 
-	private LifecycleAccess lifecycleAccess = createLifecycleAccess();
+	private LifecycleAccessor lifecycleAccessor = createLifecycleAccessor();
 
 	private ServletContext servletContext;
 
 	public void setServletContext(ServletContext servletContext) {
 		this.servletContext = servletContext;
-		this.lifecycleAccess.setServletContext(servletContext);
+		this.lifecycleAccessor.setServletContext(servletContext);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 		}
 		WebApplicationContext webApplicationContext = RequestContextUtils.getWebApplicationContext(request,
 				this.servletContext);
-		initializeSpringFacesContext(this.lifecycleAccess, webApplicationContext, request, response, handler);
+		initializeSpringFacesContext(this.lifecycleAccessor, webApplicationContext, request, response, handler);
 		return true;
 	}
 
@@ -79,18 +79,18 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	 * @param response the response
 	 * @param handler the handler
 	 */
-	protected void initializeSpringFacesContext(LifecycleAccess lifecycleAccess,
+	protected void initializeSpringFacesContext(LifecycleAccessor lifecycleAccess,
 			WebApplicationContext webApplicationContext, HttpServletRequest request, HttpServletResponse response,
 			Object handler) {
-		new DefaultSpringFacesContext(this.lifecycleAccess, webApplicationContext, request, response, handler);
+		new DefaultSpringFacesContext(this.lifecycleAccessor, webApplicationContext, request, response, handler);
 	}
 
 	/**
-	 * Factory method used to create the {@link LifecycleAccess}.
-	 * @return the {@link LifecycleAccess}.
+	 * Factory method used to create the {@link LifecycleAccessor}.
+	 * @return the {@link LifecycleAccessor}.
 	 */
-	protected LifecycleAccess createLifecycleAccess() {
-		return new LifecycleAccess();
+	protected LifecycleAccessor createLifecycleAccessor() {
+		return new LifecycleAccessor();
 	}
 
 	/**
@@ -115,6 +115,6 @@ public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implement
 	 * @param lifecycleId The lifecycle id or <tt>null</tt>
 	 */
 	public void setLifecycleId(String lifecycleId) {
-		this.lifecycleAccess.setLifecycleId(lifecycleId);
+		this.lifecycleAccessor.setLifecycleId(lifecycleId);
 	}
 }

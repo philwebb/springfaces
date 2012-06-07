@@ -21,6 +21,7 @@ import javax.faces.lifecycle.LifecycleFactory;
 import javax.faces.webapp.FacesServlet;
 import javax.servlet.ServletContext;
 
+import org.springframework.util.Assert;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.DispatcherServlet;
 
@@ -31,18 +32,22 @@ import org.springframework.web.servlet.DispatcherServlet;
  * 
  * @author Phillip Webb
  */
-public class LifecycleAccess implements ServletContextAware {
+public class LifecycleAccessor implements ServletContextAware {
 
 	private ServletContext servletContext;
-	private Lifecycle lifecycle;
+
 	private String lifecycleId;
 
+	private Lifecycle cachedLifecycle;
+
 	public void setServletContext(ServletContext servletContext) {
+		this.cachedLifecycle = null;
 		this.servletContext = servletContext;
 	}
 
 	public Lifecycle getLifecycle() {
-		if (this.lifecycle == null) {
+		Assert.state(this.servletContext != null, "ServletContext has not been set");
+		if (this.cachedLifecycle == null) {
 			String lifecycleIdToUse = this.lifecycleId;
 			LifecycleFactory lifecycleFactory = (LifecycleFactory) FactoryFinder
 					.getFactory(FactoryFinder.LIFECYCLE_FACTORY);
@@ -52,9 +57,9 @@ public class LifecycleAccess implements ServletContextAware {
 			if (lifecycleIdToUse == null) {
 				lifecycleIdToUse = LifecycleFactory.DEFAULT_LIFECYCLE;
 			}
-			this.lifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
+			this.cachedLifecycle = lifecycleFactory.getLifecycle(lifecycleIdToUse);
 		}
-		return this.lifecycle;
+		return this.cachedLifecycle;
 	}
 
 	/**
@@ -65,7 +70,7 @@ public class LifecycleAccess implements ServletContextAware {
 	 * @param lifecycleId The lifecycle id or <tt>null</tt>
 	 */
 	public void setLifecycleId(String lifecycleId) {
-		this.lifecycle = null;
+		this.cachedLifecycle = null;
 		this.lifecycleId = lifecycleId;
 	}
 }

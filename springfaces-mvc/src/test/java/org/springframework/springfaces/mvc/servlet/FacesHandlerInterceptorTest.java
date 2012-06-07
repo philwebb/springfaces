@@ -48,7 +48,7 @@ public class FacesHandlerInterceptorTest {
 	private MockFacesHandlerInterceptor interceptor;
 
 	@Mock
-	private LifecycleAccess lifecycleAccess;
+	private LifecycleAccessor lifecycleAccessor;
 
 	@Mock
 	Object handler;
@@ -110,28 +110,28 @@ public class FacesHandlerInterceptorTest {
 	@Test
 	public void shouldDelegeSetServletContextToLifecycleAccess() throws Exception {
 		this.interceptor.setServletContext(this.servletContext);
-		verify(this.lifecycleAccess).setServletContext(this.servletContext);
+		verify(this.lifecycleAccessor).setServletContext(this.servletContext);
 	}
 
 	@Test
 	public void shouldDelegateSetLifecycleId() throws Exception {
 		String lifecycleId = "id";
 		this.interceptor.setLifecycleId(lifecycleId);
-		verify(this.lifecycleAccess).setLifecycleId(lifecycleId);
+		verify(this.lifecycleAccessor).setLifecycleId(lifecycleId);
 	}
 
 	private class MockFacesHandlerInterceptor extends FacesHandlerInterceptor {
 
 		@Override
-		protected LifecycleAccess createLifecycleAccess() {
-			return FacesHandlerInterceptorTest.this.lifecycleAccess;
+		protected LifecycleAccessor createLifecycleAccessor() {
+			return FacesHandlerInterceptorTest.this.lifecycleAccessor;
 		}
 
 		@Override
-		protected void initializeSpringFacesContext(LifecycleAccess lifecycleAccess,
+		protected void initializeSpringFacesContext(LifecycleAccessor lifecycleAccess,
 				WebApplicationContext webApplicationContext, HttpServletRequest request, HttpServletResponse response,
 				Object handler) {
-			assertThat(lifecycleAccess, is(FacesHandlerInterceptorTest.this.lifecycleAccess));
+			assertThat(lifecycleAccess, is(FacesHandlerInterceptorTest.this.lifecycleAccessor));
 			assertThat(request, is(FacesHandlerInterceptorTest.this.request));
 			assertThat(response, is(FacesHandlerInterceptorTest.this.response));
 			FacesHandlerInterceptorTest.this.initializedSpringFacesContextHandler = handler;

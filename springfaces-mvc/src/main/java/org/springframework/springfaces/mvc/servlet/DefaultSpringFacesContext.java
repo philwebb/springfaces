@@ -41,7 +41,7 @@ import org.springframework.web.method.HandlerMethod;
  */
 public class DefaultSpringFacesContext extends SpringFacesContext {
 
-	private LifecycleAccess lifecycleAccess;
+	private LifecycleAccessor lifecycleAccessor;
 	private WebApplicationContext webApplicationContext;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -50,9 +50,9 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 	private boolean released;
 	private ModelAndViewArtifact rendering;
 
-	public DefaultSpringFacesContext(LifecycleAccess lifecycleAccess, WebApplicationContext webApplicationContext,
+	public DefaultSpringFacesContext(LifecycleAccessor lifecycleAccessor, WebApplicationContext webApplicationContext,
 			HttpServletRequest request, HttpServletResponse response, Object handler) {
-		this.lifecycleAccess = lifecycleAccess;
+		this.lifecycleAccessor = lifecycleAccessor;
 		this.webApplicationContext = webApplicationContext;
 		this.request = request;
 		this.response = response;
@@ -105,7 +105,7 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 		try {
 			FacesContext facesContext = getFacesContext();
 			try {
-				Lifecycle lifecycle = this.lifecycleAccess.getLifecycle();
+				Lifecycle lifecycle = this.lifecycleAccessor.getLifecycle();
 				lifecycle.execute(facesContext);
 				lifecycle.render(facesContext);
 			} finally {
@@ -144,7 +144,7 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 						.getFactory(FactoryFinder.FACES_CONTEXT_FACTORY);
 				ServletContext servletContext = DefaultSpringFacesContext.this.webApplicationContext
 						.getServletContext();
-				Lifecycle lifecycle = DefaultSpringFacesContext.this.lifecycleAccess.getLifecycle();
+				Lifecycle lifecycle = DefaultSpringFacesContext.this.lifecycleAccessor.getLifecycle();
 				this.delegate = facesContextFactory.getFacesContext(servletContext,
 						DefaultSpringFacesContext.this.request, DefaultSpringFacesContext.this.response, lifecycle);
 			}
