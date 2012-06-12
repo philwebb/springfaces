@@ -52,6 +52,11 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 
 	public DefaultSpringFacesContext(LifecycleAccessor lifecycleAccessor, WebApplicationContext webApplicationContext,
 			HttpServletRequest request, HttpServletResponse response, Object handler) {
+		Assert.notNull(lifecycleAccessor, "LifecycleAccessor must not be null");
+		Assert.notNull(webApplicationContext, "WebApplicationContext must not be null");
+		Assert.notNull(request, "Request must not be null");
+		Assert.notNull(response, "Response must not be null");
+		Assert.notNull(handler, "Handler must not be null");
 		this.lifecycleAccessor = lifecycleAccessor;
 		this.webApplicationContext = webApplicationContext;
 		this.request = request;
@@ -98,7 +103,7 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 		checkNotRelased();
 		if (this.rendering != null) {
 			throw new IllegalStateException("Unable to render " + modelAndViewArtifact.getViewArtifact()
-					+ "  as the SpringFacesContext is already rendering " + this.rendering.getViewArtifact());
+					+ " as the SpringFacesContext is already rendering " + this.rendering.getViewArtifact());
 
 		}
 		this.rendering = modelAndViewArtifact;
