@@ -159,7 +159,7 @@ public class RequestMappedRedirectViewModelBuilder {
 	}
 
 	/**
-	 * Add a path variable to the mode.
+	 * Add a path variable to the model.
 	 * @param model the model being built
 	 * @param methodParameter the method parameter
 	 * @param pathVariable the path variable (never null)
@@ -175,6 +175,8 @@ public class RequestMappedRedirectViewModelBuilder {
 		Object value = source.get(name);
 		if (value == null) {
 			Map.Entry<String, ?> entry = getMapEntryByType(source, methodParameter.getParameterType());
+			Assert.state(entry != null, "Unable to find path variable value in model of type "
+					+ methodParameter.getParameterType().getName());
 			value = entry.getValue();
 		}
 		addIfNotContainsKey(model, name, value);
@@ -188,17 +190,25 @@ public class RequestMappedRedirectViewModelBuilder {
 	 */
 	private void addRequestParameterToModel(Map<String, Object> model, MethodParameter methodParameter,
 			RequestParam requestParam, Map<String, ?> source) {
-		// FIXME will throw even if not required
-		String name;
-		if (requestParam != null && StringUtils.hasLength(requestParam.value())) {
-			name = requestParam.value();
-		} else {
-			name = methodParameter.getParameterName();
+		String name = methodParameter.getParameterName();
+		Boolean required = false;
+		if (requestParam != null) {
+			if (StringUtils.hasLength(requestParam.value())) {
+				name = requestParam.value();
+			}
+			required = requestParam.required();
 		}
 		Object value = StringUtils.hasLength(name) ? source.get(name) : null;
 		if (value == null) {
 			Map.Entry<String, ?> entry = getMapEntryByType(source, methodParameter.getParameterType());
-			value = entry.getValue();
+			if (entry != null) {
+				value = entry.getValue();
+			}
+		}
+		if (required) {
+			Assert.state(value != null, "Unable to find required request parameter "
+					+ (StringUtils.hasLength(name) ? "'" + name + "' " : "") + "of type "
+					+ methodParameter.getParameterType().getName());
 		}
 		if (BeanUtils.isSimpleProperty(methodParameter.getParameterType())) {
 			assertHasName(name, methodParameter);
@@ -231,7 +241,6 @@ public class RequestMappedRedirectViewModelBuilder {
 				rtn = entry;
 			}
 		}
-		Assert.state(rtn != null, "Unable to find value in model of type " + type.getName());
 		return rtn;
 	}
 

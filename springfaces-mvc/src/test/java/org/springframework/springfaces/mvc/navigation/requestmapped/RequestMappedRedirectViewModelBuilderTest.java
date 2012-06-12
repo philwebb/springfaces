@@ -230,7 +230,7 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		source.put("xa", new Long(1));
 		setHandlerMethod("pathVariableByType");
 		this.thrown.expect(IllegalStateException.class);
-		this.thrown.expectMessage("Unable to find value in model of type java.lang.Integer");
+		this.thrown.expectMessage("Unable to find path variable value in model of type java.lang.Integer");
 		this.builder.build(this.nativeRequest, source);
 	}
 
@@ -338,7 +338,22 @@ public class RequestMappedRedirectViewModelBuilderTest {
 		assertThat(model.get("b"), is(equalTo((Object) "2")));
 	}
 
-	// FIXME remaining test
+	@Test
+	public void shouldSupportNonRequiredParams() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		setHandlerMethod("requestParamNotRequired");
+		Map<String, Object> model = this.builder.build(this.nativeRequest, source);
+		assertThat(model.size(), is(0));
+	}
+
+	@Test
+	public void shouldNeedRequiredParam() throws Exception {
+		Map<String, Object> source = new HashMap<String, Object>();
+		setHandlerMethod("requestParamRequired");
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to find required request parameter 'p1' of type java.lang.String");
+		this.builder.build(this.nativeRequest, source);
+	}
 
 	public static class Resolvable extends BigDecimal {
 		private static final long serialVersionUID = 1L;
@@ -379,6 +394,14 @@ public class RequestMappedRedirectViewModelBuilderTest {
 
 		@RequestMapping("/requestparamnotnamed")
 		public void requestParamNotNamed(String p1) {
+		}
+
+		@RequestMapping("/requestparamnotrequired")
+		public void requestParamNotRequired(@RequestParam(required = false) String p1) {
+		}
+
+		@RequestMapping("/requestparamrequired")
+		public void requestParamRequired(@RequestParam String p1) {
 		}
 	}
 
