@@ -28,6 +28,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -73,7 +74,11 @@ public class FacesHandlerInterceptorTest {
 		given(this.request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE)).willReturn(
 				this.webApplicationContext);
 		this.interceptor = new MockFacesHandlerInterceptor();
+	}
 
+	@After
+	public void cleanup() {
+		SpringFacesContextSetter.setCurrentInstance(null);
 	}
 
 	@Test
