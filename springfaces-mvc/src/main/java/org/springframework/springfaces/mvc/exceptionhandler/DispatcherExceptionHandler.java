@@ -29,9 +29,9 @@ import org.springframework.web.util.WebUtils;
 
 public class DispatcherExceptionHandler implements ExceptionHandler {
 
-	private Dispatcher dispatcher;
+	// FIXME DC + complete + test
 
-	// private DestinationAndModelRegistry destinationAndModelRegistry = new DestinationAndModelRegistry();
+	private Dispatcher dispatcher;
 
 	public DispatcherExceptionHandler(Dispatcher dispatcher) {
 		Assert.notNull(dispatcher, "Dispatcher must not be null");
@@ -39,9 +39,9 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 	}
 
 	public boolean handle(SpringFacesContext context, Throwable exception) throws Exception {
-		// if (exception instanceof Exception) {
-		// return handle(context, (Exception) exception);
-		// }
+		if (exception instanceof Exception) {
+			return handle(context, (Exception) exception);
+		}
 		return false;
 	}
 
@@ -61,26 +61,6 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 			return true;
 			// FIXME we may need to mark as complete
 		}
-		// if (modelAndView.isReference()) {
-		// // FIXME just example
-		// DefaultDestinationViewResolver resolver = new DefaultDestinationViewResolver();
-		// resolver.onApplicationEvent(new ContextRefreshedEvent(springFacesContext
-		// .getWebApplicationContext()));
-		// modelAndView = resolver.resolveDestination(modelAndView.getViewName(),
-		// FacesUtils.getLocale(facesContext), new SpringFacesModel(modelAndView.getModel()));
-		// }
-		//
-		// PreRenderComponentEvent actionEvent = null;
-		// NavigationOutcome navigationOutcome = new NavigationOutcome(modelAndView.getView(),
-		// modelAndView.getModel());
-		// String viewId = this.destinationAndModelRegistry.put(facesContext, new DestinationAndModel(
-		// navigationOutcome, actionEvent));
-		// UIViewRoot newRoot = facesContext.getApplication().getViewHandler()
-		// .createView(facesContext, viewId);
-		// facesContext.setViewRoot(newRoot);
-		// events.remove();
-		// }
-		// facesContext.getExternalContext().redirect("http://www.google.com");
 		return false;
 	}
 

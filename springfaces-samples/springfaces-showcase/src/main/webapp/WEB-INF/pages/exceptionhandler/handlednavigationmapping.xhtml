@@ -8,15 +8,12 @@
 	xmlns:s="http://www.springframework.org/tags/springfaces">
 
 	<h:head>
-		<title>Exception - Test</title>
+		<title>Exception Handler - Navigation Mapping</title>
 	</h:head>
 
 	<h:body>
-		<h:messages/>
 		<h:form id="form">
-			<h:commandButton id="button1" value="throw via el call" action="#{controller.action}"/>
-			<h:commandButton id="button2" value="throw via mapping" action="mappedThrow"/>
-			
+			<h:commandButton id="button" value="Throw" action="mappedThrow"/>
 		</h:form>
 	</h:body>
 </ui:composition>

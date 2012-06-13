@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.showcase.exception;
+package org.springframework.springfaces.showcase.exceptionhandler;
 
 import org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping;
 import org.springframework.stereotype.Controller;
@@ -23,8 +23,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class ExceptionExampleController {
 
-	@RequestMapping("/exception/test")
-	public void test() {
+	@RequestMapping("/exceptionhandler/handledelcall")
+	public void handledElCall() {
+	}
+
+	public String action() {
+		throw new ExampleException();
+	}
+
+	@RequestMapping("/exceptionhandler/handlednavigationmapping")
+	public void handledNavigationMapping() {
+	}
+
+	@RequestMapping("/exceptionhandler/outcome")
+	public void outcome() {
 	}
 
 	@NavigationMapping
@@ -34,11 +46,8 @@ public class ExceptionExampleController {
 
 	@ExceptionHandler
 	public String handle(ExampleException e) {
-		return "redirect:http://www.google.com";
-	}
-
-	public String action() {
-		throw new ExampleException();
+		// FIXME relative paths will not work here, should they?
+		return "redirect:/spring/exceptionhandler/outcome";
 	}
 
 }

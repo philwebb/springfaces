@@ -13,18 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.showcase.exception;
+package org.springframework.springfaces.showcase.exceptionhandler;
 
-import javax.faces.context.ExceptionHandler;
-
-import org.springframework.springfaces.FacesWrapperFactory;
-import org.springframework.stereotype.Component;
-
-@Component
-public class ExceptionHandlerExtension implements FacesWrapperFactory<ExceptionHandler> {
-
-	public ExceptionHandler newWrapper(Class<?> typeClass, ExceptionHandler wrapped) {
-		return new ExampleExceptionHandler(wrapped);
-	}
+public class ExampleException extends RuntimeException {
 
 }
