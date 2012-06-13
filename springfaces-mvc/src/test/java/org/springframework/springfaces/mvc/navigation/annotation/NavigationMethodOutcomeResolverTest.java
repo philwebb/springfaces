@@ -30,6 +30,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -56,8 +58,11 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.xml.SourceHttpMessageConverter;
+import org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter;
 import org.springframework.springfaces.mvc.method.support.FacesContextMethodArgumentResolver;
 import org.springframework.springfaces.mvc.method.support.FacesResponseCompleteReturnValueHandler;
 import org.springframework.springfaces.mvc.method.support.SpringFacesModelMethodArgumentResolver;
@@ -160,7 +165,7 @@ public class NavigationMethodOutcomeResolverTest {
 				return NavigationMethodOutcomeResolverTest.this.invocableBinderMethod;
 			};
 		};
-		setApplicationContextBean(this.bean);
+		setApplicationContextBean(this.bean, true);
 		this.resolver.setBeanFactory(this.beanFactory);
 		given(this.context.getOutcome()).willReturn("navigate");
 		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
@@ -169,11 +174,29 @@ public class NavigationMethodOutcomeResolverTest {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void setApplicationContextBean(Object bean) {
+	private void setApplicationContextBean(Object bean, boolean includeRequestMappingHandlerAdapter) {
 		reset(this.applicationContext);
 		given(this.applicationContext.getBeanNamesForType(Object.class)).willReturn(new String[] { "bean" });
 		given(this.applicationContext.getType("bean")).willReturn((Class) bean.getClass());
 		given(this.applicationContext.getBean("bean")).willReturn(bean);
+		if (includeRequestMappingHandlerAdapter) {
+			RequestMappingHandlerAdapter requestHandlerAdapter = createMockRequestHandlerAdapter();
+			given(this.applicationContext.getBean(RequestMappingHandlerAdapter.class))
+					.willReturn(requestHandlerAdapter);
+		}
+	}
+
+	private RequestMappingHandlerAdapter createMockRequestHandlerAdapter() {
+		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
+		stringHttpMessageConverter.setWriteAcceptCharset(false);
+		List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+		messageConverters.add(new ByteArrayHttpMessageConverter());
+		messageConverters.add(stringHttpMessageConverter);
+		messageConverters.add(new SourceHttpMessageConverter<Source>());
+		messageConverters.add(new XmlAwareFormHttpMessageConverter());
+		RequestMappingHandlerAdapter adapter = mock(RequestMappingHandlerAdapter.class);
+		given(adapter.getMessageConverters()).willReturn(messageConverters);
+		return adapter;
 	}
 
 	@Test
@@ -330,7 +353,7 @@ public class NavigationMethodOutcomeResolverTest {
 
 	private void doTestDetectNavigationMethods(Object bean, int expectedSize, boolean expectController)
 			throws Exception {
-		setApplicationContextBean(bean);
+		setApplicationContextBean(bean, true);
 		given(this.context.getController()).willReturn(bean);
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.afterPropertiesSet();
@@ -390,7 +413,7 @@ public class NavigationMethodOutcomeResolverTest {
 	public void shouldSupportCanResolve() throws Exception {
 		Object controllerBean = new ControllerBean();
 		Object otherBean = new Object();
-		setApplicationContextBean(controllerBean);
+		setApplicationContextBean(controllerBean, true);
 		given(this.context.getController()).willReturn(controllerBean, otherBean);
 		this.resolver.setApplicationContext(this.applicationContext);
 		this.resolver.afterPropertiesSet();
@@ -419,6 +442,16 @@ public class NavigationMethodOutcomeResolverTest {
 		NavigationOutcome resolved = doCustomResolve(view, model, false);
 		assertThat(resolved.getDestination(), is(sameInstance(view)));
 		assertThat(resolved.getImplicitModel().get("k"), is(equalTo((Object) "v")));
+	}
+
+	@Test
+	public void shouldFailIfNoRequestMappingHandlerAdapterInSpringContext() throws Exception {
+		setApplicationContextBean(this.bean, false);
+		this.resolver.setApplicationContext(this.applicationContext);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to configure messageConverters using RequestMappingHandlerAdapter bean, "
+				+ "please configure messageConverters directly");
+		this.resolver.afterPropertiesSet();
 	}
 
 	private NavigationOutcome doCustomResolve(final Object view, final Map<String, ?> model,

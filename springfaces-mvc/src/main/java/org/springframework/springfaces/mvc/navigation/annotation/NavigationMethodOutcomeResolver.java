@@ -28,7 +28,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.Source;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -39,11 +38,7 @@ import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.xml.SourceHttpMessageConverter;
-import org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter;
 import org.springframework.springfaces.mvc.method.support.FacesContextMethodArgumentResolver;
 import org.springframework.springfaces.mvc.method.support.FacesResponseCompleteReturnValueHandler;
 import org.springframework.springfaces.mvc.method.support.SpringFacesModelMethodArgumentResolver;
@@ -53,6 +48,7 @@ import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationContextMethodArgumentResolver;
 import org.springframework.springfaces.mvc.navigation.annotation.support.NavigationMethodReturnValueHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 import org.springframework.validation.DataBinder;
@@ -124,20 +120,6 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	private HandlerMethodArgumentResolverComposite initBinderArgumentResolvers;
 
 	private Set<NavigationMappingMethod> navigationMethods = new TreeSet<NavigationMappingMethod>();
-
-	/**
-	 * Create a {@link NavigationMethodOutcomeResolver} instance.
-	 */
-	public NavigationMethodOutcomeResolver() {
-		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter();
-		stringHttpMessageConverter.setWriteAcceptCharset(false); // See SPR-7316
-		this.messageConverters = new ArrayList<HttpMessageConverter<?>>();
-		this.messageConverters.add(new ByteArrayHttpMessageConverter());
-		this.messageConverters.add(stringHttpMessageConverter);
-		this.messageConverters.add(new SourceHttpMessageConverter<Source>());
-		this.messageConverters.add(new XmlAwareFormHttpMessageConverter());
-		// FIXME we need to somehow hook into the converters registered as part of mvc:annotation-driven
-	}
 
 	/**
 	 * Set one or more custom argument resolvers to use with {@link NavigationMapping} and {@link InitBinder} methods.
@@ -301,9 +283,26 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 	}
 
 	public void afterPropertiesSet() {
+		initMessageConverters();
 		initArgumentResolvers();
 		initReturnValueHandlers();
 		initInitBinderArgumentResolvers();
+	}
+
+	private void initMessageConverters() {
+		if (this.messageConverters == null) {
+			try {
+				RequestMappingHandlerAdapter adapter = getApplicationContext().getBean(
+						RequestMappingHandlerAdapter.class);
+				Assert.state(adapter != null, "Unable to find RequestMappingHandlerAdapter bean");
+				this.messageConverters = new ArrayList<HttpMessageConverter<?>>();
+				this.messageConverters.addAll(adapter.getMessageConverters());
+			} catch (Exception e) {
+				throw new IllegalStateException(
+						"Unable to configure messageConverters using RequestMappingHandlerAdapter bean, "
+								+ "please configure messageConverters directly", e);
+			}
+		}
 	}
 
 	private void initArgumentResolvers() {
