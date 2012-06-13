@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -74,6 +74,12 @@ public class RequestMappedRedirectViewTest {
 	@Mock
 	private HttpServletResponse response;
 
+	@Mock
+	private FacesContext facesContext;
+
+	@Mock
+	private ExternalContext externalContext;
+
 	private String url;
 
 	@Before
@@ -83,12 +89,10 @@ public class RequestMappedRedirectViewTest {
 		given(this.request.getContextPath()).willReturn("/context");
 		given(this.request.getServletPath()).willReturn("/dispatcher");
 		given(this.request.getPathInfo()).willReturn("/pathinfo");
-		FacesContext facesContext = mock(FacesContext.class);
-		ExternalContext externalContext = mock(ExternalContext.class);
-		given(facesContext.getExternalContext()).willReturn(externalContext);
-		given(externalContext.getRequest()).willReturn(this.request);
-		given(externalContext.getResponse()).willReturn(this.response);
-		FacesContextSetter.setCurrentInstance(facesContext);
+		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
+		given(this.externalContext.getRequest()).willReturn(this.request);
+		given(this.externalContext.getResponse()).willReturn(this.response);
+		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
 	@After
@@ -222,8 +226,11 @@ public class RequestMappedRedirectViewTest {
 	}
 
 	@Test
-	public void shouldRenderViaFacesContext() throws Exception {
-		// FIXME test + also with two variants
+	public void shouldRenderFacesRenderedViewViaFacesContext() throws Exception {
+		RequestMappedRedirectView view = new RequestMappedRedirectViewSpy(this.context, this.handler,
+				this.handlerMethod);
+		view.render(this.model, this.facesContext);
+		verify(this.externalContext).redirect("/context/dispatcher/method");
 	}
 
 	private class RequestMappedRedirectViewSpy extends RequestMappedRedirectView {

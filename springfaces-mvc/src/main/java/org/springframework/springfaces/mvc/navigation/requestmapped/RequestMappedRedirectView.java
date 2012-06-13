@@ -131,7 +131,7 @@ public class RequestMappedRedirectView implements BookmarkableView, FacesRendere
 
 	public void render(Map<String, ?> model, FacesContext facesContext) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-		NativeWebRequest webRequest = new FacesWebRequest(FacesContext.getCurrentInstance());
+		NativeWebRequest webRequest = new FacesWebRequest(facesContext);
 		String url = buildRedirectUrl(request);
 		Map<String, ?> relevantModel = getRelevantModel(webRequest, url, model);
 		BookmarkableView delegate = createDelegateRedirector(url);
