@@ -92,6 +92,13 @@
 	<bean class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
 		<constructor-arg ref="stateHandler" />
 		<constructor-arg ref="destinationViewResolverChain" />
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
+					<constructor-arg ref="defaultDispatcher"/>
+				</bean>
+			</list>
+		</constructor-arg>
 		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver" />
 	</bean>
 

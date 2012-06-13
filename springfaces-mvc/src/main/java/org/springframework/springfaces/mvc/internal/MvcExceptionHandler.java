@@ -15,6 +15,7 @@
  */
 package org.springframework.springfaces.mvc.internal;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,31 +23,21 @@ import java.util.Set;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
-import javax.faces.context.ExceptionHandler;
 import javax.faces.context.ExceptionHandlerWrapper;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.el.EvaluationException;
 import javax.faces.event.ExceptionQueuedEvent;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.Dispatcher;
-import org.springframework.springfaces.util.FacesUtils;
+import org.springframework.springfaces.mvc.exceptionhandler.ExceptionHandler;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.WebUtils;
 
 /**
- * A JSF {@link ExceptionHandler} to integrate with Spring MVC {@link HandlerExceptionResolver}s and also resolve
- * exception messages from an {@link ObjectMessageSource}.
+ * A JSF {@link ExceptionHandler} to integrate with Spring MVC by delegating to the specified {@link ExceptionHandler}s.
  * 
  * @author Phillip Webb
  */
+@SuppressWarnings("deprecation")
 public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 
 	private static Set<Class<?>> EXCEPTIONS_TO_UNWRAP;
@@ -58,86 +49,58 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 		EXCEPTIONS_TO_UNWRAP = Collections.unmodifiableSet(unwrappedExceptions);
 	}
 
-	private ExceptionHandler wrapped;
+	private javax.faces.context.ExceptionHandler wrapped;
 
-	private boolean detectAllHandlerExceptionResolvers = true;
-	private DestinationAndModelRegistry destinationAndModelRegistry = new DestinationAndModelRegistry();
+	private Collection<? extends ExceptionHandler> exceptionHandlers;
 
-	public MvcExceptionHandler(ExceptionHandler wrapped) {
+	/**
+	 * Create a new {@link MvcExceptionHandler} instance.
+	 * @param wrapped the wrapped JSF exception handler
+	 * @param exceptionHandlers a collection of Spring Faces exception handlers
+	 */
+	public MvcExceptionHandler(javax.faces.context.ExceptionHandler wrapped,
+			Collection<? extends ExceptionHandler> exceptionHandlers) {
+		Assert.notNull(wrapped, "Wrapped must not be null");
 		this.wrapped = wrapped;
+		this.exceptionHandlers = (exceptionHandlers == null ? Collections.<ExceptionHandler> emptyList()
+				: exceptionHandlers);
 	}
 
 	@Override
-	public ExceptionHandler getWrapped() {
+	public javax.faces.context.ExceptionHandler getWrapped() {
 		return this.wrapped;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.faces.context.ExceptionHandlerWrapper#handle()
-	 */
 	@Override
 	public void handle() throws FacesException {
 		if (SpringFacesContext.getCurrentInstance() != null) {
-			// handle(SpringFacesContext.getCurrentInstance());
+			handle(SpringFacesContext.getCurrentInstance());
 		}
 		super.handle();
 	}
 
-	private void handle(SpringFacesContext springFacesContext) {
-		// FIXME should be injected singleton
-		Dispatcher dispatcher = null;
-
-		FacesContext facesContext = springFacesContext.getFacesContext();
-		ExternalContext externalContext = facesContext.getExternalContext();
-		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
-		HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
-		Object handler = springFacesContext.getHandler();
-
+	private void handle(SpringFacesContext context) {
 		Iterator<ExceptionQueuedEvent> events = getUnhandledExceptionQueuedEvents().iterator();
 		while (events.hasNext()) {
 			ExceptionQueuedEvent event = events.next();
 			Throwable cause = getRootCause(event.getContext().getException());
-			if (cause instanceof Exception) {
-				try {
-					ModelAndView modelAndView = dispatcher.processHandlerException(request, response, handler,
-							(Exception) cause);
-					if (modelAndView != null) {
-						WebUtils.clearErrorRequestAttributes(request);
-						if (modelAndView.isReference()) {
-							modelAndView.setView(dispatcher.resolveViewName(modelAndView.getViewName(), null,
-									FacesUtils.getLocale(facesContext), null));
-						}
-						MvcViewHandler.render(facesContext, modelAndView);
-						// FIXME we may need to mark as complete
-					}
-					// if (modelAndView.isReference()) {
-					// // FIXME just example
-					// DefaultDestinationViewResolver resolver = new DefaultDestinationViewResolver();
-					// resolver.onApplicationEvent(new ContextRefreshedEvent(springFacesContext
-					// .getWebApplicationContext()));
-					// modelAndView = resolver.resolveDestination(modelAndView.getViewName(),
-					// FacesUtils.getLocale(facesContext), new SpringFacesModel(modelAndView.getModel()));
-					// }
-					//
-					// PreRenderComponentEvent actionEvent = null;
-					// NavigationOutcome navigationOutcome = new NavigationOutcome(modelAndView.getView(),
-					// modelAndView.getModel());
-					// String viewId = this.destinationAndModelRegistry.put(facesContext, new DestinationAndModel(
-					// navigationOutcome, actionEvent));
-					// UIViewRoot newRoot = facesContext.getApplication().getViewHandler()
-					// .createView(facesContext, viewId);
-					// facesContext.setViewRoot(newRoot);
-					// events.remove();
-					// }
-					// facesContext.getExternalContext().redirect("http://www.google.com");
-					events.remove();
-				} catch (Exception e) {
-					ReflectionUtils.rethrowRuntimeException(e);
-				}
+			if (handle(context, cause)) {
+				events.remove();
 			}
 		}
+	}
+
+	private boolean handle(SpringFacesContext context, Throwable cause) {
+		for (ExceptionHandler exceptionHandler : this.exceptionHandlers) {
+			try {
+				if (exceptionHandler.handle(context, cause)) {
+					return true;
+				}
+			} catch (Exception e) {
+				ReflectionUtils.rethrowRuntimeException(e);
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -147,7 +110,6 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 		while (EXCEPTIONS_TO_UNWRAP.contains(throwable.getClass())) {
 			throwable = throwable.getCause();
 		}
-		return throwable;
+		return super.getRootCause(throwable);
 	}
-
 }

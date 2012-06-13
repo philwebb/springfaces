@@ -10,7 +10,8 @@
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
 			<list>
 				<value>WEB-INF/messages</value>
@@ -20,11 +21,14 @@
 
 	<mvc:annotation-driven conversion-service="conversionService" />
 
-	<bean name="defaultDispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher"/>
+	<bean name="defaultDispatcher"
+		class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher" />
 
-	<bean name="genericFacesConverter" class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
+	<bean name="genericFacesConverter"
+		class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
 
-	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+	<bean id="conversionService"
+		class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
 				<ref bean="genericFacesConverter" />
@@ -32,24 +36,30 @@
 		</property>
 	</bean>
 
-	<context:component-scan base-package="org.springframework.springfaces.traveladvisor" >
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	<context:component-scan base-package="org.springframework.springfaces.traveladvisor">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
 
-	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport" />
-	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor" />
+	<bean
+		class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport" />
+	<bean
+		class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor" />
 
-	<bean id="facesResourceHandler" class="org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler"/>
-	<bean id="facesResourceMapper" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="facesResourceHandler"
+		class="org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler" />
+	<bean id="facesResourceMapper"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map>
-				<entry key="/javax.faces.resource/**" value="facesResourceHandler"/>
+				<entry key="/javax.faces.resource/**" value="facesResourceHandler" />
 			</map>
 		</property>
-		<property name="order" value="99"/>
+		<property name="order" value="99" />
 	</bean>
 
-	<bean id="facesViewResolver" class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">
+	<bean id="facesViewResolver"
+		class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">
 		<property name="viewClass"
 			value="org.springframework.springfaces.mvc.servlet.view.FacesView" />
 		<property name="prefix" value="/WEB-INF/pages/" />
@@ -59,15 +69,19 @@
 
 	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
 
-	<bean name="stateHandler" class="org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler" />
-	
-	<bean name="defaultDestinationViewResolver" class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver">
-		<constructor-arg ref="defaultDispatcher"/>
-	</bean>
-	
-	<bean name="requestMappedDestinationViewResolver" class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver" />
+	<bean name="stateHandler"
+		class="org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler" />
 
-	<bean name="destinationViewResolverChain" class="org.springframework.springfaces.mvc.navigation.DestinationViewResolverChain">
+	<bean name="defaultDestinationViewResolver"
+		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver">
+		<constructor-arg ref="defaultDispatcher" />
+	</bean>
+
+	<bean name="requestMappedDestinationViewResolver"
+		class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver" />
+
+	<bean name="destinationViewResolverChain"
+		class="org.springframework.springfaces.mvc.navigation.DestinationViewResolverChain">
 		<property name="resolvers">
 			<list>
 				<ref bean="requestMappedDestinationViewResolver" />
@@ -76,28 +90,42 @@
 		</property>
 	</bean>
 
-	<bean name="navigationOutcomeResolver" class="org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolverChain">
+	<bean name="navigationOutcomeResolver"
+		class="org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolverChain">
 		<property name="resolvers">
 			<list>
-				<bean class="org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver" />
-				<bean class="org.springframework.springfaces.mvc.navigation.annotation.NavigationMethodOutcomeResolver" />
+				<bean
+					class="org.springframework.springfaces.mvc.navigation.ImplicitNavigationOutcomeResolver" />
+				<bean
+					class="org.springframework.springfaces.mvc.navigation.annotation.NavigationMethodOutcomeResolver" />
 			</list>
 		</property>
 	</bean>
 
-	<bean class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
+	<bean
+		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
 		<constructor-arg ref="stateHandler" />
 		<constructor-arg ref="destinationViewResolverChain" />
+		<constructor-arg>
+			<list>
+				<bean
+					class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
+					<constructor-arg ref="defaultDispatcher" />
+				</bean>
+			</list>
+		</constructor-arg>
 		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver" />
 	</bean>
 
-	<bean name="postbackHandler" class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
+	<bean name="postbackHandler"
+		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<constructor-arg ref="stateHandler" />
 		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 
 	<mvc:interceptors>
-		<bean name="facesInterceptor" class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor"/>
+		<bean name="facesInterceptor"
+			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor" />
 	</mvc:interceptors>
 
 	<import resource="data-access-config.xml" />

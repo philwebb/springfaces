@@ -15,10 +15,11 @@
  */
 package org.springframework.springfaces.mvc.servlet;
 
+import java.util.Collection;
+
 import javax.el.CompositeELResolver;
 import javax.faces.application.ConfigurableNavigationHandler;
 import javax.faces.application.ViewHandler;
-import javax.faces.context.ExceptionHandler;
 import javax.faces.event.ActionListener;
 import javax.faces.event.PreRenderComponentEvent;
 import javax.faces.render.ResponseStateManager;
@@ -26,6 +27,7 @@ import javax.faces.render.ResponseStateManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.springfaces.event.PostConstructApplicationSpringFacesEvent;
+import org.springframework.springfaces.mvc.exceptionhandler.ExceptionHandler;
 import org.springframework.springfaces.mvc.expression.el.ImplicitSpringFacesELResolver;
 import org.springframework.springfaces.mvc.expression.el.SpringFacesBeanELResolver;
 import org.springframework.springfaces.mvc.expression.el.SpringFacesModelELResolver;
@@ -50,15 +52,17 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 	private DestinationViewResolver destinationViewResolver;
 	private NavigationOutcomeResolver navigationOutcomeResolver;
 	private MvcNavigationSystemEventListener navigationSystemEventListener = new MvcNavigationSystemEventListener();
+	private Collection<? extends ExceptionHandler> exceptionHandlers;
 
 	public SpringFacesFactories(FacesViewStateHandler facesViewStateHandler,
-			DestinationViewResolver destinationViewResolver) {
+			DestinationViewResolver destinationViewResolver, Collection<? extends ExceptionHandler> exceptionHandlers) {
 		Assert.notNull(facesViewStateHandler, "FacesViewStateHandler must not be null");
 		Assert.notNull(destinationViewResolver, "DestinationViewResolver must not be null");
 		this.facesViewStateHandler = facesViewStateHandler;
 		// FIXME M1
 		this.navigationOutcomeResolver = new ImplicitNavigationOutcomeResolver();
 		this.destinationViewResolver = destinationViewResolver;
+		this.exceptionHandlers = exceptionHandlers;
 	}
 
 	// FIXME M1 consider rename of internal package
@@ -76,8 +80,8 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		if (ActionListener.class.equals(typeClass)) {
 			return new MvcNavigationActionListener((ActionListener) delegate);
 		}
-		if (ExceptionHandler.class.equals(typeClass)) {
-			return new MvcExceptionHandler((ExceptionHandler) delegate);
+		if (javax.faces.context.ExceptionHandler.class.equals(typeClass)) {
+			return new MvcExceptionHandler((javax.faces.context.ExceptionHandler) delegate, this.exceptionHandlers);
 		}
 		if (CompositeELResolver.class.equals(typeClass)) {
 			CompositeELResolver compositeELResolver = (CompositeELResolver) delegate;

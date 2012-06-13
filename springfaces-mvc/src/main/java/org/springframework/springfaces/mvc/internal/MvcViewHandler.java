@@ -268,7 +268,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	// FIXME hack to test @ExceptionHandler, rework
-	static void render(FacesContext context, ModelAndView modelAndView) {
+	public static void render(FacesContext context, ModelAndView modelAndView) {
 		try {
 			if (!modelAndView.isEmpty()) {
 				View view = modelAndView.getView();
