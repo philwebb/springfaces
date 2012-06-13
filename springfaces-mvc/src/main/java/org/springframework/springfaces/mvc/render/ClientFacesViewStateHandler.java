@@ -80,7 +80,7 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 			return HexString.toString(initializationVector) + HexString.toString(cipher.update(mac))
 					+ HexString.toString(cipher.doFinal(bytes));
 		} catch (Exception e) {
-			throw new IllegalStateException(e);
+			throw new IllegalStateException("Unable to encrypt input value", e);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class ClientFacesViewStateHandler implements FacesViewStateHandler {
 			decrypted = removeAndVerifyMac(secretKey, decrypted);
 			return new String(decrypted);
 		} catch (Exception e) {
-			throw new IllegalStateException(e);
+			throw new IllegalStateException("Unable to decrypt input value", e);
 		}
 	}
 
