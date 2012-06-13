@@ -181,8 +181,6 @@ public class ReverseDataBinderTest {
 		}
 	}
 
-	// FIXME test with custom converter
-
 	public static class Sample {
 		private Date dateValue;
 
