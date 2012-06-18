@@ -28,6 +28,17 @@ import org.springframework.util.Assert;
 public abstract class ObjectMessageSourceUtils {
 
 	/**
+	 * Get an {@link ObjectMessageSource} from the specified <tt>messageSource</tt>. If the <tt>messageSource</tt>
+	 * cannot be cast to an {@link ObjectMessageSource} a new {@link DefaultObjectMessageSource} will be returned.
+	 * @param messageSource the message source
+	 * @return a {@link ObjectMessageSource} instance
+	 */
+	public static ObjectMessageSource getObjectMessageSource(MessageSource messageSource) {
+		Assert.notNull(messageSource, "MessageSource must not be null");
+		return getObjectMessageSource(messageSource, null);
+	}
+
+	/**
 	 * Get an {@link ObjectMessageSource} from the specified <tt>messageSource</tt> falling back to a Spring
 	 * {@link ApplicationContext} if <tt>messageSource</tt> is <tt>null</tt>. If the resulting <tt>messageSource</tt>
 	 * cannot be cast to an {@link ObjectMessageSource} a new {@link DefaultObjectMessageSource} will be returned.

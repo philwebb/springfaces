@@ -45,15 +45,16 @@ public class ExceptionHandlerExampleController {
 	}
 
 	public String throwExampleObjectMessageException() throws ExampleObjectMessageException {
-		throw new ExampleObjectMessageException("Example from EL", "Webb");
+		throw new ExampleObjectMessageException("Exception message", "EL");
 	}
 
 	@RequestMapping("/exceptionhandler/messagenavigationmapping")
 	public void messageNavigationMapping() {
 	}
 
+	@NavigationMapping
 	public String onThrowExampleObjectMessageException() throws ExampleObjectMessageException {
-		throw new ExampleObjectMessageException("Example from navigation", "Phil");
+		throw new ExampleObjectMessageException("Exception message", "Navigation");
 	}
 
 	@ExceptionHandler

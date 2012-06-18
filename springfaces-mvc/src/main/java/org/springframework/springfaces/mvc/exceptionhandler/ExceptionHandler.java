@@ -16,9 +16,24 @@
 package org.springframework.springfaces.mvc.exceptionhandler;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.internal.MvcExceptionHandler;
 
+/**
+ * Strategy interface that can be used to handle exceptions thrown from JSF.
+ * 
+ * @see MvcExceptionHandler
+ * 
+ * @author Phillip Webb
+ */
 public interface ExceptionHandler {
 
+	/**
+	 * Provides the opportunity for the handler to deal with the specified exception.
+	 * @param context the spring faces context
+	 * @param exception the exception to handle
+	 * @return <tt>true</tt> if the exception is handled by this handler
+	 * @throws Exception on error
+	 */
 	boolean handle(SpringFacesContext context, Throwable exception) throws Exception;
 
 }

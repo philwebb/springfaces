@@ -24,14 +24,14 @@ import org.springframework.springfaces.message.ObjectMessageSource;
  */
 public class ExampleObjectMessageException extends Exception {
 
-	private String name;
+	private String type;
 
-	public ExampleObjectMessageException(String message, String name) {
+	public ExampleObjectMessageException(String message, String type) {
 		super(message);
-		this.name = name;
+		this.type = type;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getType() {
+		return this.type;
 	}
 }

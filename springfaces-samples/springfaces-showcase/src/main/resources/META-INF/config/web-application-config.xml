@@ -97,6 +97,7 @@
 				<bean class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
 					<constructor-arg ref="defaultDispatcher"/>
 				</bean>
+				<bean class="org.springframework.springfaces.mvc.exceptionhandler.ObjectMessageExceptionHandler"/>
 			</list>
 		</constructor-arg>
 		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver" />

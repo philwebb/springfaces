@@ -24,6 +24,8 @@ import java.util.Locale;
  */
 public class NoSuchObjectMessageException extends RuntimeException {
 
+	// FIXME should extends NoSuchMessageException?
+
 	private static final long serialVersionUID = 1L;
 
 	private Object object;

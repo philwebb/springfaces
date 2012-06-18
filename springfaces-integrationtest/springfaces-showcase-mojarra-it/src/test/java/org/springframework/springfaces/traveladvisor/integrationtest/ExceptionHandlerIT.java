@@ -23,6 +23,8 @@ import org.junit.Test;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.HandledElCallPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.HandledNavigationMappingPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.MessageElCallPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.MessageNavigationMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.OutcomePage;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
@@ -50,4 +52,17 @@ public class ExceptionHandlerIT {
 		assertThat(outcome.getBodyText(), is("Exception has been handled"));
 	}
 
+	@Test
+	public void shouldHaveMessageOnElException() throws Exception {
+		MessageElCallPage page = this.pages.get(MessageElCallPage.class);
+		MessageElCallPage outcome = page.click();
+		assertThat(outcome.getMessage(), is("Exception message (EL)"));
+	}
+
+	@Test
+	public void shouldHaveMessageOnNavigationMappingException() throws Exception {
+		MessageNavigationMappingPage page = this.pages.get(MessageNavigationMappingPage.class);
+		MessageNavigationMappingPage outcome = page.click();
+		assertThat(outcome.getBodyText(), is("Exception message (Navigation)"));
+	}
 }

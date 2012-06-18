@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.style.ToStringCreator;
 import org.springframework.springfaces.mvc.navigation.NavigationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -188,4 +189,9 @@ class NavigationMappingMethod {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return new ToStringCreator(this).append("method", this.method).append("beanName", this.beanName)
+				.append("beanType", this.beanType).toString();
+	}
 }

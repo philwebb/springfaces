@@ -50,7 +50,7 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 		HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
 		Object handler = context.getHandler();
-		ModelAndView modelAndView = this.dispatcher.processHandlerException(request, response, handler, exception);
+		ModelAndView modelAndView = processHandlerException(request, response, handler, exception);
 		if (modelAndView != null) {
 			WebUtils.clearErrorRequestAttributes(request);
 			if (modelAndView.isReference()) {
@@ -59,9 +59,20 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 			}
 			MvcViewHandler.render(context.getFacesContext(), modelAndView);
 			return true;
-			// FIXME we may need to mark as complete
 		}
 		return false;
+	}
+
+	private ModelAndView processHandlerException(HttpServletRequest request, HttpServletResponse response,
+			Object handler, Exception exception) throws Exception {
+		try {
+			return this.dispatcher.processHandlerException(request, response, handler, exception);
+		} catch (Exception e) {
+			if (e == exception) {
+				return null;
+			}
+			throw e;
+		}
 	}
 
 }
