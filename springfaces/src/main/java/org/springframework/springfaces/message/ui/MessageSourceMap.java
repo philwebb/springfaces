@@ -254,9 +254,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 			try {
 				return ((ObjectMessageSource) MessageSourceMap.this.messageSource).getMessage(this.object,
 						getArguments(), getLocale());
-				// FIXME
-			} catch (NoSuchMessageException e) {
-				handleNoSuchMessageException(e);
+			} catch (NoSuchObjectMessageException e) {
 				return String.valueOf(this.object);
 			}
 		}

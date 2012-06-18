@@ -215,6 +215,16 @@ public class MessageSourceMapTest {
 		map.get(resolvable);
 	}
 
+	@Test
+	public void shouldReturnObjectStringOnNoSuchObjectMessageException() throws Exception {
+		MessageSourceMap map = new MessageSourceMap(this.objectMessageSource);
+		ObjectResolvable resolvable = new ObjectResolvable();
+		given(this.objectMessageSource.getMessage(eq(resolvable), emptyObjectArray(), nullLocale())).willThrow(
+				new NoSuchObjectMessageException(resolvable, null));
+		String actual = map.get(resolvable).toString();
+		assertThat(actual, is("Object Resolvable"));
+	}
+
 	private Locale nullLocale() {
 		return (Locale) isNull();
 	}
@@ -246,5 +256,9 @@ public class MessageSourceMapTest {
 	}
 
 	static class ObjectResolvable {
+		@Override
+		public String toString() {
+			return "Object Resolvable";
+		}
 	}
 }
