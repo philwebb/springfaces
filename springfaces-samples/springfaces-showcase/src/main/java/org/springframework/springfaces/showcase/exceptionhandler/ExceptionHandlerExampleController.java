@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class ExceptionExampleController {
+public class ExceptionHandlerExampleController {
 
 	@RequestMapping("/exceptionhandler/handledelcall")
 	public void handledElCall() {
@@ -46,8 +46,7 @@ public class ExceptionExampleController {
 
 	@ExceptionHandler
 	public String handle(ExampleException e) {
-		// FIXME relative paths will not work here, should they?
-		return "redirect:/spring/exceptionhandler/outcome";
+		return "redirect:outcome";
 	}
 
 }
