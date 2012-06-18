@@ -26,16 +26,19 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
+/**
+ * {@link ExceptionHandler} that converts exceptions to {@link FacesMessage}s using an {@link ObjectMessageSource}.
+ * 
+ * @author Phillip Webb
+ */
 public class ObjectMessageExceptionHandler implements ExceptionHandler, MessageSourceAware {
 
-	// FIXME DC + Test
-
-	private ObjectMessageSource objectMessageSource;
+	private ObjectMessageSource messageSource;
 
 	public boolean handle(SpringFacesContext context, Throwable exception) throws Exception {
-		Assert.state(this.objectMessageSource != null, "ObjectMessageSource must not be null");
+		Assert.state(this.messageSource != null, "MessageSource must not be null");
 		try {
-			String message = this.objectMessageSource.getMessage(exception, null,
+			String message = this.messageSource.getMessage(exception, null,
 					FacesUtils.getLocale(context.getFacesContext()));
 			context.getFacesContext().addMessage(null, new FacesMessage(message));
 			return true;
@@ -45,12 +48,6 @@ public class ObjectMessageExceptionHandler implements ExceptionHandler, MessageS
 	}
 
 	public void setMessageSource(MessageSource messageSource) {
-		if (this.objectMessageSource == null) {
-			this.objectMessageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource);
-		}
-	}
-
-	public void setObjectMessageSource(ObjectMessageSource objectMessageSource) {
-		this.objectMessageSource = objectMessageSource;
+		this.messageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource);
 	}
 }
