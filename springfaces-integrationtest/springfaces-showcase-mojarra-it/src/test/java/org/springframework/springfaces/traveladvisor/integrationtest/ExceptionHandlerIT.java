@@ -65,4 +65,7 @@ public class ExceptionHandlerIT {
 		MessageNavigationMappingPage outcome = page.click();
 		assertThat(outcome.getBodyText(), is("Exception message (Navigation)"));
 	}
+
+	// FIXME FacesView
+	// FIXME response body
 }
