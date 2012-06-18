@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.internal.MvcViewHandler;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
@@ -57,7 +56,7 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 				modelAndView.setView(this.dispatcher.resolveViewName(modelAndView.getViewName(), null,
 						FacesUtils.getLocale(context.getFacesContext()), null));
 			}
-			MvcViewHandler.render(context.getFacesContext(), modelAndView);
+			context.render(modelAndView.getView(), modelAndView.getModel());
 			return true;
 		}
 		return false;

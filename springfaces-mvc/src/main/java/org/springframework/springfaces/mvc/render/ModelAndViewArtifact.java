@@ -18,10 +18,12 @@ package org.springframework.springfaces.mvc.render;
 import java.util.Map;
 
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
 
 public final class ModelAndViewArtifact {
 
 	private ViewArtifact viewArtifact;
+
 	private Map<String, Object> model;
 
 	public ModelAndViewArtifact(ViewArtifact viewArtifact, Map<String, Object> model) {
@@ -46,4 +48,29 @@ public final class ModelAndViewArtifact {
 	public Map<String, Object> getModel() {
 		return this.model;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = prime + this.viewArtifact.hashCode();
+		result = prime * result + ObjectUtils.nullSafeHashCode(this.model);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() == obj.getClass()) {
+			ModelAndViewArtifact other = (ModelAndViewArtifact) obj;
+			return this.viewArtifact.equals(other.getViewArtifact())
+					&& ObjectUtils.nullSafeEquals(this.viewArtifact, other.getViewArtifact());
+		}
+		return super.equals(obj);
+	}
+
 }

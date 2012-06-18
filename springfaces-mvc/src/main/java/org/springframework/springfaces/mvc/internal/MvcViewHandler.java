@@ -26,12 +26,10 @@ import javax.faces.application.ViewHandlerWrapper;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
 import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
@@ -39,8 +37,6 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.BookmarkableView;
-import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
-import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
@@ -105,11 +101,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		if (PhaseId.INVOKE_APPLICATION.equals(context.getCurrentPhaseId())) {
 			ModelAndView modelAndView = getModelAndView(context, viewId, null);
 			if (modelAndView != null) {
-				if (modelAndView.getView() != null && modelAndView.getView() instanceof FacesView) {
-					// FIXME set the rendering property in SFC ?
-					FacesView facesView = (FacesView) modelAndView.getView();
-					return super.createView(context, facesView.getViewId());
-				}
 				UIViewRoot existingViewRoot = context.getViewRoot();
 				String renderKitId = existingViewRoot == null ? null : existingViewRoot.getRenderKitId();
 				return new NavigationResponseUIViewRoot(viewId, renderKitId, modelAndView);
@@ -248,6 +239,7 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 	}
 
 	protected static class NavigationResponseUIViewRoot extends UIViewRoot {
+
 		private ModelAndView modelAndView;
 
 		public NavigationResponseUIViewRoot(String viewId, String renderKitId, ModelAndView modelAndView) {
@@ -263,35 +255,8 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 
 		@Override
 		public void encodeAll(FacesContext context) throws IOException {
-			render(context, this.modelAndView);
+			SpringFacesContext.getCurrentInstance(true).render(this.modelAndView.getView(),
+					this.modelAndView.getModel());
 		}
 	}
-
-	// FIXME hack to test @ExceptionHandler, rework
-	public static void render(FacesContext context, ModelAndView modelAndView) {
-		try {
-			if (!modelAndView.isEmpty()) {
-				View view = modelAndView.getView();
-				Map<String, Object> model = modelAndView.getModel();
-				// FIXME what about FacesView here, will that work
-				if (view instanceof FacesRenderedView) {
-					// FIXME test
-					((FacesRenderedView) view).render(model, context);
-				} else {
-					HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
-					HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-					if (context.getPartialViewContext().isPartialRequest()) {
-						// FIXME test is thrown
-						PartialViewContext partialViewContext = context.getPartialViewContext();
-						Assert.state(!partialViewContext.isAjaxRequest(),
-								"Unable to render MVC response to Faces AJAX request");
-					}
-					view.render(model, request, response);
-				}
-			}
-		} catch (Exception e) {
-			throw new FacesException(e);
-		}
-	}
-
 }

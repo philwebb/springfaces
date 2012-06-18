@@ -15,6 +15,7 @@
  */
 package org.springframework.springfaces.mvc.servlet;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
@@ -23,15 +24,24 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willAnswer;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.faces.FacesException;
 import javax.faces.FacesWrapper;
 import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
+import javax.faces.context.PartialViewContext;
 import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,14 +51,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
+import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.View;
 
 /**
  * Tests for {@link DefaultSpringFacesContext}.
@@ -82,6 +98,15 @@ public class DefaultSpringFacesContextTest {
 	@Mock
 	private FacesContext facesContext;
 
+	@Mock
+	private ExternalContext externalContext;
+
+	@Mock
+	private PartialViewContext partialViewContext;
+
+	@Captor
+	private ArgumentCaptor<FacesContext> facesContextCaptor;
+
 	@Before
 	public void setup() {
 		DefaultSpringFacesContextTest.test.set(this);
@@ -89,6 +114,10 @@ public class DefaultSpringFacesContextTest {
 		FactoryFinder.setFactory(FactoryFinder.FACES_CONTEXT_FACTORY, MockFacesContextFactory.class.getName());
 		this.springFacesContext = new DefaultSpringFacesContext(this.lifecycleAccessor, this.webApplicationContext,
 				this.request, this.response, this.handler);
+		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
+		given(this.externalContext.getRequest()).willReturn(this.request);
+		given(this.externalContext.getResponse()).willReturn(this.response);
+		given(this.facesContext.getPartialViewContext()).willReturn(this.partialViewContext);
 	}
 
 	@After
@@ -189,12 +218,9 @@ public class DefaultSpringFacesContextTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void shouldGetFacesContext() throws Exception {
 		FacesContext actual = this.springFacesContext.getFacesContext();
-		FacesWrapper<FacesContext> facesWrapper = (FacesWrapper<FacesContext>) actual;
-		FacesContext wrapped = facesWrapper.getWrapped();
-		assertThat(wrapped, is(sameInstance(this.facesContext)));
+		assertIsWrappedFacesContext(actual);
 	}
 
 	@Test
@@ -215,21 +241,41 @@ public class DefaultSpringFacesContextTest {
 	}
 
 	@Test
-	public void shouldRender() throws Exception {
-		ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("artifact");
+	public void shouldRenderNonFacesView() throws Exception {
+		View view = mock(View.class);
+		Map<String, Object> model = new HashMap<String, Object>();
+		this.springFacesContext.render(view, model);
+		verify(view).render(model, this.request, this.response);
+	}
+
+	@Test
+	public void shouldRenderFacesRenderedView() throws Exception {
+		FacesRenderedView view = mock(FacesRenderedView.class);
+		Map<String, Object> model = new HashMap<String, Object>();
+		this.springFacesContext.render(view, model);
+		verify(view).render(eq(model), this.facesContextCaptor.capture());
+		assertIsWrappedFacesContext(this.facesContextCaptor.getValue());
+	}
+
+	@Test
+	public void shouldRenderFacesView() throws Exception {
+		FacesView view = mock(FacesView.class);
+		given(view.getViewArtifact()).willReturn(new ViewArtifact("artifact"));
+		Map<String, Object> model = new HashMap<String, Object>();
 		Lifecycle lifecycle = mock(Lifecycle.class);
 		given(this.lifecycleAccessor.getLifecycle()).willReturn(lifecycle);
-		this.springFacesContext.render(modelAndViewArtifact);
-		verify(lifecycle).execute((FacesContext) any());
-		verify(lifecycle).render((FacesContext) any());
+		this.springFacesContext.render(view, model);
+		verify(lifecycle).execute(this.facesContextCaptor.capture());
+		assertIsWrappedFacesContext(this.facesContextCaptor.getValue());
+		verify(lifecycle).render(this.facesContextCaptor.capture());
+		assertIsWrappedFacesContext(this.facesContextCaptor.getValue());
 	}
 
 	@Test
 	public void shouldNotRenderIfReleased() throws Exception {
 		this.springFacesContext.release();
-		ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("artifact");
 		expectSpringFacesContextReleasedException();
-		this.springFacesContext.render(modelAndViewArtifact);
+		this.springFacesContext.render(mock(View.class), null);
 	}
 
 	@Test
@@ -239,47 +285,68 @@ public class DefaultSpringFacesContextTest {
 
 	@Test
 	public void shouldHaveRenderingWhenRendering() throws Exception {
-		final ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("artifact");
+		FacesView view = mock(FacesView.class);
+		given(view.getViewArtifact()).willReturn(new ViewArtifact("artifact"));
+		Map<String, Object> model = new HashMap<String, Object>();
+		final ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("artifact", model);
 		Lifecycle lifecycle = mock(Lifecycle.class);
 		given(this.lifecycleAccessor.getLifecycle()).willReturn(lifecycle);
 		willAnswer(new Answer<Object>() {
 			public Object answer(InvocationOnMock invocation) throws Throwable {
 				assertThat(DefaultSpringFacesContextTest.this.springFacesContext.getRendering(),
-						is(modelAndViewArtifact));
+						is(equalTo(modelAndViewArtifact)));
 				return null;
 			}
-		}).given(lifecycle).render((FacesContext) any());
-		this.springFacesContext.render(modelAndViewArtifact);
+		}).given(lifecycle).render(any(FacesContext.class));
+		this.springFacesContext.render(view, model);
 		assertThat(this.springFacesContext.getRendering(), is(nullValue()));
-	}
-
-	@Test
-	public void shouldNotDoubleRender() throws Exception {
-		final ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("theartifact");
-		Lifecycle lifecycle = mock(Lifecycle.class);
-		given(this.lifecycleAccessor.getLifecycle()).willReturn(lifecycle);
-		willAnswer(new Answer<Object>() {
-			public Object answer(InvocationOnMock invocation) throws Throwable {
-				DefaultSpringFacesContextTest.this.springFacesContext.render(new ModelAndViewArtifact("newartifact"));
-				return null;
-			}
-		}).given(lifecycle).render((FacesContext) any());
-		this.thrown.expect(IllegalStateException.class);
-		this.thrown.expectMessage("Unable to render newartifact as the SpringFacesContext is "
-				+ "already rendering theartifact");
-		this.springFacesContext.render(modelAndViewArtifact);
-
 	}
 
 	@Test
 	public void shouldClearRenderingEvenOnException() throws Exception {
-		final ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact("theartifact");
+		FacesView view = mock(FacesView.class);
+		given(view.getViewArtifact()).willReturn(new ViewArtifact("theartifact"));
+		Map<String, Object> model = new HashMap<String, Object>();
 		Lifecycle lifecycle = mock(Lifecycle.class);
 		given(this.lifecycleAccessor.getLifecycle()).willReturn(lifecycle);
 		willThrow(new IllegalStateException()).given(lifecycle).render((FacesContext) any());
 		this.thrown.expect(IllegalStateException.class);
-		this.springFacesContext.render(modelAndViewArtifact);
+		this.springFacesContext.render(view, model);
 		assertThat(this.springFacesContext.getRendering(), is(nullValue()));
+	}
+
+	@Test
+	public void shouldSetViewRootIfDoubleRendering() throws Exception {
+		FacesView view = mock(FacesView.class);
+		given(view.getViewArtifact()).willReturn(new ViewArtifact("theartifact"));
+		final Map<String, Object> model = new HashMap<String, Object>();
+
+		Application application = mock(Application.class);
+		ViewHandler viewHandler = mock(ViewHandler.class);
+		final UIViewRoot newViewRoot = mock(UIViewRoot.class);
+		given(this.facesContext.getApplication()).willReturn(application);
+		given(application.getViewHandler()).willReturn(viewHandler);
+		given(viewHandler.createView(any(FacesContext.class), eq("newartifact"))).willReturn(newViewRoot);
+
+		Lifecycle lifecycle = mock(Lifecycle.class);
+		given(this.lifecycleAccessor.getLifecycle()).willReturn(lifecycle);
+		willAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocation) throws Throwable {
+				FacesView view2 = mock(FacesView.class);
+				given(view2.getViewArtifact()).willReturn(new ViewArtifact("newartifact"));
+				DefaultSpringFacesContextTest.this.springFacesContext.render(view2, model);
+				verify(DefaultSpringFacesContextTest.this.facesContext).setViewRoot(newViewRoot);
+				return null;
+			}
+		}).given(lifecycle).render((FacesContext) any());
+		this.springFacesContext.render(view, model);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void assertIsWrappedFacesContext(FacesContext actual) {
+		FacesWrapper<FacesContext> facesWrapper = (FacesWrapper<FacesContext>) actual;
+		FacesContext wrapped = facesWrapper.getWrapped();
+		assertThat(wrapped, is(sameInstance(this.facesContext)));
 	}
 
 	private void triggerFacesContextLoad() {
@@ -299,4 +366,7 @@ public class DefaultSpringFacesContextTest {
 			return test.get().facesContext;
 		}
 	}
+
+	// FIXME test is render throws on isPartialRequest render
+
 }

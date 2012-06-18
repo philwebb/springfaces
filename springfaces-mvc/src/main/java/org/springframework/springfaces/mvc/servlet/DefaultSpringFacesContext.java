@@ -15,10 +15,14 @@
  */
 package org.springframework.springfaces.mvc.servlet;
 
+import java.util.Map;
+
+import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.FacesContextWrapper;
+import javax.faces.context.PartialViewContext;
 import javax.faces.lifecycle.Lifecycle;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -26,9 +30,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
+import org.springframework.springfaces.mvc.render.ViewArtifact;
+import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.util.Assert;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.View;
 
 /**
  * Default implementation of {@link SpringFacesContext}. This is an internal class that is usually managed via the
@@ -99,25 +107,52 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 	}
 
 	@Override
-	public void render(ModelAndViewArtifact modelAndViewArtifact) {
-		checkNotRelased();
-		if (this.rendering != null) {
-			throw new IllegalStateException("Unable to render " + modelAndViewArtifact.getViewArtifact()
-					+ " as the SpringFacesContext is already rendering " + this.rendering.getViewArtifact());
-
-		}
-		this.rendering = modelAndViewArtifact;
+	public void render(View view, Map<String, Object> model) {
+		FacesContext context = getFacesContext();
 		try {
-			FacesContext facesContext = getFacesContext();
-			try {
-				Lifecycle lifecycle = this.lifecycleAccessor.getLifecycle();
-				lifecycle.execute(facesContext);
-				lifecycle.render(facesContext);
-			} finally {
-				facesContext.release();
+			if (view instanceof FacesView) {
+				render(context, ((FacesView) view).getViewArtifact(), model);
+			} else {
+				try {
+					render(context, view, model);
+				} catch (Exception e) {
+					throw new FacesException(e);
+				}
 			}
 		} finally {
-			this.rendering = null;
+			context.release();
+		}
+	}
+
+	private void render(FacesContext context, ViewArtifact viewArtifact, Map<String, Object> model) {
+		ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact(viewArtifact, model);
+		if (this.rendering != null) {
+			this.rendering = modelAndViewArtifact;
+			this.facesContext.setViewRoot(this.facesContext.getApplication().getViewHandler()
+					.createView(this.facesContext, viewArtifact.toString()));
+		} else {
+			this.rendering = modelAndViewArtifact;
+			try {
+				Lifecycle lifecycle = this.lifecycleAccessor.getLifecycle();
+				lifecycle.execute(context);
+				lifecycle.render(context);
+			} finally {
+				this.rendering = null;
+			}
+		}
+	}
+
+	private void render(FacesContext context, View view, Map<String, Object> model) throws Exception {
+		if (view instanceof FacesRenderedView) {
+			((FacesRenderedView) view).render(model, context);
+		} else {
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			if (context.getPartialViewContext().isPartialRequest()) {
+				PartialViewContext partialViewContext = context.getPartialViewContext();
+				Assert.state(!partialViewContext.isAjaxRequest(), "Unable to render MVC response to Faces AJAX request");
+			}
+			view.render(model, request, response);
 		}
 	}
 

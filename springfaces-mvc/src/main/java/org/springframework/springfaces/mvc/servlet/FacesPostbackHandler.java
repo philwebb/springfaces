@@ -25,8 +25,8 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.FacesViewStateHandler;
-import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.render.ViewArtifact;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerExecutionChain;
@@ -152,7 +152,7 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 			throws Exception {
 		Assert.state(supports(handler), "The specified handler is not supported");
 		ViewArtifact viewArtifact = ((Postback) handler).getViewArtifact();
-		SpringFacesContext.getCurrentInstance(true).render(new ModelAndViewArtifact(viewArtifact, null));
+		SpringFacesContext.getCurrentInstance(true).render(new FacesView(viewArtifact), null);
 		return null;
 	}
 

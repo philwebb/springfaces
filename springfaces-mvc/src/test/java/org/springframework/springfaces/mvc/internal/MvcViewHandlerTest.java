@@ -363,11 +363,12 @@ public class MvcViewHandlerTest {
 
 	@Test
 	public void shouldRenderViewOnNavigationResponseEncode() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		View view = mock(View.class);
 		Map<String, Object> model = new HashMap<String, Object>();
 		ModelAndView modelAndView = new ModelAndView(view, model);
 		NavigationResponseUIViewRoot viewRoot = new NavigationResponseUIViewRoot(this.viewId, null, modelAndView);
 		viewRoot.encodeAll(this.context);
-		verify(view).render(model, this.request, this.response);
+		verify(this.springFacesContext).render(view, model);
 	}
 }

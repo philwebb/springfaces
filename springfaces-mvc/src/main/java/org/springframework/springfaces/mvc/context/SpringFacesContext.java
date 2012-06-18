@@ -15,15 +15,22 @@
  */
 package org.springframework.springfaces.mvc.context;
 
+import java.util.Map;
+
 import javax.faces.context.FacesContext;
 import javax.faces.webapp.FacesServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
+import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.View;
 
 /**
  * Context for a single MVC request that may result in a JSF response. A {@link SpringFacesContext} instance is
@@ -78,11 +85,23 @@ public abstract class SpringFacesContext {
 	public abstract Object getController();
 
 	/**
-	 * Render the specified {@link ModelAndViewArtifact} using JSF.
-	 * @param modelAndViewArtifact the artifact to render
-	 * @see #getRendering()
+	 * Render the specified view and model.
+	 * <p>
+	 * If the specified view is <b>not</b> a {@link FacesView} it should be rendered directly to the current response
+	 * (either via {@link View#render(Map, HttpServletRequest, HttpServletResponse)} or when possible
+	 * {@link FacesRenderedView#render(Map, FacesContext)}.
+	 * <p>
+	 * If the view is a {@link FacesView} the implementation must make the appropriate JSF calls to construct and render
+	 * the view from the {@link FacesView#getViewArtifact() view artifact}. The {@link #getRendering()} method must
+	 * return a non-null value during the rendering of {@link FacesView}s. This method can be called to both initiate
+	 * rendering or replace the view that is currently being rendered. When a replacing an existing view implementations
+	 * should set the {@link FacesContext#setViewRoot(javax.faces.component.UIViewRoot) FacesContext.viewRoot} and allow
+	 * the active lifecyle to render the response.
+	 * 
+	 * @param view the view to render
+	 * @param model the model or <tt>null</tt>
 	 */
-	public abstract void render(ModelAndViewArtifact modelAndViewArtifact);
+	public abstract void render(View view, Map<String, Object> model);
 
 	/**
 	 * Return the {@link ModelAndViewArtifact} that is currently being {@link #render rendered} or <tt>null</tt> if no

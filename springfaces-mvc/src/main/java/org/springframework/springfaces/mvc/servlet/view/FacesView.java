@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.render.ModelAndViewArtifact;
 import org.springframework.springfaces.mvc.render.ViewArtifact;
+import org.springframework.util.Assert;
 import org.springframework.validation.AbstractPropertyBindingResult;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
@@ -43,7 +43,14 @@ public class FacesView extends AbstractUrlBasedView {
 	}
 
 	public FacesView(String url) {
-		super(url);
+		super();
+		setUrl(url);
+	}
+
+	public FacesView(ViewArtifact viewArtifact) {
+		super();
+		Assert.notNull(viewArtifact, "ViewArtifact must not be null");
+		setUrl(viewArtifact.toString());
 	}
 
 	@Override
@@ -59,8 +66,14 @@ public class FacesView extends AbstractUrlBasedView {
 				iterator.remove();
 			}
 		}
-		ViewArtifact viewArtifact = new ViewArtifact(getUrl());
-		SpringFacesContext.getCurrentInstance(true).render(new ModelAndViewArtifact(viewArtifact, model));
+		SpringFacesContext.getCurrentInstance(true).render(this, model);
+
+	}
+
+	@Override
+	public void setUrl(String url) {
+		Assert.hasLength(url, "URL must not be empty");
+		super.setUrl(url);
 	}
 
 	public String getViewId() {
@@ -69,5 +82,9 @@ public class FacesView extends AbstractUrlBasedView {
 
 	public String getViewName() {
 		return getBeanName();
+	}
+
+	public ViewArtifact getViewArtifact() {
+		return new ViewArtifact(getUrl());
 	}
 }
