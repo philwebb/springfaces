@@ -27,7 +27,7 @@ public class HandledNavigationMappingPage extends AbstractHandledExceptionPage {
 
 	@Override
 	protected boolean isCorrectPage(String title) {
-		return title.equals("Exception Handler - Navigation Mapping");
+		return title.equals("Exception Handler - Handled Navigation Mapping");
 	}
 
 }

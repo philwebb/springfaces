@@ -15,11 +15,23 @@
  */
 package org.springframework.springfaces.showcase.exceptionhandler;
 
+import org.springframework.springfaces.message.ObjectMessageSource;
+
 /**
- * Simple example exception that can be handled by {@link ExceptionHandlerExampleController}.
+ * Example exception that is mapped via {@link ObjectMessageSource}.
  * 
  * @author Phillip Webb
  */
-public class ExampleException extends RuntimeException {
+public class ExampleObjectMessageException extends Exception {
 
+	private String name;
+
+	public ExampleObjectMessageException(String message, String name) {
+		super(message);
+		this.name = name;
+	}
+
+	public String getName() {
+		return this.name;
+	}
 }

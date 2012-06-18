@@ -27,7 +27,7 @@ public class HandledElCallPage extends AbstractHandledExceptionPage {
 
 	@Override
 	protected boolean isCorrectPage(String title) {
-		return title.equals("Exception Handler - EL Call");
+		return title.equals("Exception Handler - Handled EL Call");
 	}
 
 }

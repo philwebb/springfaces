@@ -27,7 +27,7 @@ public class ExceptionHandlerExampleController {
 	public void handledElCall() {
 	}
 
-	public String action() {
+	public String throwExampleException() {
 		throw new ExampleException();
 	}
 
@@ -35,13 +35,25 @@ public class ExceptionHandlerExampleController {
 	public void handledNavigationMapping() {
 	}
 
-	@RequestMapping("/exceptionhandler/outcome")
-	public void outcome() {
+	@NavigationMapping
+	public String onThrowExampleException() {
+		throw new ExampleException();
 	}
 
-	@NavigationMapping
-	public String onMappedThrow() {
-		throw new ExampleException();
+	@RequestMapping("/exceptionhandler/messageelcall")
+	public void messageElCall() {
+	}
+
+	public String throwExampleObjectMessageException() throws ExampleObjectMessageException {
+		throw new ExampleObjectMessageException("Example from EL", "Webb");
+	}
+
+	@RequestMapping("/exceptionhandler/messagenavigationmapping")
+	public void messageNavigationMapping() {
+	}
+
+	public String onThrowExampleObjectMessageException() throws ExampleObjectMessageException {
+		throw new ExampleObjectMessageException("Example from navigation", "Phil");
 	}
 
 	@ExceptionHandler
@@ -49,4 +61,7 @@ public class ExceptionHandlerExampleController {
 		return "redirect:outcome";
 	}
 
+	@RequestMapping("/exceptionhandler/outcome")
+	public void outcome() {
+	}
 }
