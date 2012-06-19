@@ -15,6 +15,9 @@
  */
 package org.springframework.springfaces.mvc.exceptionhandler;
 
+import java.util.Locale;
+import java.util.Map;
+
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,11 +27,16 @@ import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.util.WebUtils;
 
+/**
+ * {@link ExceptionHandler} that delegates to a {@link Dispatcher} to allow exceptions to be handled using standard
+ * Spring MVC semantics.
+ * 
+ * @author Phillip Webb
+ */
 public class DispatcherExceptionHandler implements ExceptionHandler {
-
-	// FIXME DC + complete + test
 
 	private Dispatcher dispatcher;
 
@@ -53,8 +61,11 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 		if (modelAndView != null) {
 			WebUtils.clearErrorRequestAttributes(request);
 			if (modelAndView.isReference()) {
-				modelAndView.setView(this.dispatcher.resolveViewName(modelAndView.getViewName(), null,
-						FacesUtils.getLocale(context.getFacesContext()), null));
+				String viewName = modelAndView.getViewName();
+				Map<String, Object> model = modelAndView.getModel();
+				Locale locale = FacesUtils.getLocale(context.getFacesContext());
+				View view = this.dispatcher.resolveViewName(viewName, model, locale, request);
+				modelAndView.setView(view);
 			}
 			context.render(modelAndView.getView(), modelAndView.getModel());
 			return true;
