@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.showcase.exceptionhandler;
+package org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler;
 
-public class ResponseBodyException extends RuntimeException {
+import org.openqa.selenium.WebDriver;
+import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
+
+public class ResponseBodyOutcome extends PageObject {
+
+	public ResponseBodyOutcome(WebDriver webDriver) {
+		super(webDriver);
+	}
+
+	@Override
+	protected boolean isCorrectPage(String title) {
+		return title.equals("");
+	}
 
 }

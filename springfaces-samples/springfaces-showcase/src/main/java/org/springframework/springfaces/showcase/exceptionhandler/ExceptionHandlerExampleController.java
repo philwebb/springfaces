@@ -71,10 +71,23 @@ public class ExceptionHandlerExampleController {
 
 	@RequestMapping("/exceptionhandler/facesview")
 	public void facesView() {
+		// @ExceptionHandlers can return FacesView objects, here handleFacesView returns the view directly to the URL
+		// will not
+		// change
 	}
 
 	public void throwExampleFacesViewException() {
 		throw new ExampleFacesViewException();
+	}
+
+	@RequestMapping("/exceptionhandler/responsebody")
+	public void responseBody() {
+		// @ExceptionHandlers can also be @ResponseBody implementations
+	}
+
+	@NavigationMapping
+	public void onThrowExampleResponseBodyException() {
+		throw new ExampleResponseBodyException();
 	}
 
 	@ExceptionHandler
@@ -84,14 +97,14 @@ public class ExceptionHandlerExampleController {
 	}
 
 	@ExceptionHandler
-	public String handleFacedView(ExampleFacesViewException e) {
+	public String handleFacesView(ExampleFacesViewException e) {
 		return "exceptionhandler/outcome";
 	}
 
 	@ExceptionHandler
 	@ResponseBody
-	public String handleResponseBody(ResponseBodyException e) {
-		return "Error";
+	public String handleResponseBody(ExampleResponseBodyException e) {
+		return "Handled by a @ResponseBody";
 	}
 
 	@RequestMapping("/exceptionhandler/outcome")

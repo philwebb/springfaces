@@ -15,17 +15,21 @@
  */
 package org.springframework.springfaces.traveladvisor.integrationtest;
 
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.FacesViewPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.HandledElCallPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.HandledNavigationMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.MessageElCallPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.MessageNavigationMappingPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.OutcomePage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.ResponseBody;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler.ResponseBodyOutcome;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
 
 /**
@@ -66,6 +70,19 @@ public class ExceptionHandlerIT {
 		assertThat(outcome.getBodyText(), is("Exception message (Navigation)"));
 	}
 
-	// FIXME FacesView
-	// FIXME response body
+	@Test
+	public void shouldHandleFacesView() throws Exception {
+		FacesViewPage page = this.pages.get(FacesViewPage.class);
+		OutcomePage outcome = page.click();
+		assertThat(outcome.getBodyText(), is("Exception has been handled"));
+		assertThat(outcome.getUrl(), endsWith("facesview"));
+	}
+
+	@Test
+	public void shouldHandleResponseBody() throws Exception {
+		ResponseBody page = this.pages.get(ResponseBody.class);
+		ResponseBodyOutcome outcome = page.click();
+		assertThat(outcome.getBodyText(), is("Handled by a @ResponseBody"));
+	}
+
 }

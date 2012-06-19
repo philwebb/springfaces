@@ -15,22 +15,25 @@
  */
 package org.springframework.springfaces.traveladvisor.integrationtest.page.exceptionhandler;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.springframework.springfaces.integrationtest.selenium.page.PageObject;
+import org.springframework.springfaces.integrationtest.selenium.page.PageURL;
 
-public class OutcomePage extends PageObject {
+@PageURL("/exceptionhandler/responsebody")
+public class ResponseBody extends PageObject {
 
-	public OutcomePage(WebDriver webDriver) {
+	public ResponseBody(WebDriver webDriver) {
 		super(webDriver);
 	}
 
 	@Override
 	protected boolean isCorrectPage(String title) {
-		return title.equals("Exception Handler - Handled Outcome");
+		return title.equals("Exception Handler - Handled Response Body Navigation Mapping");
 	}
 
-	public String getUrl() {
-		return getWebDriver().getCurrentUrl();
+	public ResponseBodyOutcome click() {
+		getWebDriver().findElement(By.id("form:button")).click();
+		return newPage(ResponseBodyOutcome.class);
 	}
-
 }
