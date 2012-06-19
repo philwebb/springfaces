@@ -38,8 +38,8 @@ public class SpringRenderKitFactory extends RenderKitFactoryWrapper {
 
 	public SpringRenderKitFactory(RenderKitFactory wrapped) {
 		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Wrapping RenderKitFactory " + wrapped.getClass()
-					+ " to provide integration with Spring");
+			this.logger
+					.debug("Wrapping RenderKitFactory " + wrapped.getClass() + " to provide integration with Spring");
 		}
 		this.delegate = wrapped;
 		reloadRenderKits();

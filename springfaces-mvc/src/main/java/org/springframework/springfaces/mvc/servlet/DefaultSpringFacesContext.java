@@ -19,6 +19,8 @@ import java.util.Map;
 
 import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
+import javax.faces.application.ViewHandler;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.FacesContextFactory;
 import javax.faces.context.FacesContextWrapper;
@@ -128,8 +130,9 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 		ModelAndViewArtifact modelAndViewArtifact = new ModelAndViewArtifact(viewArtifact, model);
 		if (this.rendering != null) {
 			this.rendering = modelAndViewArtifact;
-			this.facesContext.setViewRoot(this.facesContext.getApplication().getViewHandler()
-					.createView(this.facesContext, viewArtifact.toString()));
+			ViewHandler viewHandler = this.facesContext.getApplication().getViewHandler();
+			UIViewRoot viewRoot = viewHandler.createView(this.facesContext, viewArtifact.toString());
+			this.facesContext.setViewRoot(viewRoot);
 		} else {
 			this.rendering = modelAndViewArtifact;
 			try {
