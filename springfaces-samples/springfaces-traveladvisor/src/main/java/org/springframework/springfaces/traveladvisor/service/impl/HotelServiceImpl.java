@@ -52,26 +52,27 @@ public class HotelServiceImpl implements HotelService {
 	public Hotel getHotel(City city, String name) {
 		Assert.notNull(city, "City must not be null");
 		Assert.hasLength(name, "Name must not be empty");
-		return hotelRepository.findByCityAndName(city, name);
+		return this.hotelRepository.findByCityAndName(city, name);
 	}
 
 	public Page<Review> getReviews(Hotel hotel, Pageable pageable) {
 		Assert.notNull(hotel, "Hotel must not be null");
-		return reviewRepository.findByHotel(hotel, pageable);
+		return this.reviewRepository.findByHotel(hotel, pageable);
 	}
 
 	public Review getReview(Hotel hotel, int reviewNumber) {
 		Assert.notNull(hotel, "Hotel must not be null");
-		return reviewRepository.findByHotelAndIndex(hotel, reviewNumber);
+		return this.reviewRepository.findByHotelAndIndex(hotel, reviewNumber);
 	}
 
 	public Review addReview(Hotel hotel, ReviewDetails details) {
+		// FIXME
 		System.out.println(details.getTitle());
 		return new Review(hotel, 1, details);
 	}
 
 	public ReviewsSummary getReviewSummary(Hotel hotel) {
-		List<RatingCount> ratingCounts = hotelSummaryRepository.findRatingCounts(hotel);
+		List<RatingCount> ratingCounts = this.hotelSummaryRepository.findRatingCounts(hotel);
 		return new ReviewsSummaryImpl(ratingCounts);
 	}
 
@@ -95,14 +96,14 @@ public class HotelServiceImpl implements HotelService {
 		private Map<Rating, Long> ratingCount;
 
 		public ReviewsSummaryImpl(List<RatingCount> ratingCounts) {
-			ratingCount = new HashMap<Rating, Long>();
+			this.ratingCount = new HashMap<Rating, Long>();
 			for (RatingCount ratingCount : ratingCounts) {
 				this.ratingCount.put(ratingCount.getRating(), ratingCount.getCount());
 			}
 		}
 
 		public long getNumberOfReviewsWithRating(Rating rating) {
-			Long count = ratingCount.get(rating);
+			Long count = this.ratingCount.get(rating);
 			return count == null ? 0 : count;
 		}
 	}
