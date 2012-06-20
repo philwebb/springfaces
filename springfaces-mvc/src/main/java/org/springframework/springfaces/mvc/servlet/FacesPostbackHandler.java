@@ -68,6 +68,8 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	 */
 	public FacesPostbackHandler(FacesViewStateHandler stateHandler, Dispatcher dispatcher) {
 		super();
+		Assert.notNull(stateHandler, "StateHandler must not be null");
+		Assert.notNull(dispatcher, "Dispatcher must not be null");
 		this.stateHandler = stateHandler;
 		this.dispatcher = dispatcher;
 		setOrder(HIGHEST_PRECEDENCE);
@@ -84,19 +86,19 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	 * @return the interceptor
 	 */
 	protected HandlerInterceptor findFacesHandlerInterceptor() {
+		HandlerInterceptor interceptor = null;
 		Map<String, MappedInterceptor> mappedInterceptors = BeanFactoryUtils.beansOfTypeIncludingAncestors(
 				getApplicationContext(), MappedInterceptor.class, true, false);
 		for (MappedInterceptor mappedInterceptor : mappedInterceptors.values()) {
 			if (mappedInterceptor.getInterceptor() instanceof FacesHandlerInterceptor) {
-				Assert.state(this.facesHandlerInterceptor == null,
-						"Multiple " + FacesHandlerInterceptor.class.getSimpleName()
-								+ " registered within the web context");
-				return mappedInterceptor.getInterceptor();
+				Assert.state(interceptor == null, "Multiple " + FacesHandlerInterceptor.class.getSimpleName()
+						+ " registered within the web context");
+				interceptor = mappedInterceptor.getInterceptor();
 			}
 		}
-		throw new IllegalStateException("No" + FacesHandlerInterceptor.class.getSimpleName()
+		Assert.state(interceptor != null, "No " + FacesHandlerInterceptor.class.getSimpleName()
 				+ " registered within the web context");
-
+		return interceptor;
 	}
 
 	/**
