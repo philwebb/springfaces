@@ -44,6 +44,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.PhaseId;
+import javax.faces.render.RenderKitFactory;
 import javax.faces.view.ViewDeclarationLanguage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -177,6 +178,20 @@ public class MvcViewHandlerTest {
 		UIViewRoot view = this.handler.createView(this.context, "/test");
 		verify(this.delegate, never()).createView(eq(this.context), anyString());
 		assertThat(view, is(instanceOf(NavigationResponseUIViewRoot.class)));
+		assertThat(view.getRenderKitId(), is(RenderKitFactory.HTML_BASIC_RENDER_KIT));
+	}
+
+	@Test
+	public void shouldSetRenderKit() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		setupDestination("test", mock(View.class));
+		UIViewRoot existingViewRoot = new UIViewRoot();
+		String renderKitId = "EXAMPLE_RENDER_KIT";
+		existingViewRoot.setRenderKitId(renderKitId);
+		given(this.context.getViewRoot()).willReturn(existingViewRoot);
+		given(this.context.getCurrentPhaseId()).willReturn(PhaseId.INVOKE_APPLICATION);
+		UIViewRoot view = this.handler.createView(this.context, "/test");
+		assertThat(view.getRenderKitId(), is(renderKitId));
 	}
 
 	@Test

@@ -243,7 +243,6 @@ public class MvcViewHandler extends ViewHandlerWrapper {
 		private ModelAndView modelAndView;
 
 		public NavigationResponseUIViewRoot(String viewId, String renderKitId, ModelAndView modelAndView) {
-			// FIXME test render kit
 			setViewId(viewId);
 			setRenderKitId(renderKitId == null ? RenderKitFactory.HTML_BASIC_RENDER_KIT : renderKitId);
 			this.modelAndView = modelAndView;

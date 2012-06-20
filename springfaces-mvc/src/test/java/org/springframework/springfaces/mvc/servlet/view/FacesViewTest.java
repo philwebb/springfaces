@@ -25,6 +25,6 @@ import org.junit.Ignore;
 @Ignore
 public class FacesViewTest {
 
-	// FIXME
+	// FIXME test
 
 }
