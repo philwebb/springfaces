@@ -9,6 +9,7 @@
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
+	<url>https://philwebb.github.com/springfaces</url>
 	<modules>
 		<module>springfaces</module>
 		<module>springfaces-mvc</module>
@@ -16,6 +17,7 @@
 		<module>springfaces-integrationtest</module>
 	</modules>
 	<properties>
+		<java.version>1.5</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dependency.springframework.version>3.1.1.RELEASE</dependency.springframework.version>
 		<dependency.jsf.version>2.1.7</dependency.jsf.version>
@@ -75,10 +77,79 @@
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.0</version>
+					<dependencies>
+						<dependency>
+							<groupId>net.ju-n.maven.doxia</groupId>
+							<artifactId>doxia-module-markdown</artifactId>
+							<version>1.0.0</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<reportPlugins>
+							<plugin>
+								<artifactId>maven-javadoc-plugin</artifactId>
+								<version>2.8.1</version>
+							</plugin>
+							<plugin>
+								<artifactId>maven-jxr-plugin</artifactId>
+								<version>2.3</version>
+							</plugin>
+							<plugin>
+								<artifactId>maven-pmd-plugin</artifactId>
+								<version>2.7.1</version>
+								<configuration>
+									<targetJdk>${java.version}</targetJdk>
+								</configuration>
+							</plugin>
+							<plugin>
+								<artifactId>maven-project-info-reports-plugin</artifactId>
+								<version>2.4</version>
+							</plugin>
+							<plugin>
+								<artifactId>maven-surefire-report-plugin</artifactId>
+								<version>2.12</version>
+							</plugin>
+							<plugin>
+								<groupId>org.codehaus.mojo</groupId>
+								<artifactId>cobertura-maven-plugin</artifactId>
+								<version>2.5.1</version>
+								<configuration>
+									<formats>
+										<format>xml</format>
+										<format>html</format>
+									</formats>
+								</configuration>
+							</plugin>
+						</reportPlugins>
+					</configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.12</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8.1</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<artifactId>maven-war-plugin</artifactId>
@@ -263,4 +334,10 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<site>
+			<id>springfaces</id>
+			<url>https://philwebb.github.com/springfaces</url>
+		</site>
+	</distributionManagement>
 </project>
