@@ -15,15 +15,44 @@
  */
 package org.springframework.springfaces.message;
 
-import org.junit.Ignore;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.Locale;
+
+import org.junit.Test;
 
 /**
  * Tests for {@link NoSuchObjectMessageException}.
  * 
  * @author Phillip Webb
  */
-@Ignore
 public class NoSuchObjectMessageExceptionTest {
 
-	// FIXME
+	private Object object = new Object();
+
+	private Locale locale = Locale.CANADA;
+
+	@Test
+	public void shouldCreateWithObjectAndLocale() throws Exception {
+		NoSuchObjectMessageException e = new NoSuchObjectMessageException(this.object, this.locale);
+		assertThat(e.getObject(), is(this.object));
+		assertThat(e.getLocale(), is(this.locale));
+		assertThat(e.getMessage(), is("Unable to convert object of type java.lang.Object to a "
+				+ "message for locale en_CA"));
+		assertThat(e.getCause(), is(nullValue()));
+	}
+
+	@Test
+	public void shouldCreateWithObjectLocalAndCause() throws Exception {
+		Throwable cause = new Exception();
+		NoSuchObjectMessageException e = new NoSuchObjectMessageException(this.object, this.locale, cause);
+		assertThat(e.getObject(), is(this.object));
+		assertThat(e.getLocale(), is(this.locale));
+		assertThat(e.getMessage(), is("Unable to convert object of type java.lang.Object to a "
+				+ "message for locale en_CA"));
+		assertThat(e.getCause(), is(cause));
+	}
+
 }

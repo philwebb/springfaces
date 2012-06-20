@@ -45,7 +45,7 @@ public class NoSuchObjectMessageException extends RuntimeException {
 	 * @param locale the locale
 	 * @param cause the root cause
 	 */
-	public NoSuchObjectMessageException(Object object, Locale locale, NoSuchObjectMessageException cause) {
+	public NoSuchObjectMessageException(Object object, Locale locale, Throwable cause) {
 		super("Unable to convert object of type " + object.getClass().getName() + " to a message for locale " + locale,
 				cause);
 		this.object = object;
