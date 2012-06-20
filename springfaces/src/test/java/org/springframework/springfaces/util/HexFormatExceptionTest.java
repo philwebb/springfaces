@@ -15,7 +15,11 @@
  */
 package org.springframework.springfaces.util;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * Tests for {@link HexFormatException}.
@@ -25,5 +29,19 @@ import org.junit.Ignore;
 @Ignore
 public class HexFormatExceptionTest {
 
-	// FIXME
+	@Test
+	public void shouldCreateWithMessageAndHexString() throws Exception {
+		HexFormatException e = new HexFormatException("message", "00FF");
+		assertThat(e.getMessage(), is("message"));
+		assertThat(e.getHexString(), is("00FF"));
+		assertThat(e.getIndex(), is(HexFormatException.NO_INDEX));
+	}
+
+	@Test
+	public void shouldCreateWithMessageHexStringAndIndex() throws Exception {
+		HexFormatException e = new HexFormatException("message", "00FF", 1);
+		assertThat(e.getMessage(), is("message"));
+		assertThat(e.getHexString(), is("00FF"));
+		assertThat(e.getIndex(), is(1));
+	}
 }
