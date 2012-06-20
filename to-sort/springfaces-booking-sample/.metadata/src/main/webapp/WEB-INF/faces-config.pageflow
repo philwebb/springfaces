@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13015174350350" configfile="/springfaces-booking-sample/src/main/webapp/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="WEB-INF/pages/hotels/search.xhtml" id="pf130152130119812" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf130152130119813" path="/WEB-INF/pages/hotels/search.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="mvc:redirect:/hotels" id="pf130152130119914" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf130152130119813" path="mvc:redirect:/hotels"/>
-  <links id="pf130152130119813" target="pf130152130119914" source="pf130152130119812" outcome="search" redirect="true"/>
-</pageflow:Pageflow>
