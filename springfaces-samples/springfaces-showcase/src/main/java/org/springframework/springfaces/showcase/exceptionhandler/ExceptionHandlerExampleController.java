@@ -72,8 +72,7 @@ public class ExceptionHandlerExampleController {
 	@RequestMapping("/exceptionhandler/facesview")
 	public void facesView() {
 		// @ExceptionHandlers can return FacesView objects, here handleFacesView returns the view directly to the URL
-		// will not
-		// change
+		// will not change
 	}
 
 	public void throwExampleFacesViewException() {

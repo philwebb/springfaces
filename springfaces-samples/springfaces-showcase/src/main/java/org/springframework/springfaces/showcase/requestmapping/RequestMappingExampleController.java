@@ -29,7 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 /**
- * Demonstrates various types of {@link RequestMapping}. All standard MVC {@link RequestMapping}s are supported.
+ * MVC Controller to demonstrate various types of {@link RequestMapping}. All standard MVC {@link RequestMapping}s are
+ * supported.
  * 
  * @author Phillip Webb
  */

@@ -18,15 +18,23 @@ package org.springframework.springfaces.showcase.message.template;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * MVC Controller to demonstrate templating.
+ * 
+ * @author Phillip Webb
+ */
 @Controller
 public class TemplateExampleController {
 
 	@RequestMapping("/template/decorateall")
 	public void simple() {
+		// Use decorateAll to apply a template to each child component.
 	}
 
 	@RequestMapping("/template/componentinfo")
 	public void componentInfo() {
+		// Component info can help when writing templates, you can use it to find out it a component label, if it is
+		// required and if it has validation errors.
 	}
 
 }
