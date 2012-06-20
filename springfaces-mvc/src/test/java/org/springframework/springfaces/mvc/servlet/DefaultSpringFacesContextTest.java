@@ -316,6 +316,17 @@ public class DefaultSpringFacesContextTest {
 	}
 
 	@Test
+	public void shouldNotRenderMVCViewIfPartialRequest() throws Exception {
+		View view = mock(View.class);
+		Map<String, Object> model = new HashMap<String, Object>();
+		given(this.partialViewContext.isPartialRequest()).willReturn(true);
+		given(this.partialViewContext.isAjaxRequest()).willReturn(true);
+		this.thrown.expect(IllegalStateException.class);
+		this.thrown.expectMessage("Unable to render MVC response to Faces AJAX request");
+		this.springFacesContext.render(view, model);
+	}
+
+	@Test
 	public void shouldSetViewRootIfDoubleRendering() throws Exception {
 		FacesView view = mock(FacesView.class);
 		given(view.getViewArtifact()).willReturn(new ViewArtifact("theartifact"));
@@ -366,7 +377,4 @@ public class DefaultSpringFacesContextTest {
 			return test.get().facesContext;
 		}
 	}
-
-	// FIXME test is render throws on isPartialRequest render
-
 }

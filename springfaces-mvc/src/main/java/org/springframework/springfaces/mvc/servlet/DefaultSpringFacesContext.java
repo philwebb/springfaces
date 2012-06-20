@@ -17,7 +17,6 @@ package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Map;
 
-import javax.faces.FacesException;
 import javax.faces.FactoryFinder;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
@@ -36,6 +35,7 @@ import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.springfaces.mvc.servlet.view.FacesRenderedView;
 import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.View;
@@ -118,7 +118,7 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 				try {
 					render(context, view, model);
 				} catch (Exception e) {
-					throw new FacesException(e);
+					ReflectionUtils.rethrowRuntimeException(e);
 				}
 			}
 		} finally {
@@ -151,8 +151,8 @@ public class DefaultSpringFacesContext extends SpringFacesContext {
 		} else {
 			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
-			if (context.getPartialViewContext().isPartialRequest()) {
-				PartialViewContext partialViewContext = context.getPartialViewContext();
+			PartialViewContext partialViewContext = context.getPartialViewContext();
+			if (partialViewContext.isPartialRequest()) {
 				Assert.state(!partialViewContext.isAjaxRequest(), "Unable to render MVC response to Faces AJAX request");
 			}
 			view.render(model, request, response);
