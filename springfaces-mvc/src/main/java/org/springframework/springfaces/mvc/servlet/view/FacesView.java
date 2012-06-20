@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.render.ViewArtifact;
 import org.springframework.util.Assert;
-import org.springframework.validation.AbstractPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 
@@ -56,18 +56,24 @@ public class FacesView extends AbstractUrlBasedView {
 	@Override
 	protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		// FIXME model contains non serializable binding results, should these even be exposed
-		// or should we translate them to FacesMessages? or throw an exception?
-		// HACK : for now we just remove them
+		SpringFacesContext.getCurrentInstance(true).render(this, removeBindingResults(model));
+
+	}
+
+	/**
+	 * Remove {@link BindingResult}s from the model
+	 * @param model
+	 * @return
+	 */
+	private Map<String, Object> removeBindingResults(Map<String, Object> model) {
 		model = new LinkedHashMap<String, Object>(model);
 		for (Iterator<Map.Entry<String, Object>> iterator = model.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry<String, Object> entry = iterator.next();
-			if (entry.getValue() instanceof AbstractPropertyBindingResult) {
+			if (entry.getValue() instanceof BindingResult) {
 				iterator.remove();
 			}
 		}
-		SpringFacesContext.getCurrentInstance(true).render(this, model);
-
+		return model;
 	}
 
 	@Override
