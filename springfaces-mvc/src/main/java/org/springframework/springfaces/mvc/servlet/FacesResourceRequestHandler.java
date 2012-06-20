@@ -27,6 +27,11 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.context.support.WebApplicationObjectSupport;
 
+/**
+ * {@link HttpRequestHandler} that delegate JSF resource requests to the {@link ResourceHandler}.
+ * 
+ * @author Phillip Webb
+ */
 public class FacesResourceRequestHandler extends WebApplicationObjectSupport implements HttpRequestHandler {
 
 	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException,
