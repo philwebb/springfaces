@@ -15,16 +15,26 @@
  */
 package org.springframework.springfaces.event;
 
-import org.junit.Ignore;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
+import javax.faces.application.Application;
+
+import org.junit.Test;
 
 /**
  * Tests for {@link PostConstructApplicationSpringFacesEvent}.
  * 
  * @author Phillip Webb
  */
-@Ignore
 public class PostConstructApplicationSpringFacesEventTest {
 
-	// FIXME Tests
+	@Test
+	public void shouldCreateWithSource() throws Exception {
+		Application application = mock(Application.class);
+		PostConstructApplicationSpringFacesEvent e = new PostConstructApplicationSpringFacesEvent(application);
+		assertThat(e.getSource(), is(application));
+	}
 
 }
