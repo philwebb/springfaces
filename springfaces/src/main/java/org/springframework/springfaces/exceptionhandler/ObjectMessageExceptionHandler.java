@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.exceptionhandler;
+package org.springframework.springfaces.exceptionhandler;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.springfaces.message.NoSuchObjectMessageException;
 import org.springframework.springfaces.message.ObjectMessageSource;
 import org.springframework.springfaces.message.ObjectMessageSourceUtils;
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 
@@ -31,16 +33,17 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class ObjectMessageExceptionHandler implements ExceptionHandler, MessageSourceAware {
+public class ObjectMessageExceptionHandler implements ExceptionHandler<Throwable>, MessageSourceAware {
 
 	private ObjectMessageSource messageSource;
 
-	public boolean handle(SpringFacesContext context, Throwable exception) throws Exception {
+	public boolean handle(Throwable exception, ExceptionQueuedEvent event) throws Exception {
 		Assert.state(this.messageSource != null, "MessageSource must not be null");
+		ExceptionQueuedEventContext eventContext = event.getContext();
+		FacesContext facesContext = eventContext.getContext();
 		try {
-			String message = this.messageSource.getMessage(exception, null,
-					FacesUtils.getLocale(context.getFacesContext()));
-			context.getFacesContext().addMessage(null, new FacesMessage(message));
+			String message = this.messageSource.getMessage(exception, null, FacesUtils.getLocale(facesContext));
+			facesContext.addMessage(null, new FacesMessage(message));
 			return true;
 		} catch (NoSuchObjectMessageException e) {
 			return false;

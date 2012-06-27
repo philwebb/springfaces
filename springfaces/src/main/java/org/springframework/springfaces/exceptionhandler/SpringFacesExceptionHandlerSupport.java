@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.internal;
+package org.springframework.springfaces.exceptionhandler;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.el.ELException;
@@ -27,18 +28,29 @@ import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.el.EvaluationException;
 import javax.faces.event.ExceptionQueuedEvent;
 
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.exceptionhandler.ExceptionHandler;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.GenericTypeResolver;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.springfaces.FacesWrapperFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * A JSF {@link ExceptionHandler} to integrate with Spring MVC by delegating to the specified {@link ExceptionHandler}s.
+ * {@link FacesWrapperFactory} for a JSF {@link javax.faces.context.ExceptionHandler} that offers extended Spring
+ * support. All Spring Beans that implement {@link ExceptionHandler} with a matching generic type are considered. Beans
+ * are ordered using {@link AnnotationAwareOrderComparator}, once the exception has been {@link ExceptionHandler#handle
+ * handled} subsequent beans will not be called.
  * 
  * @author Phillip Webb
  */
-@SuppressWarnings("deprecation")
-public class MvcExceptionHandler extends ExceptionHandlerWrapper {
+@SuppressWarnings({ "deprecation", "rawtypes" })
+public class SpringFacesExceptionHandlerSupport implements FacesWrapperFactory<javax.faces.context.ExceptionHandler>,
+		ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
 
 	private static Set<Class<?>> EXCEPTIONS_TO_UNWRAP;
 	static {
@@ -49,67 +61,89 @@ public class MvcExceptionHandler extends ExceptionHandlerWrapper {
 		EXCEPTIONS_TO_UNWRAP = Collections.unmodifiableSet(unwrappedExceptions);
 	}
 
-	private javax.faces.context.ExceptionHandler wrapped;
+	private ApplicationContext applicationContext;
 
-	private Collection<? extends ExceptionHandler> exceptionHandlers;
+	private List<ExceptionHandler> exceptionHandlers;
 
-	/**
-	 * Create a new {@link MvcExceptionHandler} instance.
-	 * @param wrapped the wrapped JSF exception handler
-	 * @param exceptionHandlers a collection of Spring Faces exception handlers
-	 */
-	public MvcExceptionHandler(javax.faces.context.ExceptionHandler wrapped,
-			Collection<? extends ExceptionHandler> exceptionHandlers) {
-		Assert.notNull(wrapped, "Wrapped must not be null");
-		this.wrapped = wrapped;
-		this.exceptionHandlers = (exceptionHandlers == null ? Collections.<ExceptionHandler> emptyList()
-				: exceptionHandlers);
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
-	@Override
-	public javax.faces.context.ExceptionHandler getWrapped() {
-		return this.wrapped;
-	}
-
-	@Override
-	public void handle() throws FacesException {
-		if (SpringFacesContext.getCurrentInstance() != null) {
-			handle(SpringFacesContext.getCurrentInstance());
-		}
-		super.handle();
-	}
-
-	private void handle(SpringFacesContext context) {
-		Iterator<ExceptionQueuedEvent> events = getUnhandledExceptionQueuedEvents().iterator();
-		while (events.hasNext()) {
-			ExceptionQueuedEvent event = events.next();
-			Throwable cause = getRootCause(event.getContext().getException());
-			if (handle(context, cause)) {
-				events.remove();
-			}
+	public void onApplicationEvent(ContextRefreshedEvent event) {
+		ApplicationContext applicationContext = event.getApplicationContext();
+		if (applicationContext == this.applicationContext) {
+			collectExceptionHandlerBeans();
 		}
 	}
 
-	private boolean handle(SpringFacesContext context, Throwable cause) {
-		for (ExceptionHandler exceptionHandler : this.exceptionHandlers) {
-			try {
-				if (exceptionHandler.handle(context, cause)) {
-					return true;
+	private void collectExceptionHandlerBeans() {
+		this.exceptionHandlers = new ArrayList<ExceptionHandler>(BeanFactoryUtils.beansOfTypeIncludingAncestors(
+				this.applicationContext, ExceptionHandler.class, true, true).values());
+		Collections.sort(this.exceptionHandlers, new AnnotationAwareOrderComparator());
+	}
+
+	public javax.faces.context.ExceptionHandler newWrapper(Class<?> typeClass,
+			javax.faces.context.ExceptionHandler wrapped) {
+		return new SpringFacesExceptionHandler(wrapped);
+	}
+
+	protected class SpringFacesExceptionHandler extends ExceptionHandlerWrapper {
+
+		private javax.faces.context.ExceptionHandler wrapped;
+
+		/**
+		 * Create a new {@link SpringFacesExceptionHandlerSupport} instance.
+		 * @param wrapped the wrapped JSF exception handler
+		 */
+		public SpringFacesExceptionHandler(javax.faces.context.ExceptionHandler wrapped) {
+			Assert.notNull(wrapped, "Wrapped must not be null");
+			this.wrapped = wrapped;
+		}
+
+		@Override
+		public javax.faces.context.ExceptionHandler getWrapped() {
+			return this.wrapped;
+		}
+
+		@Override
+		public void handle() throws FacesException {
+			Iterator<ExceptionQueuedEvent> events = getUnhandledExceptionQueuedEvents().iterator();
+			while (events.hasNext()) {
+				if (handle(events.next())) {
+					events.remove();
 				}
-			} catch (Exception e) {
-				ReflectionUtils.rethrowRuntimeException(e);
 			}
+			super.handle();
 		}
-		return false;
-	}
 
-	@Override
-	public Throwable getRootCause(Throwable throwable) {
-		// Overridden to support unwrapping of EvaluationExceptions.
-		Assert.notNull(throwable, "Throwable must not be null");
-		while (EXCEPTIONS_TO_UNWRAP.contains(throwable.getClass())) {
-			throwable = throwable.getCause();
+		@SuppressWarnings("unchecked")
+		private boolean handle(ExceptionQueuedEvent event) {
+			Throwable exception = getRootCause(event.getContext().getException());
+			Class<? extends Throwable> exceptionType = exception.getClass();
+			for (ExceptionHandler handler : SpringFacesExceptionHandlerSupport.this.exceptionHandlers) {
+				Class<?> handlerGeneric = GenericTypeResolver.resolveTypeArgument(handler.getClass(),
+						ExceptionHandler.class);
+				if (handlerGeneric == null || handlerGeneric.isAssignableFrom(exceptionType)) {
+					try {
+						if (handler.handle(exception, event)) {
+							return true;
+						}
+					} catch (Exception e) {
+						ReflectionUtils.rethrowRuntimeException(e);
+					}
+				}
+			}
+			return false;
 		}
-		return super.getRootCause(throwable);
+
+		@Override
+		public Throwable getRootCause(Throwable throwable) {
+			// Overridden to support unwrapping of EvaluationExceptions.
+			Assert.notNull(throwable, "Throwable must not be null");
+			while (EXCEPTIONS_TO_UNWRAP.contains(throwable.getClass())) {
+				throwable = throwable.getCause();
+			}
+			return super.getRootCause(throwable);
+		}
 	}
 }

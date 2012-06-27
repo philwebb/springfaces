@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.internal;
+package org.springframework.springfaces.exceptionhandler;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.isA;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.el.ELException;
 import javax.faces.FacesException;
@@ -34,7 +39,6 @@ import javax.faces.el.EvaluationException;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,92 +48,74 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.springfaces.mvc.SpringFacesContextSetter;
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.exceptionhandler.ExceptionHandler;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.Ordered;
+import org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHandlerSupport.SpringFacesExceptionHandler;
 
 /**
- * Tests for {@link MvcExceptionHandler}.
+ * Tests for {@link SpringFacesExceptionHandlerSupport}.
  * 
  * @author Phillip Webb
  */
-@SuppressWarnings("deprecation")
-public class MvcExceptionHandlerTest {
+@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
+public class SpringFacesExceptionHandlerSupportTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
-
-	private MvcExceptionHandler facesHandler;
-
-	private List<ExceptionHandler> exceptionHandlers;
-
-	@Mock
-	private SpringFacesContext context;
-
-	@Mock
-	private FacesContext facesContext;
 
 	@Mock
 	private javax.faces.context.ExceptionHandler wrapped;
 
 	@Mock
-	private ExceptionHandler handler1;
+	private FacesContext facesContext;
 
-	@Mock
-	private ExceptionHandler handler2;
+	private SpringFacesExceptionHandler exceptionHandler;
 
-	@Mock
-	private ExceptionHandler handler3;
+	private ExceptionHandler handler1 = mockExceptionHandler(1);
+
+	private ExceptionHandler handler2 = mockExceptionHandler(2);
+
+	private ExceptionHandler handler3 = mockExceptionHandler(3);
 
 	private ArrayList<ExceptionQueuedEvent> events;
 
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		SpringFacesContextSetter.setCurrentInstance(this.context);
+		SpringFacesExceptionHandlerSupport support = new SpringFacesExceptionHandlerSupport();
+		ApplicationContext applicationContext = mock(ApplicationContext.class);
 		this.events = new ArrayList<ExceptionQueuedEvent>();
 		given(this.wrapped.getUnhandledExceptionQueuedEvents()).willReturn(this.events);
-		given(this.wrapped.getRootCause(isA(Throwable.class))).willAnswer(new Answer<Throwable>() {
+		given(this.wrapped.getRootCause(any(Throwable.class))).will(new Answer<Throwable>() {
 			public Throwable answer(InvocationOnMock invocation) throws Throwable {
 				return (Throwable) invocation.getArguments()[0];
 			}
 		});
-		given(this.context.getFacesContext()).willReturn(this.facesContext);
-		this.exceptionHandlers = new ArrayList<ExceptionHandler>();
-		this.exceptionHandlers.add(this.handler1);
-		this.exceptionHandlers.add(this.handler2);
-		this.exceptionHandlers.add(this.handler3);
-		this.facesHandler = new MvcExceptionHandler(this.wrapped, this.exceptionHandlers);
+		Map<String, ExceptionHandler> beans = new LinkedHashMap<String, ExceptionHandler>();
+		beans.put("handler3", this.handler3);
+		beans.put("handler2", this.handler2);
+		beans.put("handler1", this.handler1);
+		given(applicationContext.getBeansOfType(ExceptionHandler.class, true, true)).willReturn(beans);
+		support.setApplicationContext(applicationContext);
+		support.onApplicationEvent(new ContextRefreshedEvent(applicationContext));
+		this.exceptionHandler = (SpringFacesExceptionHandler) support.newWrapper(ExceptionHandler.class, this.wrapped);
 	}
 
-	@After
-	public void cleanup() {
-		SpringFacesContextSetter.setCurrentInstance(null);
-	}
-
-	@Test
-	public void shouldNeedWrapped() throws Exception {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage("Wrapped must not be null");
-		new MvcExceptionHandler(null, null);
+	private ExceptionHandler mockExceptionHandler(int order) {
+		ExceptionHandler hander = mock(ExceptionHandler.class, withSettings().extraInterfaces(Ordered.class));
+		given(((Ordered) hander).getOrder()).willReturn(order);
+		return hander;
 	}
 
 	@Test
-	public void shouldSupportNullExceptionHandlers() throws Exception {
-		new MvcExceptionHandler(this.wrapped, null);
-		this.facesHandler.handle();
+	public void shouldCreateHandler() throws Exception {
+		assertThat(this.exceptionHandler, is(not(nullValue())));
 	}
 
 	@Test
-	public void shouldCallWrappedWhenHasSpringFacesContext() throws Exception {
-		this.facesHandler.handle();
-		verify(this.wrapped).handle();
-	}
-
-	@Test
-	public void shouldCallWrappedWhenNoSpringFacesContext() throws Exception {
-		SpringFacesContextSetter.setCurrentInstance(null);
-		this.facesHandler.handle();
+	public void shouldCallWrappedHandler() throws Exception {
+		this.exceptionHandler.handle();
 		verify(this.wrapped).handle();
 	}
 
@@ -140,50 +126,60 @@ public class MvcExceptionHandlerTest {
 		exception = new FacesException(exception);
 		exception = new ELException(exception);
 		exception = new EvaluationException(exception);
-		assertThat(this.facesHandler.getRootCause(exception), is(sameInstance((Throwable) root)));
+		assertThat(this.exceptionHandler.getRootCause(exception), is(sameInstance((Throwable) root)));
 	}
 
 	@Test
 	public void shouldCallHandlersInOrderForEachEvent() throws Exception {
 		Exception exception1 = new Exception();
+		ExceptionQueuedEvent event1 = new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext,
+				exception1));
 		Exception exception2 = new Exception();
-		this.events.add(new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext, exception1)));
-		this.events.add(new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext, exception2)));
-		this.facesHandler.handle();
+		ExceptionQueuedEvent event2 = new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext,
+				exception2));
+		this.events.add(event1);
+		this.events.add(event2);
+		this.exceptionHandler.handle();
 		InOrder ordered = inOrder(this.handler1, this.handler2, this.handler3);
-		ordered.verify(this.handler1).handle(this.context, exception1);
-		ordered.verify(this.handler2).handle(this.context, exception1);
-		ordered.verify(this.handler3).handle(this.context, exception1);
-		ordered.verify(this.handler1).handle(this.context, exception2);
-		ordered.verify(this.handler2).handle(this.context, exception2);
-		ordered.verify(this.handler3).handle(this.context, exception2);
+		ordered.verify(this.handler1).handle(exception1, event1);
+		ordered.verify(this.handler2).handle(exception1, event1);
+		ordered.verify(this.handler3).handle(exception1, event1);
+		ordered.verify(this.handler1).handle(exception2, event2);
+		ordered.verify(this.handler2).handle(exception2, event2);
+		ordered.verify(this.handler3).handle(exception2, event2);
 	}
 
 	@Test
 	public void shouldRemoveEventOnHandle() throws Exception {
 		Exception exception = new Exception();
-		this.events.add(new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext, exception)));
-		given(this.handler1.handle(this.context, exception)).willReturn(true);
-		this.facesHandler.handle();
+		ExceptionQueuedEvent event = new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext,
+				exception));
+		this.events.add(event);
+		given(this.handler1.handle(exception, event)).willReturn(true);
+		this.exceptionHandler.handle();
 		assertThat(this.events.size(), is(0));
 	}
 
 	@Test
 	public void shouldNotCallSubsequentHandlers() throws Exception {
 		Exception exception = new Exception();
-		this.events.add(new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext, exception)));
-		given(this.handler2.handle(this.context, exception)).willReturn(true);
-		this.facesHandler.handle();
-		verify(this.handler3, never()).handle(this.context, exception);
+		ExceptionQueuedEvent event = new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext,
+				exception));
+		this.events.add(event);
+		given(this.handler2.handle(exception, event)).willReturn(true);
+		this.exceptionHandler.handle();
+		verify(this.handler3, never()).handle(exception, event);
 	}
 
 	@Test
 	public void shouldRethrowException() throws Exception {
 		Exception exception = new Exception();
-		this.events.add(new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext, exception)));
-		given(this.handler2.handle(this.context, exception)).willThrow(new IllegalStateException("expected"));
+		ExceptionQueuedEvent event = new ExceptionQueuedEvent(new ExceptionQueuedEventContext(this.facesContext,
+				exception));
+		this.events.add(event);
+		given(this.handler2.handle(exception, event)).willThrow(new IllegalStateException("expected"));
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("expected");
-		this.facesHandler.handle();
+		this.exceptionHandler.handle();
 	}
 }

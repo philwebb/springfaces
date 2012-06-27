@@ -36,6 +36,15 @@
 		</property>
 	</bean>
 
+	<bean
+		class="org.springframework.springfaces.convert.SpringFacesConverterSupport" />
+
+	<bean
+		class="org.springframework.springfaces.validator.SpringFacesValidatorSupport" />
+
+	<bean
+		class="org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHandlerSupport" />
+
 	<context:component-scan base-package="org.springframework.springfaces.traveladvisor">
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />
@@ -106,14 +115,6 @@
 		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
 		<constructor-arg ref="stateHandler" />
 		<constructor-arg ref="destinationViewResolverChain" />
-		<constructor-arg>
-			<list>
-				<bean
-					class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
-					<constructor-arg ref="defaultDispatcher" />
-				</bean>
-			</list>
-		</constructor-arg>
 		<property name="navigationOutcomeResolver" ref="navigationOutcomeResolver" />
 	</bean>
 
@@ -127,6 +128,14 @@
 		<bean name="facesInterceptor"
 			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor" />
 	</mvc:interceptors>
+
+	<bean class="org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler"/>
+
+	<bean
+		class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
+		<constructor-arg ref="defaultDispatcher" />
+	</bean>
+
 
 	<import resource="data-access-config.xml" />
 </beans>

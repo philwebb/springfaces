@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.exceptionhandler;
+package org.springframework.springfaces.exceptionhandler;
 
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.internal.MvcExceptionHandler;
+import javax.el.ELException;
+import javax.faces.FacesException;
+import javax.faces.el.EvaluationException;
+import javax.faces.event.ExceptionQueuedEvent;
 
 /**
  * Strategy interface that can be used to handle exceptions thrown from JSF.
- * 
- * @see MvcExceptionHandler
- * 
+ * @param <E> The exception type
+ * @see SpringFacesExceptionHandlerSupport
  * @author Phillip Webb
  */
-public interface ExceptionHandler {
+@SuppressWarnings("deprecation")
+public interface ExceptionHandler<E extends Throwable> {
 
 	/**
 	 * Provides the opportunity for the handler to deal with the specified exception.
-	 * @param context the spring faces context
-	 * @param exception the exception to handle
+	 * @param exception the exception to handle. Unlike the the exception contained within the <tt>event</tt> parameter
+	 * any JSF exceptions here ({@link FacesException}, {@link ELException} and {@link EvaluationException}) will be
+	 * unwrapped.
+	 * @param event the event that triggered the exception
 	 * @return <tt>true</tt> if the exception is handled by this handler
 	 * @throws Exception on error
 	 */
-	boolean handle(SpringFacesContext context, Throwable exception) throws Exception;
+	boolean handle(E exception, ExceptionQueuedEvent event) throws Exception;
 
 }

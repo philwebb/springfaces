@@ -26,15 +26,18 @@ import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.web.servlet.ModelAndView;
@@ -55,6 +58,9 @@ public class DispatcherExceptionHandlerTest {
 
 	@Mock
 	private Dispatcher dispatcher;
+
+	@Mock
+	private ExceptionQueuedEvent event;
 
 	@Mock
 	private SpringFacesContext context;
@@ -83,6 +89,12 @@ public class DispatcherExceptionHandlerTest {
 		given(this.externalContext.getRequest()).willReturn(this.request);
 		given(this.externalContext.getResponse()).willReturn(this.response);
 		given(this.context.getHandler()).willReturn(this.handler);
+		SpringFacesContextSetter.setCurrentInstance(this.context);
+	}
+
+	@After
+	public void cleanup() {
+		SpringFacesContextSetter.setCurrentInstance(null);
 	}
 
 	@Test
@@ -93,16 +105,17 @@ public class DispatcherExceptionHandlerTest {
 	}
 
 	@Test
-	public void shouldNotHandleIfNotException() throws Exception {
-		Throwable exception = mock(Throwable.class);
-		boolean handled = this.exceptionHandler.handle(this.context, exception);
+	public void shouldNotHandleIfNoSpringFacesContext() throws Exception {
+		SpringFacesContextSetter.setCurrentInstance(null);
+		Exception exception = mock(Exception.class);
+		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		assertThat(handled, is(false));
 	}
 
 	@Test
 	public void shouldNotHandleIfDispatcherReturnsNull() throws Exception {
 		Exception exception = new Exception();
-		boolean handled = this.exceptionHandler.handle(this.context, exception);
+		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		assertThat(handled, is(false));
 	}
 
@@ -111,7 +124,7 @@ public class DispatcherExceptionHandlerTest {
 		Exception exception = new Exception();
 		given(this.dispatcher.processHandlerException(this.request, this.response, this.exceptionHandler, exception))
 				.willThrow(exception);
-		boolean handled = this.exceptionHandler.handle(this.context, exception);
+		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		assertThat(handled, is(false));
 	}
 
@@ -123,7 +136,7 @@ public class DispatcherExceptionHandlerTest {
 		ModelAndView modelAndView = new ModelAndView(view, model);
 		given(this.dispatcher.processHandlerException(this.request, this.response, this.handler, exception))
 				.willReturn(modelAndView);
-		boolean handled = this.exceptionHandler.handle(this.context, exception);
+		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		verify(this.request).removeAttribute(WebUtils.ERROR_STATUS_CODE_ATTRIBUTE);
 		verify(this.request).removeAttribute(WebUtils.ERROR_EXCEPTION_TYPE_ATTRIBUTE);
 		verify(this.request).removeAttribute(WebUtils.ERROR_MESSAGE_ATTRIBUTE);
@@ -143,9 +156,8 @@ public class DispatcherExceptionHandlerTest {
 				.willReturn(modelAndView);
 		View view = mock(View.class);
 		given(this.dispatcher.resolveViewName("view", model, null, this.request)).willReturn(view);
-		boolean handled = this.exceptionHandler.handle(this.context, exception);
+		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		assertThat(modelAndView.getView(), is(view));
 		assertThat(handled, is(true));
 	}
-
 }

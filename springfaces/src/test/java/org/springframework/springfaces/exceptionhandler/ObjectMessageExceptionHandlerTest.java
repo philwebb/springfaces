@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.exceptionhandler;
+package org.springframework.springfaces.exceptionhandler;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,6 +27,8 @@ import static org.mockito.Mockito.verify;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ExceptionQueuedEvent;
+import javax.faces.event.ExceptionQueuedEventContext;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,7 +40,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.springfaces.message.NoSuchObjectMessageException;
 import org.springframework.springfaces.message.ObjectMessageSource;
-import org.springframework.springfaces.mvc.context.SpringFacesContext;
 
 /**
  * Tests for {@link ObjectMessageExceptionHandler}.
@@ -55,7 +56,10 @@ public class ObjectMessageExceptionHandlerTest {
 	private Throwable exception = new RuntimeException();
 
 	@Mock
-	private SpringFacesContext context;
+	private ExceptionQueuedEvent event;
+
+	@Mock
+	private ExceptionQueuedEventContext exceptionQueuedEventContext;
 
 	@Mock
 	private FacesContext facesContext;
@@ -72,7 +76,8 @@ public class ObjectMessageExceptionHandlerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		given(this.context.getFacesContext()).willReturn(this.facesContext);
+		given(this.event.getContext()).willReturn(this.exceptionQueuedEventContext);
+		given(this.exceptionQueuedEventContext.getContext()).willReturn(this.facesContext);
 		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
 	}
 
@@ -80,14 +85,14 @@ public class ObjectMessageExceptionHandlerTest {
 	public void shouldNeedMessageSource() throws Exception {
 		this.thrown.expect(IllegalStateException.class);
 		this.thrown.expectMessage("MessageSource must not be null");
-		this.handler.handle(this.context, this.exception);
+		this.handler.handle(this.exception, this.event);
 	}
 
 	@Test
 	public void shouldHandleMappedMessage() throws Exception {
 		this.handler.setMessageSource(this.messageSource);
 		given(this.messageSource.getMessage(this.exception, null, null)).willReturn("message");
-		boolean result = this.handler.handle(this.context, this.exception);
+		boolean result = this.handler.handle(this.exception, this.event);
 		assertThat(result, is(true));
 		verify(this.facesContext).addMessage(isNull(String.class), this.messageCaptor.capture());
 		assertThat(this.messageCaptor.getValue().getSummary(), is("message"));
@@ -98,7 +103,7 @@ public class ObjectMessageExceptionHandlerTest {
 		this.handler.setMessageSource(this.messageSource);
 		given(this.messageSource.getMessage(this.exception, null, null)).willThrow(
 				new NoSuchObjectMessageException(this.exception, null));
-		boolean result = this.handler.handle(this.context, this.exception);
+		boolean result = this.handler.handle(this.exception, this.event);
 		assertThat(result, is(false));
 		verify(this.facesContext, never()).addMessage(anyString(), isA(FacesMessage.class));
 	}

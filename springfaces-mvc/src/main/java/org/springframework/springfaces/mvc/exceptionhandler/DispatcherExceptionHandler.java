@@ -19,9 +19,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
+import javax.faces.event.ExceptionQueuedEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.springfaces.exceptionhandler.ExceptionHandler;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
@@ -36,7 +38,7 @@ import org.springframework.web.util.WebUtils;
  * 
  * @author Phillip Webb
  */
-public class DispatcherExceptionHandler implements ExceptionHandler {
+public class DispatcherExceptionHandler implements ExceptionHandler<Exception> {
 
 	private Dispatcher dispatcher;
 
@@ -45,14 +47,15 @@ public class DispatcherExceptionHandler implements ExceptionHandler {
 		this.dispatcher = dispatcher;
 	}
 
-	public boolean handle(SpringFacesContext context, Throwable exception) throws Exception {
-		if (exception instanceof Exception) {
-			return handle(context, (Exception) exception);
+	public boolean handle(Exception exception, ExceptionQueuedEvent event) throws Exception {
+		SpringFacesContext context = SpringFacesContext.getCurrentInstance();
+		if (context != null) {
+			return handle(exception, context);
 		}
 		return false;
 	}
 
-	private boolean handle(SpringFacesContext context, Exception exception) throws Exception {
+	public boolean handle(Exception exception, SpringFacesContext context) throws Exception {
 		ExternalContext externalContext = context.getFacesContext().getExternalContext();
 		HttpServletRequest request = (HttpServletRequest) externalContext.getRequest();
 		HttpServletResponse response = (HttpServletResponse) externalContext.getResponse();
