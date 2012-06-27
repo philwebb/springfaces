@@ -128,6 +128,5 @@ public class FacesViewTest {
 		FacesView view = new FacesView();
 		view.setUrl("artifact");
 		assertThat(view.getViewArtifact(), is(equalTo(new ViewArtifact("artifact"))));
-
 	}
 }
