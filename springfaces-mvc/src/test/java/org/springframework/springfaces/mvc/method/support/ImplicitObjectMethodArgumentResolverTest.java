@@ -39,7 +39,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
  * Tests for {@link ImplicitObjectMethodArgumentResolver}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

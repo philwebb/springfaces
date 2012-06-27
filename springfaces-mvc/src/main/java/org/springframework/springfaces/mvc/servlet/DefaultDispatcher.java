@@ -32,7 +32,6 @@ import org.springframework.web.servlet.View;
 /**
  * Default implementation of {@link Dispatcher} that works identically to the Spring {@link DispatcherServlet}. Any
  * specific DispatcherServlet configuration in your <tt>web.xml</tt> should also be replicated here.
- * 
  * @author Phillip Webb
  */
 public class DefaultDispatcher implements Dispatcher, ApplicationListener<ContextRefreshedEvent> {

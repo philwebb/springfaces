@@ -43,7 +43,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
  * </ul>
  * Parameters are only resolve when the {@link FacesContext#getCurrentInstance() current} {@link FacesContext} is not
  * <tt>null</tt>.
- * 
  * @author Phillip Webb
  */
 public class FacesContextMethodArgumentResolver extends ImplicitObjectMethodArgumentResolver {

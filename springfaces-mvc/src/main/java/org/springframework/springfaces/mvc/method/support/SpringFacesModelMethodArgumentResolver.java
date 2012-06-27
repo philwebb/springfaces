@@ -50,7 +50,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * </ul>
  * If this behaviour is not required set <tt>resolveModelItems</tt> to false then
  * {@link #SpringFacesModelMethodArgumentResolver(boolean) constructing} the resolver.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesModelMethodArgumentResolver implements HandlerMethodArgumentResolver {

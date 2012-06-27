@@ -45,7 +45,6 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 
 /**
  * Tests for {@link GenericFacesConverter}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 /**
  * {@link NavigationOutcomeResolver} that allows several resolvers to be chained together.
- * 
  * @author Phillip Webb
  */
 public class NavigationOutcomeResolverChain implements NavigationOutcomeResolver {

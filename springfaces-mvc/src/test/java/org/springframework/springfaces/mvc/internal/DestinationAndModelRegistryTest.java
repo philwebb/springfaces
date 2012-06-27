@@ -38,7 +38,6 @@ import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 
 /**
  * Tests for {@link DestinationAndModelRegistry}.
- * 
  * @author Phillip Webb
  */
 public class DestinationAndModelRegistryTest {

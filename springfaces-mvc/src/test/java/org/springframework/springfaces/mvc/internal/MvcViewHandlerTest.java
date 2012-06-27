@@ -70,7 +70,6 @@ import org.springframework.web.servlet.View;
 
 /**
  * Tests for {@link MvcViewHandler}.
- * 
  * @author Phillip Webb
  */
 public class MvcViewHandlerTest {

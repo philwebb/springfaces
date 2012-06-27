@@ -30,7 +30,6 @@ import org.springframework.springfaces.mvc.navigation.NavigationContext;
 
 /**
  * Tests for {@link CompositeNavigationMappingFilter}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

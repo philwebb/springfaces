@@ -32,7 +32,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link ImplicitNavigationOutcomeResolver}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

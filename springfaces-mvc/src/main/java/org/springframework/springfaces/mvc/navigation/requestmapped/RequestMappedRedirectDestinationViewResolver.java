@@ -61,9 +61,7 @@ import org.springframework.web.servlet.View;
  * <p>
  * Resolved destinations will expose model elements by inspecting arguments and annotations of the method in order to
  * create a complete and valid URL (see {@link RequestMappedRedirectView} for details).
- * 
  * @see RequestMappedRedirectView
- * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectDestinationViewResolver implements DestinationViewResolver, ApplicationContextAware,

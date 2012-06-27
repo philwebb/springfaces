@@ -23,7 +23,6 @@ import org.springframework.web.servlet.View;
 
 /**
  * A Spring {@link View} that can be rendered via JSF.
- * 
  * @author Phillip Webb
  */
 public interface FacesRenderedView extends View {

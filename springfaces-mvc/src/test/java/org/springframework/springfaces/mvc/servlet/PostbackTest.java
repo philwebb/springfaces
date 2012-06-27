@@ -26,7 +26,6 @@ import org.springframework.springfaces.mvc.render.ViewArtifact;
 
 /**
  * Tests for {@link Postback}.
- * 
  * @author Phillip Webb
  */
 public class PostbackTest {

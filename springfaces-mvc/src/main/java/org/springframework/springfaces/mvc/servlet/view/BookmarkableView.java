@@ -23,7 +23,6 @@ import org.springframework.web.servlet.View;
 
 /**
  * A MVC {@link View} that can be {@link #getBookmarkUrl bookmarked}.
- * 
  * @author Phillip Webb
  */
 public interface BookmarkableView extends View {

@@ -76,7 +76,6 @@ import org.springframework.web.multipart.MultipartRequest;
 
 /**
  * Tests for {@link RequestMappedRedirectViewModelBuilder}.
- * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectViewModelBuilderTest {

@@ -34,7 +34,6 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * Tests for {@link SpringFacesModelELResolver}.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesModelELResolverTest {

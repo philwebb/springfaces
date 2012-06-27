@@ -90,10 +90,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletWebArgumentR
  * {@link NavigationOutcomeResolver} that resolves JSF navigation outcomes using methods annotated with
  * {@code @NavigationMapping}. This resolver will search for {@code @NavigationMapping} methods from {@code @Controller}
  * or {@code @NavigationController} beans.
- * 
  * @see AbstractHandlerMethodMapping
  * @see RequestMappingHandlerAdapter
- * 
  * @author Phillip Webb
  */
 public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport implements NavigationOutcomeResolver,

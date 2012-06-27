@@ -35,7 +35,6 @@ import org.springframework.util.Assert;
 /**
  * {@link FacesViewStateHandler} that stores {@link ViewArtifact} data as an encrypted hidden HTML field. A unique
  * encryption key is generated for each HTTP session.
- * 
  * @author Phillip Webb
  */
 public class ClientFacesViewStateHandler implements FacesViewStateHandler {

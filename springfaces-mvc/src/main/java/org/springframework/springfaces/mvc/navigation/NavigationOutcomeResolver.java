@@ -19,7 +19,6 @@ import javax.faces.context.FacesContext;
 
 /**
  * Strategy interface used to resolve navigation outcomes.
- * 
  * @author Phillip Webb
  */
 public interface NavigationOutcomeResolver {

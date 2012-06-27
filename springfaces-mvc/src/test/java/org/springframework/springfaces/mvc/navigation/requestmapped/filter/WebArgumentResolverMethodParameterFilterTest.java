@@ -33,7 +33,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * Tests for {@link WebArgumentResolverMethodParameterFilter}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

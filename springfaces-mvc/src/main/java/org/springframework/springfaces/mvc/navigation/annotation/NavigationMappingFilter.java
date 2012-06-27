@@ -19,7 +19,6 @@ import org.springframework.springfaces.mvc.navigation.NavigationContext;
 
 /**
  * Filter that can be used to restrict JSF navigation mappings.
- * 
  * @author Phillip Webb
  */
 public interface NavigationMappingFilter {

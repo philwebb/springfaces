@@ -43,7 +43,6 @@ import org.springframework.ui.ModelMap;
 
 /**
  * Tests for {@link SpringFacesModelMethodArgumentResolver}.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesModelMethodArgumentResolverTest {

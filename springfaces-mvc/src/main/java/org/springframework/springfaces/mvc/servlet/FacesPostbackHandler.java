@@ -38,7 +38,6 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
 
 /**
  * MVC {@link HandlerAdapter} used to handle JSF postbacks.
- * 
  * @see FacesHandlerInterceptor
  * @see Postback
  * @author Phillip Webb

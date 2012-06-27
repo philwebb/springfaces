@@ -27,7 +27,6 @@ import org.springframework.web.servlet.View;
 /**
  * {@link DestinationViewResolver} that allows several resolvers to be chained together. The first resolver that returns
  * a <tt>non-null</tt> {@link View} is used.
- * 
  * @author Phillip Webb
  */
 public class DestinationViewResolverChain implements DestinationViewResolver {

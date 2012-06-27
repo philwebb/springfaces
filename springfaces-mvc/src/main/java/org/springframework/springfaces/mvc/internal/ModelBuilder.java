@@ -34,12 +34,9 @@ import org.springframework.util.StringUtils;
  * model using the various <tt>add</tt> methods. When trying to add an item with a key that is already contained in the
  * model the existing value is retained. The add methods should be called in order of precedence, with the highest
  * importance being called first.
- * 
- * 
  * @see #add(Map, boolean)
  * @see #addFromComponent(UIComponent)
  * @see #addFromParameterList(Map)
- * 
  * @author Phillip Webb
  */
 public class ModelBuilder {

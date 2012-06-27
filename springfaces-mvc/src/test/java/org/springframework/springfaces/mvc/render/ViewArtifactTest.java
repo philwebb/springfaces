@@ -26,7 +26,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link ViewArtifact}.
- * 
  * @author Phillip Webb
  */
 public class ViewArtifactTest {

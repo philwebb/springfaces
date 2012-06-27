@@ -19,7 +19,6 @@ import org.junit.Ignore;
 
 /**
  * Tests for {@link SpringFacesFactories}.
- * 
  * @author Phillip Webb
  */
 @Ignore

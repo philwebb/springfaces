@@ -40,7 +40,6 @@ import org.springframework.springfaces.mvc.navigation.NavigationOutcome;
 
 /**
  * Tests for {@link DestinationAndModel}.
- * 
  * @author Phillip Webb
  */
 public class DestinationAndModelTest {

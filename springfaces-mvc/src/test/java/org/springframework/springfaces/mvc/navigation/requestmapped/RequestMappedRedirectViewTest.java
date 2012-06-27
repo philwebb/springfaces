@@ -50,7 +50,6 @@ import org.springframework.web.servlet.view.AbstractView;
 
 /**
  * Tests for {@link RequestMappedRedirectView}
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -46,7 +46,6 @@ import org.springframework.web.util.WebUtils;
 
 /**
  * Tests for {@link DispatcherExceptionHandler}.
- * 
  * @author Phillip Webb
  */
 public class DispatcherExceptionHandlerTest {

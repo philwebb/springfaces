@@ -26,7 +26,6 @@ import org.springframework.util.Assert;
  * Internal utility class that provides a holding location for {@link DestinationAndModel}s. Used to allow the
  * {@link MvcNavigationHandler} to {@link #put store} outcomes that can later be {@link #get obtained} and rendered by
  * the {@link MvcViewHandler}.
- * 
  * @author Phillip Webb
  */
 class DestinationAndModelRegistry {

@@ -34,9 +34,7 @@ import org.springframework.web.context.support.WebApplicationObjectSupport;
  * {@link SpringFacesContext} is active. The {@link FacesConverterId @FacesConverterId} annotation can be used to
  * indicate that a specific JSF converter should be used, otherwise the converter will be created based on the source
  * type.
- * 
  * @see FacesConverterId
- * 
  * @author Phillip Webb
  */
 public class GenericFacesConverter extends WebApplicationObjectSupport implements ConditionalGenericConverter {

@@ -32,10 +32,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * MVC {@link HandlerInterceptor} to setup and release a {@link SpringFacesContext} instance.
- * 
  * @see FacesPostbackHandler
  * @see Postback
- * 
  * @author Phillip Webb
  */
 public class FacesHandlerInterceptor extends HandlerInterceptorAdapter implements ServletContextAware {

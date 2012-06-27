@@ -30,9 +30,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 /**
  * Convenient base class for any {@link HandlerMethodArgumentResolver}s that resolve objects against some implicit
  * context.
- * 
  * @see #add(Class, Callable, Callable)
- * 
  * @author Phillip Webb
  */
 public abstract class ImplicitObjectMethodArgumentResolver implements HandlerMethodArgumentResolver {

@@ -35,7 +35,6 @@ import org.springframework.web.util.WebUtils;
 /**
  * {@link ExceptionHandler} that delegates to a {@link Dispatcher} to allow exceptions to be handled using standard
  * Spring MVC semantics.
- * 
  * @author Phillip Webb
  */
 public class DispatcherExceptionHandler implements ExceptionHandler<Exception> {

@@ -44,7 +44,6 @@ import org.springframework.web.servlet.View;
 
 /**
  * A JSF {@link ViewHandler} that provides integration with Spring MVC.
- * 
  * @author Phillip Webb
  */
 public class MvcViewHandler extends ViewHandlerWrapper {

@@ -22,7 +22,6 @@ import javax.faces.event.ActionListener;
 
 /**
  * Action listener that stores the {@link ActionEvent} so that the {@link MvcNavigationHandler} can obtain it later.
- * 
  * @author Phillip Webb
  */
 public class MvcNavigationActionListener implements ActionListener {

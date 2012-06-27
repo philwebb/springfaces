@@ -43,10 +43,8 @@ import org.springframework.web.servlet.View;
 /**
  * Default implementation of {@link SpringFacesContext}. This is an internal class that is usually managed via the
  * {@link FacesHandlerInterceptor} and is not expected to be used directly.
- * 
  * @see FacesHandlerInterceptor
  * @see SpringFacesContext#getCurrentInstance()
- * 
  * @author Phillip Webb
  */
 public class DefaultSpringFacesContext extends SpringFacesContext {

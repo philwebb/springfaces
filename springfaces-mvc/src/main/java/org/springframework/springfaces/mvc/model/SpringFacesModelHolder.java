@@ -27,7 +27,6 @@ import org.springframework.util.Assert;
 
 /**
  * A JSF component that holds a reference to the {@link SpringFacesModel}.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesModelHolder extends UIComponentBase {

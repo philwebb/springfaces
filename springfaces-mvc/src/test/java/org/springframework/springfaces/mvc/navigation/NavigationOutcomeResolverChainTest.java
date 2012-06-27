@@ -35,7 +35,6 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link NavigationOutcomeResolverChain}.
- * 
  * @author Phillip Webb
  */
 public class NavigationOutcomeResolverChainTest {

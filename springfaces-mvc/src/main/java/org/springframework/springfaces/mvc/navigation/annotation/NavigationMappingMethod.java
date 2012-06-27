@@ -34,7 +34,6 @@ import org.springframework.util.StringUtils;
  * Encapsulates information about a {@link NavigationMapping} annotated bean method. Values from the
  * {@link NavigationMapping} annotation will be used to determine if this method can {@link #canResolve resolve} a given
  * {@link NavigationContext}.
- * 
  * @author Phillip Webb
  */
 class NavigationMappingMethod {

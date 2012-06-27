@@ -29,7 +29,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link NavigationOutcome}.
- * 
  * @author Phillip Webb
  */
 public class NavigationOutcomeTest {

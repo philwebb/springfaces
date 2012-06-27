@@ -22,7 +22,6 @@ import javax.el.VariableMapper;
 
 /**
  * Mock {@link ELContext} for use with tests.
- * 
  * @author Phillip Webb
  */
 public class MockELContext extends ELContext {

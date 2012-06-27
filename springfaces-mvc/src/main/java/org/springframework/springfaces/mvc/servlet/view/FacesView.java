@@ -32,7 +32,6 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 /**
  * A Spring {@link View} that can be used to render a JSF Page. In order to render the view a {@link SpringFacesContext}
  * must be active.
- * 
  * @see SpringFacesContext
  * @author Phillip Webb
  */

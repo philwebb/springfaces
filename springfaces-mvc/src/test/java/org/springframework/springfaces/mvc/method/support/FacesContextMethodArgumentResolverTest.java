@@ -42,7 +42,6 @@ import org.springframework.springfaces.mvc.FacesContextSetter;
 
 /**
  * Tests for {@link FacesContextMethodArgumentResolver}.
- * 
  * @author Phillip Webb
  */
 public class FacesContextMethodArgumentResolverTest {

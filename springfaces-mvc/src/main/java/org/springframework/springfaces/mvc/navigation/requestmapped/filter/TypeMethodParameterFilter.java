@@ -24,7 +24,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * {@link MethodParameterFilter} that filters items when their type inherits the specified values.
- * 
  * @author Phillip Webb
  */
 public class TypeMethodParameterFilter implements MethodParameterFilter {

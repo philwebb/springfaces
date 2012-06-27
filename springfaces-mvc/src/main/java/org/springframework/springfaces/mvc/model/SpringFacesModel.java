@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 /**
  * The Model that relates to a Spring Faces MVC request.
- * 
  * @see SpringFacesModelELResolver
  * @author Phillip Webb
  */

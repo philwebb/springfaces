@@ -19,7 +19,6 @@ import org.junit.Ignore;
 
 /**
  * Tests for {@link FacesView}.
- * 
  * @author Phillip Webb
  */
 @Ignore

@@ -38,7 +38,6 @@ import org.springframework.springfaces.mvc.FacesContextSetter;
 
 /**
  * Tests for {@link MvcNavigationActionListener}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

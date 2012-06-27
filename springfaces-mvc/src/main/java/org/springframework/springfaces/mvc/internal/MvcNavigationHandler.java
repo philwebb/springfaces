@@ -38,7 +38,6 @@ import org.springframework.util.StringUtils;
 /**
  * A JSF {@link ConfigurableNavigationHandler} that provides integration with Spring MVC. Note: This handler depends on
  * the {@link MvcNavigationSystemEventListener} and {@link MvcNavigationActionListener} also being registered.
- * 
  * @author Phillip Webb
  */
 public class MvcNavigationHandler extends ConfigurableNavigationHandlerWrapper {

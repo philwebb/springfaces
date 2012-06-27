@@ -43,7 +43,6 @@ import org.springframework.mock.web.MockHttpSession;
 
 /**
  * Tests for {@link ClientFacesViewStateHandler}.
- * 
  * @author Phillip Webb
  */
 public class ClientFacesViewStateHandlerTest {
@@ -116,7 +115,7 @@ public class ClientFacesViewStateHandlerTest {
 	@Test
 	public void shouldEncryptPerSessionKey() throws Exception {
 		String value = writeAndGetValue(this.viewState);
-		session = new MockHttpSession();
+		this.session = new MockHttpSession();
 		value = new StringBuilder(value).reverse().toString();
 		given(this.request.getParameter("org.springframework.springfaces.id")).willReturn(value);
 		this.thrown.expect(IllegalStateException.class);

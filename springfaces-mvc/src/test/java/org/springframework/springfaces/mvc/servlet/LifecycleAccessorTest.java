@@ -39,7 +39,6 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link LifecycleAccessor}.
- * 
  * @author Phillip Webb
  */
 public class LifecycleAccessorTest {

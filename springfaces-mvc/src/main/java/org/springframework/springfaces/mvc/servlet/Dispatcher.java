@@ -27,9 +27,7 @@ import org.springframework.web.servlet.View;
 
 /**
  * Dispatcher methods that are required when handling JSF requests.
- * 
  * @see DefaultDispatcher
- * 
  * @author Phillip Webb
  */
 public interface Dispatcher {

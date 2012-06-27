@@ -39,7 +39,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Tests for {@link DestinationViewResolverChain}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

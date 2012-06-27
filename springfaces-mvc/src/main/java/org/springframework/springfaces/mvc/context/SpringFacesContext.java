@@ -39,10 +39,8 @@ import org.springframework.web.servlet.View;
  * <p>
  * The {@link SpringFacesContext} can be used to access the JSF {@link #getFacesContext facesContext} regardless of the
  * fact that the request is not being processed by the {@link FacesServlet}.
- * 
  * @see #getCurrentInstance()
  * @see FacesHandlerInterceptor
- * 
  * @author Phillip Webb
  */
 public abstract class SpringFacesContext {

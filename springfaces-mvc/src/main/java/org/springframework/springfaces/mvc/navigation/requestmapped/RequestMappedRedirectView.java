@@ -72,12 +72,9 @@ import org.springframework.web.util.UriTemplate;
  * <li>Paths should not contain wildcards (<tt>"*"</tt>, <tt>"?"</tt>, etc)</li>
  * <li>Custom {@link InitBinder} annotationed methods of the controller will not be called</li>
  * </ul>
- * 
- * 
  * @see RequestMappedRedirectDestinationViewResolver
  * @see RequestMappedRedirectViewContext
  * @see ReverseDataBinder
- * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectView implements BookmarkableView, FacesRenderedView {

@@ -66,9 +66,7 @@ import org.springframework.web.multipart.MultipartRequest;
 /**
  * A builder class that can be used to create a model containing items that are relevant to the parameters of a handler
  * method.
- * 
  * @see #build(NativeWebRequest, Map)
- * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectViewModelBuilder {

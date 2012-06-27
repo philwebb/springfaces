@@ -92,9 +92,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * <p>
  * <b>NOTE:</b> {@code @NavigationMapping}s placed on methods within a {@code @Controller} are only considered for
  * requests that originated from that controller. Use {@code @NavigationController} beans to define global mappings.
- * 
  * @see NavigationMethodOutcomeResolver
- * 
  * @author Phillip Webb
  */
 @Target({ ElementType.METHOD })

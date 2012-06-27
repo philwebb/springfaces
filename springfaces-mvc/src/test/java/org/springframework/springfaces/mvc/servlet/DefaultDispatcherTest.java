@@ -36,7 +36,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
  * Tests for {@link DefaultDispatcher}.
- * 
  * @author Phillip Webb
  */
 public class DefaultDispatcherTest {

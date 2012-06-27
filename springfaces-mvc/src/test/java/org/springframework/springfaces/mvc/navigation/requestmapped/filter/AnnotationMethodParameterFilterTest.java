@@ -34,7 +34,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * Tests for {@link AnnotationMethodParameterFilter}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

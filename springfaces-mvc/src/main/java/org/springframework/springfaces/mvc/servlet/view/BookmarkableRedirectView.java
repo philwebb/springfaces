@@ -29,7 +29,6 @@ import org.springframework.web.servlet.view.RedirectView;
 /**
  * A {@link BookmarkableView} version of {@link RedirectView} that also supports expansion of path variables using the
  * model.
- * 
  * @author Phillip Webb
  */
 public class BookmarkableRedirectView extends RedirectView implements BookmarkableView, FacesRenderedView {

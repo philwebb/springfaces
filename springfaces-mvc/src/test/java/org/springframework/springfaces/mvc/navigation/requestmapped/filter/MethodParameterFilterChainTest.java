@@ -32,7 +32,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * Tests for {@link MethodParameterFilterChain}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)
