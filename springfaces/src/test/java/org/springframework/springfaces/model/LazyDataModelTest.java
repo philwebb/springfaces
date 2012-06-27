@@ -43,7 +43,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link LazyDataModel}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

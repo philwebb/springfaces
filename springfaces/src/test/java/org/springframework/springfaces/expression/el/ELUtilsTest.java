@@ -38,7 +38,6 @@ import com.sun.faces.el.ELContextImpl;
 
 /**
  * Tests for {@link ELUtils}.
- * 
  * @author Phillip Webb
  */
 @SuppressWarnings("rawtypes")

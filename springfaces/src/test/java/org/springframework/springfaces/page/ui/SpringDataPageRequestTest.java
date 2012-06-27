@@ -33,7 +33,6 @@ import org.springframework.data.domain.Sort.Order;
 
 /**
  * Tests for {@link SpringDataPageRequest}.
- * 
  * @author Phillip Webb
  */
 public class SpringDataPageRequestTest {

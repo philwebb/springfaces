@@ -29,10 +29,8 @@ import org.springframework.springfaces.FacesWrapperFactory;
 
 /**
  * Abstract base of {@link FacesWrapper} tests.
- * 
  * @param <T> Type type being wrapped
  * @param <W> The wrapper class
- * 
  * @author Phillip Webb
  */
 public abstract class AbstractFacesWrapperTest<T, W extends FacesWrapper<T>> extends AbstractFacesWrapperFactoryTest {

@@ -19,7 +19,6 @@ import java.util.Map;
 
 /**
  * Pagination information made available by the {@link UIPagedData} component.
- * 
  * @see UIPagedData
  * @author Phillip Webb
  */

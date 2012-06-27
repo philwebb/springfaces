@@ -25,7 +25,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link NoSuchObjectMessageException}.
- * 
  * @author Phillip Webb
  */
 public class NoSuchObjectMessageExceptionTest {

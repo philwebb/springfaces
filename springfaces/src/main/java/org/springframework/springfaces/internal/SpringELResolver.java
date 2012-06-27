@@ -27,7 +27,6 @@ import org.springframework.springfaces.internal.WrapperHandler.WrappedAccessType
 
 /**
  * An {@link ELResolver} that provides integration with Spring.
- * 
  * @author Phillip Webb
  */
 public class SpringELResolver extends ELResolver implements FacesWrapper<CompositeELResolver> {

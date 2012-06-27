@@ -22,7 +22,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link LazyDataModelState}.
- * 
  * @author Phillip Webb
  */
 public class LazyDataModelStateTest {

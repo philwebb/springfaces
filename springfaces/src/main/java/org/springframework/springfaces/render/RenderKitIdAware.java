@@ -23,7 +23,6 @@ import org.springframework.springfaces.FacesWrapperFactory;
  * Interface to be implemented by {@link ResponseStateManager}s that wish to be aware of the JSF <tt>renderKitId</tt>
  * being used. NOTE: Only {@link ResponseStateManager}s created from a {@link FacesWrapperFactory} will receive this
  * callback.
- * 
  * @author Phillip Webb
  */
 public interface RenderKitIdAware {

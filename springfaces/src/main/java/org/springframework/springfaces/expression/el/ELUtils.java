@@ -28,7 +28,6 @@ import org.springframework.util.Assert;
 
 /**
  * Miscellaneous <tt>Unified EL</tt> utility methods.
- * 
  * @author Phillip Webb
  */
 public abstract class ELUtils {

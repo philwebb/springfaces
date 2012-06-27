@@ -37,7 +37,6 @@ import org.springframework.springfaces.template.ui.DecorateAllHandler.Type;
 
 /**
  * {@link DecorateAllHandler.Delegate} for MyFaces.
- * 
  * @author Phillip Webb
  */
 class MyFacesDecorateAllHandlerDelegate implements DecorateAllHandler.Delegate {

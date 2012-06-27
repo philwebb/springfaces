@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
 
 /**
  * State associated with a {@link PagedDataModel}.
- * 
  * @author Phillip Webb
  */
 public class PagedDataModelState extends LazyDataModelState {

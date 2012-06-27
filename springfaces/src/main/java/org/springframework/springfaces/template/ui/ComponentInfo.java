@@ -22,9 +22,7 @@ import javax.faces.component.UIMessages;
 
 /**
  * Information about one or more {@link UIComponent components}.
- * 
  * @see UIComponentInfo
- * 
  * @author Phillip Webb
  */
 public interface ComponentInfo {

@@ -26,6 +26,10 @@ import javax.persistence.Id;
 import org.junit.After;
 import org.junit.Test;
 
+/**
+ * Tests for {@link SelectItemsJpaSupport}.
+ * @author Phillip Webb
+ */
 public class SelectItemsJpaSupportTest {
 
 	@After

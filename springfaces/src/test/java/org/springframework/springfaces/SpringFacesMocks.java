@@ -30,7 +30,6 @@ import org.springframework.mock.web.MockServletContext;
 
 /**
  * Tests utilities that can be used to setup mocks.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesMocks {

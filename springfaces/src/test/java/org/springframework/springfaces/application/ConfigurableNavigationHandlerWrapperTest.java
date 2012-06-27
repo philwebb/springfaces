@@ -27,7 +27,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link ConfigurableNavigationHandlerWrapper}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

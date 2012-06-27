@@ -23,7 +23,6 @@ import org.springframework.springfaces.event.ActionListenerWrapper;
 
 /**
  * A JSF {@link ActionListener} that provides integration with Spring.
- * 
  * @author Phillip Webb
  */
 public class SpringActionListener extends ActionListenerWrapper {

@@ -53,7 +53,6 @@ import com.sun.faces.facelets.component.UIRepeat;
 
 /**
  * Tests for {@link FacesUtils}.
- * 
  * @author Phillip Webb
  */
 public class FacesUtilsTest {

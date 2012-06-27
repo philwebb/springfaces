@@ -100,10 +100,8 @@ import org.springframework.util.ObjectUtils;
  * By default a {@link SelectItem#isNoSelectionOption() noSelectionOption} {@link SelectItem} will by added if the
  * parent is a {@link UISelectOne} component. The {@link #setIncludeNoSelectionOption(Boolean) includeNoSelectionOption}
  * attribute can be used to override this behavior.
- * 
  * @see ObjectMessageSource
  * @see SelectItemsConverter
- * 
  * @author Phillip Webbb
  */
 public class UISelectItems extends UIComponentBase {

@@ -53,7 +53,6 @@ import org.primefaces.component.selectonemenu.SelectOneMenu;
 
 /**
  * Tests for {@link SelectItemsIterator}.
- * 
  * @author Phillip Webb
  */
 public class SelectItemsIteratorTest {

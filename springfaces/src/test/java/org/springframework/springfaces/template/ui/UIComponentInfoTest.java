@@ -48,7 +48,6 @@ import com.sun.faces.component.visit.VisitContextFactoryImpl;
 
 /**
  * Tests for {@link UIComponentInfo}.
- * 
  * @author Phillip Webb
  */
 public class UIComponentInfoTest {

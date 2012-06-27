@@ -23,9 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation that can be used to indicate that a bean is "for" a specific class.
- * 
  * @see ConditionalForClass
- * 
  * @author Phillip Webb
  */
 @Retention(RetentionPolicy.RUNTIME)

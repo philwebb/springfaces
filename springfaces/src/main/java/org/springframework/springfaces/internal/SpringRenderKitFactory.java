@@ -27,7 +27,6 @@ import org.springframework.springfaces.render.RenderKitFactoryWrapper;
 
 /**
  * A JSF {@link RenderKitFactory} that provides integration with Spring.
- * 
  * @author Phillip Webb
  */
 public class SpringRenderKitFactory extends RenderKitFactoryWrapper {

@@ -40,6 +40,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+/**
+ * Tests for {@link StateHolder}.
+ * @author Phillip Webb
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class StateHoldersTest {
 

@@ -31,7 +31,6 @@ import org.springframework.util.ReflectionUtils.MethodCallback;
 
 /**
  * Support class that is used to dynamically enhance functionality when JPA is available.
- * 
  * @author Phillip Webb
  */
 abstract class SelectItemsJpaSupport {

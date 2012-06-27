@@ -20,7 +20,6 @@ import org.springframework.util.ClassUtils;
 
 /**
  * Support class that is used to dynamically enhance functionality when Spring Data is available.
- * 
  * @author Phillip Webb
  */
 abstract class PagedSpringDataSupport {

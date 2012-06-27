@@ -17,7 +17,6 @@ package org.springframework.springfaces.util;
 
 /**
  * Exception thrown for strings that are not valid hexadecimal.
- * 
  * @author Phillip Webb
  */
 public class HexFormatException extends RuntimeException {

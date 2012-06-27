@@ -17,11 +17,9 @@ package org.springframework.springfaces.model;
 
 /**
  * Strategy interface that is used by the {@link LazyDataModel} to load row data.
- * 
- * @author Phillip Webb
- * 
  * @param <E> The element type
  * @param <S> The lazy data model state
+ * @author Phillip Webb
  */
 public interface LazyDataLoader<E, S extends LazyDataModelState> {
 

@@ -19,7 +19,6 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * Abstract base of all {@link ApplicationEvent}s that originate from JSF.
- * 
  * @author Phillip Webb
  */
 public abstract class SpringFacesApplicationEvent extends ApplicationEvent {

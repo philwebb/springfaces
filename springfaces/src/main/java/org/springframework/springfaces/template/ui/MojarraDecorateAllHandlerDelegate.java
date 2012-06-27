@@ -38,7 +38,6 @@ import com.sun.faces.facelets.tag.ui.ParamHandler;
 
 /**
  * {@link DecorateAllHandler.Delegate} for Mojarra.
- * 
  * @author Phillip Webb
  */
 class MojarraDecorateAllHandlerDelegate implements DecorateAllHandler.Delegate {

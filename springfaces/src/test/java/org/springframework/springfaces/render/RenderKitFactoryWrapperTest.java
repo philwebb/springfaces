@@ -28,7 +28,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link RenderKitFactoryWrapper}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

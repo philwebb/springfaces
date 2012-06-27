@@ -37,6 +37,7 @@ import org.springframework.util.StringUtils;
  * <p>
  * Parameterized messages are supported by this resolver (see {@link #resolveMessage(Object, Object[], Locale)} for
  * details).
+ * @author Phillip Webb
  */
 public class DefaultObjectMessageSource extends DelegatingMessageSource implements ObjectMessageSource {
 

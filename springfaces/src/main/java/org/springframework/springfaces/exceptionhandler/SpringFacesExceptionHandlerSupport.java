@@ -45,7 +45,6 @@ import org.springframework.util.ReflectionUtils;
  * support. All Spring Beans that implement {@link ExceptionHandler} with a matching generic type are considered. Beans
  * are ordered using {@link AnnotationAwareOrderComparator}, once the exception has been {@link ExceptionHandler#handle
  * handled} subsequent beans will not be called.
- * 
  * @author Phillip Webb
  */
 @SuppressWarnings({ "deprecation", "rawtypes" })

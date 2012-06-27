@@ -20,10 +20,8 @@ import java.util.List;
 
 /**
  * Default implementation of {@link DataModelRowSet}.
- * 
- * @author Phillip Webb
- * 
  * @param <E>
+ * @author Phillip Webb
  */
 public class DefaultDataModelRowSet<E> implements DataModelRowSet<E> {
 

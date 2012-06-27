@@ -36,7 +36,6 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link ELResolverDecorator}.
- * 
  * @author Phillip Webb
  */
 public class ELResolverDecoratorTest {

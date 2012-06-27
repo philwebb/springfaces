@@ -43,7 +43,6 @@ import org.springframework.springfaces.message.ObjectMessageSource;
 
 /**
  * Tests for {@link ObjectMessageExceptionHandler}.
- * 
  * @author Phillip Webb
  */
 public class ObjectMessageExceptionHandlerTest {

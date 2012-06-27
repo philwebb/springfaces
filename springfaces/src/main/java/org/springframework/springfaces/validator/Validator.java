@@ -25,7 +25,7 @@ import org.springframework.springfaces.bean.ForClass;
  * A variation of the JSF {@link javax.faces.validator.Validator} that support generic typing.
  * @see ForClass
  * @see SpringFacesValidatorSupport
- * @param <T> The type the validator is for.
+ * @param <T> The type the validator is for
  * @author Phillip Webb
  */
 public interface Validator<T> {

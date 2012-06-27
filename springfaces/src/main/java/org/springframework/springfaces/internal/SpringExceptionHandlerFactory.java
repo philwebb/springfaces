@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * A JSF {@link ExceptionHandlerFactory} that provides integration with Spring.
- * 
  * @author Phillip Webb
  */
 public class SpringExceptionHandlerFactory extends ExceptionHandlerFactory {

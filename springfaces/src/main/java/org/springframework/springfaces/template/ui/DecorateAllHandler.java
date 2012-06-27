@@ -37,10 +37,8 @@ import org.springframework.springfaces.util.FacesVendor;
  * component immediately above.
  * <p>
  * This tag is particularly useful when writing HTML form templates.
- * 
  * @see MojarraDecorateAllHandlerDelegate
  * @see MyFacesDecorateAllHandlerDelegate
- * 
  * @author Phillip Webb
  */
 public class DecorateAllHandler extends TagHandler {

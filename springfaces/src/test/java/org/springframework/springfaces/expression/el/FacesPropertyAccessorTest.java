@@ -32,7 +32,6 @@ import org.springframework.springfaces.FacesContextSetter;
 
 /**
  * Test for {@link FacesPropertyAccessor}.
- * 
  * @author Phillip Webb
  */
 public class FacesPropertyAccessorTest {

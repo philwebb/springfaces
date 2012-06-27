@@ -25,7 +25,6 @@ import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 
 /**
  * A JSF {@link javax.faces.validator.Validator} that delegates to a Spring Bean.
- * 
  * @author Phillip Webb
  */
 public class SpringBeanFacesValidator extends SpringBeanPartialStateHolder<javax.faces.validator.Validator> implements

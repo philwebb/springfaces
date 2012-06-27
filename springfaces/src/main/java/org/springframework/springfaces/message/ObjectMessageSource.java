@@ -21,7 +21,6 @@ import org.springframework.context.MessageSource;
 
 /**
  * Extension of {@link MessageSource} that can resolve objects into localized messages.
- * 
  * @author Phillip Webb
  */
 public interface ObjectMessageSource extends MessageSource {

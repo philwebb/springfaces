@@ -32,7 +32,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link SpringSystemEventListener}.
- * 
  * @author Phillip Webb
  */
 public class SpringSystemEventListenerTest extends AbstractFacesWrapperFactoryTest {

@@ -18,7 +18,6 @@ package org.springframework.springfaces.bean;
 /**
  * Used to indicate that a bean is conditionally for use with a specific class. This interface allows for more advanced
  * bindings than standard {@link ForClass} annotation.
- * 
  * @see ForClass
  * @author Phillip Webb
  */

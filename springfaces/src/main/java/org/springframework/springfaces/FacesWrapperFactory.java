@@ -52,12 +52,9 @@ import org.springframework.web.context.WebApplicationContext;
  * <p>
  * When working with {@link CompositeELResolver}s the {@link CompositeELResolver#add add} method of the delegate should
  * be used and the original delegate returned.
- * 
  * @param <T> the type of class to be wrapped.
- * 
  * @see FacesWrapperFactory
  * @see RenderKitIdAware
- * 
  * @author Phillip Webb
  */
 public interface FacesWrapperFactory<T> {

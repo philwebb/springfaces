@@ -31,7 +31,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link SpringBeanConverter}.
- * 
  * @author Phillip Webb
  */
 public class SpringBeanConverterTest {

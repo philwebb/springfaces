@@ -22,7 +22,6 @@ import org.springframework.util.ClassUtils;
 
 /**
  * Support class that is used to dynamically enhance functionality when PrimeFaces is available.
- * 
  * @author Phillip Webb
  */
 abstract class PagedPrimeFacesSupport {

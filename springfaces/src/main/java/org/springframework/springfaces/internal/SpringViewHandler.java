@@ -23,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * A JSF {@link ViewHandler} that provides integration with Spring.
- * 
  * @author Phillip Webb
  */
 public class SpringViewHandler extends ViewHandlerWrapper {

@@ -31,7 +31,6 @@ import org.springframework.springfaces.model.LazyDataModelTest;
 
 /**
  * Tests for {@link PagedDataModel}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

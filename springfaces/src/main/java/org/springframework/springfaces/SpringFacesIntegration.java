@@ -32,9 +32,7 @@ import org.springframework.web.context.support.WebApplicationObjectSupport;
 /**
  * Bean that can be registered within a {@link WebApplicationContext} to enable integration between Spring and Java
  * Server Faces.
- * 
  * @see FacesWrapperFactory
- * 
  * @author Phillip Webb
  */
 public class SpringFacesIntegration extends WebApplicationObjectSupport implements

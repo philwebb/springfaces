@@ -52,7 +52,6 @@ import org.springframework.springfaces.template.ui.DecorateAllHandler.DecoratedC
 
 /**
  * Tests for {@link MojarraDecorateAllHandlerDelegate}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

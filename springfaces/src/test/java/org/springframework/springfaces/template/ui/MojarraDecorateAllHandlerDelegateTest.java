@@ -53,7 +53,6 @@ import com.sun.faces.facelets.tag.ui.ParamHandler;
 
 /**
  * Tests for {@link MojarraDecorateAllHandlerDelegate}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

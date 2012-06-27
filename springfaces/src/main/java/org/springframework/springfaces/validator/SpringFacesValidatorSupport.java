@@ -52,7 +52,6 @@ import org.springframework.springfaces.util.StateHolders;
  * {@link org.springframework.springfaces.validator.Validator} are made available as JSF validators (the ID of the bean
  * is used as the validator name). The {@link ForClass @ForClass} annotation and {@link ConditionalForClass} interface
  * are also supported to return default validators for a class.
- * 
  * @author Phillip Webb
  */
 public class SpringFacesValidatorSupport implements FacesWrapperFactory<Application>,

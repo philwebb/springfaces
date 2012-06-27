@@ -33,7 +33,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * Tests for {@link ObjectMessageSourceUtils}.
- * 
  * @author Phillip Webb
  */
 public class ObjectMessageSourceUtilsTest {

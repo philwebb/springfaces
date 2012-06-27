@@ -40,7 +40,6 @@ import org.springframework.util.ClassUtils;
 
 /**
  * Tests for {@link ForClassFilter}.
- * 
  * @author Phillip Webb
  */
 public class ForClassFilterTest {

@@ -19,7 +19,6 @@ import javax.faces.application.ConfigurableNavigationHandler;
 
 /**
  * Tests for {@link SpringNavigationHandler}.
- * 
  * @author Phillip Webb
  */
 public class SpringNavigationHandlerTest extends

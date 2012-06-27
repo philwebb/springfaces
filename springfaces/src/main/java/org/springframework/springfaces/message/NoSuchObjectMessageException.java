@@ -19,7 +19,6 @@ import java.util.Locale;
 
 /**
  * Exception thrown when an object message can't be resolved.
- * 
  * @author Phillip Webb
  */
 public class NoSuchObjectMessageException extends RuntimeException {

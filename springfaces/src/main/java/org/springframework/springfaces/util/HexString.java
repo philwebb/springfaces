@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
  * String. Use {@link #valueOf(byte[]) valueOf} to create a <tt>HexString</tt> instance from a byte array. Conversion
  * between native java types is also possible using the {@link #toString(byte[])}, {@link #toChars(byte[])} and
  * {@link #toBytes(String)} methods.
- * 
  * @author Phillip Webb
  */
 public final class HexString implements Serializable {

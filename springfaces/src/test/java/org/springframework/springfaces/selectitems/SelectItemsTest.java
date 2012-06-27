@@ -34,7 +34,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link SelectItems}.
- * 
  * @author Phillip Webb
  */
 public class SelectItemsTest {

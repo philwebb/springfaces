@@ -19,7 +19,6 @@ import javax.faces.application.Application;
 
 /**
  * Tests for {@link SpringApplication}.
- * 
  * @author Phillip Webb
  */
 public class SpringApplicationTest extends AbstractFacesWrapperTest<Application, SpringApplication> {

@@ -46,7 +46,6 @@ import org.springframework.util.StringUtils;
  *   &lt;/s:componentInfo&gt;
  * &lt;/ui:composition&gt;
  * </pre>
- * 
  * @see ComponentInfo
  * @author Phillip Webb
  */

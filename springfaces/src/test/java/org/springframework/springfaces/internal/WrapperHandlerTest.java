@@ -56,7 +56,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link WrapperHandler}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

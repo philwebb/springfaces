@@ -27,7 +27,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link ActionListenerWrapper}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

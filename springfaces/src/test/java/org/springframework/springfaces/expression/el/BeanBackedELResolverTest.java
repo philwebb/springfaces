@@ -25,7 +25,6 @@ import org.junit.Test;
 
 /**
  * Tests for {@link BeanBackedELResolver}.
- * 
  * @author Phillip Webb
  */
 public class BeanBackedELResolverTest {

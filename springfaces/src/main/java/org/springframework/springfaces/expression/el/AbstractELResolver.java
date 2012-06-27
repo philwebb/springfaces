@@ -29,13 +29,11 @@ import javax.el.PropertyNotWritableException;
  * read-only, if the resolver should support mutable values the {@link #set(String, Object)} and
  * {@link #isReadOnly(String)} methods should be overridden. Resolving <tt>null</tt> values can also be supported by
  * Overriding {@link #handles(String)}.
- * 
  * @see #isAvailable()
  * @see #handles(String)
  * @see #get(String)
  * @see #isReadOnly(String)
  * @see #set(String, Object)
- * 
  * @author Phillip Webb
  */
 public abstract class AbstractELResolver extends ELResolver {

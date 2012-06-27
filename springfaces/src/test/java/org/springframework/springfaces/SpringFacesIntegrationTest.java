@@ -48,7 +48,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link SpringFacesIntegration}.
- * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

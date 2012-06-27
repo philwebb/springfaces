@@ -26,7 +26,6 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link HexString}.
- * 
  * @author Phillip Webb
  */
 public class HexStringTest {

@@ -27,7 +27,6 @@ import javax.faces.event.SystemEventListener;
  * <p>
  * A common usage pattern is to use this event to trigger additional {@link Application#subscribeToEvent subscription}
  * of JSF {@link SystemEventListener}s.
- * 
  * @author Phillip Webb
  */
 public class PostConstructApplicationSpringFacesEvent extends SpringFacesApplicationEvent {

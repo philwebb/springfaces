@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 
 /**
  * Base for an {@link ELResolver} <tt>Decorator</tt>.
- * 
  * @author Phillip Webb
  */
 public class ELResolverDecorator extends ELResolver {

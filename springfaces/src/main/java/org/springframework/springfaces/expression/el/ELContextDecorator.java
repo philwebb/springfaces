@@ -26,7 +26,6 @@ import org.springframework.util.Assert;
 
 /**
  * Base for an {@link ELContext} <tt>Decorator</tt>.
- * 
  * @author Phillip Webb
  */
 public abstract class ELContextDecorator extends ELContext {

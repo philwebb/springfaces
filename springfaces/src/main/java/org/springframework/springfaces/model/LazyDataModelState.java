@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 /**
  * State associated with a {@link LazyDataModel}.
- * 
  * @author Phillip Webb
  */
 public class LazyDataModelState implements Serializable {
