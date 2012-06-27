@@ -135,7 +135,7 @@ public class ForClassFilterTest {
 	public void shouldNeedGenericTypeOnConstructor() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("GenericType must not be null");
-		new ForClassFilter((Class) null);
+		new ForClassFilter((Class<?>) null);
 	}
 
 	@Test
@@ -195,6 +195,7 @@ public class ForClassFilterTest {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void shouldUseConditionalForClassInterface() throws Exception {
 		Conditional conditional = new Conditional();
 		boolean actual = new ForClassFilter().match(conditional, Dog.class);
@@ -203,6 +204,7 @@ public class ForClassFilterTest {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void shouldOnlyUseConditionalForClassInterfaceIfAnnotationMatches() throws Exception {
 		ConditionalForDog conditional = new ConditionalForDog();
 		// Even though the conditional returns true the @ForClass(Dog.class) takes precedence

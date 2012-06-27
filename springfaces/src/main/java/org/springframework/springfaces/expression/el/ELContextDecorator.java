@@ -49,11 +49,13 @@ public abstract class ELContextDecorator extends ELContext {
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public void putContext(Class key, Object contextObject) {
 		this.elContext.putContext(key, contextObject);
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public Object getContext(Class key) {
 		return this.elContext.getContext(key);
 	}

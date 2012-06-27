@@ -179,7 +179,7 @@ public class UISelectItemsTest {
 		SelectItem[] value = { selectItem };
 		this.selectItems.setValue(value);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
-		assertThat(actual, is(equalTo((Collection) Collections.singletonList(selectItem))));
+		assertThat(actual, is(equalTo((Collection<SelectItem>) Collections.singletonList(selectItem))));
 	}
 
 	@Test
@@ -188,7 +188,7 @@ public class UISelectItemsTest {
 		Collection<SelectItem> value = Collections.singleton(new SelectItem());
 		this.selectItems.setValue(value);
 		Collection<SelectItem> actual = this.selectItems.getSelectItems();
-		assertThat(actual, is(equalTo((Collection) new ArrayList<SelectItem>(value))));
+		assertThat(actual, is(equalTo((Collection<SelectItem>) new ArrayList<SelectItem>(value))));
 	}
 
 	@Test
@@ -213,7 +213,7 @@ public class UISelectItemsTest {
 		DataModel<SelectItem> value = new ArrayDataModel<SelectItem>(new SelectItem[] { selectItem });
 		this.selectItems.setValue(value);
 		List<SelectItem> actual = this.selectItems.getSelectItems();
-		assertThat(actual, is(equalTo((Collection) Collections.singletonList(selectItem))));
+		assertThat(actual, is(equalTo((Collection<SelectItem>) Collections.singletonList(selectItem))));
 	}
 
 	@Test

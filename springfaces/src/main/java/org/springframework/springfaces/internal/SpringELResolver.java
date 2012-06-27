@@ -30,7 +30,6 @@ import org.springframework.springfaces.internal.WrapperHandler.WrappedAccessType
  * 
  * @author Phillip Webb
  */
-@SuppressWarnings("rawtypes")
 public class SpringELResolver extends ELResolver implements FacesWrapper<CompositeELResolver> {
 
 	private WrapperHandler<CompositeELResolver> wrapperHandler = new WrapperHandler<CompositeELResolver>(

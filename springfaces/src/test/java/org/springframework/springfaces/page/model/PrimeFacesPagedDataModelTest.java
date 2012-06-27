@@ -203,8 +203,8 @@ public class PrimeFacesPagedDataModelTest {
 		Map<String, String> filters = Collections.singletonMap("a", "b");
 		Object rowData = new Object();
 		given(this.delegate.getRowData()).willReturn(rowData);
-		List loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
-		assertThat(loaded, is((List) Collections.emptyList()));
+		List<Object> loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
+		assertThat(loaded.size(), is(0));
 		verify(this.delegate).setPageSize(pageSize);
 		verify(this.delegate).setSortColumn(sortField);
 		verify(this.delegate).setSortAscending(sortOrder);
@@ -221,8 +221,8 @@ public class PrimeFacesPagedDataModelTest {
 		Map<String, String> filters = Collections.singletonMap("a", "b");
 		Object rowData = new Object();
 		given(this.delegate.getRowData()).willReturn(rowData);
-		List loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
-		assertThat(loaded, is((List) Collections.emptyList()));
+		List<Object> loaded = this.dataModel.load(first, pageSize, sortField, sortOrder, filters);
+		assertThat(loaded.size(), is(0));
 		verify(this.delegate).setPageSize(pageSize);
 		verify(this.delegate).setSortColumn(sortField);
 		verify(this.delegate).setSortAscending(true);

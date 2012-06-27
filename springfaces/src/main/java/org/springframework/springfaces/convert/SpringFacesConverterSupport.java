@@ -117,7 +117,7 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 		Object bean = this.converters.get(beanId);
 		if (bean != null) {
 			if (CONVERTER_TYPE.isInstance(bean)) {
-				return new SpringBeanConverter(FacesContext.getCurrentInstance(), beanId);
+				return new SpringBeanConverter<Converter>(FacesContext.getCurrentInstance(), beanId);
 			}
 			if (FACES_CONVERTER_TYPE.isInstance(bean)) {
 				return new SpringBeanFacesConverter(FacesContext.getCurrentInstance(), beanId);

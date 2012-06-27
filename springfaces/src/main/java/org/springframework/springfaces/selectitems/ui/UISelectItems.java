@@ -272,7 +272,7 @@ public class UISelectItems extends UIComponentBase {
 	 * @return The values for the given type ({@link Collection}, <tt>Array</tt> or Comma Separated <tt>String</tt>
 	 * return types are supported)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Object deduceValuesForType(TypeDescriptor type) {
 		if (type.isArray() || type.isCollection()) {
 			type = type.getElementTypeDescriptor();

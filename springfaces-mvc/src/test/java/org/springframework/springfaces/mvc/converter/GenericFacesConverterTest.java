@@ -90,6 +90,7 @@ public class GenericFacesConverterTest {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void shouldConvertStringToObject() throws Exception {
 		Set<ConvertiblePair> types = this.converter.getConvertibleTypes();
 		assertThat(types.size(), is(1));

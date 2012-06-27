@@ -137,7 +137,7 @@ public class DefaultObjectMessageSource extends DelegatingMessageSource implemen
 			return object.getClass().getName() + "." + (((Boolean) object).booleanValue() ? "TRUE" : "FALSE");
 		}
 		if (Enum.class.isInstance(object)) {
-			return object.getClass().getName() + "." + ((Enum) object).name();
+			return object.getClass().getName() + "." + ((Enum<?>) object).name();
 		}
 		return object.getClass().getName();
 	}

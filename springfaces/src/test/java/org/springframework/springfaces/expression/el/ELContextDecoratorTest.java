@@ -81,7 +81,7 @@ public class ELContextDecoratorTest {
 
 	@Test
 	public void shouldDecoratePutContext() throws Exception {
-		Class key = Object.class;
+		Class<?> key = Object.class;
 		Object contextObject = new Object();
 		this.decorator.putContext(key, contextObject);
 		verify(this.decorated).putContext(key, contextObject);
@@ -89,7 +89,7 @@ public class ELContextDecoratorTest {
 
 	@Test
 	public void shouldDecorateGetContext() throws Exception {
-		Class key = Object.class;
+		Class<?> key = Object.class;
 		Object contextObject = new Object();
 		given(this.decorated.getContext(key)).willReturn(contextObject);
 		Object actual = this.decorator.getContext(key);

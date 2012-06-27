@@ -152,7 +152,7 @@ public class SpringFacesConverterSupportTest {
 	}
 
 	private Object getWrapped(Converter converter) {
-		return ((FacesWrapper) converter).getWrapped();
+		return ((FacesWrapper<?>) converter).getWrapped();
 	}
 
 	private static class Example {

@@ -58,9 +58,8 @@ abstract class PagedPrimeFacesSupport {
 
 	private static class HasPrimeFaces extends PagedPrimeFacesSupport {
 		@Override
-		@SuppressWarnings("unchecked")
 		public <E> PagedDataRows<E> wrapPagedDataRows(PagedDataModel<E> pagedDataRows) {
-			return new PrimeFacesPagedDataModel(pagedDataRows);
+			return new PrimeFacesPagedDataModel<E>(pagedDataRows);
 		}
 	}
 

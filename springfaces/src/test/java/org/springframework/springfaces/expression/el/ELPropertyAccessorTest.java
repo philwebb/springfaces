@@ -79,7 +79,7 @@ public class ELPropertyAccessorTest {
 		};
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void willResolve(Object base, Object property, Object value) {
 		given(this.elResolver.getType(this.elContext, base, property)).willReturn((Class) value.getClass());
 		given(this.elResolver.getValue(this.elContext, base, property)).willReturn(value);

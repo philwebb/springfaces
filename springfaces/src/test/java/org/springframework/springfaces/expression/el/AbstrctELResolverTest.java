@@ -40,6 +40,7 @@ import org.junit.rules.ExpectedException;
  * 
  * @author Phillip Webb
  */
+@SuppressWarnings("rawtypes")
 public class AbstrctELResolverTest {
 
 	@Rule

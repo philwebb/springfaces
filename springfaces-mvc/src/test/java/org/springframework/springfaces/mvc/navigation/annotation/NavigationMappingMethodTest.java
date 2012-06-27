@@ -79,6 +79,7 @@ public class NavigationMappingMethodTest {
 	}
 
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void shouldGetDetails() throws Exception {
 		NavigationMappingMethod o = new NavigationMappingMethod(this.beanName, Bean.class, Bean.defaults, true);
 		assertThat(o.getBeanName(), is(equalTo(this.beanName)));

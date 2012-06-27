@@ -41,6 +41,7 @@ import com.sun.faces.el.ELContextImpl;
  * 
  * @author Phillip Webb
  */
+@SuppressWarnings("rawtypes")
 public class ELUtilsTest {
 
 	private Bean bean = new Bean();

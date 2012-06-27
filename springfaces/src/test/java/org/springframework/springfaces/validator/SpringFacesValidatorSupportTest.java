@@ -158,7 +158,7 @@ public class SpringFacesValidatorSupportTest {
 	}
 
 	private Object getWrapped(Validator validator) {
-		return ((FacesWrapper) validator).getWrapped();
+		return ((FacesWrapper<?>) validator).getWrapped();
 	}
 
 	private static class Example {

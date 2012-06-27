@@ -102,7 +102,7 @@ public class ELResolverDecoratorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void shouldDecorateGetType() throws Exception {
 		Class<?> type = Object.class;
 		given(this.decorated.getType(this.context, this.base, this.property)).willReturn((Class) type);
@@ -137,7 +137,7 @@ public class ELResolverDecoratorTest {
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void shouldDecorateGetCommonPropertyType() throws Exception {
 		Class<?> commonPropertyType = Object.class;
 		given(this.decorated.getCommonPropertyType(this.context, this.base)).willReturn((Class) commonPropertyType);
