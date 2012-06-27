@@ -24,6 +24,6 @@ import org.junit.Ignore;
 @Ignore
 public class SpringFacesFactoriesTest {
 
-	// FIXME tests
+	// FIXME M1 tests
 
 }
