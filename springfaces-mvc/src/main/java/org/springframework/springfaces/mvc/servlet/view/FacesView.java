@@ -85,10 +85,6 @@ public class FacesView extends AbstractUrlBasedView {
 		return getUrl();
 	}
 
-	public String getViewName() {
-		return getBeanName();
-	}
-
 	public ViewArtifact getViewArtifact() {
 		return new ViewArtifact(getUrl());
 	}
