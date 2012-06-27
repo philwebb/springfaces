@@ -117,7 +117,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		Object bean = this.validators.get(beanId);
 		if (bean != null) {
 			if (VALIDATOR_TYPE.isInstance(bean)) {
-				return new SpringBeanValidator(FacesContext.getCurrentInstance(), beanId);
+				return new SpringBeanValidator<Object>(FacesContext.getCurrentInstance(), beanId);
 			}
 			if (FACES_VALIDATOR_TYPE.isInstance(bean)) {
 				return new SpringBeanFacesValidator(FacesContext.getCurrentInstance(), beanId);
@@ -126,8 +126,8 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 		return null;
 	}
 
-	public Application newWrapper(Class<?> typeClass, Application delegate) {
-		return new ValidatorApplication(delegate);
+	public Application newWrapper(Class<?> typeClass, Application wrapped) {
+		return new ValidatorApplication(wrapped);
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class SpringFacesValidatorSupport implements FacesWrapperFactory<Applicat
 			return asValidators(this.validators.asList());
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		private List<Validator> asValidators(List<StateHolder> stateHolders) {
 			return (List) stateHolders;
 		}

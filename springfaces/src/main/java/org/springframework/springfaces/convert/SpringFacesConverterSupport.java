@@ -86,8 +86,8 @@ public class SpringFacesConverterSupport implements FacesWrapperFactory<Applicat
 		return BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, type, true, true);
 	}
 
-	public Application newWrapper(Class<?> typeClass, Application delegate) {
-		return new ConverterApplication(delegate);
+	public Application newWrapper(Class<?> typeClass, Application wrapped) {
+		return new ConverterApplication(wrapped);
 	}
 
 	/**

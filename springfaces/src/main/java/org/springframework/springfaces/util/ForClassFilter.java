@@ -155,7 +155,7 @@ public class ForClassFilter {
 			protected boolean isElementFiltered(E element) {
 				Object object = element;
 				if (object instanceof Map.Entry) {
-					object = ((Map.Entry) object).getValue();
+					object = ((Map.Entry<?, ?>) object).getValue();
 				}
 				return !match(object, targetClass);
 			};
@@ -260,7 +260,7 @@ public class ForClassFilter {
 
 		public Class<?> getForClass(Object bean) {
 			try {
-				Class[] arguments = GenericTypeResolver.resolveTypeArguments(bean.getClass(), this.genericType);
+				Class<?>[] arguments = GenericTypeResolver.resolveTypeArguments(bean.getClass(), this.genericType);
 				if (this.parameterIndex < arguments.length) {
 					return arguments[this.parameterIndex];
 				}

@@ -26,7 +26,6 @@ import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 /**
  * A JSF {@link javax.faces.validator.Validator} that delegates to a
  * {@link org.springframework.springfaces.validator.Validator} Spring Bean.
- * 
  * @param <T>
  * @author Phillip Webb
  */
