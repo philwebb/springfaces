@@ -38,6 +38,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.Ordered;
 import org.springframework.springfaces.message.NoSuchObjectMessageException;
 import org.springframework.springfaces.message.ObjectMessageSource;
 
@@ -105,5 +106,11 @@ public class ObjectMessageExceptionHandlerTest {
 		boolean result = this.handler.handle(this.exception, this.event);
 		assertThat(result, is(false));
 		verify(this.facesContext, never()).addMessage(anyString(), isA(FacesMessage.class));
+	}
+
+	@Test
+	public void shouldHaveOrder() throws Exception {
+		assertThat(this.handler, is(Ordered.class));
+		assertThat(this.handler.getOrder(), is(-1));
 	}
 }

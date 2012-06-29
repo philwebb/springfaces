@@ -37,6 +37,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
@@ -158,5 +159,11 @@ public class DispatcherExceptionHandlerTest {
 		boolean handled = this.exceptionHandler.handle(exception, this.event);
 		assertThat(modelAndView.getView(), is(view));
 		assertThat(handled, is(true));
+	}
+
+	@Test
+	public void shouldHaveOrder() throws Exception {
+		assertThat(this.exceptionHandler, is(Ordered.class));
+		assertThat(this.exceptionHandler.getOrder(), is(-2));
 	}
 }

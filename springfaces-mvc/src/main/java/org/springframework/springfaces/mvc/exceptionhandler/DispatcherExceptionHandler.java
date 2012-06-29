@@ -23,7 +23,9 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.core.Ordered;
 import org.springframework.springfaces.exceptionhandler.ExceptionHandler;
+import org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
@@ -37,7 +39,9 @@ import org.springframework.web.util.WebUtils;
  * Spring MVC semantics.
  * @author Phillip Webb
  */
-public class DispatcherExceptionHandler implements ExceptionHandler<Exception> {
+public class DispatcherExceptionHandler implements ExceptionHandler<Exception>, Ordered {
+
+	private int order = -2;
 
 	private Dispatcher dispatcher;
 
@@ -85,6 +89,19 @@ public class DispatcherExceptionHandler implements ExceptionHandler<Exception> {
 			}
 			throw e;
 		}
+	}
+
+	public int getOrder() {
+		return this.order;
+	}
+
+	/**
+	 * Set the order. By default this class is executed before other {@link ExceptionHandler}s and before the
+	 * {@link ObjectMessageExceptionHandler}.
+	 * @param order the order to set
+	 */
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 }
