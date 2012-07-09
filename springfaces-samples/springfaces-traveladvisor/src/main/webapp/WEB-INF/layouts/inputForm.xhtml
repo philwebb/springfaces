@@ -9,15 +9,11 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<s:componentInfo var="info">
-		<div class="forminput">
-			<h:outputLabel 
-					for="#{info.for}" 
-					value="#{info.label}#{info.required ? ': *' : ':'}"
-					styleClass="#{info.valid ? '' : 'labelerror'}"/>
-			<br/>
-			<ui:insert/>
-			<br/>
-		</div>
+		<h:outputLabel 
+				for="#{info.for}" 
+				value="#{info.label}#{info.required ? ': *' : ':'}"
+				styleClass="inputlabel #{info.valid ? '' : 'error'}"/>
+		<ui:insert/>
 	</s:componentInfo>
 
 </ui:composition>

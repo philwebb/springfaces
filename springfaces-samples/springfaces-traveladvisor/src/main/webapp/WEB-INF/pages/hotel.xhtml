@@ -11,17 +11,15 @@
 		<ui:param name="title" value="Hotel"/>
 
 		<ui:define name="top">
-			<ui:decorate template="/WEB-INF/templates/title.xhtml">
-				<ui:define name="context">
-					<p:graphicImage value="/images/flags/24/#{hotel.city.country}.png" width="24" height="24"/>
-					<h:outputText value="#{hotel.city.country}"/>,
-					<h:link value="#{hotel.city.name}" outcome="spring:@cityController.showCity">
-						<f:param name="country" value="#{hotel.city.country}"/>
-						<f:param name="name" value="#{hotel.city.name}"/>
-					</h:link>
-				</ui:define>
+			<h1>
 				<h:outputText value="#{hotel.name}"/>
-			</ui:decorate>
+			</h1>
+			<p:graphicImage value="/resources/img/flags/24/#{hotel.city.country}.png" width="24" height="24"/>
+			<h:outputText value="#{hotel.city.country}"/>,
+			<h:link value="#{hotel.city.name}" outcome="spring:@cityController.showCity">
+				<f:param name="country" value="#{hotel.city.country}"/>
+				<f:param name="name" value="#{hotel.city.name}"/>
+			</h:link>
 		</ui:define>
 
 		<ui:define name="content">
@@ -29,47 +27,40 @@
 			<s:pagedData value="#{hotelService.getReviews(hotel, pageRequest)}"
 				sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
-			<div class="spaced">
-				<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
-				<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
-			</div>
+			<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
+			<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
 
 			<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" var="review">
 				<p:column headerText="Reviews">
+					<p:rating value="#{reviewUtils.getRating(review)}" readonly="true" stars="4"/>
+					<h:link value="#{review.title}" outcome="spring:@hotelReview" styleClass="details">
+						<f:param name="country" value="#{hotel.city.country}"/>
+						<f:param name="city" value="#{hotel.city.name}"/>
+						<f:param name="name" value="#{hotel.name}"/>
+						<f:param name="index" value="#{review.index}"/>
+					</h:link>
 					<p>
-						<h:link value="#{review.title}" outcome="spring:@hotelReview">
-							<f:param name="country" value="#{hotel.city.country}"/>
-							<f:param name="city" value="#{hotel.city.name}"/>
-							<f:param name="name" value="#{hotel.name}"/>
-							<f:param name="index" value="#{review.index}"/>
-						</h:link>
-						<br/>
 						<h:outputText value="#{reviewUtils.getDetailsSummary(review)}"/>
-						<br/>
-						<h:outputText value="#{messages[review.tripType]}"/>
 					</p>
-					<p:rating value="#{reviewUtils.getRating(review)}" disabled="true" stars="4"/>
-					<h:outputText value=" (#{messages[review.rating]})"/>
+					<em>
+						<h:outputText value="#{review.checkInDate} #{messages[review.tripType]}"/>
+					</em>
 				</p:column>
 			</p:dataTable>
 
-			<div class="spaced">
-				<p:button value="Write Review" outcome="spring:@writeHotelReview">
-					<f:param name="country" value="#{hotel.city.country}"/>
-					<f:param name="city" value="#{hotel.city.name}"/>
-					<f:param name="name" value="#{hotel.name}"/>
-				</p:button>
-			</div>
+			<p:button value="Write Review" outcome="spring:@writeHotelReview" update="form">
+				<f:param name="country" value="#{hotel.city.country}"/>
+				<f:param name="city" value="#{hotel.city.name}"/>
+				<f:param name="name" value="#{hotel.name}"/>
+			</p:button>
 		</ui:define>
 
 		<ui:define name="sidebar">
-			<br/>
 			<p:barChart value="#{reviewsSummary}"
 				barMargin="4" orientation="horizontal"
 				style="width:250px;height:200px"
 				enhancedLegend="false"/>
 		</ui:define>
-
 	</ui:composition>
 </html>
 

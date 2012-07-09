@@ -10,14 +10,18 @@
 	template="/WEB-INF/layouts/base.xhtml">
 
 	<ui:define name="main">
-		<div class="span-22 prepend-1 append-1 last top">
-			<ui:insert name="top"/>
+		<div class="row top">
+			<div class="span12">
+				<ui:insert name="top"/>
+			</div>
 		</div>
-		<div class="span-15 prepend-1 colborder main">
-			<ui:insert name="content"/>
-		</div>
-		<div class="span-6 append-1 last">
-			<ui:insert name="sidebar"/>
+		<div class="row">
+			<div class="span8">
+				<ui:insert name="content"/>
+			</div>
+			<div class="span4 sidebar">
+				<ui:insert name="sidebar"/>
+			</div>
 		</div>
 	</ui:define>
 

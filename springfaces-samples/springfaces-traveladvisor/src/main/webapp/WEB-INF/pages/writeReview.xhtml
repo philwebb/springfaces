@@ -8,9 +8,11 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<ui:composition template="/WEB-INF/layouts/standard.xhtml">
-		<ui:param name="title" value="Write Review"/>
-
-		<h:outputText value="Write review for #{hotel.name} #{city}"/>
+		<ui:param name="title" value="Write Review - #{hotel.name} in #{city}"/>
+		
+		<h1>
+			<h:outputText value="Review '#{hotel.name}' in #{city}"/>
+		</h1>
 
 		<s:decorateAll template="/WEB-INF/layouts/inputForm.xhtml">
 			<p:inputText label="Title" value="#{review.title}" required="true"/>
@@ -19,13 +21,10 @@
 				<s:selectItems/>
 			</p:selectOneMenu>
 			<p:calendar label="Check-In Date" value="#{review.checkInDate}"/>
-			<p:inputTextarea label="Details" value="#{review.details}"/>
+			<p:inputTextarea label="Details" value="#{review.details}" autoResize="false"/>
 		</s:decorateAll>
-
-		<p:captcha label="Captcha"/>
 		
-		<h:commandButton value="Submit" action="submitReview"/>
-
+		<p:commandButton value="Submit" action="submitReview" update="form"/>
 	</ui:composition>
 
 </html>

@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -15,64 +14,79 @@
 			<h:outputText value="#{title}"/>
 		</title>
 
-		<link rel="stylesheet" href="#{request.contextPath}/styles/blueprint/screen.css" type="text/css" media="screen, projection" />
-		<link rel="stylesheet" href="#{request.contextPath}/styles/blueprint/print.css" type="text/css" media="print" />
-		<!--[if lt IE 8]>
-		<link rel="stylesheet" href="${request.contextPath}/styles/blueprint/ie.css" type="text/css" media="screen, projection" />
-		<![endif]-->
-		<link rel="stylesheet" href="${request.contextPath}/styles/travel.css" type="text/css" media="screen, projection" />
-
+		<h:outputScript library="primefaces" name="jquery/jquery.js"/>
+		<h:outputScript library="js" name="bootstrap.js"/>
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"/>
+		
+		<link rel="stylesheet" href="#{request.contextPath}/resources/css/bootstrap.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="#{request.contextPath}/resources/css/bootstrap-primefaces.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="#{request.contextPath}/resources/css/travel.css" type="text/css" media="screen, projection" />
+
+		<link rel="shortcut icon" href="#{request.contextPath}/resources/img/favicon.ico" type="image/x-icon" />
 
 		<ui:insert name="head"/>
 	</h:head>
 
 	<h:body>
-		<h:form id="form">
+		<div class="main #{cssUtils.pageClass}">
 
 			<s:messageSource var="messages"/>
-
-			<div class="container">
-				<!-- Header -->
-				<div class="span-24">
-					<div class="header">
-		           		<p:graphicImage value="/images/logo.png" alt="Spring TravelAdvisor"/>
-		           	</div>
-		           	<div class="header-padding"/>
+			
+			<!-- Header -->
+			<header>
+				<div class="container">
+					<div class="row">
+						<div class="span4">
+			           		<p:graphicImage value="/resources/img/spring-logo.png" alt="Spring TravelAdvisor"/>
+			           	</div>
+			           	<div class="span8">
+			           		<h1><h:link value="Travel Advisor" outcome="spring:@cityController.enterSearchDetails"/></h1>
+			           	</div>
+					</div>
 				</div>
+			</header>
 
-				<!-- Main -->
-			    <p:messages id="messages"/>  
-				<ui:insert name="main"/>
+			<!-- Content -->
+			<h:form id="form">
+				<div class="container">
+				    <p:messages id="messages"/>  
+					<ui:insert name="main"/>
+				</div>
+			</h:form>
 
-				<!-- Footer -->
-				<div class="span-24 footer">
-					<ul>
-						<li class="first">
-							<h:outputText value="Powered by "/>
-							<h:outputLink value="http://www.springframework.org">
-								<h:outputText value="Spring"/>
-							</h:outputLink>
-							<h:outputText value=" &amp; JavaServer Faces"/>
-						</li>
-						<li>
-							<h:outputText value="Rich UI components by "/>
-							<h:outputLink value="http://www.primefaces.org">
-								<h:outputText value="Primefaces"/>
-							</h:outputLink>
-						</li>
-						<li>
-							<h:outputText value="Icons from "/>
-							<h:outputLink value="http://www.icondrawer.com">
-								<h:outputText value="www.icondrawer.com"/>
-							</h:outputLink>
-						</li>
-					</ul>
+			<div id="push">
+			</div>
+		</div>			
+		
+		<!-- Footer -->
+		<footer>
+			<div class="container">
+				<div class="row">
+					<div class="span12">
+						<ul>
+							<li class="first">
+								<h:outputText value="Powered by "/>
+								<h:outputLink value="http://www.springframework.org">
+									<h:outputText value="Spring"/>
+								</h:outputLink>
+								<h:outputText value=" &amp; JavaServer Faces"/>
+							</li>
+							<li>
+								<h:outputText value="Rich UI components by "/>
+								<h:outputLink value="http://www.primefaces.org">
+									<h:outputText value="Primefaces"/>
+								</h:outputLink>
+							</li>
+							<li>
+								<h:outputText value="Icons from "/>
+								<h:outputLink value="http://www.icondrawer.com">
+									<h:outputText value="www.icondrawer.com"/>
+								</h:outputLink>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
-		</h:form>
+		</footer>
 	</h:body>
 </ui:composition>
-
-
-

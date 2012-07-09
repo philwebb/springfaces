@@ -1,0 +1,29 @@
+select, textarea, input {
+	height: auto !important;
+}
+
+input[type="text"] {
+	margin-bottom: 0px;
+}
+
+.ui-widget,
+.ui-selectonemenu label.ui-selectonemenu-label {
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+div.ui-messages-error {
+	background-color: #DA4F49;
+    background-image: -moz-linear-gradient(center top , #EE5F5B, #BD362F);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.ui-messages-error-icon {
+	display: none;
+}
+
+.ui-messages ul {
+	margin: 0;
+}

@@ -13,21 +13,17 @@
 		<p:selectOneMenu value="#{model.selectedCity}" var="city" effect="fade">
 			<s:selectItems value="#{cities}" itemLabel="#{item.name}, #{item.country}" includeNoSelectionOption="false"/>
 			<p:column>
-	           	<p:graphicImage value="/images/flags/24/#{city.country}.png" width="24" height="24"/>
+	           	<p:graphicImage value="/resources/img/flags/24/#{city.country}.png" width="24" height="24"/>
 			</p:column>
 			<p:column>
 				<h:outputText value="#{city.name}, #{city.country}"/>
 			</p:column>
 		</p:selectOneMenu>
 		
-		<br/>
-		<p:commandButton value="Continue" action="spring:@showCity">
+		<p:commandButton value="Continue" action="spring:@showCity" update="form">
 			<f:param name="country" value="#{model.selectedCity.country}"/>
 			<f:param name="name" value="#{model.selectedCity.name}"/>
 		</p:commandButton>
-
 	</ui:composition>
+
 </html>
-
-
-

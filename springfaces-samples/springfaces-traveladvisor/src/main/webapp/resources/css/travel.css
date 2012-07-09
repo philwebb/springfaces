@@ -1,0 +1,142 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background: #EEEEEE;
+}
+
+.main {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -3.3em;
+	background-image: url("../img/grayshadow-top.png");
+	background-repeat:no-repeat;
+	background-position: center 130px;
+}
+
+#push {
+	height: 3.3em;
+}
+    
+header {
+	background: #FFFFFF;
+	padding: 35px 0 25px 0;
+	margin: 0 0 25px 0;
+	height: 80px;
+}
+
+header h1 {
+	font-size: 50px;
+	padding-top: 10px;
+}
+
+header a, header a:hover, header a:active, header a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+footer {
+	height: 2em;
+	background: #252525;
+	padding: 0.8em 0 0.5em 0;
+	color: #CCCCCC;
+}
+
+footer ul {
+	margin: 0;
+	padding: 0;
+}
+
+footer ul li {
+	list-style-type: none;
+	display: inline;
+	padding: 0 0.4em 0 0.6em;
+	border-left: 1px solid #BBBBBB;
+}
+
+footer ul li.first {
+	border-left: none;
+}
+
+footer ul li a:link, footer ul li a:visited, footer ul li a:active, footer ul li a:hover {
+	color: #00BFFF;
+	text-decoration: none;
+}
+
+footer ul li a:hover {
+	text-decoration: underline;
+}
+
+div.ui-messages-error {
+	margin-bottom: 25px;
+}
+
+.error {
+	color: #D8000C;
+	font-weight: bold;
+}
+
+.reviewline {
+	display: block;
+	clear: both;;
+}
+
+div.top {
+	padding-bottom: 15px;
+}
+
+div.top img {
+	margin: -6px 2px 0 0;
+}
+
+div.citySearch input[type="text"] {
+	margin: 1px 5px 0 60px;
+}
+
+div.citySearch p {
+	font-size: large;
+	margin: 30px 0 10px 60px;
+}
+
+div.cities div.ui-selectonemenu {
+	margin: 0px 5px 0 0;
+}
+
+div.cities button {
+	margin-top: -17px;
+}
+
+div.hotel a.details {
+	padding-left: 2px;
+	font-weight: bold;
+	color: #0088CC;
+}
+
+div.hotel button.ui-button {
+	margin-top: 6px;
+}
+
+div.writeReview h1 {
+	margin-bottom: 20px;
+}
+
+div.writeReview label.inputlabel {
+	margin-bottom: 2px;
+	margin-top: 10px;
+	clear: both;
+}
+
+div.writeReview div.ui-rating {
+	padding-bottom: 18px;
+}
+
+div.writeReview div#recaptcha_area {
+	padding: 20px 0 10px 0;
+}
+
+div.writeReview button.ui-button {
+	display: block;
+	margin-top: 10px;
+}

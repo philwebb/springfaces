@@ -35,7 +35,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/META-INF/config/data-access-config.xml")
+@ContextConfiguration("classpath:/META-INF/spring/data-access-config.xml")
 public class ReviewRepositoryTest {
 
 	@PersistenceContext
@@ -50,26 +50,26 @@ public class ReviewRepositoryTest {
 
 	@Before
 	public void setup() {
-		this.bathTravelodge = entityManager.find(Hotel.class, 10L);
-		assertThat(bathTravelodge.getName(), is("Bath Travelodge"));
+		this.bathTravelodge = this.entityManager.find(Hotel.class, 10L);
+		assertThat(this.bathTravelodge.getName(), is("Bath Travelodge"));
 	}
 
 	@Test
 	public void shouldFindByHotel() throws Exception {
-		Page<Review> reviews = reviewRepository.findByHotel(bathTravelodge, pageable);
+		Page<Review> reviews = this.reviewRepository.findByHotel(this.bathTravelodge, this.pageable);
 		assertThat(reviews.getTotalElements(), is(14L));
 	}
 
 	@Test
 	public void shouldFindByHotelAndIndex() throws Exception {
-		Review review = reviewRepository.findByHotelAndIndex(bathTravelodge, 8);
+		Review review = this.reviewRepository.findByHotelAndIndex(this.bathTravelodge, 8);
 		assertThat(review.getTitle(), is("Very Noisy"));
 	}
 
 	@Test
 	public void shouldSortReviews() throws Exception {
-		pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "rating"));
-		reviewRepository.findByHotel(bathTravelodge, pageable);
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.DESC, "rating"));
+		this.reviewRepository.findByHotel(this.bathTravelodge, this.pageable);
 		// FIXME assert
 	}
 }

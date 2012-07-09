@@ -49,7 +49,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/META-INF/config/data-access-config.xml")
+@ContextConfiguration("classpath:/META-INF/spring/data-access-config.xml")
 public class HotelSummaryRepositoryTest {
 
 	@PersistenceContext
@@ -68,36 +68,37 @@ public class HotelSummaryRepositoryTest {
 
 	@Before
 	public void setup() {
-		this.bath = entityManager.find(City.class, 9L);
-		this.tokyo = entityManager.find(City.class, 6L);
-		this.bathPriory = entityManager.find(Hotel.class, 9L);
-		assertThat(bath.getName(), is("Bath"));
-		assertThat(tokyo.getName(), is("Tokyo"));
-		assertThat(bathPriory.getName(), is("The Bath Priory Hotel"));
+		this.bath = this.entityManager.find(City.class, 9L);
+		this.tokyo = this.entityManager.find(City.class, 6L);
+		this.bathPriory = this.entityManager.find(Hotel.class, 9L);
+		assertThat(this.bath.getName(), is("Bath"));
+		assertThat(this.tokyo.getName(), is("Tokyo"));
+		assertThat(this.bathPriory.getName(), is("The Bath Priory Hotel"));
 	}
 
 	@Test
 	public void shouldFindAverage() throws Exception {
-		pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
-		Page<HotelSummary> hotels = hotelSummaryRepository.findByCity(bath, pageable);
+		this.pageable = new PageRequest(0, 10, new Sort(Direction.ASC, "name"));
+		Page<HotelSummary> hotels = this.hotelSummaryRepository.findByCity(this.bath, this.pageable);
 		assertThat(hotels.getTotalElements(), is(2L));
 		assertThat(hotels.getContent().get(0).getName(), is("Bath Travelodge"));
 		double expected = (0 + 0 + 1 + 0 + 1 + 0 + 0 + 0 + 1 + 1 + 0 + 1 + 2 + 3) / 14.0;
 		expected = new BigDecimal(expected, new MathContext(2)).doubleValue();
 		assertThat(hotels.getContent().get(0).getAverageRating(), is(expected));
+		assertThat(hotels.getContent().get(0).getAverageRatingRounded(), is((int) Math.round(expected)));
 	}
 
 	@Test
 	public void shouldFindHotelsWithoutReview() throws Exception {
-		Page<HotelSummary> hotels = hotelSummaryRepository.findByCity(tokyo, pageable);
+		Page<HotelSummary> hotels = this.hotelSummaryRepository.findByCity(this.tokyo, this.pageable);
 		assertThat(hotels.getTotalElements(), is(1L));
 		assertThat(hotels.getContent().get(0).getAverageRating(), is(nullValue()));
 	}
 
 	@Test
 	public void shouldSortByRatingAsc() throws Exception {
-		pageable = new PageRequest(0, 100, new Sort(Direction.ASC, "averageRating"));
-		Page<HotelSummary> page = hotelSummaryRepository.findByCity(bath, pageable);
+		this.pageable = new PageRequest(0, 100, new Sort(Direction.ASC, "averageRating"));
+		Page<HotelSummary> page = this.hotelSummaryRepository.findByCity(this.bath, this.pageable);
 		double rating = page.getContent().get(0).getAverageRating();
 		for (HotelSummary hotelSummary : page) {
 			assertThat(hotelSummary.getAverageRating(), is(greaterThanOrEqualTo(rating)));
@@ -106,8 +107,8 @@ public class HotelSummaryRepositoryTest {
 
 	@Test
 	public void shouldSortByRatingDesc() throws Exception {
-		pageable = new PageRequest(0, 100, new Sort(Direction.DESC, "averageRating"));
-		Page<HotelSummary> page = hotelSummaryRepository.findByCity(bath, pageable);
+		this.pageable = new PageRequest(0, 100, new Sort(Direction.DESC, "averageRating"));
+		Page<HotelSummary> page = this.hotelSummaryRepository.findByCity(this.bath, this.pageable);
 		double rating = page.getContent().get(0).getAverageRating();
 		for (HotelSummary hotelSummary : page) {
 			assertThat(hotelSummary.getAverageRating(), is(lessThanOrEqualTo(rating)));
@@ -116,8 +117,8 @@ public class HotelSummaryRepositoryTest {
 
 	@Test
 	public void shouldSortByHotelName() throws Exception {
-		pageable = new PageRequest(0, 100, new Sort(Direction.ASC, "name"));
-		Page<HotelSummary> page = hotelSummaryRepository.findByCity(bath, pageable);
+		this.pageable = new PageRequest(0, 100, new Sort(Direction.ASC, "name"));
+		Page<HotelSummary> page = this.hotelSummaryRepository.findByCity(this.bath, this.pageable);
 		List<String> names = new ArrayList<String>();
 		for (HotelSummary summary : page) {
 			names.add(summary.getName());
@@ -128,7 +129,7 @@ public class HotelSummaryRepositoryTest {
 
 	@Test
 	public void shouldFindRatingCounts() throws Exception {
-		List<RatingCount> ratingCounts = hotelSummaryRepository.findRatingCounts(bathPriory);
+		List<RatingCount> ratingCounts = this.hotelSummaryRepository.findRatingCounts(this.bathPriory);
 		assertThat(ratingCounts.get(0).getRating(), is(Rating.EXCELLENT));
 		assertThat(ratingCounts.get(0).getCount(), is(11L));
 		assertThat(ratingCounts.get(1).getRating(), is(Rating.GOOD));

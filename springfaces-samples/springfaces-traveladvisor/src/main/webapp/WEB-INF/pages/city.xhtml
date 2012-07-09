@@ -12,20 +12,16 @@
 		<ui:param name="title" value="City"/>
 
 		<ui:define name="top">
-			<ui:decorate template="/WEB-INF/templates/title.xhtml">
-				<ui:define name="context">
-					<p:graphicImage value="/images/flags/24/#{city.country}.png" width="24" height="24"/>
-					<h:outputText value="#{city.country}"/>
-				</ui:define>
+			<h1>
 				<h:outputText value="#{city.name}"/>
-			</ui:decorate>
+			</h1>
+			<p:graphicImage value="/resources/img/flags/24/#{city.country}.png" width="24" height="24"/>
+			<h:outputText value="#{city.country}"/>
 		</ui:define>
 
 		<ui:define name="content">
 
-			<div class="spaced">
-				<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
-			</div>
+			<h:link value="Search for a different city" outcome="spring:@enterSearchDetails"/>
 
 			<s:pagedData value="#{cityService.getHotels(city, pageRequest)}"
 				sortColumn="averageRating" sortAscending="#{false}" var="hotels"/>
@@ -39,7 +35,7 @@
 					</h:link>
 				</p:column>
 				<p:column headerText="Average Rating" sortBy="#{hotel.averageRating}">
-					<p:rating value="#{hotel.averageRating}" disabled="true" stars="4"/>
+					<p:rating value="#{hotel.averageRatingRounded}" readonly="true" stars="4"/>
 					<h:outputText value=" (#{hotel.averageRating})"/>
 				</p:column>
 			</p:dataTable>

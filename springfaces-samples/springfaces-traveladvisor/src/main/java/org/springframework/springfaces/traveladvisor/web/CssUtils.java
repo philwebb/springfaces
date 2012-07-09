@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2012 the original author or authors.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,19 +15,30 @@
  */
 package org.springframework.springfaces.traveladvisor.web;
 
-import org.springframework.springfaces.traveladvisor.domain.Review;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.faces.context.FacesContext;
+
 import org.springframework.stereotype.Component;
 
+/**
+ * General CSS utils for use within JSF pages.
+ * 
+ * @author Phillip Webb
+ */
 @Component
-public class ReviewUtils {
+public class CssUtils {
 
-	public int getRating(Review review) {
-		return review.getRating().ordinal();
+	private static final Pattern PAGE_CLASS_PATTERN = Pattern.compile("/(\\w*)\\.");
+
+	public String getPageClass() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		String viewId = context.getViewRoot().getViewId();
+		Matcher matcher = PAGE_CLASS_PATTERN.matcher(viewId);
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+		return null;
 	}
-
-	public String getDetailsSummary(Review review) {
-		// FIXME cut with ...
-		return review.getDetails();
-	}
-
 }

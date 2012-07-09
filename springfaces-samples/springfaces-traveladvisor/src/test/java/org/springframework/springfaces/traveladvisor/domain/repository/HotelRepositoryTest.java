@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/META-INF/config/data-access-config.xml")
+@ContextConfiguration("classpath:/META-INF/spring/data-access-config.xml")
 public class HotelRepositoryTest {
 
 	@PersistenceContext
@@ -45,20 +45,20 @@ public class HotelRepositoryTest {
 
 	@Before
 	public void setup() {
-		this.bath = entityManager.find(City.class, 9L);
-		assertThat(bath.getName(), is("Bath"));
+		this.bath = this.entityManager.find(City.class, 9L);
+		assertThat(this.bath.getName(), is("Bath"));
 	}
 
 	@Test
 	public void shouldFindByCityAndName() throws Exception {
 		String name = "Bath Travelodge";
-		Hotel hotel = hotelRepository.findByCityAndName(bath, name);
+		Hotel hotel = this.hotelRepository.findByCityAndName(this.bath, name);
 		assertThat(hotel.getName(), is(name));
 	}
 
 	@Test
 	public void shouldNotFindIfMalfomed() throws Exception {
-		Hotel hotel = hotelRepository.findByCityAndName(bath, "missing");
+		Hotel hotel = this.hotelRepository.findByCityAndName(this.bath, "missing");
 		assertThat(hotel, is(nullValue()));
 	}
 }

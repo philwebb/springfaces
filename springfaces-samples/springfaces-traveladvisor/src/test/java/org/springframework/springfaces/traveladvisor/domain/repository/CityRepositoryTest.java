@@ -31,7 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:/META-INF/config/data-access-config.xml")
+@ContextConfiguration("classpath:/META-INF/spring/data-access-config.xml")
 public class CityRepositoryTest {
 
 	@Autowired
