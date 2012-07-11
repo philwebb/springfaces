@@ -33,9 +33,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
- * Provides {@link ComponentInfo information} about the {@link EditableValueHolder} components that can be used when
- * writing facelet templates. Unless otherwise {@link #setFor(String) specified} information will be returned for each
- * child {@link EditableValueHolder} {@link UIComponent component}. This component is particularly useful when writing
+ * Provides {@link ComponentInfo information} about {@link EditableValueHolder} components that can be used when writing
+ * facelet templates. Unless otherwise {@link #setFor(String) specified} information will be returned for each child
+ * {@link EditableValueHolder} {@link UIComponent component}. This component is particularly useful when writing
  * <tt>ui:decorate</tt> templates that have <tt>ui:insert</tt> tags:
  * 
  * <pre>

@@ -1,31 +1,9 @@
-<?xml version = "1.0" encoding = "UTF-8"?>
-<!DOCTYPE facelet-taglib PUBLIC "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN" "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
-<facelet-taglib>
-	<namespace>http://www.springframework.org/tags/springfaces</namespace>
-	<tag>
-		<tag-name>aspectGroup</tag-name>
-		<component>
-			<component-type>spring.faces.AspectGroup</component-type>
-		</component>
-	</tag>
-	<tag>
-		<tag-name>aspect</tag-name>
-		<component>
-			<component-type>spring.faces.Aspect</component-type>
-		</component>
-	</tag>
-	<tag>
-		<tag-name>proceed</tag-name>
-		<component>
-			<component-type>spring.faces.Proceed</component-type>
-		</component>
-	</tag>
-	<tag>
-		<tag-name>pagedData</tag-name>
-		<component>
-			<component-type>spring.faces.PagedData</component-type>
-		</component>
-	</tag>
+<?xml version='1.0' encoding='UTF-8'?>
+<facelet-taglib xmlns='http://java.sun.com/xml/ns/javaee'
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:schemaLocation='http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd'
+	version='2.0'>
+	<namespace>http://springframework.org/tags/springfaces</namespace>
 	<tag>
 		<tag-name>messageSource</tag-name>
 		<component>
@@ -33,19 +11,257 @@
 		</component>
 	</tag>
 	<tag>
+		<description>Can be used to create a paged DataModel that lazily fetches data from an underlying 
+		source. The 'value' expression will be called each time new data needs to be fetched and the optional 'rowCount' 
+		expression will be used to determine the total number of rows. The expression should use the 'pageRequest' variable 
+		to access context information about the specific data that needs to be returned. The resulting data model is made 
+		available as a request scoped variable named 'pagedData'. You can set a different name using the 'var' attribute. 
+		The data model will extend the JSF javax.faces.model.DataModel class and also implements the 
+		org.springframework.springfaces.page.model.PagedDataRows interface. By default the data model will fetch 10 rows at 
+		a time, this can be configured using the 'pageSize' attribute. If Spring Data is present on the classpath then 
+		'pageRequest' will also implement the org.springframework.data.domain.Pageable interface. The 'value' expression
+		can also return a org.springframework.data.domain.Page removing the need to use rowCount. If PrimeFaces is present
+		on the classpath then the resulting model will extend org.primefaces.model.LazyDataModel rather than 
+		javax.faces.model.DataModel.  Use the PagedDataRows interface if you need a consistent way of dealing with 
+		PrimeFaces and Standard DataModels.</description>
+		<tag-name>pagedData</tag-name>
+		<component>
+			<component-type>spring.faces.PagedData</component-type>
+		</component>
+		<attribute>
+			<description>Unique identifier of the component in a namingContainer.</description>
+			<name>id</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>Boolean value to specify the rendering of the component, when set to false component will not be rendered.</description>
+			<name>rendered</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description>An el expression referring to a server side UIComponent instance in a backing bean.</description>
+			<name>binding</name>
+			<required>false</required>
+			<type>javax.faces.component.UIComponent</type>
+		</attribute>
+		<attribute>
+			<description>An el expression used to obtain a page of data. This expression can be called many times as 
+			PagedDataRows are navigated. The resulting expression should return a List of rows or, if Spring Data is being 
+			used a org.springframework.data.domain.Page object can also be returned.</description>
+			<name>value</name>
+			<required>true</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>An optional el expression used to obtain the total row count. This expression can be called many 
+			times as PagedDataRows are navigated. The resulting expression should return an int or long value.</description>
+			<name>rowCount</name>
+			<required>false</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>The request-scope attribute under which the PagedDataModel will be exposed. This property is not
+			enabled for value binding expressions.</description>
+			<name>var</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>The initial page size for the PagedDataRows. If not specified the default value of 10 is used.</description>
+			<name>pageSize</name>
+			<required>false</required>
+			<type>int</type>
+		</attribute>
+		<attribute>
+			<description>The initial sort column for the PagedDataRows.</description>
+			<name>sortColumn</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>The initial sort ascending values for the PagedDataRows.</description>
+			<name>sortAscending</name>
+			<required>false</required>
+			<type>boolean</type>
+		</attribute>
+	</tag>
+	<tag>
+		<description>Alternative to the standard JSF h:selectItems component that may be nested inside a UISelectMany 
+		or UISelectOne component in order to add SelectItems. The 'value' attribute will be used to build the list 
+		of select items and may be bound to a Collection, Object Array, String containing a comma separated 
+		list of values or A DataModel. In addition it is possible to omit the 'value' attribute entirely when the
+		parent component is bound to a boolean, enum (or a generic typed Collection or boolean or enum).
+ 		Contents of SelectItem will be constructed using the optional 'itemLabel', 'itemLabelEscaped', 
+ 		'itemDescription'', 'itemDisabled' and 'noSelectionValue' attributes. Each of these may make reference to 
+ 		the item value using via a EL variable (the name of the variable defaults to 'item' but can be changed using 
+ 		the 'var' attribute).  If not explicitly specified the 'itemLabel' will be deduced. If the parent component 
+ 		does not have a JSF Converter defined then a SelectItemsConverter will be automatically attached. 
+ 		The 'itemConverterStringValue' attribute will be used as the getAsString implementation. If the
+		'itemConverterStringValue'' attribute is not specified a string will be created.  It is imperative that each 
+		item has a unique 'itemConverterStringValue' value.  By default a 'noSelectionOption' will by added if the 
+		parent is a UISelectOne component.</description>
 		<tag-name>selectItems</tag-name>
 		<component>
 			<component-type>spring.faces.SelectItems</component-type>
 		</component>
+		<attribute>
+			<description>Unique identifier of the component in a namingContainer.</description>
+			<name>id</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>Boolean value to specify the rendering of the component, when set to false component will not be rendered.</description>
+			<name>rendered</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description>An el expression referring to a server side UIComponent instance in a backing bean.</description>
+			<name>binding</name>
+			<required>false</required>
+			<type>javax.faces.component.UIComponent</type>
+		</attribute>
+		<attribute>
+			<description>The value that should be made available as SelectItems. Value can refer to a Collection, Array
+			or a String containing comma separated values. If not specified the value will be deduced from the parent 
+			component value binding. Items are converted to select items used the 'itemLabel', 'itemLabelEscaped', 'itemDescription',
+			'itemDisabled', 'noSelectionValue' and 'itemConverterStringValue' attributes.</description>
+			<name>value</name>
+			<required>false</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>The request-scope attribute under which the current value will be exposed. This variable can be
+	 		referenced from the 'itemLabel', 'itemLabelEscaped', 'itemDescription', 'itemDisabled', 'noSelectionValue' and 
+	 		'itemConverterStringValue' attributes. If not specified 'item' will be used. This property is not enabled for
+	 		value binding expressions.</description>
+			<name>var</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>The value that should be used for the select item. This expression can refer to the current value 
+			using the 'var' attribute.</description>
+			<name>itemValue</name>
+			<required>false</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>The label that should be used for the select item. This expression can refer to the current value 
+			using the 'var' attribute.</description>
+			<name>itemLabel</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>The description that should be used for the select item. This expression can refer to the current value 
+			using the 'var' attribute.</description>
+			<name>itemDescription</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>If select item is disabled. This expression can refer to the current value using the  'var' attribute.
+			</description>
+			<name>itemDisabled</name>
+			<required>false</required>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>If the select item label is escaped. This expression can refer to the current value using the 
+			'var' attribute.</description>
+			<name>itemLabelEscaped</name>
+			<required>false</required>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>The converter string value that should be used for the select item. This expression can refer 
+			to the current value using the 'var' attribute. NOTE: in this context var is SelectItem.getValue(), this may 
+			differ from the item value if a custom 'itemValue' has been specified.</description>
+			<name>itemConverterStringValue</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>The value for the no selection option. This expression can refer to the current value using 
+			the 'var' attribute.</description>
+			<name>noSelectionValue</name>
+			<required>false</required>
+			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>If a 'noSelectionOption' item is included. If this value is not specified a no selection 
+			item will automatically be included for UISelectOne components only. The noSelectionItem will be 
+			inserted before other select items with a 'null' value and a label looked up from the 'messageSource'.</description>
+			<name>includeNoSelectionOption</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description>The Spring MessageSource or ObjectMessageSource that should be used construct the item 
+			label (when the 'itemLabel' attribute is not specified). If not specified the Spring ApplicationContext 
+			will be used.</description>
+			<name>messageSource</name>
+			<required>false</required>
+			<type>org.springframework.context.MessageSource</type>
+		</attribute>
 	</tag>
 	<tag>
+		<description>Provides information about EditableValueHolder components that can be used when writing facelet 
+		templates. Unless otherwise specified information will be returned for each child EditableValueHolder 
+		component. This component is particularly useful when writing 'ui:decorate' templates that have 'ui:insert' tags.</description>
 		<tag-name>componentInfo</tag-name>
 		<component>
 			<component-type>spring.faces.ComponentInfo</component-type>
 		</component>
+		<attribute>
+			<description>Unique identifier of the component in a namingContainer.</description>
+			<name>id</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>Boolean value to specify the rendering of the component, when set to false component will not be rendered.</description>
+			<name>rendered</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description>An el expression referring to a server side UIComponent instance in a backing bean.</description>
+			<name>binding</name>
+			<required>false</required>
+			<type>javax.faces.component.UIComponent</type>
+		</attribute>
+		<attribute>
+			<description>The client identifier of the component that the information is for. If not specified the children 
+			of this component will be used.</description>
+			<name>for</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>Return the request-scope attribute under which the ComponentInfo will be exposed. This property 
+			is enabled for value binding expressions.</description>
+			<name>var</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+		</attribute>
 	</tag>
 	<tag>
+		<description>Provides a drop-in replacement for 'ui:decorate' that apply decoration against all child components.
+		Nested 'ui:param' and 'ui:declare' elements above the first component are global, subsequent elements will be 
+		grouped with the component immediately above. This tag is particularly useful when writing HTML form templates.</description>
 		<tag-name>decorateAll</tag-name>
 		<handler-class>org.springframework.springfaces.template.ui.DecorateAllHandler</handler-class>
+		<attribute>
+			<description>A URI that points to a template, also known as a layout, that inserts pieces of the page defined 
+			in the decorator.</description>
+			<name>template</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+		</attribute>
 	</tag>
 </facelet-taglib>

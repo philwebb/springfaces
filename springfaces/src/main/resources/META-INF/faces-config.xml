@@ -19,24 +19,12 @@
 		<exception-handler-factory>org.springframework.springfaces.internal.SpringExceptionHandlerFactory</exception-handler-factory>
 	</factory>
 	<component>
-		<component-type>spring.faces.AspectGroup</component-type>
-		<component-class>org.springframework.springfaces.ui.UIAspectGroup</component-class>
-	</component>
-	<component>
-		<component-type>spring.faces.Aspect</component-type>
-		<component-class>org.springframework.springfaces.ui.UIAspect</component-class>
-	</component>
-	<component>
-		<component-type>spring.faces.Proceed</component-type>
-		<component-class>org.springframework.springfaces.ui.UIProceed</component-class>
+		<component-type>spring.faces.MessageSource</component-type>
+		<component-class>org.springframework.springfaces.message.ui.UIMessageSource</component-class>
 	</component>
 	<component>
 		<component-type>spring.faces.PagedData</component-type>
 		<component-class>org.springframework.springfaces.page.ui.UIPagedData</component-class>
-	</component>
-	<component>
-		<component-type>spring.faces.MessageSource</component-type>
-		<component-class>org.springframework.springfaces.message.ui.UIMessageSource</component-class>
 	</component>
 	<component>
 		<component-type>spring.faces.SelectItems</component-type>

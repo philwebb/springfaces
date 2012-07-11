@@ -54,7 +54,7 @@ import org.springframework.util.Assert;
  * <p>
  * The resulting data model is made available as a request scoped variable named '<tt>pagedData</tt>'. You can set a
  * different name using the <tt>var</tt> attribute. The data model will extend the JSF {@link DataModel} class and also
- * implement the {@link PagedDataRows} interface. By default the data model will fetch 10 rows at a time, this can be
+ * implements the {@link PagedDataRows} interface. By default the data model will fetch 10 rows at a time, this can be
  * configured using the <tt>pageSize</tt> attribute.
  * <p>
  * If Spring Data is present on the classpath then <tt>pageRequest</tt> will also implement the
@@ -109,7 +109,7 @@ public class UIPagedData extends UIComponentBase {
 	/**
 	 * Returns the expression used to obtain a page of data. This expression can be called many times as
 	 * {@link PagedDataRows} are navigated. The resulting expression should return a List of rows or, if Spring Data is
-	 * being used a <tt>Page</tt> object can also be returned.
+	 * being used a <tt>org.springframework.data.domain.Page</tt> object can also be returned.
 	 * @return the {@link ValueExpression} to obtain the page data
 	 */
 	protected ValueExpression getValue() {

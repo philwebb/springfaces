@@ -89,8 +89,8 @@ import org.springframework.util.ObjectUtils;
  * ignored).
  * <p>
  * If the parent component does not have a JSF {@link Converter} defined then a {@link SelectItemsConverter} will be
- * automatically attached. The {@link #getItemConverterStringValue() itemConverterStringValue} attribute will be used to
- * as the {@link Converter#getAsString(FacesContext, UIComponent, Object) getAsString} implementation. If the
+ * automatically attached. The {@link #getItemConverterStringValue() itemConverterStringValue} attribute will be used as
+ * the {@link Converter#getAsString(FacesContext, UIComponent, Object) getAsString} implementation. If the
  * {@link #getItemConverterStringValue() itemConverterStringValue} attribute is not specified a string will be created
  * either from using the item <tt>toString()</tt> method or ,if the object is a JPA <tt>@Entity</tt>, using the
  * <tt>@ID</tt> annotated field.
@@ -498,7 +498,7 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
-	 * Returns if select item is {@link SelectItem#isDisabled() disabled}. This expression can refer to the current
+	 * Returns if the select item is {@link SelectItem#isDisabled() disabled}. This expression can refer to the current
 	 * value using the {@link #getVar() var} attribute.
 	 * @return if the item is disabled
 	 */
@@ -516,8 +516,8 @@ public class UISelectItems extends UIComponentBase {
 	}
 
 	/**
-	 * Returns if select item label is {@link SelectItem#isEscape() escaped}. This expression can refer to the current
-	 * value using the {@link #getVar() var} attribute.
+	 * Returns if the select item label is {@link SelectItem#isEscape() escaped}. This expression can refer to the
+	 * current value using the {@link #getVar() var} attribute.
 	 * @return if the item is escaped
 	 */
 	public boolean isItemLabelEscaped() {
