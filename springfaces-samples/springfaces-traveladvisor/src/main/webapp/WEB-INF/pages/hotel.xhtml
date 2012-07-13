@@ -28,7 +28,7 @@
 				sortColumn="rating" sortAscending="#{false}" var="reviews" />
 
 			<p:commandLink id="sortByRating" value="Sort by Rating" action="#{reviews.toggleSort('rating')}" process="@this" update="reviews, sortByRating"/> |
-			<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" update="reviews"/>
+			<p:commandLink value="Sort by Date" action="#{reviews.toggleSort('checkInDate')}" process="@this" update="reviews"/>
 
 			<p:dataTable id="reviews" value="#{reviews}" paginator="true" rows="#{reviews.pageSize}" var="review">
 				<p:column headerText="Reviews">

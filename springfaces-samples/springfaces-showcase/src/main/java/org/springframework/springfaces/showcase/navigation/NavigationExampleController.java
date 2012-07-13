@@ -115,12 +115,12 @@ public class NavigationExampleController {
 
 	@RequestMapping("/navigation/annotationwithvalue")
 	public void annotationWithValue(ModelMap model) {
-		// The @Value annotation can be used to reference backing beans
 		model.put("navigationBean", new NavigationBean());
 	}
 
 	@NavigationMapping("annotationwithvalue")
 	public String navigationAnnotation(@Value("#{navigationBean}") NavigationBean navigationBean) {
+		// The @Value annotation can be used to reference backing beans, including your model
 		// We dynamically redirect to whatever URL was entered
 		return "redirect:" + navigationBean.getDestination();
 	}
