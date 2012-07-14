@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jsf="http://www.springframework.org/schema/springfaces"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/mvc
-		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/springfaces
+		http://www.springframework.org/schema/springfaces/springfaces.xsd">
 
-
-	<!-- faces:support validators=true converters=true exception-handlers=true spel=true -->
-
-	<bean class="org.springframework.springfaces.SpringFacesIntegration" />
-	<bean class="org.springframework.springfaces.validator.SpringFacesValidatorSupport" />
-	<bean class="org.springframework.springfaces.convert.SpringFacesConverterSupport" />
-	<bean class="org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHandlerSupport" />
-	<bean class="org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler" />
-	<bean class="org.springframework.springfaces.expression.spel.support.StandardEvaluationContextPostProcessorSupport" />
-	<bean class="org.springframework.springfaces.expression.el.FacesStandardEvaluationContextPostProcessor" />
+	<jsf:integration/>
 
 	<!-- 
 	<faces:mvc conversion-service="beanname" dispatcher="ref" state-handler="ref" exception-handlers=true>
