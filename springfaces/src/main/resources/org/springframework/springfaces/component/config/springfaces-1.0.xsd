@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:tool="http://www.springframework.org/schema/tool"
+	targetNamespace="http://www.springframework.org/schema/springfaces"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans"
+		schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" />
+	<xsd:import namespace="http://www.springframework.org/schema/tool"
+		schemaLocation="http://www.springframework.org/schema/tool/spring-tool-3.0.xsd" />
+
+	<xsd:element name="integration">
+		<xsd:annotation>
+			<xsd:documentation source="java:org.springframework.springfaces.SpringFacesIntegration"><![CDATA[
+Configures integration between Spring and JavaServer Faces.
+			]]>
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="validators" type="xsd:boolean" default="true">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Specifies if Spring Beans implenting org.springframework.springfaces.validator.Validator or javax.faces.validator.Validator should be registered with JSF.  
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="converters" type="xsd:boolean" default="true">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Specifies if Spring Beans implenting org.springframework.springfaces.convert.Converter or javax.faces.convert.Converter should be registered with JSF.  
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="exception-handlers" type="xsd:boolean" default="true">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Specifies if Spring Beans implenting org.springframework.springfaces.exceptionhandler.ExceptionHandler should be registered with JSF.  
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="spring-expressions" type="xsd:boolean" default="true">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Specifies if SPEL expressions can access properties against the current FacesContext.					
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
