@@ -21,31 +21,47 @@ Configures integration between Spring and JavaServer Faces.
 			<xsd:attribute name="validators" type="xsd:boolean" default="true">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-	Specifies if Spring Beans implenting org.springframework.springfaces.validator.Validator or javax.faces.validator.Validator should be registered with JSF.  
+Specifies if Spring Beans implenting org.springframework.springfaces.validator.Validator or javax.faces.validator.Validator should be registered with JSF.  
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="converters" type="xsd:boolean" default="true">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-	Specifies if Spring Beans implenting org.springframework.springfaces.convert.Converter or javax.faces.convert.Converter should be registered with JSF.  
+Specifies if Spring Beans implenting org.springframework.springfaces.convert.Converter or javax.faces.convert.Converter should be registered with JSF.  
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="exception-handlers" type="xsd:boolean" default="true">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-	Specifies if Spring Beans implenting org.springframework.springfaces.exceptionhandler.ExceptionHandler should be registered with JSF.  
+Specifies if Spring Beans implenting org.springframework.springfaces.exceptionhandler.ExceptionHandler should be registered with JSF.  
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
 			<xsd:attribute name="spring-expressions" type="xsd:boolean" default="true">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
-	Specifies if SPEL expressions can access properties against the current FacesContext.					
+Specifies if SPEL expressions can access properties against the current FacesContext.					
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="conversion-service">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+Create a ConversionService implementation that can be passed to the <tt>conversion-service</tt> attribute of the <tt>mvc:annotation-driven</tt> tag such that JSF
+converters can be used with Spring MVC.  Effectively uses a <tt>FormattingConversionServiceFactoryBean</tt> in conjunction with a 
+<tt>org.springframework.springfaces.mvc.converter.GenericFacesConverter</tt>. 				
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+				</xsd:extension>
+			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
 </xsd:schema>

@@ -26,6 +26,7 @@ import org.springframework.springfaces.config.SpringFacesNamespaceHandlerDelegat
 public class SpringFacesMvcNamespaceHandler implements SpringFacesNamespaceHandlerDelegate {
 
 	public void init(SpringFacesNamespaceHandlerContext context) {
+		context.registerBeanDefinitionParser("conversion-service", new ConversionServiceBeanDefinitionParser());
 	}
 
 }

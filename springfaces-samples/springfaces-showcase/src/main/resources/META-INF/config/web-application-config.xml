@@ -15,22 +15,8 @@
 		http://www.springframework.org/schema/springfaces/springfaces.xsd">
 
 	<jsf:integration/>
-
-	<!-- 
 	
-	<jsf:mvc-conversion-service name=""/>
-	
-	-->
-	
-	<bean id="conversionService"
-		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean name="genericFacesConverter"
-					class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
-			</list>
-		</property>
-	</bean>
+	<jsf:conversion-service id="conversionService"/>
 	
 	<!-- 
 	
