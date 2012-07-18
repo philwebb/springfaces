@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.component.config;
+package org.springframework.springfaces.config;
 
-import org.springframework.beans.factory.xml.NamespaceHandler;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+import org.springframework.beans.factory.xml.BeanDefinitionParser;
 
 /**
- * {@link NamespaceHandler} for Spring Faces configuration namespace.
+ * A context used with {@link SpringFacesNamespaceHandlerDelegate}.
  * 
  * @author Phillip Webb
  */
-public class SpringFacesNamespaceHandler extends NamespaceHandlerSupport {
+public interface SpringFacesNamespaceHandlerContext {
 
-	public void init() {
-		registerBeanDefinitionParser("integration", new IntegrationBeanDefinitionParser());
-	}
+	/**
+	 * Registers the supplied {@link BeanDefinitionParser} to handle the specified element.
+	 * @param elementName the local (non-namespace qualified) name
+	 * @param parser the parser to register
+	 */
+	void registerBeanDefinitionParser(String elementName, BeanDefinitionParser parser);
+
 }

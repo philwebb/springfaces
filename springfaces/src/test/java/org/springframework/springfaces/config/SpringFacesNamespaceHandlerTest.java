@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.component.config;
+package org.springframework.springfaces.config;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -24,6 +24,7 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.springfaces.SpringFacesIntegration;
+import org.springframework.springfaces.config.SpringFacesNamespaceHandler;
 import org.springframework.springfaces.convert.SpringFacesConverterSupport;
 import org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler;
 import org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHandlerSupport;

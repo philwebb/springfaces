@@ -1,1 +1,1 @@
-http\://www.springframework.org/schema/springfaces=org.springframework.springfaces.component.config.SpringFacesNamespaceHandler
+http\://www.springframework.org/schema/springfaces=org.springframework.springfaces.config.SpringFacesNamespaceHandler

@@ -17,7 +17,24 @@
 	<jsf:integration/>
 
 	<!-- 
-	<faces:mvc conversion-service="beanname" dispatcher="ref" state-handler="ref" exception-handlers=true>
+	
+	<jsf:mvc-conversion-service name=""/>
+	
+	-->
+	
+	<bean id="conversionService"
+		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+		<property name="converters">
+			<list>
+				<bean name="genericFacesConverter"
+					class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 
+	
+	<faces:mvc dispatcher="ref" state-handler="ref" exception-handlers=true>
 		<faces:view-resolver enabled="" prefix="" suffix="" order=""/>
 		<faces:destination-view-resolves>
 			bean or ref s
@@ -40,16 +57,6 @@
 		<bean name="facesInterceptor"
 			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor" />
 	</mvc:interceptors>
-	
-	<bean id="conversionService"
-		class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-		<property name="converters">
-			<list>
-				<bean name="genericFacesConverter"
-					class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
-			</list>
-		</property>
-	</bean>
 	
 	<bean
 		class="org.springframework.springfaces.mvc.servlet.SpringFacesFactories">
