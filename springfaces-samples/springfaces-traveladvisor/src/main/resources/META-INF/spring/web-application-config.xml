@@ -21,8 +21,10 @@
 
 	<mvc:annotation-driven conversion-service="conversionService" />
 
-	<bean name="defaultDispatcher"
-		class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher" />
+	<bean name="dispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher" />
+	<bean class="org.springframework.springfaces.mvc.servlet.DispatcherAwareBeanPostProcessor">
+		<constructor-arg ref="dispatcher"/>
+	</bean>
 
 	<bean name="genericFacesConverter"
 		class="org.springframework.springfaces.mvc.converter.GenericFacesConverter" />
@@ -82,9 +84,7 @@
 		class="org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler" />
 
 	<bean name="defaultDestinationViewResolver"
-		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver">
-		<constructor-arg ref="defaultDispatcher" />
-	</bean>
+		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver"/>
 
 	<bean name="requestMappedDestinationViewResolver"
 		class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver" />
@@ -121,7 +121,6 @@
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<constructor-arg ref="stateHandler" />
-		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 
 	<mvc:interceptors>
@@ -132,9 +131,7 @@
 	<bean class="org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler"/>
 
 	<bean
-		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler">
-		<constructor-arg ref="defaultDispatcher" />
-	</bean>
+		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler"/>
 
 
 	<import resource="data-access-config.xml" />

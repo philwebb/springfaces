@@ -28,7 +28,6 @@ import org.springframework.springfaces.exceptionhandler.ExceptionHandler;
 import org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.util.FacesUtils;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.util.WebUtils;
@@ -38,16 +37,11 @@ import org.springframework.web.util.WebUtils;
  * Spring MVC semantics.
  * @author Phillip Webb
  */
-public class MvcExceptionHandler implements ExceptionHandler<Exception>, Ordered {
+public class MvcExceptionHandler implements ExceptionHandler<Exception>, Ordered, DispatcherAware {
 
 	private int order = -2;
 
 	private Dispatcher dispatcher;
-
-	public MvcExceptionHandler(Dispatcher dispatcher) {
-		Assert.notNull(dispatcher, "Dispatcher must not be null");
-		this.dispatcher = dispatcher;
-	}
 
 	public boolean handle(Exception exception, ExceptionQueuedEvent event) throws Exception {
 		SpringFacesContext context = SpringFacesContext.getCurrentInstance();
@@ -103,4 +97,7 @@ public class MvcExceptionHandler implements ExceptionHandler<Exception>, Ordered
 		this.order = order;
 	}
 
+	public void setDispatcher(Dispatcher dispatcher) {
+		this.dispatcher = dispatcher;
+	}
 }

@@ -113,7 +113,8 @@ public class FacesPostbackHandlerTest {
 		given(this.request.getContextPath()).willReturn("/context");
 		given(this.request.getServletPath()).willReturn("/servlet");
 		given(this.request.getRequestURI()).willReturn("http://localhost:8080/context/path");
-		this.postbackHandler = new FacesPostbackHandler(this.stateHandler, this.dispatcher);
+		this.postbackHandler = new FacesPostbackHandler(this.stateHandler);
+		this.postbackHandler.setDispatcher(this.dispatcher);
 		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 	}
 
@@ -126,14 +127,7 @@ public class FacesPostbackHandlerTest {
 	public void shouldNeedStateHandler() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("StateHandler must not be null");
-		new FacesPostbackHandler(null, this.dispatcher);
-	}
-
-	@Test
-	public void shouldNeedDispatcher() throws Exception {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage("Dispatcher must not be null");
-		new FacesPostbackHandler(this.stateHandler, null);
+		new FacesPostbackHandler(null);
 	}
 
 	@Test

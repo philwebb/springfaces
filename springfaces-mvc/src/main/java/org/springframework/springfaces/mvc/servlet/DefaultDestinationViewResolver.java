@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.springfaces.mvc.model.SpringFacesModel;
 import org.springframework.springfaces.mvc.navigation.DestinationViewResolver;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -32,19 +31,18 @@ import org.springframework.web.servlet.View;
  * the standard {@link DispatcherServlet}.
  * @author Phillip Webb
  */
-public class DefaultDestinationViewResolver implements DestinationViewResolver {
+public class DefaultDestinationViewResolver implements DestinationViewResolver, DispatcherAware {
 
 	private Dispatcher dispatcher;
-
-	public DefaultDestinationViewResolver(Dispatcher dispatcher) {
-		Assert.notNull(dispatcher, "Dispatcher must not be null");
-		this.dispatcher = dispatcher;
-	}
 
 	public ModelAndView resolveDestination(FacesContext context, Object destination, Locale locale,
 			SpringFacesModel model) throws Exception {
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
 		View view = this.dispatcher.resolveViewName(destination.toString(), model, locale, request);
 		return new ModelAndView(view);
+	}
+
+	public void setDispatcher(Dispatcher dispatcher) {
+		this.dispatcher = dispatcher;
 	}
 }

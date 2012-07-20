@@ -33,12 +33,14 @@
 	</faces:mvc>
 	 -->
 
-	<bean name="defaultDispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher" />
+	<bean name="dispatcher" class="org.springframework.springfaces.mvc.servlet.DefaultDispatcher" />
+	<bean class="org.springframework.springfaces.mvc.servlet.DispatcherAwareBeanPostProcessor">
+		<constructor-arg ref="dispatcher"/>
+	</bean>
 	
 	<bean name="postbackHandler"
 		class="org.springframework.springfaces.mvc.servlet.FacesPostbackHandler">
 		<constructor-arg ref="stateHandler" />
-		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 
 	<mvc:interceptors>
@@ -70,9 +72,7 @@
 		class="org.springframework.springfaces.mvc.navigation.requestmapped.RequestMappedRedirectDestinationViewResolver" />
 	
 	<bean name="defaultDestinationViewResolver"
-		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver">
-		<constructor-arg ref="defaultDispatcher" /> <!-- FIXME how to inject this when on namespace, perhaps DispatcherAware? -->
-	</bean>
+		class="org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver"/>
 	
 	<bean name="navigationOutcomeResolver"
 		class="org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolverChain">
@@ -87,9 +87,7 @@
 	</bean>
 	
 	<bean
-		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler">
-		<constructor-arg ref="defaultDispatcher" />
-	</bean>
+		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler"/>
 	
 	<bean id="facesViewResolver"
 		class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">

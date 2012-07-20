@@ -44,13 +44,6 @@ public class DefaultDestinationViewResolverTest {
 	public ExpectedException thrown = ExpectedException.none();
 
 	@Test
-	public void shouldNeedDispatcher() throws Exception {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage("Dispatcher must not be null");
-		new DefaultDestinationViewResolver(null);
-	}
-
-	@Test
 	public void shouldDelegateToDispatcher() throws Exception {
 		Dispatcher dispatcher = mock(Dispatcher.class);
 		FacesContext context = mock(FacesContext.class);
@@ -65,7 +58,8 @@ public class DefaultDestinationViewResolverTest {
 		given(externalContext.getRequest()).willReturn(request);
 		given(dispatcher.resolveViewName(destination, model, locale, request)).willReturn(view);
 
-		DefaultDestinationViewResolver resolver = new DefaultDestinationViewResolver(dispatcher);
+		DefaultDestinationViewResolver resolver = new DefaultDestinationViewResolver();
+		resolver.setDispatcher(dispatcher);
 		ModelAndView resolved = resolver.resolveDestination(context, destination, locale, model);
 
 		verify(dispatcher).resolveViewName(destination, model, locale, request);

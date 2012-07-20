@@ -40,8 +40,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.Dispatcher;
-import org.springframework.springfaces.mvc.servlet.MvcExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.util.WebUtils;
@@ -84,7 +82,8 @@ public class MvcExceptionHandlerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.exceptionHandler = new MvcExceptionHandler(this.dispatcher);
+		this.exceptionHandler = new MvcExceptionHandler();
+		this.exceptionHandler.setDispatcher(this.dispatcher);
 		given(this.context.getFacesContext()).willReturn(this.facesContext);
 		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
 		given(this.externalContext.getRequest()).willReturn(this.request);
@@ -96,13 +95,6 @@ public class MvcExceptionHandlerTest {
 	@After
 	public void cleanup() {
 		SpringFacesContextSetter.setCurrentInstance(null);
-	}
-
-	@Test
-	public void shouldNeedDispatcher() throws Exception {
-		this.thrown.expect(IllegalArgumentException.class);
-		this.thrown.expectMessage("Dispatcher must not be null");
-		new MvcExceptionHandler(null);
 	}
 
 	@Test

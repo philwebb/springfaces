@@ -42,7 +42,8 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
  * @see Postback
  * @author Phillip Webb
  */
-public class FacesPostbackHandler extends AbstractHandlerMapping implements HandlerAdapter, HandlerMapping, Ordered {
+public class FacesPostbackHandler extends AbstractHandlerMapping implements HandlerAdapter, HandlerMapping, Ordered,
+		DispatcherAware {
 
 	private static final String DISABLE_ATTRIBUTE = FacesPostbackHandler.class.getName() + ".DISABLE";
 
@@ -63,14 +64,11 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 	/**
 	 * Create a new FacesPostbackHandler.
 	 * @param stateHandler the state handler
-	 * @param dispatcher the dispatcher
 	 */
-	public FacesPostbackHandler(FacesViewStateHandler stateHandler, Dispatcher dispatcher) {
+	public FacesPostbackHandler(FacesViewStateHandler stateHandler) {
 		super();
 		Assert.notNull(stateHandler, "StateHandler must not be null");
-		Assert.notNull(dispatcher, "Dispatcher must not be null");
 		this.stateHandler = stateHandler;
-		this.dispatcher = dispatcher;
 		setOrder(HIGHEST_PRECEDENCE);
 	}
 
@@ -159,5 +157,9 @@ public class FacesPostbackHandler extends AbstractHandlerMapping implements Hand
 
 	public long getLastModified(HttpServletRequest request, Object handler) {
 		return -1;
+	}
+
+	public void setDispatcher(Dispatcher dispatcher) {
+		this.dispatcher = dispatcher;
 	}
 }
