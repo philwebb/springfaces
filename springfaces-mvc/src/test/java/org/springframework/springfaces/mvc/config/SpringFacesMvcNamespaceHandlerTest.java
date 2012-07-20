@@ -32,6 +32,7 @@ import org.springframework.springfaces.mvc.converter.GenericFacesConverter;
  * @author Phillip Webb
  */
 public class SpringFacesMvcNamespaceHandlerTest {
+
 	private DefaultListableBeanFactory beanFactory;
 
 	@Before

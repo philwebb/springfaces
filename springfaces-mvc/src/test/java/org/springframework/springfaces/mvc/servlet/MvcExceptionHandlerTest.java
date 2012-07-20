@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.exceptionhandler;
+package org.springframework.springfaces.mvc.servlet;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -41,20 +41,21 @@ import org.springframework.core.Ordered;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
 import org.springframework.springfaces.mvc.servlet.Dispatcher;
+import org.springframework.springfaces.mvc.servlet.MvcExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.util.WebUtils;
 
 /**
- * Tests for {@link DispatcherExceptionHandler}.
+ * Tests for {@link MvcExceptionHandler}.
  * @author Phillip Webb
  */
-public class DispatcherExceptionHandlerTest {
+public class MvcExceptionHandlerTest {
 
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
-	private DispatcherExceptionHandler exceptionHandler;
+	private MvcExceptionHandler exceptionHandler;
 
 	@Mock
 	private Dispatcher dispatcher;
@@ -83,7 +84,7 @@ public class DispatcherExceptionHandlerTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.exceptionHandler = new DispatcherExceptionHandler(this.dispatcher);
+		this.exceptionHandler = new MvcExceptionHandler(this.dispatcher);
 		given(this.context.getFacesContext()).willReturn(this.facesContext);
 		given(this.facesContext.getExternalContext()).willReturn(this.externalContext);
 		given(this.externalContext.getRequest()).willReturn(this.request);
@@ -101,7 +102,7 @@ public class DispatcherExceptionHandlerTest {
 	public void shouldNeedDispatcher() throws Exception {
 		this.thrown.expect(IllegalArgumentException.class);
 		this.thrown.expectMessage("Dispatcher must not be null");
-		new DispatcherExceptionHandler(null);
+		new MvcExceptionHandler(null);
 	}
 
 	@Test

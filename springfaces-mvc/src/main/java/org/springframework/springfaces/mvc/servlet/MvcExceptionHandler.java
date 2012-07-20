@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.springfaces.mvc.exceptionhandler;
+package org.springframework.springfaces.mvc.servlet;
 
 import java.util.Locale;
 import java.util.Map;
@@ -27,7 +27,6 @@ import org.springframework.core.Ordered;
 import org.springframework.springfaces.exceptionhandler.ExceptionHandler;
 import org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
-import org.springframework.springfaces.mvc.servlet.Dispatcher;
 import org.springframework.springfaces.util.FacesUtils;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,13 +38,13 @@ import org.springframework.web.util.WebUtils;
  * Spring MVC semantics.
  * @author Phillip Webb
  */
-public class DispatcherExceptionHandler implements ExceptionHandler<Exception>, Ordered {
+public class MvcExceptionHandler implements ExceptionHandler<Exception>, Ordered {
 
 	private int order = -2;
 
 	private Dispatcher dispatcher;
 
-	public DispatcherExceptionHandler(Dispatcher dispatcher) {
+	public MvcExceptionHandler(Dispatcher dispatcher) {
 		Assert.notNull(dispatcher, "Dispatcher must not be null");
 		this.dispatcher = dispatcher;
 	}

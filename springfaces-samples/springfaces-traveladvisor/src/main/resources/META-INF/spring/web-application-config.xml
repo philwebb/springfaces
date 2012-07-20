@@ -132,7 +132,7 @@
 	<bean class="org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler"/>
 
 	<bean
-		class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
+		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler">
 		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 

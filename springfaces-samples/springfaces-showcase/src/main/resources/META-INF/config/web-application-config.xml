@@ -15,10 +15,12 @@
 		http://www.springframework.org/schema/springfaces/springfaces.xsd">
 
 	<jsf:integration/>
-	
+
 	<jsf:conversion-service id="conversionService"/>
 	
 	<!-- 
+	
+	
 	
 	<faces:mvc dispatcher="ref" state-handler="ref" exception-handlers=true>
 		<faces:view-resolver enabled="" prefix="" suffix="" order=""/>
@@ -85,7 +87,7 @@
 	</bean>
 	
 	<bean
-		class="org.springframework.springfaces.mvc.exceptionhandler.DispatcherExceptionHandler">
+		class="org.springframework.springfaces.mvc.servlet.MvcExceptionHandler">
 		<constructor-arg ref="defaultDispatcher" />
 	</bean>
 	
