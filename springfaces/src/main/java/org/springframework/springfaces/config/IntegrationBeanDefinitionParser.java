@@ -16,12 +16,10 @@
 package org.springframework.springfaces.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
-import org.springframework.beans.factory.parsing.CompositeComponentDefinition;
-import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.springfaces.SpringFacesIntegration;
+import org.springframework.springfaces.config.util.BeanDefinitionParserHelper;
 import org.springframework.springfaces.convert.SpringFacesConverterSupport;
 import org.springframework.springfaces.exceptionhandler.ObjectMessageExceptionHandler;
 import org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHandlerSupport;
@@ -38,61 +36,24 @@ import org.w3c.dom.Element;
 class IntegrationBeanDefinitionParser implements BeanDefinitionParser {
 
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		Object source = parserContext.extractSource(element);
-		CompositeComponentDefinition composite = new CompositeComponentDefinition(element.getTagName(), source);
-		parserContext.pushContainingComponent(composite);
-		registerSpringIntegration(element, parserContext, source);
-		registerValidatorSupport(element, parserContext, source);
-		registerConverterSupport(element, parserContext, source);
-		registerExceptionHandlerSupport(element, parserContext, source);
-		registerSpringExpressionSupport(element, parserContext, source);
+		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
+		parserContext.pushContainingComponent(helper.getComponentDefinition());
+		helper.register(SpringFacesIntegration.class);
+		registerIfAttributeIsTrue(helper, "validators", SpringFacesValidatorSupport.class);
+		registerIfAttributeIsTrue(helper, "converters", SpringFacesConverterSupport.class);
+		registerIfAttributeIsTrue(helper, "exception-handlers", SpringFacesExceptionHandlerSupport.class,
+				ObjectMessageExceptionHandler.class);
+		registerIfAttributeIsTrue(helper, "spring-expressions", StandardEvaluationContextPostProcessorSupport.class,
+				FacesStandardEvaluationContextPostProcessor.class);
 		parserContext.popAndRegisterContainingComponent();
 		return null;
 	}
 
-	private void registerSpringIntegration(Element element, ParserContext parserContext, Object source) {
-		register(parserContext, source, SpringFacesIntegration.class);
-	}
-
-	private void registerValidatorSupport(Element element, ParserContext parserContext, Object source) {
-		if (isAttributeTrue(element, "validators")) {
-			register(parserContext, source, SpringFacesValidatorSupport.class);
+	private void registerIfAttributeIsTrue(BeanDefinitionParserHelper helper, String attribute, Class<?>... beanClasses) {
+		if (Boolean.parseBoolean(helper.getElement().getAttribute(attribute))) {
+			for (Class<?> beanClass : beanClasses) {
+				helper.register(beanClass);
+			}
 		}
-	}
-
-	private void registerConverterSupport(Element element, ParserContext parserContext, Object source) {
-		if (isAttributeTrue(element, "converters")) {
-			register(parserContext, source, SpringFacesConverterSupport.class);
-		}
-	}
-
-	private void registerExceptionHandlerSupport(Element element, ParserContext parserContext, Object source) {
-		if (isAttributeTrue(element, "exception-handlers")) {
-			register(parserContext, source, SpringFacesExceptionHandlerSupport.class);
-			register(parserContext, source, ObjectMessageExceptionHandler.class, BeanDefinition.ROLE_APPLICATION);
-		}
-	}
-
-	private void registerSpringExpressionSupport(Element element, ParserContext parserContext, Object source) {
-		if (isAttributeTrue(element, "spring-expressions")) {
-			register(parserContext, source, StandardEvaluationContextPostProcessorSupport.class);
-			register(parserContext, source, FacesStandardEvaluationContextPostProcessor.class);
-		}
-	}
-
-	private void register(ParserContext parserContext, Object source, Class<?> beanClass) {
-		register(parserContext, source, beanClass, BeanDefinition.ROLE_INFRASTRUCTURE);
-	}
-
-	private void register(ParserContext parserContext, Object source, Class<?> beanClass, int role) {
-		RootBeanDefinition definition = new RootBeanDefinition(beanClass);
-		definition.setRole(role);
-		definition.setSource(source);
-		String name = parserContext.getReaderContext().registerWithGeneratedName(definition);
-		parserContext.registerComponent(new BeanComponentDefinition(definition, name));
-	}
-
-	private boolean isAttributeTrue(Element element, String name) {
-		return Boolean.parseBoolean(element.getAttribute(name));
 	}
 }

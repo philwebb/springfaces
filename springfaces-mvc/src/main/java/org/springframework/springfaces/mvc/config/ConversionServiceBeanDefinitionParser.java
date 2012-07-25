@@ -16,14 +16,14 @@
 package org.springframework.springfaces.mvc.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.springfaces.config.util.BeanDefinitionParserHelper;
 import org.springframework.springfaces.mvc.converter.GenericFacesConverter;
 import org.w3c.dom.Element;
 
@@ -35,25 +35,15 @@ import org.w3c.dom.Element;
  */
 class ConversionServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
+	// FIXME Test
+
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
-		Object source = parserContext.extractSource(element);
-		BeanDefinition genericFacesConverter = registerGenericFacesConverter(parserContext, source);
-		BeanDefinitionBuilder factoryBuilder = BeanDefinitionBuilder
-				.rootBeanDefinition(FormattingConversionServiceFactoryBean.class);
+		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
 		ManagedList<BeanDefinition> converters = new ManagedList<BeanDefinition>();
-		converters.add(genericFacesConverter);
-		factoryBuilder.addPropertyValue("converters", converters);
-		factoryBuilder.getRawBeanDefinition().setSource(source);
-		return factoryBuilder.getBeanDefinition();
-	}
-
-	private BeanDefinition registerGenericFacesConverter(ParserContext parserContext, Object source) {
-		BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(GenericFacesConverter.class);
-		builder.getRawBeanDefinition().setSource(source);
-		AbstractBeanDefinition definition = builder.getBeanDefinition();
-		String name = parserContext.getReaderContext().registerWithGeneratedName(definition);
-		parserContext.registerComponent(new BeanComponentDefinition(definition, name));
-		return definition;
+		converters.add(helper.register(GenericFacesConverter.class).getBeanDefinition());
+		RootBeanDefinition conversionService = helper.rootBeanDefinition(FormattingConversionServiceFactoryBean.class);
+		conversionService.getPropertyValues().add("converters", converters);
+		return conversionService;
 	}
 }
