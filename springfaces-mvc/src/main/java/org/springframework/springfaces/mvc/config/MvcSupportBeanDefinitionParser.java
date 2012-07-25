@@ -15,8 +15,6 @@
  */
 package org.springframework.springfaces.mvc.config;
 
-import java.util.List;
-
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.ManagedList;
@@ -34,10 +32,12 @@ import org.springframework.springfaces.mvc.render.ClientFacesViewStateHandler;
 import org.springframework.springfaces.mvc.servlet.DefaultDestinationViewResolver;
 import org.springframework.springfaces.mvc.servlet.DefaultDispatcher;
 import org.springframework.springfaces.mvc.servlet.DispatcherAwareBeanPostProcessor;
+import org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor;
 import org.springframework.springfaces.mvc.servlet.FacesPostbackHandler;
 import org.springframework.springfaces.mvc.servlet.MvcExceptionHandler;
 import org.springframework.springfaces.mvc.servlet.SpringFacesFactories;
 import org.springframework.util.xml.DomUtils;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.w3c.dom.Element;
 
 /**
@@ -88,14 +88,28 @@ class MvcSupportBeanDefinitionParser extends AbstractBeanDefinitionParser {
 		factories.getPropertyValues().addPropertyValue("navigationOutcomeResolver", navigationViewResolvers);
 		helper.register(factories);
 
+		// Interceptor
+		RootBeanDefinition interceptor = helper.rootBeanDefinition(FacesHandlerInterceptor.class);
+		RootBeanDefinition mappedInterceptor = helper.rootBeanDefinition(MappedInterceptor.class);
+		mappedInterceptor.getConstructorArgumentValues().addIndexedArgumentValue(0, (Object) null);
+		mappedInterceptor.getConstructorArgumentValues().addIndexedArgumentValue(1, interceptor);
+		helper.register(mappedInterceptor);
+
 		parserContext.popAndRegisterContainingComponent();
 		return null;
+	}
+
+	private RuntimeBeanReference getOrRegister(BeanDefinitionParserHelper helper, String attribute, Class<?> beanClass) {
+		if (helper.getElement().hasAttribute(attribute)) {
+			return new RuntimeBeanReference(helper.getElement().getAttribute(attribute));
+		}
+		return helper.register(beanClass).asReference();
 	}
 
 	private RuntimeBeanReference createResolverChain(BeanDefinitionParserHelper helper, Class<?> resolverChainClass,
 			String childElementName, Class<?>... defaultResolvers) {
 		Element childElement = DomUtils.getChildElementByTagName(helper.getElement(), childElementName);
-		ManagedList<Object> resolvers = getChildBeansOrReferences(helper, childElement);
+		ManagedList<Object> resolvers = helper.getChildBeansOrReferences(childElement);
 		if (childElement == null || Boolean.valueOf(childElement.getAttribute("register-defaults"))) {
 			for (Class<?> defualtResolver : defaultResolvers) {
 				resolvers.add(helper.rootBeanDefinition(defualtResolver));
@@ -104,25 +118,5 @@ class MvcSupportBeanDefinitionParser extends AbstractBeanDefinitionParser {
 		RootBeanDefinition resolverChain = helper.rootBeanDefinition(resolverChainClass);
 		resolverChain.getPropertyValues().add("resolvers", resolvers);
 		return helper.register(resolverChain).asReference();
-	}
-
-	private ManagedList<Object> getChildBeansOrReferences(BeanDefinitionParserHelper helper, Element element) {
-		ManagedList<Object> list = new ManagedList<Object>();
-		list.setSource(helper.getSource());
-		if (element != null) {
-			List<Element> elements = DomUtils.getChildElementsByTagName(element, new String[] { "bean", "ref" });
-			for (Element child : elements) {
-				Object bean = helper.getParserContext().getDelegate().parsePropertySubElement(child, null);
-				list.add(bean);
-			}
-		}
-		return list;
-	}
-
-	private RuntimeBeanReference getOrRegister(BeanDefinitionParserHelper helper, String attribute, Class<?> beanClass) {
-		if (helper.getElement().hasAttribute(attribute)) {
-			return new RuntimeBeanReference(helper.getElement().getAttribute(attribute));
-		}
-		return helper.register(beanClass).asReference();
 	}
 }

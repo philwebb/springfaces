@@ -21,24 +21,6 @@
 	<jsf:mvc-support/>
 	
 	<!-- 
-	
-	<faces:mvc-support dispatcher="ref" state-handler="ref">
-		<faces:destination-view-resolves>
-			bean or ref s
-		<faces:destination-view-resolves>
-		
-		<faces:navigation-outcome-resolvers>
-			bean or ref s
-		</faces:navigation-outcome-resolvers>
-	</faces:mvc-support>
-	 -->
-
-	<mvc:interceptors>
-		<bean name="facesInterceptor"
-			class="org.springframework.springfaces.mvc.servlet.FacesHandlerInterceptor" />
-	</mvc:interceptors>
-
-	<!-- 
 	<faces:mvc-view-resolver prefix="" suffix="" order=""/>
 	 -->
 	 
