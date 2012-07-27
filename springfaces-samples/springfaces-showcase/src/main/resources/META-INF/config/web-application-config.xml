@@ -55,16 +55,4 @@
 			expression="org.springframework.stereotype.Repository" />
 	</context:component-scan>
 
-	<!-- FIXME -->
-	
-	<bean id="objectMessageSource"
-		class="org.springframework.springfaces.message.DefaultObjectMessageSource">
-		<constructor-arg>
-			<ref bean="messageSource" />
-		</constructor-arg>
-	</bean>
-
-
-
-
 </beans>
