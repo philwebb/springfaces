@@ -15,6 +15,8 @@
  */
 package org.springframework.springfaces.showcase.selectitems;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -24,7 +26,7 @@ import javax.persistence.Id;
  * @author Phillip Webb
  */
 @Entity
-public class Author {
+public class Author implements Serializable {
 
 	@Id
 	private Long id;
@@ -40,14 +42,14 @@ public class Author {
 	}
 
 	public Long getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 }
