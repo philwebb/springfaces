@@ -24,8 +24,6 @@ import org.springframework.springfaces.config.SpringFacesNamespaceHandlerDelegat
  */
 public class SpringFacesMvcNamespaceHandler implements SpringFacesNamespaceHandlerDelegate {
 
-	// FIXME Update Test
-
 	public void init(SpringFacesNamespaceHandlerContext context) {
 		context.registerBeanDefinitionParser("conversion-service", new ConversionServiceBeanDefinitionParser());
 		context.registerBeanDefinitionParser("mvc-support", new MvcSupportBeanDefinitionParser());

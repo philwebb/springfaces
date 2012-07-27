@@ -61,4 +61,12 @@ public class NavigationOutcomeResolverChain implements NavigationOutcomeResolver
 	public void setResolvers(List<NavigationOutcomeResolver> resolvers) {
 		this.resolvers = resolvers;
 	}
+
+	/**
+	 * Returns the list of resolvers that will be used when resolving a destination.
+	 * @return the resolvers the list of resolvers
+	 */
+	public List<NavigationOutcomeResolver> getResolvers() {
+		return this.resolvers;
+	}
 }

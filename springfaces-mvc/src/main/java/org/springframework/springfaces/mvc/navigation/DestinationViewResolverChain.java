@@ -53,4 +53,12 @@ public class DestinationViewResolverChain implements DestinationViewResolver {
 	public void setResolvers(List<DestinationViewResolver> resolvers) {
 		this.resolvers = resolvers;
 	}
+
+	/**
+	 * Get the list of resolvers that will be used when resolving a destination.
+	 * @return the resolvers the list of resolvers
+	 */
+	public List<DestinationViewResolver> getResolvers() {
+		return this.resolvers;
+	}
 }
