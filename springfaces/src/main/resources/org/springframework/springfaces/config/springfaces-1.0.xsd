@@ -170,7 +170,7 @@ The bean name of the <tt>FacesViewStateHandler</tt> that is used to write MVC st
 	
 	<xsd:element name="mvc-view-resolver">
 		<xsd:annotation>
-		<xsd:documentation><![CDATA[
+		<xsd:documentation source="java:org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver"><![CDATA[
 Configures a Spring MVC ViewResolver to deal with JSF views.  This resolver also ensures that <tt>redirect:</tt> prefixed views
 can be used JSF bookmarking.
 		]]></xsd:documentation></xsd:annotation>
@@ -189,7 +189,7 @@ The suffix that gets appended to view names.  If not specified defaults to <tt>.
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
-			<xsd:attribute name="order" type="xsd:integer" default="100">
+			<xsd:attribute name="order" type="xsd:int" default="100">
 				<xsd:annotation>
 					<xsd:documentation><![CDATA[
 The order for this resolver.  If not specified defaults to <tt>100</tt>.				
@@ -198,4 +198,22 @@ The order for this resolver.  If not specified defaults to <tt>100</tt>.
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="resources">
+		<xsd:annotation>
+			<xsd:documentation source="java:org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler"><![CDATA[
+Configures a Spring MVC handler to deal with JSF resource requests.
+			]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="order" type="xsd:int" default="0">
+				<xsd:annotation>
+					<xsd:documentation>
+						<![CDATA[
+The order for this mapping.  If not specified defaults to <tt>0</tt>.				
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>	
 </xsd:schema>

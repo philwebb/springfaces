@@ -30,5 +30,6 @@ public class SpringFacesMvcNamespaceHandler implements SpringFacesNamespaceHandl
 		context.registerBeanDefinitionParser("conversion-service", new ConversionServiceBeanDefinitionParser());
 		context.registerBeanDefinitionParser("mvc-support", new MvcSupportBeanDefinitionParser());
 		context.registerBeanDefinitionParser("mvc-view-resolver", new MvcViewResolverBeanDefinitionParser());
+		context.registerBeanDefinitionParser("resources", new ResourcesBeanDefinitionParser());
 	}
 }

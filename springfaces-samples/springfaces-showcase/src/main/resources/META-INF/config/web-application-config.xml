@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jsf="http://www.springframework.org/schema/springfaces"
+	xmlns:faces="http://www.springframework.org/schema/springfaces"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -14,30 +14,18 @@
 		http://www.springframework.org/schema/springfaces
 		http://www.springframework.org/schema/springfaces/springfaces.xsd">
 
-	<jsf:integration/>
-
-	<jsf:conversion-service id="conversionService"/>
+	<!-- Integration with JavaServer Faces -->
+	<faces:integration/>
 	
-	<jsf:mvc-support/>
+	<!-- Create conversion services with JSF support -->
+	<faces:conversion-service id="conversionService"/>
 	
-	<jsf:mvc-view-resolver/>
+	<!-- JSF / MVC support -->
+	<faces:mvc-support/>
+	<faces:mvc-view-resolver/>
+	<faces:resources />
 	
-	<!-- faces:resources -->
-
-	<bean id="facesResourceHandler"
-		class="org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler" />
-	<bean id="facesResourceMapper"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property name="urlMap">
-			<map>
-				<entry key="/javax.faces.resource/**" value="facesResourceHandler" />
-			</map>
-		</property>
-		<property name="order" value="99" />
-	</bean>
-	
-	<!-- standard spring -->
-
+	<!-- Messages -->
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 		<property name="basenames">
@@ -47,9 +35,10 @@
 		</property>
 	</bean>
 
-	<mvc:annotation-driven conversion-service="conversionService">
-	</mvc:annotation-driven>
+	<!-- Spring MVC (Using the JSF conversion service) -->
+	<mvc:annotation-driven conversion-service="conversionService"/>
 
+	<!-- Component scanning -->
 	<context:component-scan base-package="org.springframework.springfaces.showcase">
 		<context:exclude-filter type="annotation"
 			expression="org.springframework.stereotype.Repository" />

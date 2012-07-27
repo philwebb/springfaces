@@ -15,11 +15,10 @@
  */
 package org.springframework.springfaces.mvc.config;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.springfaces.config.util.BeanDefinitionParserHelper;
@@ -44,12 +43,11 @@ import org.w3c.dom.Element;
  * {@link BeanDefinitionParser} that parses the <tt>mvc-support</tt> element to configure a Spring Faces application.
  * @author Phillip Webb
  */
-class MvcSupportBeanDefinitionParser extends AbstractBeanDefinitionParser {
+class MvcSupportBeanDefinitionParser implements BeanDefinitionParser {
 
 	// FIXME Test
 
-	@Override
-	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
+	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
 		parserContext.pushContainingComponent(helper.getComponentDefinition());
 
