@@ -20,19 +20,8 @@
 	
 	<jsf:mvc-support/>
 	
-	<!-- 
-	<faces:mvc-view-resolver prefix="" suffix="" order=""/>
-	 -->
-	 
-	<bean id="facesViewResolver"
-		class="org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver">
-		<property name="viewClass"
-			value="org.springframework.springfaces.mvc.servlet.view.FacesView" />
-		<property name="prefix" value="/WEB-INF/pages/" />
-		<property name="suffix" value=".xhtml" />
-		<property name="order" value="100" />
-	</bean>
-
+	<jsf:mvc-view-resolver/>
+	
 	<!-- faces:resources -->
 
 	<bean id="facesResourceHandler"

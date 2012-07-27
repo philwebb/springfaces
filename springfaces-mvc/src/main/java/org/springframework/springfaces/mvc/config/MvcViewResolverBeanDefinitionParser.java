@@ -16,33 +16,35 @@
 package org.springframework.springfaces.mvc.config;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
-import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.beans.factory.xml.AbstractBeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.springfaces.config.util.BeanDefinitionParserHelper;
-import org.springframework.springfaces.mvc.converter.GenericFacesConverter;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
 import org.w3c.dom.Element;
 
 /**
- * {@link BeanDefinitionParser} that parses the <tt>mvc-conversion-service</tt> element to configure a Spring Faces
+ * {@link BeanDefinitionParser} that parses the <tt>mvc-view-resolver</tt> element to configure a Spring Faces
  * application.
  * @author Phillip Webb
  */
-class ConversionServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
+class MvcViewResolverBeanDefinitionParser implements BeanDefinitionParser {
 
-	// FIXME Test
+	// FIXME test
 
-	@Override
-	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
+	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
-		ManagedList<BeanDefinition> converters = new ManagedList<BeanDefinition>();
-		converters.add(helper.register(GenericFacesConverter.class).getBeanDefinition());
-		RootBeanDefinition conversionService = helper.rootBeanDefinition(FormattingConversionServiceFactoryBean.class);
-		conversionService.getPropertyValues().add("converters", converters);
-		return conversionService;
+		RootBeanDefinition definition = helper.rootBeanDefinition(BookmarkableRedirectViewIdResolver.class);
+		definition.getPropertyValues().add("viewClass", FacesView.class);
+		addPropertyFromAttribute(definition, element, "prefix");
+		addPropertyFromAttribute(definition, element, "suffix");
+		addPropertyFromAttribute(definition, element, "order");
+		helper.register(definition);
+		return definition;
+	}
+
+	private void addPropertyFromAttribute(RootBeanDefinition beanDefinition, Element element, String propertyName) {
+		beanDefinition.getPropertyValues().add(propertyName, element.getAttribute(propertyName));
 	}
 }

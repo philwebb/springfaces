@@ -167,4 +167,35 @@ The bean name of the <tt>FacesViewStateHandler</tt> that is used to write MVC st
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:element name="mvc-view-resolver">
+		<xsd:annotation>
+		<xsd:documentation><![CDATA[
+Configures a Spring MVC ViewResolver to deal with JSF views.  This resolver also ensures that <tt>redirect:</tt> prefixed views
+can be used JSF bookmarking.
+		]]></xsd:documentation></xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="prefix" type="xsd:string" default="/WEB-INF/pages/">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+The prefix that gets prepended to view names.  If not specified defaults to <tt>/WEB-INF/pages/<tt>.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="suffix" type="xsd:string" default=".xhtml">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+The suffix that gets appended to view names.  If not specified defaults to <tt>.xhtml<tt>.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="order" type="xsd:integer" default="100">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+The order for this resolver.  If not specified defaults to <tt>100</tt>.				
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>
