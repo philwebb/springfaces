@@ -34,8 +34,6 @@ import org.w3c.dom.Element;
  */
 class ConversionServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
-	// FIXME Test
-
 	@Override
 	protected AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);

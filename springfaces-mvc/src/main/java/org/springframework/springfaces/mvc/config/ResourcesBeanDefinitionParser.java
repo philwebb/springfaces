@@ -37,8 +37,6 @@ import org.w3c.dom.Element;
  */
 class ResourcesBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
-	// FIXME Test
-
 	private static final String HANDLER_ADAPTER_BEAN_NAME = HttpRequestHandlerAdapter.class.getName();
 
 	@Override

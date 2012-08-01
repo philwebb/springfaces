@@ -31,8 +31,6 @@ import org.w3c.dom.Element;
  */
 class MvcViewResolverBeanDefinitionParser implements BeanDefinitionParser {
 
-	// FIXME test
-
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
 		RootBeanDefinition definition = helper.rootBeanDefinition(BookmarkableRedirectViewIdResolver.class);

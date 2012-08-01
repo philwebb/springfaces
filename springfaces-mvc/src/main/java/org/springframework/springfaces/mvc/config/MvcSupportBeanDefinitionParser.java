@@ -45,8 +45,6 @@ import org.w3c.dom.Element;
  */
 class MvcSupportBeanDefinitionParser implements BeanDefinitionParser {
 
-	// FIXME Test
-
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		BeanDefinitionParserHelper helper = new BeanDefinitionParserHelper(element, parserContext);
 		parserContext.pushContainingComponent(helper.getComponentDefinition());
