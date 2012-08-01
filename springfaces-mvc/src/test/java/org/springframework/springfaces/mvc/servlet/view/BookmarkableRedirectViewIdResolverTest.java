@@ -36,6 +36,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 /**
  * Tests for {@link BookmarkableRedirectViewIdResolver}.
+ * 
  * @author Phillip Webb
  */
 public class BookmarkableRedirectViewIdResolverTest {

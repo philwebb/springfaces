@@ -35,6 +35,7 @@ import org.springframework.springfaces.validator.SpringFacesValidatorSupport;
 /**
  * Tests for {@link SpringFacesNamespaceHandler}.
  * 
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesNamespaceHandlerTest {

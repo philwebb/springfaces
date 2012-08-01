@@ -34,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Abstract base class of tests that use {@link FacesWrapperFactory}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

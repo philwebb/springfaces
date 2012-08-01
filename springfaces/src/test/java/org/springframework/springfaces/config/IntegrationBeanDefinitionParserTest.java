@@ -45,6 +45,7 @@ import org.w3c.dom.Element;
 /**
  * Tests for {@link IntegrationBeanDefinitionParser}.
  * 
+ * 
  * @author Phillip Webb
  */
 public class IntegrationBeanDefinitionParserTest {

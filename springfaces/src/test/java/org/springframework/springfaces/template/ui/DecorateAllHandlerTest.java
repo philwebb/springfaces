@@ -57,6 +57,7 @@ import com.sun.faces.facelets.tag.TagAttributesImpl;
 
 /**
  * Tests for {@link DecorateAllHandler}.
+ * 
  * @author Phillip Webb
  */
 public class DecorateAllHandlerTest {

@@ -46,6 +46,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Tests for {@link BeanDefinitionParserHelper}.
+ * 
  * @author Phillip Webb
  */
 public class BeanDefinitionParserHelperTest {

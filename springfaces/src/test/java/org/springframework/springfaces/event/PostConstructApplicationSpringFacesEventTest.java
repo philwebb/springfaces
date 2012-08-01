@@ -25,6 +25,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link PostConstructApplicationSpringFacesEvent}.
+ * 
  * @author Phillip Webb
  */
 public class PostConstructApplicationSpringFacesEventTest {

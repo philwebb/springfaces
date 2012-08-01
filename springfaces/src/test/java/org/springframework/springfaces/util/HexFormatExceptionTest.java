@@ -22,6 +22,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link HexFormatException}.
+ * 
  * @author Phillip Webb
  */
 public class HexFormatExceptionTest {

@@ -58,6 +58,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link UIMessageSource}.
+ * 
  * @author Phillip Webb
  */
 public class UIMessageSourceTest {

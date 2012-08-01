@@ -19,6 +19,7 @@ import org.junit.Ignore;
 
 /**
  * Tests for {@link ResourcesBeanDefinitionParser}.
+ * 
  * @author Phillip Webb
  */
 @Ignore

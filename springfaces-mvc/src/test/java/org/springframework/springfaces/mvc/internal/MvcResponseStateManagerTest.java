@@ -35,6 +35,7 @@ import org.springframework.springfaces.mvc.render.ViewArtifact;
 
 /**
  * Tests for {@link MvcResponseStateManager}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -31,6 +31,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link ModelAndViewArtifact}.
+ * 
  * @author Phillip Webb
  */
 public class ModelAndViewArtifactTest {

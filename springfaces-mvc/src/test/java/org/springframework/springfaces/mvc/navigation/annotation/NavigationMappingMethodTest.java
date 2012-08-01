@@ -34,6 +34,7 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * Tests for {@link NavigationMappingMethod}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

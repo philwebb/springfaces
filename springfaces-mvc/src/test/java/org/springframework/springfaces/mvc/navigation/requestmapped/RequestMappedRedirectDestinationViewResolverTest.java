@@ -54,6 +54,7 @@ import org.springframework.web.servlet.View;
 
 /**
  * Tests for {@link RequestMappedRedirectDestinationViewResolver}.
+ * 
  * @author Phillip Webb
  */
 public class RequestMappedRedirectDestinationViewResolverTest {

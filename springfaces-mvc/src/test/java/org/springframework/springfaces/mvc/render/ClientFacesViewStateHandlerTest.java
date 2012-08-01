@@ -43,6 +43,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 /**
  * Tests for {@link ClientFacesViewStateHandler}.
+ * 
  * @author Phillip Webb
  */
 public class ClientFacesViewStateHandlerTest {

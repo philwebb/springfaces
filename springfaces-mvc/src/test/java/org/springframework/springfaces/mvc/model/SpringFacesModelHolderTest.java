@@ -39,6 +39,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link SpringFacesModelHolder}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

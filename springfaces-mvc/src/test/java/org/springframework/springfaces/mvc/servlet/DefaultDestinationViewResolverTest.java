@@ -36,6 +36,7 @@ import org.springframework.web.servlet.View;
 
 /**
  * Tests for {@link DefaultDestinationViewResolver}.
+ * 
  * @author Phillip Webb
  */
 public class DefaultDestinationViewResolverTest {

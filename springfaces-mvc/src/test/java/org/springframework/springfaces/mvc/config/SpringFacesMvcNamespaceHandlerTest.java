@@ -62,6 +62,7 @@ import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 /**
  * Tests for {@link SpringFacesMvcNamespaceHandler}.
  * 
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesMvcNamespaceHandlerTest {

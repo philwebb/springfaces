@@ -72,6 +72,7 @@ import org.springframework.springfaces.selectitems.ui.UISelectItems.UISelectItem
 
 /**
  * Tests for {@link UISelectItems}.
+ * 
  * @author Phillip Webb
  */
 public class UISelectItemsTest {

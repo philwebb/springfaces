@@ -41,6 +41,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * Tests for {@link FacesHandlerInterceptor}.
+ * 
  * @author Phillip Webb
  */
 public class FacesHandlerInterceptorTest {

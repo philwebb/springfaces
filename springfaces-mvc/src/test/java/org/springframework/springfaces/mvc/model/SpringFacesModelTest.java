@@ -32,6 +32,7 @@ import org.springframework.ui.ModelMap;
 
 /**
  * Tests for {@link SpringFacesModel}.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesModelTest {

@@ -28,6 +28,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
  * Tests for {@link NavigationMethodReturnValueHandler}.
+ * 
  * @author Phillip Webb
  */
 public class NavigationMethodReturnValueHandlerTest {

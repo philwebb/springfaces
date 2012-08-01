@@ -29,6 +29,7 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 
 /**
  * Tests for {@link RegisteredBeanDefinition}.
+ * 
  * @author Phillip Webb
  */
 public class RegisteredBeanDefinitionTest {

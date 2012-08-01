@@ -30,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link SpringBeanFacesValidator}.
+ * 
  * @author Phillip Webb
  */
 public class SpringBeanFacesValidatorTest {

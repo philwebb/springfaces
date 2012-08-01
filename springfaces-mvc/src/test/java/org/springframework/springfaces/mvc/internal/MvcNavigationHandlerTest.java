@@ -68,6 +68,7 @@ import org.springframework.springfaces.mvc.navigation.NavigationOutcomeResolver;
 
 /**
  * Tests for {@link MvcNavigationHandler}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

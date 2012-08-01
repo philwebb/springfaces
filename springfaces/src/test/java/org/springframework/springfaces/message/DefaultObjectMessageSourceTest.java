@@ -31,6 +31,7 @@ import org.springframework.context.support.StaticMessageSource;
 
 /**
  * Tests for {@link DefaultObjectMessageSource}.
+ * 
  * @author Phillip Webb
  */
 public class DefaultObjectMessageSourceTest {

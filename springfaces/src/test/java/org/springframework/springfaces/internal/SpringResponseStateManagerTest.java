@@ -28,6 +28,7 @@ import org.springframework.springfaces.render.RenderKitIdAware;
 
 /**
  * Tests for {@link SpringResponseStateManager}.
+ * 
  * @author Phillip Webb
  */
 public class SpringResponseStateManagerTest extends

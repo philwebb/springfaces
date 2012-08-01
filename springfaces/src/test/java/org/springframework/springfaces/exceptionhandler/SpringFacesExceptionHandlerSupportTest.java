@@ -55,6 +55,7 @@ import org.springframework.springfaces.exceptionhandler.SpringFacesExceptionHand
 
 /**
  * Tests for {@link SpringFacesExceptionHandlerSupport}.
+ * 
  * @author Phillip Webb
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })

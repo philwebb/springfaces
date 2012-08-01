@@ -37,6 +37,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
  * Tests for {@link FacesResponseCompleteReturnValueHandler}.
+ * 
  * @author Phillip Webb
  */
 public class FacesResponseCompleteReturnValueHandlerTest {

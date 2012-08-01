@@ -37,6 +37,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link ELContextDecorator}.
+ * 
  * @author Phillip Webb
  */
 public class ELContextDecoratorTest {

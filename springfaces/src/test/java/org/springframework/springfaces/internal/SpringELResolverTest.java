@@ -29,6 +29,7 @@ import org.springframework.springfaces.FacesWrapperFactory;
 
 /**
  * Tests for {@link SpringELResolver}.
+ * 
  * @author Phillip Webb
  */
 public class SpringELResolverTest extends AbstractFacesWrapperFactoryTest {

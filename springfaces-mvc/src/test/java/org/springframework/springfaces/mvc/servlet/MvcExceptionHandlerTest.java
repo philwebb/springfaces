@@ -46,6 +46,7 @@ import org.springframework.web.util.WebUtils;
 
 /**
  * Tests for {@link MvcExceptionHandler}.
+ * 
  * @author Phillip Webb
  */
 public class MvcExceptionHandlerTest {

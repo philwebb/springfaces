@@ -32,6 +32,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link SpringExceptionHandlerFactory}.
+ * 
  * @author Phillip Webb
  */
 public class SpringExceptionHandlerFactoryTest {

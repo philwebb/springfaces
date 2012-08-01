@@ -27,6 +27,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link DefaultDataModelRowSet}.
+ * 
  * @author Phillip Webb
  */
 public class DefaultDataModelRowSetTest {

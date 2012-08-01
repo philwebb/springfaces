@@ -19,6 +19,7 @@ import javax.faces.context.ExceptionHandler;
 
 /**
  * Tests for {@link SpringExceptionHandler}.
+ * 
  * @author Phillip Webb
  */
 public class SpringExceptionHandlerTest extends AbstractFacesWrapperTest<ExceptionHandler, SpringExceptionHandler> {

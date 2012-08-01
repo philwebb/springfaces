@@ -41,6 +41,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * Tests for {@link ImplicitSpringFacesELResolver}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

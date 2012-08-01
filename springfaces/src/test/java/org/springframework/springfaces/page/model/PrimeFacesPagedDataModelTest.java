@@ -38,6 +38,7 @@ import org.primefaces.model.SortOrder;
 
 /**
  * Tests for {@link PrimeFacesPagedDataModel}
+ * 
  * @author Phillip Webb
  */
 public class PrimeFacesPagedDataModelTest {

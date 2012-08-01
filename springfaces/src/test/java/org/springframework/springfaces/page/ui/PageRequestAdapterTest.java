@@ -27,6 +27,7 @@ import org.springframework.springfaces.page.model.PagedDataModelState;
 
 /**
  * Tests for {@link PageRequestAdapter}.
+ * 
  * @author Phillip Webb
  */
 public class PageRequestAdapterTest {

@@ -47,6 +47,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModel;
 
 /**
  * Tests for {@link ModelBuilder}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

@@ -58,6 +58,7 @@ import com.sun.faces.el.ELContextImpl;
 
 /**
  * Tests for {@link DefaultComponentInfo}.
+ * 
  * @author Phillip Webb
  */
 public class DefaultComponentInfoTest {

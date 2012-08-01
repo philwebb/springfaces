@@ -31,6 +31,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link FilteredIterator}.
+ * 
  * @author Phillip Webb
  */
 public class FilteredIteratorTest {

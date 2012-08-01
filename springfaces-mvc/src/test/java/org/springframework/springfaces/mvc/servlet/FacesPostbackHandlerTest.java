@@ -58,6 +58,7 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
 
 /**
  * Tests for {@link FacesPostbackHandler}.
+ * 
  * @author Phillip Webb
  */
 public class FacesPostbackHandlerTest {

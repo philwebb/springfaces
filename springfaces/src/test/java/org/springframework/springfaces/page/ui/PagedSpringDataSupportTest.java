@@ -37,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 
 /**
  * Tests for {@link PagedSpringDataSupport}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

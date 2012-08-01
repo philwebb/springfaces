@@ -28,6 +28,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link SelectItemsJpaSupport}.
+ * 
  * @author Phillip Webb
  */
 public class SelectItemsJpaSupportTest {

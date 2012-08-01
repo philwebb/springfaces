@@ -34,6 +34,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Test for {@link PagedDataModelState}.
+ * 
  * @author Phillip Webb
  */
 public class PagedDataModelStateTest {

@@ -52,6 +52,7 @@ import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
 
 /**
  * Tests for {@link UIPagedData}.
+ * 
  * @author Phillip Webb
  */
 public class UIPagedDataTest {

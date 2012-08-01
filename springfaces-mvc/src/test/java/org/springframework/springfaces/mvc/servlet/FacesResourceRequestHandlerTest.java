@@ -19,6 +19,7 @@ import org.junit.Ignore;
 
 /**
  * Tests for {@link FacesResourceRequestHandler}.
+ * 
  * @author Phillip Webb
  */
 @Ignore

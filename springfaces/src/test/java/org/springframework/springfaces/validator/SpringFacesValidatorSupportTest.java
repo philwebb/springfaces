@@ -45,6 +45,7 @@ import org.springframework.web.context.support.StaticWebApplicationContext;
 
 /**
  * Tests for {@link SpringFacesValidatorSupport}.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesValidatorSupportTest {

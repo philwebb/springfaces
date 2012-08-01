@@ -26,6 +26,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link DispatcherAwareBeanPostProcessor}.
+ * 
  * @author Phillip Webb
  */
 public class DispatcherAwareBeanPostProcessorTest {

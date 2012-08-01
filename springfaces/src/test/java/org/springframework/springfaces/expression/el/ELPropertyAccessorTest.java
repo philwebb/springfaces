@@ -34,6 +34,7 @@ import org.springframework.expression.EvaluationContext;
 
 /**
  * Tests for {@link ELPropertyAccessor}.
+ * 
  * @author Phillip Webb
  */
 public class ELPropertyAccessorTest {

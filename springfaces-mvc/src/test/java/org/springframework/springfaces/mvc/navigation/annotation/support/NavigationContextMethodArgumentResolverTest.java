@@ -40,6 +40,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
  * Tests for {@link NavigationContextMethodArgumentResolver}.
+ * 
  * @author Phillip Webb
  */
 public class NavigationContextMethodArgumentResolverTest {

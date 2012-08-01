@@ -37,6 +37,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link AbstractELResolver}.
+ * 
  * @author Phillip Webb
  */
 @SuppressWarnings("rawtypes")

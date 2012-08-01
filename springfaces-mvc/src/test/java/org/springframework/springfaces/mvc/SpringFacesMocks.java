@@ -32,6 +32,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * General mocks.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesMocks {

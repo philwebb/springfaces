@@ -101,6 +101,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ServletResponseMeth
 
 /**
  * Tests for {@link NavigationMethodOutcomeResolver}.
+ * 
  * @author Phillip Webb
  */
 public class NavigationMethodOutcomeResolverTest {

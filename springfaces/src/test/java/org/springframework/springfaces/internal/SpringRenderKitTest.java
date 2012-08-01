@@ -29,6 +29,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link SpringRenderKit}.
+ * 
  * @author Phillip Webb
  */
 public class SpringRenderKitTest extends AbstractFacesWrapperTest<RenderKit, SpringRenderKit> {

@@ -32,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Tests for {@link SpringBeanFacesConverter}.
+ * 
  * @author Phillip Webb
  */
 public class SpringBeanFacesConverterTest {

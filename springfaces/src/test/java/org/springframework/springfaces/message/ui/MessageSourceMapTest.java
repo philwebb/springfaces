@@ -43,6 +43,7 @@ import org.springframework.springfaces.message.ui.MessageSourceMap.Value;
 
 /**
  * Tests for {@link MessageSourceMap}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

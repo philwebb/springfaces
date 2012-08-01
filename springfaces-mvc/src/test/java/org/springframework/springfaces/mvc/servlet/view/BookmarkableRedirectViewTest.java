@@ -37,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Tests for {@link BookmarkableRedirectView}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

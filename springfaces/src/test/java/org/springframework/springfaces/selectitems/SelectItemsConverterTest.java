@@ -36,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Tests for {@link SelectItemsConverter}.
+ * 
  * @author Phillip Webb
  */
 public class SelectItemsConverterTest {

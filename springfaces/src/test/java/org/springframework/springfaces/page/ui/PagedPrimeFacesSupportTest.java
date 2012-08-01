@@ -31,6 +31,7 @@ import org.springframework.springfaces.page.model.PrimeFacesPagedDataModel;
 
 /**
  * Tests for {@link PagedPrimeFacesSupport}.
+ * 
  * @author Phillip Webb
  */
 @RunWith(MockitoJUnitRunner.class)

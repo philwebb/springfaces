@@ -22,6 +22,7 @@ import org.junit.Test;
 
 /**
  * Tests for {@link FacesVendor}.
+ * 
  * @author Phillip Webb
  */
 public class FacesVendorTest {

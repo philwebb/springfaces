@@ -43,6 +43,7 @@ import org.springframework.web.context.support.StaticWebApplicationContext;
 
 /**
  * Tests for {@link SpringFacesConverterSupport}.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesConverterSupportTest {
