@@ -15,15 +15,79 @@
  */
 package org.springframework.springfaces.mvc.config;
 
-import org.junit.Ignore;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+
+import javax.faces.application.Application;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.support.FormattingConversionService;
+import org.springframework.format.support.FormattingConversionServiceFactoryBean;
+import org.springframework.springfaces.mvc.SpringFacesContextSetter;
+import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.converter.GenericFacesConverterTest.ClassWithConverter;
+import org.springframework.web.context.support.StaticWebApplicationContext;
 
 /**
  * Tests for {@link ConversionServiceBeanDefinitionParser}.
  * 
  * @author Phillip Webb
  */
-@Ignore
-// FIXME
 public class ConversionServiceBeanDefinitionParserTest {
 
+	private StaticWebApplicationContext applicationContext;
+
+	@Mock
+	private SpringFacesContext springFacesContext;
+
+	@Mock
+	private FacesContext facesContext;
+
+	@Mock
+	private Application application;
+
+	@Mock
+	private Converter facesConverter;
+
+	private String source = "test";
+
+	private TypeDescriptor sourceType = TypeDescriptor.valueOf(String.class);
+
+	private Object converted = new Object();
+
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+		this.applicationContext = SpringFacesMvcNamespaceHandlerTest.loadApplicationContext(new ClassPathResource(
+				"testSpringFacesMvcNamespaceConverter.xml", getClass()));
+		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
+		given(this.springFacesContext.getFacesContext()).willReturn(this.facesContext);
+		given(this.facesContext.getApplication()).willReturn(this.application);
+		given(this.application.createConverter(ClassWithConverter.class)).willReturn(this.facesConverter);
+		given(this.facesConverter.getAsObject(this.facesContext, null, this.source)).willReturn(this.converted);
+	}
+
+	@After
+	public void cleanup() {
+		SpringFacesContextSetter.setCurrentInstance(null);
+	}
+
+	@Test
+	public void shouldLoadConverter() throws Exception {
+		FormattingConversionServiceFactoryBean bean = this.applicationContext
+				.getBean(FormattingConversionServiceFactoryBean.class);
+		FormattingConversionService conversionService = bean.getObject();
+		TypeDescriptor targetType = TypeDescriptor.valueOf(ClassWithConverter.class);
+		assertThat(conversionService.convert(this.source, this.sourceType, targetType), is(equalTo(this.converted)));
+	}
 }

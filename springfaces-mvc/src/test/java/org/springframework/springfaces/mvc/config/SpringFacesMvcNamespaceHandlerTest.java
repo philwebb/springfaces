@@ -22,13 +22,12 @@ import static org.junit.Assert.assertThat;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.springfaces.convert.SpringFacesConverterSupport;
@@ -62,22 +61,16 @@ import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
 /**
  * Tests for {@link SpringFacesMvcNamespaceHandler}.
  * 
- * 
  * @author Phillip Webb
  */
 public class SpringFacesMvcNamespaceHandlerTest {
 
 	private StaticWebApplicationContext applicationContext;
-	private ServletContext servletContext = new MockServletContext();
 
 	@Before
 	public void setup() {
-		this.applicationContext = new StaticWebApplicationContext();
-		this.applicationContext.setServletContext(this.servletContext);
-		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(
-				this.applicationContext.getDefaultListableBeanFactory());
-		reader.loadBeanDefinitions(new ClassPathResource("testSpringFacesMvcNamespace.xml", getClass()));
-		this.applicationContext.refresh();
+		this.applicationContext = loadApplicationContext(new ClassPathResource("testSpringFacesMvcNamespace.xml",
+				getClass()));
 	}
 
 	@Test
@@ -145,6 +138,15 @@ public class SpringFacesMvcNamespaceHandlerTest {
 
 	private void assertHasBean(Class<?> beanClass) {
 		assertThat(this.applicationContext.getBeansOfType(beanClass).size(), is(1));
+	}
+
+	public static StaticWebApplicationContext loadApplicationContext(Resource resource) {
+		StaticWebApplicationContext applicationContext = new StaticWebApplicationContext();
+		applicationContext.setServletContext(new MockServletContext());
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(applicationContext.getDefaultListableBeanFactory());
+		reader.loadBeanDefinitions(resource);
+		applicationContext.refresh();
+		return applicationContext;
 	}
 
 }
