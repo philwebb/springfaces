@@ -25,9 +25,8 @@ import org.springframework.util.Assert;
  */
 public class RegisteredBeanDefinition {
 
-	// FIXME Test
-
 	private BeanDefinition beanDefinition;
+
 	private String name;
 
 	public RegisteredBeanDefinition(BeanDefinition beanDefinition, String name) {
