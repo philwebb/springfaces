@@ -34,10 +34,10 @@ import org.w3c.dom.Element;
  */
 public class BeanDefinitionParserHelper {
 
-	// FIXME Test
-
 	private Element element;
+
 	private ParserContext parserContext;
+
 	private Object source;
 
 	/**
