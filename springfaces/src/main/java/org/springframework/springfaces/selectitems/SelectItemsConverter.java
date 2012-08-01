@@ -34,6 +34,7 @@ import org.springframework.util.ObjectUtils;
  * provide a unique <tt>String</tt> for each {@link SelectItem#getValue() SelectItem value}. Unlike most
  * {@link Converter}s the {@link #getAsObject(FacesContext, UIComponent, String) getAsObject} method does not return a
  * new <tt>Object</tt> instance but instead returns the value from the matching parent component {@link SelectItem}.
+ * 
  * @author Phillip Webb
  */
 public abstract class SelectItemsConverter implements Converter {

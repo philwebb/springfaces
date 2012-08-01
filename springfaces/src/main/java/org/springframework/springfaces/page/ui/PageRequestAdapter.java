@@ -23,6 +23,7 @@ import org.springframework.util.Assert;
 
 /**
  * Adapter class that converts {@link PagedDataModelState} to a {@link PageRequest}.
+ * 
  * @author Phillip Webb
  */
 class PageRequestAdapter implements PageRequest {

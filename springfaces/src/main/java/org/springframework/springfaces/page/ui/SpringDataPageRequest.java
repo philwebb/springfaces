@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Extends a {@link PageRequest} to support the Spring Data {@link Pageable} interface.
+ * 
  * @author Phillip Webb
  */
 public class SpringDataPageRequest implements PageRequest, Pageable {

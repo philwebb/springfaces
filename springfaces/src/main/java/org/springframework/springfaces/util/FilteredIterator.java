@@ -23,8 +23,9 @@ import org.springframework.util.Assert;
 /**
  * Base for {@link Iterator}s that selectively {@link #isElementFiltered(Object) filters} items from an underlying
  * source.
- * @param <E> the element type
+ * 
  * @author Phillip Webb
+ * @param <E> the element type
  */
 public abstract class FilteredIterator<E> implements Iterator<E> {
 

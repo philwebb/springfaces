@@ -68,9 +68,10 @@ import org.springframework.util.Assert;
  * If PrimeFaces is present on the classpath then the resulting model will extend
  * <tt>org.primefaces.model.LazyDataModel</tt> rather than <tt>javax.faces.model.DataModel</tt>. Use the
  * {@link PagedDataRows} interface if you need a consistent way of dealing with PrimeFaces and Standard DataModels.
+ * 
+ * @author Phillip Webb
  * @see PageRequest
  * @see PagedDataRows
- * @author Phillip Webb
  */
 public class UIPagedData extends UIComponentBase {
 

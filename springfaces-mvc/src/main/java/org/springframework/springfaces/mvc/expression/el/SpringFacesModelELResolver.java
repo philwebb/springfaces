@@ -24,8 +24,9 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
 
 /**
  * Unified EL {@link ELResolver} that exposes values from the Spring Faces MVC model.
- * @see SpringFacesModel
+ * 
  * @author Phillip Webb
+ * @see SpringFacesModel
  */
 public class SpringFacesModelELResolver extends AbstractELResolver {
 

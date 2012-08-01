@@ -30,8 +30,9 @@ import org.springframework.util.Assert;
 
 /**
  * Maintains a collection of {@link StateHolder}s, including support for partial state saving of the contained items.
- * @param <T> The state holder type
+ * 
  * @author Phillip Webb
+ * @param <T> The state holder type
  */
 public class StateHolders<T extends StateHolder> implements PartialStateHolder, Iterable<T> {
 

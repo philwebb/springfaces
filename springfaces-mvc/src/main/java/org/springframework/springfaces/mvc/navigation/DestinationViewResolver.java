@@ -24,9 +24,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Interface to be implemented by objects that can resolve navigation destinations into views.
+ * 
+ * @author Phillip Webb
  * @see NavigationOutcome
  * @see NavigationOutcomeResolver
- * @author Phillip Webb
  */
 public interface DestinationViewResolver {
 

@@ -24,6 +24,7 @@ import org.springframework.util.Assert;
 /**
  * A reference to an artifact that contains the {@link ViewDeclarationLanguage VDL} syntax of a JSF view. In most cases
  * this will refer to the location of a facelet file, for example: <tt>/WEB-INF/pages/page.xhtml</tt> .
+ * 
  * @author Phillip Webb
  */
 public final class ViewArtifact implements Serializable {

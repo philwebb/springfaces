@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 
 /**
  * {@link BeanDefinitionParser} that parses the <tt>mvc-support</tt> element to configure a Spring Faces application.
+ * 
  * @author Phillip Webb
  */
 class MvcSupportBeanDefinitionParser implements BeanDefinitionParser {

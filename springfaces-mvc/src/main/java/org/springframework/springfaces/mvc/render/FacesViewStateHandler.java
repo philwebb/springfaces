@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Strategy interface use to read and write {@link ViewArtifact} data.
+ * 
  * @author Phillip Webb
  */
 public interface FacesViewStateHandler {

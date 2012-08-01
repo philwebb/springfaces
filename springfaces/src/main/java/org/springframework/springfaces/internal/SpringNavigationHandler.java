@@ -24,6 +24,7 @@ import org.springframework.springfaces.application.ConfigurableNavigationHandler
 
 /**
  * A JSF {@link NavigationHandler} that provides integration with Spring.
+ * 
  * @author Phillip Webb
  */
 public class SpringNavigationHandler extends ConfigurableNavigationHandlerWrapper {

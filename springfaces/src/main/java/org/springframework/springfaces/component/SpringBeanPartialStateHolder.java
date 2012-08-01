@@ -32,6 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
  * Beans to be used anywhere that the standard {@link StateHolder} is used. The name of the bean stored when state is
  * {@link #saveState saved} and the bean instance will be re-obtained from the {@link ApplicationContext} when state is
  * {@link #restoreState restored}. Referenced prototype beans can also be {@link StateHolder}s if required.
+ * 
  * @author Phillip Webb
  * @param <T> The bean type
  */

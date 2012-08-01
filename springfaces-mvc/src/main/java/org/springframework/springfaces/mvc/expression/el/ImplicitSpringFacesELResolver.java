@@ -31,6 +31,7 @@ import org.springframework.springfaces.mvc.model.SpringFacesModelHolder;
  * controller
  * model
  * </pre>
+ * 
  * @author Phillip Webb
  */
 public class ImplicitSpringFacesELResolver extends CompositeELResolver {

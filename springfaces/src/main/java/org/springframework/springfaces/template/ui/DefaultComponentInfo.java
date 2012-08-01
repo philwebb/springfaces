@@ -44,6 +44,7 @@ import org.springframework.util.ClassUtils;
 /**
  * Default implementation of {@link ComponentInfo} that supports {@link EditableValueHolder}s as well as relevant
  * <tt>javax.validation.Validator</tt> annotations.
+ * 
  * @author Phillip Webb
  */
 public class DefaultComponentInfo implements ComponentInfo {

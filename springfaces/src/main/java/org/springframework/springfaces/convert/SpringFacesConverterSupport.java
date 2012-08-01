@@ -41,6 +41,7 @@ import org.springframework.springfaces.util.ForClassFilter;
  * {@link org.springframework.springfaces.convert.Converter} are made available as JSF converters (the ID of the bean is
  * used as the converter name). The {@link ForClass @ForClass} annotation and {@link ConditionalForClass} interface are
  * also supported to return default converters for a class.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesConverterSupport implements FacesWrapperFactory<Application>,

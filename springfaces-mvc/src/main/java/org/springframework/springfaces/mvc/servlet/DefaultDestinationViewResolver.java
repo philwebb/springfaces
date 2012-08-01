@@ -29,6 +29,7 @@ import org.springframework.web.servlet.View;
 /**
  * Default implementation of {@link DestinationViewResolver} that can resolves destinations to views in the same way as
  * the standard {@link DispatcherServlet}.
+ * 
  * @author Phillip Webb
  */
 public class DefaultDestinationViewResolver implements DestinationViewResolver, DispatcherAware {

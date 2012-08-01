@@ -24,8 +24,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * A JSF {@link RenderKit} that provides integration with Spring.
- * @see SpringRenderKitFactory
+ * 
  * @author Phillip Webb
+ * @see SpringRenderKitFactory
  */
 public class SpringRenderKit extends RenderKitWrapper {
 

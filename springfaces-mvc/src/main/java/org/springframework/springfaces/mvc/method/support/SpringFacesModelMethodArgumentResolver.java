@@ -48,8 +48,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * <li>The item is not a {@link BeanUtils#isSimpleProperty simple} type</li>
  * <li>The is one and only one value in the model that can be used to resolve the parameter</li>
  * </ul>
- * If this behaviour is not required set <tt>resolveModelItems</tt> to false then
+ * If this behavior is not required set <tt>resolveModelItems</tt> to false then
  * {@link #SpringFacesModelMethodArgumentResolver(boolean) constructing} the resolver.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesModelMethodArgumentResolver implements HandlerMethodArgumentResolver {

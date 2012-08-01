@@ -23,10 +23,11 @@ import org.springframework.springfaces.bean.ForClass;
 
 /**
  * A variation of the JSF {@link javax.faces.convert.Converter} that support generic typing.
+ * 
+ * @author Phillip Webb
  * @param <T> The type the converter is for
  * @see ForClass
  * @see SpringFacesConverterSupport
- * @author Phillip Webb
  */
 public interface Converter<T> {
 

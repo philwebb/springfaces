@@ -29,6 +29,7 @@ import org.springframework.springfaces.render.ResponseStateManagerWrapper;
 
 /**
  * A JSF {@link ResponseStateManager} that provides integration with Spring MVC.
+ * 
  * @author Phillip Webb
  */
 public class MvcResponseStateManager extends ResponseStateManagerWrapper implements RenderKitIdAware {

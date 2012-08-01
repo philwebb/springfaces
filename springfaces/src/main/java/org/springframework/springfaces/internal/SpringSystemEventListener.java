@@ -29,6 +29,7 @@ import org.springframework.springfaces.SpringFacesIntegration;
 
 /**
  * A JSF {@link SystemEventListener} that provides integration with Spring.
+ * 
  * @author Phillip Webb
  */
 public class SpringSystemEventListener implements SystemEventListener {

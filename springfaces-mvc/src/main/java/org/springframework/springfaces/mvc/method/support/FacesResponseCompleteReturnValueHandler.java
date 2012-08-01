@@ -27,6 +27,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * Decorator class that wraps {@link HandlerMethodReturnValueHandler}s to ensure that the current {@link FacesContext}
  * is marked as {@link FacesContext#responseComplete() responseComplete()} after the return value has been
  * {@link #handleReturnValue handled}.
+ * 
  * @author Phillip Webb
  */
 public class FacesResponseCompleteReturnValueHandler implements HandlerMethodReturnValueHandler {

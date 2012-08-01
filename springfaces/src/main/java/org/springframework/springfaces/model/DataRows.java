@@ -21,8 +21,9 @@ import javax.faces.model.DataModel;
 
 /**
  * Provides per-row access to an underlying data source in an identical way to a JSF {@link DataModel}.
- * @param <E>
+ * 
  * @author Phillip Webb
+ * @param <E>
  */
 public interface DataRows<E> extends Iterable<E> {
 

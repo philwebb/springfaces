@@ -19,8 +19,9 @@ import org.springframework.util.ClassUtils;
 
 /**
  * Supported JSF vendors including detection of the {@link #getCurrent() currently running implementation}.
- * @see #getCurrent()
+ * 
  * @author Phillip Webb
+ * @see #getCurrent()
  */
 public enum FacesVendor {
 

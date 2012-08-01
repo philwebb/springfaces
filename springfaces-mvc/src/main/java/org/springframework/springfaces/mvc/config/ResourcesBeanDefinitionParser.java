@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 
 /**
  * {@link BeanDefinitionParser} that parses the <tt>resources</tt> element to configure a Spring Faces application.
+ * 
  * @author Phillip Webb
  */
 class ResourcesBeanDefinitionParser extends AbstractBeanDefinitionParser {

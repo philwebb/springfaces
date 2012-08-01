@@ -32,6 +32,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * <li>String parameters (resolved using {@link NavigationContext#getOutcome()})</li>
  * <li>UIComponents (resolved using {@link NavigationContext#getComponent()} when assignment compatible)</li>
  * </ul>
+ * 
  * @author Phillip Webb
  */
 public class NavigationContextMethodArgumentResolver implements HandlerMethodArgumentResolver {

@@ -45,9 +45,10 @@ import org.springframework.web.context.WebApplicationContext;
  * Wrapping will be re-applied if whenever the {@link WebApplicationContext} is reloaded. If no
  * {@link SpringFacesIntegration} is {@link SpringFacesIntegration#isInstalled(ExternalContext) installed} then the
  * original delegate is returned as the wrapped instance.
+ * 
+ * @author Phillip Webb
  * @param <T> The JSF type being managed
  * @see #getWrapped()
- * @author Phillip Webb
  */
 class WrapperHandler<T> {
 

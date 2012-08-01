@@ -28,9 +28,10 @@ import javax.el.VariableMapper;
  * Base class for any read-only EL resolver that is backed against java bean properties. This EL resolver can be used to
  * map EL properties to java bean getters. Subclasses should call the {@link #map(String, String)} method on
  * construction to setup mappings between EL and bean properties.
+ * 
+ * @author Phillip Webb
  * @see #map(String, String)
  * @see #getBean()
- * @author Phillip Webb
  */
 public abstract class BeanBackedELResolver extends AbstractELResolver {
 

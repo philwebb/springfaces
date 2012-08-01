@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link BeanPostProcessor} to support the {@link DispatcherAware} interface.
+ * 
  * @author Phillip Webb
  */
 public class DispatcherAwareBeanPostProcessor implements BeanPostProcessor {

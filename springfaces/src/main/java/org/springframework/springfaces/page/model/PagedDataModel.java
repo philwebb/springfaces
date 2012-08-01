@@ -26,8 +26,9 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * A {@link DataModel} that supports sorting, filtering and paging capabilities.
- * @param <E> The element type
+ * 
  * @author Phillip Webb
+ * @param <E> The element type
  */
 public class PagedDataModel<E> extends LazyDataModel<E, PagedDataModelState> implements PagedDataRows<E> {
 

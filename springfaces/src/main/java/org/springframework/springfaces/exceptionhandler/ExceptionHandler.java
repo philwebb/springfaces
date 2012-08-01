@@ -22,9 +22,10 @@ import javax.faces.event.ExceptionQueuedEvent;
 
 /**
  * Strategy interface that can be used to handle exceptions thrown from JSF.
+ * 
+ * @author Phillip Webb
  * @param <E> The exception type
  * @see SpringFacesExceptionHandlerSupport
- * @author Phillip Webb
  */
 @SuppressWarnings("deprecation")
 public interface ExceptionHandler<E extends Throwable> {

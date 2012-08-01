@@ -20,8 +20,9 @@ import javax.faces.model.DataModel;
 /**
  * A set of {@link DataModel} rows. This interface is used to provide access to a subset of data from any underlying
  * source.
- * @param <E> The element type
+ * 
  * @author Phillip Webb
+ * @param <E> The element type
  */
 public interface DataModelRowSet<E> {
 

@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 /**
  * {@link BeanDefinitionParser} that parses the <tt>mvc-conversion-service</tt> element to configure a Spring Faces
  * application.
+ * 
  * @author Phillip Webb
  */
 class ConversionServiceBeanDefinitionParser extends AbstractBeanDefinitionParser {

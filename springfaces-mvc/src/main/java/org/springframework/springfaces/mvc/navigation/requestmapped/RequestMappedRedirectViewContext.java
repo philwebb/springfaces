@@ -24,6 +24,7 @@ import org.springframework.web.bind.support.WebBindingInitializer;
 
 /**
  * Provides context for {@link RequestMappedRedirectView} and {@link RequestMappedRedirectViewModelBuilder}.
+ * 
  * @author Phillip Webb
  */
 public interface RequestMappedRedirectViewContext {

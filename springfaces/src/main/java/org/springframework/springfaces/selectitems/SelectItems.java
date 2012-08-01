@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
  * <li>A {@link Collection}, {@link Iterable} or <tt>Array</tt> of objects. Any contained object that is not a
  * {@link SelectItem}s will be converted using the {@link #convertToSelectItem} method.</li>
  * </ul>
+ * 
  * @author Phillip Webb
  */
 public abstract class SelectItems implements Iterable<SelectItem> {

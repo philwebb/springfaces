@@ -39,6 +39,7 @@ import org.springframework.util.Assert;
  * {@link #apply(Map, Class) maps} or {@link #match(Object, Class) single objects}. If not explicitly defined the
  * <tt>{@link ForClass#value() @ForClass.value}</tt> can be deduced either from a {@link #ForClassFilter(Class) generic}
  * or using a {@link #ForClassFilter(Deducer) custom} {@link Deducer}.
+ * 
  * @author Phillip Webb
  */
 public class ForClassFilter {

@@ -25,8 +25,9 @@ import javax.faces.application.Application;
 
 /**
  * Indicates that the {@link GenericFacesConverter} should use a specific JSF converter.
- * @see GenericFacesConverter
+ * 
  * @author Phillip Webb
+ * @see GenericFacesConverter
  */
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)

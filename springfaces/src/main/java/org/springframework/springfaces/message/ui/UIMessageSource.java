@@ -57,8 +57,9 @@ import org.springframework.util.StringUtils;
  * <tt>pages.spring.example.</tt></b> ".
  * <p>
  * Use the {@link #setPrefix(String) prefix} attribute if a different prefix is required.
- * @see MessageSourceMap
+ * 
  * @author Phillip Webb
+ * @see MessageSourceMap
  */
 public class UIMessageSource extends UIComponentBase {
 

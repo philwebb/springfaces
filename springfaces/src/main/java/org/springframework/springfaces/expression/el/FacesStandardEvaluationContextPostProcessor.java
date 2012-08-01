@@ -20,6 +20,7 @@ import org.springframework.springfaces.expression.spel.support.StandardEvaluatio
 
 /**
  * {@link StandardEvaluationContextPostProcessor} used to add a {@link FacesPropertyAccessor}.
+ * 
  * @author Phillip Webb
  */
 public class FacesStandardEvaluationContextPostProcessor implements StandardEvaluationContextPostProcessor {

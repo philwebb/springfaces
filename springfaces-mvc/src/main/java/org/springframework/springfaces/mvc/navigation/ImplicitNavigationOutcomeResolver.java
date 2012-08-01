@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
  * this can be {@link #setPrefix changed} if necessary. This resolver will ultimately return a String
  * {@link NavigationOutcome#getDestination() destination}, for example the implicit view "<tt>spring:redirect:/home</tt>
  * " will return an outcome containing the destination "<tt>redirect:/home</tt>".
+ * 
  * @author Phillip Webb
  */
 public class ImplicitNavigationOutcomeResolver implements NavigationOutcomeResolver {

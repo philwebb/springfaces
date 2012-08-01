@@ -22,6 +22,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
  * Handles method return values from navigation methods.
+ * 
  * @author Phillip Webb
  */
 public class NavigationMethodReturnValueHandler implements HandlerMethodReturnValueHandler {

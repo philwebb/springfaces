@@ -33,6 +33,7 @@ import org.springframework.util.Assert;
 
 /**
  * {@link ExceptionHandler} that converts exceptions to {@link FacesMessage}s using an {@link ObjectMessageSource}.
+ * 
  * @author Phillip Webb
  */
 public class ObjectMessageExceptionHandler implements ExceptionHandler<Throwable>, MessageSourceAware, Ordered {

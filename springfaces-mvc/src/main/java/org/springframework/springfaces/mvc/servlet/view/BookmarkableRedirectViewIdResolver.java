@@ -23,6 +23,7 @@ import org.springframework.web.servlet.view.UrlBasedViewResolver;
 /**
  * Drop-in replacement for {@link UrlBasedViewResolver} that handles <tt>redirect:</tt> prefixed views names using
  * {@link BookmarkableRedirectView}. Allows JSF to render redirect links directly in the HTML output.
+ * 
  * @author Phillip Webb
  */
 public class BookmarkableRedirectViewIdResolver extends UrlBasedViewResolver {

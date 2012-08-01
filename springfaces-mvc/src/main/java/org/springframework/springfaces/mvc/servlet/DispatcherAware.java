@@ -18,6 +18,7 @@ package org.springframework.springfaces.mvc.servlet;
 /**
  * Interface to be implemented by any object that wishes to be notified of the {@link Dispatcher}. Typically intended
  * for Spring Faces infrastructure classes.
+ * 
  * @author Phillip Webb
  */
 public interface DispatcherAware {

@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
 
 /**
  * Miscellaneous <tt>JavaServer Faces</tt> utility methods.
+ * 
  * @author Phillip Webb
  */
 public abstract class FacesUtils {

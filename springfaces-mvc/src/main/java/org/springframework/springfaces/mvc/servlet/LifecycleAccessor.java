@@ -29,6 +29,7 @@ import org.springframework.web.servlet.DispatcherServlet;
  * Provides cached access to the JSF {@link Lifecycle}. The {@link Lifecycle} is obtained in the same way as standard
  * JSF implementations (respecting any <tt>javax.faces.LIFECYCLE_ID</tt> initiation parameter). The
  * {@link #setLifecycleId(String)} method can be used to override the lifecycle ID.
+ * 
  * @author Phillip Webb
  */
 public class LifecycleAccessor implements ServletContextAware {

@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 /**
  * A composite {@link NavigationMappingFilter} that matches when all the specified filters match.
+ * 
  * @author Phillip Webb
  */
 public class CompositeNavigationMappingFilter implements NavigationMappingFilter {

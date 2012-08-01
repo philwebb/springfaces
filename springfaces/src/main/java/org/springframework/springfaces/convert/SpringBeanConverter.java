@@ -25,8 +25,9 @@ import org.springframework.springfaces.component.SpringBeanPartialStateHolder;
 /**
  * A JSF {@link javax.faces.convert.Converter} that delegates to a
  * {@link org.springframework.springfaces.convert.Converter} Spring Bean.
- * @param <T> the converted type
+ * 
  * @author Phillip Webb
+ * @param <T> the converted type
  */
 public class SpringBeanConverter<T> extends
 		SpringBeanPartialStateHolder<org.springframework.springfaces.convert.Converter<T>> implements

@@ -30,6 +30,7 @@ import org.springframework.web.servlet.View;
 
 /**
  * Data holder that provides access to a navigation destination and a model.
+ * 
  * @author Phillip Webb
  */
 class DestinationAndModel {

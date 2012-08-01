@@ -38,9 +38,10 @@ import org.springframework.web.servlet.handler.MappedInterceptor;
 
 /**
  * MVC {@link HandlerAdapter} used to handle JSF postbacks.
+ * 
+ * @author Phillip Webb
  * @see FacesHandlerInterceptor
  * @see Postback
- * @author Phillip Webb
  */
 public class FacesPostbackHandler extends AbstractHandlerMapping implements HandlerAdapter, HandlerMapping, Ordered,
 		DispatcherAware {

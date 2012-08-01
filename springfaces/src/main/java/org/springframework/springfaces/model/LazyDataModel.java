@@ -29,10 +29,9 @@ import org.springframework.util.Assert;
  * {@link Serializable} as it is expected to be recreated on each JSF request. A {@link LazyDataModelState}
  * implementation must be provided to handle the data model state.
  * 
+ * @author Phillip Webb
  * @param <E> The element type
  * @param <S> The data model state state
- * 
- * @author Phillip Webb
  */
 public class LazyDataModel<E, S extends LazyDataModelState> extends DataModel<E> {
 

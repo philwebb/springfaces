@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
 /**
  * A {@link BeanFactoryPostProcessor} that can be registered to with an application context in order to support
  * {@link StandardEvaluationContextPostProcessor}s.
+ * 
  * @author Phillip Webb
  */
 public class StandardEvaluationContextPostProcessorSupport implements BeanFactoryPostProcessor,

@@ -20,6 +20,7 @@ import org.springframework.springfaces.config.SpringFacesNamespaceHandlerDelegat
 
 /**
  * {@link SpringFacesNamespaceHandlerDelegate} to handle MVC sections of the namespace.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesMvcNamespaceHandler implements SpringFacesNamespaceHandlerDelegate {

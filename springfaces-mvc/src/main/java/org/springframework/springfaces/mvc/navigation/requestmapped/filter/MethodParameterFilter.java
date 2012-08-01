@@ -20,6 +20,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 /**
  * Strategy interface that can be used to filter {@link MethodParameter}s.
+ * 
  * @author Phillip Webb
  */
 public interface MethodParameterFilter {

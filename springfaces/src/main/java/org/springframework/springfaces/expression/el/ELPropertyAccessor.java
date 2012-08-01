@@ -28,10 +28,11 @@ import org.springframework.expression.TypedValue;
 /**
  * Spring read-only EL property accessor that acts as an adapter to a Java {@link ELContext}. Subclasses must provide
  * {@link #getElContext access} to an actual {@link ELContext}.
+ * 
+ * @author Phillip Webb
  * @see #getElContext
  * @see #getResolveBase
  * @see #getResolveProperty
- * @author Phillip Webb
  */
 public abstract class ELPropertyAccessor implements PropertyAccessor {
 

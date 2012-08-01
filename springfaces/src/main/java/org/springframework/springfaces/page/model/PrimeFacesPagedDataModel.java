@@ -27,8 +27,9 @@ import org.springframework.util.Assert;
 
 /**
  * Adapts a {@link PagedDataModel} to a PrimeFaces {@link LazyDataModel}.
- * @param <E> The element type
+ * 
  * @author Phillip Webb
+ * @param <E> The element type
  */
 public class PrimeFacesPagedDataModel<E> extends LazyDataModel<E> implements PagedDataRows<E> {
 

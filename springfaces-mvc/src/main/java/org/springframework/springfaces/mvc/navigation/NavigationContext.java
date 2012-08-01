@@ -23,6 +23,7 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 
 /**
  * Provides context information relating to the current navigation.
+ * 
  * @author Phillip Webb
  */
 public interface NavigationContext {

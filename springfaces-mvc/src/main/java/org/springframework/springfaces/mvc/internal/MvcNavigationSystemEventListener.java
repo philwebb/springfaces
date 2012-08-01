@@ -24,6 +24,7 @@ import javax.faces.event.SystemEventListener;
 /**
  * System Event Listener that stores the {@link PreRenderComponentEvent} so that the {@link MvcNavigationHandler} can
  * obtain it later.
+ * 
  * @author Phillip Webb
  */
 public class MvcNavigationSystemEventListener implements SystemEventListener {

@@ -22,6 +22,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 /**
  * {@link MethodParameterFilter} that filters items when any of the specified {@link WebArgumentResolver}s can handle
  * the item.
+ * 
  * @author Phillip Webb
  */
 public class WebArgumentResolverMethodParameterFilter implements MethodParameterFilter {

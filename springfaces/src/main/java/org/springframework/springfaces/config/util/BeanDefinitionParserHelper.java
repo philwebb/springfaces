@@ -30,6 +30,7 @@ import org.w3c.dom.Element;
 
 /**
  * Helper to aid when writing {@link BeanDefinitionParser}s.
+ * 
  * @author Phillip Webb
  */
 public class BeanDefinitionParserHelper {

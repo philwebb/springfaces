@@ -29,10 +29,11 @@ import org.springframework.stereotype.Component;
  * This annotation serves as a specialization of {@link Component @Component}, allowing for implementation classes to be
  * auto-detected through classpath scanning. It is typically used in combination with annotated navigation methods based
  * on the {@link org.springframework.springfaces.mvc.navigation.annotation.NavigationMapping} annotation.
+ * 
+ * @author Phillip Webb
  * @see Component
  * @see NavigationMapping
  * @see NavigationMethodOutcomeResolver
- * @author Phillip Webb
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

@@ -36,8 +36,9 @@ import org.springframework.util.Assert;
 /**
  * Iterates {@link SelectItem}s from child {@link UISelectItem} or {@link UISelectItems} of the given component.
  * Intended for use with {@link UISelectOne} or {@link UISelectMany} components.
- * @see SelectItems
+ * 
  * @author Phillip Webb
+ * @see SelectItems
  */
 public class SelectItemsIterator implements Iterator<SelectItem> {
 

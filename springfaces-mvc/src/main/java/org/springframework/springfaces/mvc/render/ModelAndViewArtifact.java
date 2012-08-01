@@ -22,6 +22,7 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * Holder for both Model and {@link ViewArtifact}.
+ * 
  * @author Phillip Webb
  */
 public final class ModelAndViewArtifact {

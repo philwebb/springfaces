@@ -20,9 +20,10 @@ import org.springframework.util.Assert;
 
 /**
  * Used to pass JSF postback data from the {@link FacesHandlerInterceptor} to the {@link FacesPostbackHandler}.
+ * 
+ * @author Phillip Webb
  * @see FacesHandlerInterceptor
  * @see FacesPostbackHandler
- * @author Phillip Webb
  */
 public class Postback {
 

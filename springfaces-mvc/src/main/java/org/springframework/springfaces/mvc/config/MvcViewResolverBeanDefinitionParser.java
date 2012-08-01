@@ -27,6 +27,7 @@ import org.w3c.dom.Element;
 /**
  * {@link BeanDefinitionParser} that parses the <tt>mvc-view-resolver</tt> element to configure a Spring Faces
  * application.
+ * 
  * @author Phillip Webb
  */
 class MvcViewResolverBeanDefinitionParser implements BeanDefinitionParser {

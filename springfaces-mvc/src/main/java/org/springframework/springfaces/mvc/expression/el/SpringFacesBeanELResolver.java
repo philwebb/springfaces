@@ -26,6 +26,7 @@ import org.springframework.springfaces.mvc.context.SpringFacesContext;
 /**
  * Unified EL {@link ELResolver} that delegates to the appropriate {@link SpringFacesContext#getWebApplicationContext()
  * BeanFactory} when a {@link SpringFacesContext} is active and rendering a view.
+ * 
  * @author Phillip Webb
  */
 public class SpringFacesBeanELResolver extends SpringBeanELResolver {

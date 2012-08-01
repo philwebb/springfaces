@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * A JSF {@link Application} that provides integration with Spring.
+ * 
  * @author Phillip Webb
  */
 public class SpringApplication extends ApplicationWrapper {

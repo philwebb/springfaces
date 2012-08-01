@@ -27,8 +27,9 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
  * <p>
  * In order for an {@link ApplicationContext} to auto-detect StandardEvaluationContextPostProcessors the
  * {@link StandardEvaluationContextPostProcessorSupport} bean must also be registered.
- * @see StandardEvaluationContextPostProcessorSupport
+ * 
  * @author Phillip Webb
+ * @see StandardEvaluationContextPostProcessorSupport
  */
 public interface StandardEvaluationContextPostProcessor {
 

@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 
 /**
  * Miscellaneous {@link ObjectMessageSource} utility methods.
+ * 
  * @author Phillip Webb
  */
 public abstract class ObjectMessageSourceUtils {

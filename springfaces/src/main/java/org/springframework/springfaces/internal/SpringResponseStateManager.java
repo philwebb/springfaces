@@ -24,8 +24,9 @@ import org.springframework.springfaces.render.ResponseStateManagerWrapper;
 
 /**
  * A JSF {@link ResponseStateManager} that provides integration with Spring.
- * @see SpringRenderKit
+ * 
  * @author Phillip Webb
+ * @see SpringRenderKit
  */
 public class SpringResponseStateManager extends ResponseStateManagerWrapper {
 

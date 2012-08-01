@@ -21,6 +21,7 @@ import org.springframework.util.Assert;
 
 /**
  * A newly registered bean definition.
+ * 
  * @author Phillip Webb
  */
 public class RegisteredBeanDefinition {

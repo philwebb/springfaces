@@ -42,6 +42,7 @@ import org.springframework.validation.DataBinder;
  * Utility class that can be used to perform a reverse bind for a given {@link DataBinder}. This class can be used to
  * obtain {@link PropertyValues} for a given a {@link DataBinder} based on the current values of its <tt>target</tt> or
  * perform a simple reverse conversion for plain parameter values when the binders <tt>target</tt> is <tt>null</tt>.
+ * 
  * @author Phillip Webb
  */
 public class ReverseDataBinder {
