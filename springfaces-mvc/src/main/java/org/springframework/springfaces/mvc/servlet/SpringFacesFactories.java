@@ -86,6 +86,14 @@ public class SpringFacesFactories implements FacesWrapperFactory<Object>,
 		event.getSource().subscribeToEvent(PreRenderComponentEvent.class, this.navigationSystemEventListener);
 	}
 
+	/**
+	 * Returns the faces view state handler being used.
+	 * @return the state handler
+	 */
+	public FacesViewStateHandler getFacesViewStateHandler() {
+		return this.facesViewStateHandler;
+	}
+
 	public void setNavigationOutcomeResolver(NavigationOutcomeResolver navigationOutcomeResolver) {
 		this.navigationOutcomeResolver = navigationOutcomeResolver;
 	}

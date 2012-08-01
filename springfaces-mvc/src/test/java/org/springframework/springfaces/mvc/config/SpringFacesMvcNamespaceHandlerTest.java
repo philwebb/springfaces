@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.core.convert.support.GenericConversionService;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockServletContext;
@@ -138,6 +139,25 @@ public class SpringFacesMvcNamespaceHandlerTest {
 
 	private void assertHasBean(Class<?> beanClass) {
 		assertThat(this.applicationContext.getBeansOfType(beanClass).size(), is(1));
+	}
+
+	public static StaticWebApplicationContext loadMvcApplicationContext(String string) {
+		return loadApplicationContext("<mvc:annotation-driven/>" + string);
+	}
+
+	public static StaticWebApplicationContext loadApplicationContext(String content) {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+				+ "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"
+				+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+				+ "xmlns:mvc=\"http://www.springframework.org/schema/mvc\"\n"
+				+ "xmlns:faces=\"http://www.springframework.org/schema/springfaces\"\n xsi:schemaLocation=\"\n"
+				+ "http://www.springframework.org/schema/beans\n"
+				+ "http://www.springframework.org/schema/beans/spring-beans.xsd\n"
+				+ "http://www.springframework.org/schema/mvc\n"
+				+ "http://www.springframework.org/schema/mvc/spring-mvc.xsd\n"
+				+ "http://www.springframework.org/schema/springfaces\n"
+				+ "http://www.springframework.org/schema/springfaces/springfaces.xsd\">\n" + content + "\n</beans>";
+		return loadApplicationContext(new ByteArrayResource(xml.getBytes()));
 	}
 
 	public static StaticWebApplicationContext loadApplicationContext(Resource resource) {

@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
@@ -68,8 +67,8 @@ public class ConversionServiceBeanDefinitionParserTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.applicationContext = SpringFacesMvcNamespaceHandlerTest.loadApplicationContext(new ClassPathResource(
-				"testSpringFacesMvcNamespaceConverter.xml", getClass()));
+		this.applicationContext = SpringFacesMvcNamespaceHandlerTest
+				.loadApplicationContext("<faces:conversion-service id=\"conversionService\"/>");
 		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		given(this.springFacesContext.getFacesContext()).willReturn(this.facesContext);
 		given(this.facesContext.getApplication()).willReturn(this.application);

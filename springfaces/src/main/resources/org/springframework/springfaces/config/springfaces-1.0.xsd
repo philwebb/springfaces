@@ -74,7 +74,7 @@ tag is usually used in conjunction with a <tt>&lt;mvc-view-resolver&gt;</tt>.
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:all minOccurs="0">
-				<xsd:element name="destination-view-resolves" minOccurs="0">
+				<xsd:element name="destination-view-resolvers" minOccurs="0">
 					<xsd:annotation>
 						<xsd:documentation><![CDATA[
 The <tt>DestinationViewResolver</tt> beans that should be registered.						
