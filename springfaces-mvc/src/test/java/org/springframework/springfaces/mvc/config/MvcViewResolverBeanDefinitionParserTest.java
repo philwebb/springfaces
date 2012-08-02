@@ -15,15 +15,43 @@
  */
 package org.springframework.springfaces.mvc.config;
 
-import org.junit.Ignore;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Locale;
+
+import org.junit.Test;
+import org.springframework.springfaces.mvc.servlet.view.BookmarkableRedirectViewIdResolver;
+import org.springframework.springfaces.mvc.servlet.view.FacesView;
+import org.springframework.web.context.support.StaticWebApplicationContext;
+import org.springframework.web.servlet.View;
 
 /**
  * Tests for {@link MvcViewResolverBeanDefinitionParser}.
  * 
  * @author Phillip Webb
  */
-@Ignore
-// FIXME
 public class MvcViewResolverBeanDefinitionParserTest {
 
+	@Test
+	public void shouldAddWithDefaults() throws Exception {
+		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
+				.loadApplicationContext("<faces:mvc-view-resolver/>");
+		BookmarkableRedirectViewIdResolver resolver = applicationContext
+				.getBean(BookmarkableRedirectViewIdResolver.class);
+		View view = resolver.resolveViewName("view", Locale.US);
+		assertThat(view, is(FacesView.class));
+		assertThat(((FacesView) view).getViewId(), is("/WEB-INF/pages/view.xhtml"));
+	}
+
+	@Test
+	public void shouldAddWithSpecificProperties() throws Exception {
+		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
+				.loadApplicationContext("<faces:mvc-view-resolver prefix=\"p\" suffix=\"s\" order=\"123\"/>");
+		BookmarkableRedirectViewIdResolver resolver = applicationContext
+				.getBean(BookmarkableRedirectViewIdResolver.class);
+		View view = resolver.resolveViewName("view", Locale.US);
+		assertThat(view, is(FacesView.class));
+		assertThat(((FacesView) view).getViewId(), is("pviews"));
+	}
 }
