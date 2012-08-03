@@ -18,7 +18,10 @@ package org.springframework.springfaces.mvc.config;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Map;
+
 import org.junit.Test;
+import org.springframework.springfaces.mvc.servlet.FacesResourceRequestHandler;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
@@ -28,12 +31,24 @@ import org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter;
  * 
  * @author Phillip Webb
  */
-public class ResourcesBeanDefinitionParserTest {
+public class ResourcesBeanDefinitionParserTest extends AbstractNamespaceTest {
+
+	@Test
+	public void shouldSetupResources() throws Exception {
+		StaticWebApplicationContext applicationContext = loadApplicationContext("<faces:resources/>");
+		assertHasBean(applicationContext, HttpRequestHandlerAdapter.class);
+		Map<String, FacesResourceRequestHandler> handler = applicationContext
+				.getBeansOfType(FacesResourceRequestHandler.class);
+		String handlerName = handler.keySet().iterator().next();
+		SimpleUrlHandlerMapping urlHandlerMapping = applicationContext.getBean(SimpleUrlHandlerMapping.class);
+		Map<String, ?> urlMap = urlHandlerMapping.getUrlMap();
+		assertThat(urlMap.size(), is(1));
+		assertThat(urlMap.get("/javax.faces.resource/**"), is((Object) handlerName));
+	}
 
 	@Test
 	public void shouldNotRegisterHandlerAdapterIfAlreadyPresent() throws Exception {
-		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadApplicationContext("<faces:resources/>");
+		StaticWebApplicationContext applicationContext = loadApplicationContext("<faces:resources/>");
 		assertThat(applicationContext.getBean(HttpRequestHandlerAdapter.class.getName()),
 				is(HttpRequestHandlerAdapter.class));
 	}
@@ -41,20 +56,18 @@ public class ResourcesBeanDefinitionParserTest {
 	@Test
 	public void shouldRegisterHandlerAdapterIfNotAlreadyPresent() throws Exception {
 		// Sanity check to ensure the MVC context has the adapter
-		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadMvcApplicationContext("");
+		StaticWebApplicationContext applicationContext = loadMvcApplicationContext("");
 		assertThat(applicationContext.getBean(HttpRequestHandlerAdapter.class.getName()),
 				is(HttpRequestHandlerAdapter.class));
 
 		// Actual test
-		applicationContext = SpringFacesMvcNamespaceHandlerTest.loadMvcApplicationContext("<faces:resources/>");
+		applicationContext = loadMvcApplicationContext("<faces:resources/>");
 		assertThat(applicationContext.getBeansOfType(HttpRequestHandlerAdapter.class).size(), is(1));
 	}
 
 	@Test
 	public void shouldRegisterWithSpecificOrder() throws Exception {
-		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadApplicationContext("<faces:resources order=\"5\"/>");
+		StaticWebApplicationContext applicationContext = loadApplicationContext("<faces:resources order=\"5\"/>");
 		assertThat(applicationContext.getBean(SimpleUrlHandlerMapping.class).getOrder(), is(5));
 	}
 }

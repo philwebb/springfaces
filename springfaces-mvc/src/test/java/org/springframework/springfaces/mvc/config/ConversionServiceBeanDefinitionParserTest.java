@@ -30,10 +30,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.springfaces.mvc.SpringFacesContextSetter;
 import org.springframework.springfaces.mvc.context.SpringFacesContext;
+import org.springframework.springfaces.mvc.converter.GenericFacesConverter;
 import org.springframework.springfaces.mvc.converter.GenericFacesConverterTest.ClassWithConverter;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 
@@ -42,7 +44,7 @@ import org.springframework.web.context.support.StaticWebApplicationContext;
  * 
  * @author Phillip Webb
  */
-public class ConversionServiceBeanDefinitionParserTest {
+public class ConversionServiceBeanDefinitionParserTest extends AbstractNamespaceTest {
 
 	private StaticWebApplicationContext applicationContext;
 
@@ -67,8 +69,7 @@ public class ConversionServiceBeanDefinitionParserTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		this.applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadApplicationContext("<faces:conversion-service id=\"conversionService\"/>");
+		this.applicationContext = loadApplicationContext("<faces:conversion-service id=\"conversionService\"/>");
 		SpringFacesContextSetter.setCurrentInstance(this.springFacesContext);
 		given(this.springFacesContext.getFacesContext()).willReturn(this.facesContext);
 		given(this.facesContext.getApplication()).willReturn(this.application);
@@ -79,6 +80,12 @@ public class ConversionServiceBeanDefinitionParserTest {
 	@After
 	public void cleanup() {
 		SpringFacesContextSetter.setCurrentInstance(null);
+	}
+
+	@Test
+	public void shouldSetupConversionService() {
+		assertHasBean(this.applicationContext, GenericConversionService.class);
+		assertHasBean(this.applicationContext, GenericFacesConverter.class);
 	}
 
 	@Test

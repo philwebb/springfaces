@@ -31,12 +31,11 @@ import org.springframework.web.servlet.View;
  * 
  * @author Phillip Webb
  */
-public class MvcViewResolverBeanDefinitionParserTest {
+public class MvcViewResolverBeanDefinitionParserTest extends AbstractNamespaceTest {
 
 	@Test
 	public void shouldAddWithDefaults() throws Exception {
-		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadApplicationContext("<faces:mvc-view-resolver/>");
+		StaticWebApplicationContext applicationContext = loadApplicationContext("<faces:mvc-view-resolver/>");
 		BookmarkableRedirectViewIdResolver resolver = applicationContext
 				.getBean(BookmarkableRedirectViewIdResolver.class);
 		View view = resolver.resolveViewName("view", Locale.US);
@@ -46,8 +45,7 @@ public class MvcViewResolverBeanDefinitionParserTest {
 
 	@Test
 	public void shouldAddWithSpecificProperties() throws Exception {
-		StaticWebApplicationContext applicationContext = SpringFacesMvcNamespaceHandlerTest
-				.loadApplicationContext("<faces:mvc-view-resolver prefix=\"p\" suffix=\"s\" order=\"123\"/>");
+		StaticWebApplicationContext applicationContext = loadApplicationContext("<faces:mvc-view-resolver prefix=\"p\" suffix=\"s\" order=\"123\"/>");
 		BookmarkableRedirectViewIdResolver resolver = applicationContext
 				.getBean(BookmarkableRedirectViewIdResolver.class);
 		View view = resolver.resolveViewName("view", Locale.US);
