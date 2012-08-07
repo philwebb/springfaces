@@ -92,6 +92,7 @@ public class UIMessageSourceTest {
 		given(this.facesContext.getExternalContext().getRequestMap()).willReturn(this.requestMap);
 		this.uiMessageSource = new UIMessageSource();
 		this.uiMessageSource.setVar("msg");
+		this.uiMessageSource.setReturnStringsWhenPossible(false);
 		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
@@ -225,6 +226,16 @@ public class UIMessageSourceTest {
 						+ "UIMessageSourceTest$Convertable", new Object[] {}, null)).willReturn("test");
 		String actual = messageSourceMap.get(convertable).toString();
 		assertThat(actual, is("test"));
+	}
+
+	@Test
+	public void shouldDefaultToReturnStringsWhenPossible() throws Exception {
+		this.uiMessageSource = new UIMessageSource();
+		this.uiMessageSource.setVar("msg");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		MessageSourceMap messageSourceMap = callSetParent();
+		assertThat(this.uiMessageSource.isReturnStringsWhenPossible(), is(true));
+		assertThat(messageSourceMap.returnStringsWhenPossible(), is(true));
 	}
 
 	private MessageSourceMap callSetParent() throws IOException {

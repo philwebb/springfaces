@@ -54,9 +54,12 @@ import org.springframework.util.StringUtils;
  * <li>All '/' characters are converted to '.'</li>
  * </ul>
  * For example the prefix the view "<b><tt>/WEB-INF/pages/spring/example.xhtml</tt></b>" will use the prefix "<b>
- * <tt>pages.spring.example.</tt></b> ".
+ * <tt>pages.spring.example.</tt></b> ". Use the {@link #setPrefix(String) prefix} attribute if a different prefix is
+ * required.
  * <p>
- * Use the {@link #setPrefix(String) prefix} attribute if a different prefix is required.
+ * By default this component will attempt to deduce when a return value should be a <tt>String</tt> and when it should
+ * be a nested map. This behavior can be changed using the {@link #setReturnStringsWhenPossible(boolean)
+ * returnStringsWhenPossible} attribute.
  * 
  * @author Phillip Webb
  * @see MessageSourceMap
@@ -108,7 +111,7 @@ public class UIMessageSource extends UIComponentBase {
 						+ "is enabled or set the 'source' attribute");
 		ObjectMessageSource objectMessageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource,
 				applicationContext);
-		return new UIMessageSourceMap(context, objectMessageSource, prefixCodes);
+		return new UIMessageSourceMap(context, objectMessageSource, prefixCodes, isReturnStringsWhenPossible());
 	}
 
 	private ApplicationContext getApplicationContext(FacesContext context) {
@@ -183,6 +186,8 @@ public class UIMessageSource extends UIComponentBase {
 		return s;
 	}
 
+	// FIXME DC getters setters and add to taglib.xml
+
 	public String getVar() {
 		return (String) getStateHelper().eval(PropertyKeys.var);
 	}
@@ -207,17 +212,29 @@ public class UIMessageSource extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.prefix, prefix);
 	}
 
+	public boolean isReturnStringsWhenPossible() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.returnStringsWhenPossible, true);
+	}
+
+	public void setReturnStringsWhenPossible(boolean returnStringsWhenPossible) {
+		getStateHelper().put(PropertyKeys.returnStringsWhenPossible, returnStringsWhenPossible);
+	}
+
 	private enum PropertyKeys {
-		source, var, prefix
+		source, var, prefix, returnStringsWhenPossible
 	}
 
 	private class UIMessageSourceMap extends MessageSourceMap {
 
 		private FacesContext context;
 
-		public UIMessageSourceMap(FacesContext context, MessageSource messageSource, String[] prefixCodes) {
+		private boolean returnStringsWhenPossible;
+
+		public UIMessageSourceMap(FacesContext context, MessageSource messageSource, String[] prefixCodes,
+				boolean returnStringsWhenPossible) {
 			super(messageSource, prefixCodes);
 			this.context = context;
+			this.returnStringsWhenPossible = returnStringsWhenPossible;
 		}
 
 		@Override
@@ -236,6 +253,11 @@ public class UIMessageSource extends UIComponentBase {
 			FacesMessage message = new FacesMessage(exception.getMessage());
 			message.setSeverity(FacesMessage.SEVERITY_WARN);
 			this.context.addMessage(UIMessageSource.this.getClientId(this.context), message);
+		}
+
+		@Override
+		protected boolean returnStringsWhenPossible() {
+			return this.returnStringsWhenPossible;
 		}
 	}
 }

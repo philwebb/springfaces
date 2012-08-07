@@ -46,6 +46,7 @@ public class MessageExampleController {
 	@RequestMapping("/message/parameters")
 	public void parameters() {
 		// Messages are exposed as a MessageSourceMap so you can easily expand parameters
+		// The last resolved paramter is always a String
 	}
 
 	@RequestMapping("/message/objects")

@@ -43,37 +43,38 @@ public class MessageIT {
 
 	@Test
 	public void shouldSupportSimpleMessages() throws Exception {
-		PageObject page = pages.get(SimpleMessagePage.class);
+		PageObject page = this.pages.get(SimpleMessagePage.class);
 		assertThat(page.getBodyText(), is("Simple Hello"));
 	}
 
 	@Test
 	public void shouldSupportSpecifiedPrefix() throws Exception {
-		PageObject page = pages.get(PrefixMessagePage.class);
+		PageObject page = this.pages.get(PrefixMessagePage.class);
 		assertThat(page.getBodyText(), is("Prefix Hello"));
 	}
 
 	@Test
 	public void shouldSupportDefinedSource() throws Exception {
-		PageObject page = pages.get(DefinedSourceMessagePage.class);
+		PageObject page = this.pages.get(DefinedSourceMessagePage.class);
 		assertThat(page.getBodyText(), is("Defined Source Hello"));
 	}
 
 	@Test
 	public void shouldSupportParameters() throws Exception {
-		PageObject page = pages.get(ParametersMessagePage.class);
-		assertThat(page.getBodyText(), is("Parameters Hello from San Francisco in California"));
+		PageObject page = this.pages.get(ParametersMessagePage.class);
+		assertThat(page.getBodyText(), is("Parameters Hello from San Francisco in California" + "\n"
+				+ "class java.lang.String"));
 	}
 
 	@Test
 	public void shouldSupportObjects() throws Exception {
-		PageObject page = pages.get(ObjectsMessagePage.class);
+		PageObject page = this.pages.get(ObjectsMessagePage.class);
 		assertThat(page.getBodyText(), is("San Francisco (California)"));
 	}
 
 	@Test
 	public void shouldSupportMissingMessage() throws Exception {
-		MissingMessagePage page = pages.get(MissingMessagePage.class);
+		MissingMessagePage page = this.pages.get(MissingMessagePage.class);
 		assertThat(page.getOutputText(), is("idontexist"));
 		assertThat(page.getErrorMessage(),
 				startsWith("No message found under code 'pages.message.missing.idontexist' for locale "));

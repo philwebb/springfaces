@@ -223,6 +223,28 @@ public class MessageSourceMapTest {
 		assertThat(actual, is("Object Resolvable"));
 	}
 
+	@Test
+	public void shouldReturnStringWhenRootCannotBeExpanded() throws Exception {
+		StaticMessageSource messageSource = new StaticMessageSource();
+		messageSource.addMessage("test", Locale.US, "test message");
+		TestMessageSourceMap map = new TestMessageSourceMap(messageSource);
+		map.setReturnStringWhenPossible(true);
+		Object value = map.get("test");
+		assertThat(value.toString(), is("test message"));
+		assertThat(value, is(String.class));
+	}
+
+	@Test
+	public void shouldReturnStringWhenNestedCannotBeExpanded() throws Exception {
+		StaticMessageSource messageSource = new StaticMessageSource();
+		messageSource.addMessage("test", Locale.US, "test {0} {1} message");
+		TestMessageSourceMap map = new TestMessageSourceMap(messageSource);
+		map.setReturnStringWhenPossible(true);
+		Object value = map.get("test", "x", "y");
+		assertThat(value.toString(), is("test x y message"));
+		assertThat(value, is(String.class));
+	}
+
 	private Locale nullLocale() {
 		return (Locale) isNull();
 	}
@@ -237,12 +259,23 @@ public class MessageSourceMapTest {
 
 	private static class TestMessageSourceMap extends MessageSourceMap {
 
+		private boolean returnStringWhenPossible;
+
+		@Override
+		protected boolean returnStringsWhenPossible() {
+			return this.returnStringWhenPossible;
+		}
+
 		public TestMessageSourceMap(MessageSource messageSource, String[] prefixCodes) {
 			super(messageSource, prefixCodes);
 		}
 
 		public TestMessageSourceMap(MessageSource messageSource) {
 			super(messageSource);
+		}
+
+		public void setReturnStringWhenPossible(boolean returnStringWhenPossible) {
+			this.returnStringWhenPossible = returnStringWhenPossible;
 		}
 	}
 
