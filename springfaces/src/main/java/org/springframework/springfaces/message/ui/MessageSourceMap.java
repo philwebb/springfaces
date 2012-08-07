@@ -26,7 +26,6 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.springfaces.message.NoSuchObjectMessageException;
 import org.springframework.springfaces.message.ObjectMessageSource;
-import org.springframework.springfaces.message.ui.MessageSourceMap.Value;
 import org.springframework.util.Assert;
 
 /**
@@ -39,8 +38,6 @@ import org.springframework.util.Assert;
  * <tt>'welcome=Welcome {0} {1}'</tt> can be resolved using a <tt>person</tt> bean with the expression
  * <tt>#{messages.welcome[person.firstName][person.secondName]}</tt>.
  * <p>
- * Objects returned from the map can be displayed using <tt>toString()</tt>.
- * <p>
  * Objects can also be resolved directly when the <tt>messageSource</tt> is an {@link ObjectMessageSource}. For example
  * <tt>#{messages[someObject]}</tt> will resolve <tt>someObject</tt> using the
  * {@link ObjectMessageSource#getMessage(Object, Object[], Locale)} method.
@@ -50,7 +47,7 @@ import org.springframework.util.Assert;
  * 
  * @author Phillip Webb
  */
-public class MessageSourceMap extends AbstractMap<Object, Value> {
+public class MessageSourceMap extends AbstractMap<Object, Object> {
 
 	private static final Object[] NO_ARGUMENTS = {};
 
@@ -119,7 +116,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 	}
 
 	@Override
-	public Value get(Object key) {
+	public Object get(Object key) {
 		if (key == null) {
 			return null;
 		}
@@ -133,8 +130,23 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 				+ " messages when not using an ObjectMessageSource.");
 	}
 
+	/**
+	 * Convenience method that can be used to resolve messages parameters with the specified chained arguments.
+	 * @param keys the keys to resolve
+	 * @return the message value
+	 */
+	@SuppressWarnings("unchecked")
+	public Object get(Object... keys) {
+		Object source = this;
+		for (Object key : keys) {
+			Assert.isInstanceOf(Map.class, source);
+			source = ((Map<Object, Object>) source).get(key);
+		}
+		return source;
+	}
+
 	@Override
-	public Set<Map.Entry<Object, Value>> entrySet() {
+	public Set<Map.Entry<Object, Object>> entrySet() {
 		throw new UnsupportedOperationException();
 	}
 
@@ -144,14 +156,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 				.append("prefixCodes", this.prefixCodes).toString();
 	}
 
-	/**
-	 * A Value contained within the {@link MessageSourceMap}. Values are both themselves {@link Map}s and
-	 * {@link MessageSourceResolvable}.
-	 */
-	public static interface Value extends Map<Object, Value> {
-	}
-
-	private abstract class AbstractValue extends AbstractMap<Object, Value> implements Value {
+	private abstract class AbstractValue extends AbstractMap<Object, Object> {
 
 		private Object[] arguments;
 
@@ -160,19 +165,19 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		}
 
 		@Override
-		public Set<java.util.Map.Entry<Object, Value>> entrySet() {
+		public Set<java.util.Map.Entry<Object, Object>> entrySet() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Value get(Object key) {
+		public Object get(Object key) {
 			Object[] childArguments = new Object[this.arguments.length + 1];
 			System.arraycopy(this.arguments, 0, childArguments, 0, this.arguments.length);
 			childArguments[childArguments.length - 1] = resolveMessageArgument(key);
 			return createNestedValue(childArguments);
 		}
 
-		protected abstract Value createNestedValue(Object[] arguments);
+		protected abstract AbstractValue createNestedValue(Object[] arguments);
 
 		protected Object[] getArguments() {
 			return this.arguments;
@@ -206,7 +211,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		}
 
 		@Override
-		protected Value createNestedValue(Object[] childArguments) {
+		protected AbstractValue createNestedValue(Object[] childArguments) {
 			return new MessageCodeValue(this.code, childArguments);
 		}
 
@@ -232,7 +237,6 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 				return this.code;
 			}
 		}
-
 	}
 
 	private class ObjectMessageValue extends AbstractValue {
@@ -245,7 +249,7 @@ public class MessageSourceMap extends AbstractMap<Object, Value> {
 		}
 
 		@Override
-		protected Value createNestedValue(Object[] childArguments) {
+		protected AbstractValue createNestedValue(Object[] childArguments) {
 			return new ObjectMessageValue(this.object, childArguments);
 		}
 
