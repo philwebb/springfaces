@@ -103,7 +103,7 @@ public class MessageSourceMapTest {
 		StaticMessageSource messageSource = new StaticMessageSource();
 		MessageSourceMap map = new TestMessageSourceMap(messageSource, null);
 		Object value = map.get("x");
-		messageSource.addMessage("x", Locale.US, "message");
+		messageSource.addMessage("x", Locale.getDefault(), "message");
 		assertThat(value.toString(), is(equalTo("message")));
 	}
 
@@ -175,7 +175,7 @@ public class MessageSourceMapTest {
 		StaticMessageSource messageSource = new StaticMessageSource();
 		MessageSourceMap map = new TestMessageSourceMap(new DefaultObjectMessageSource(messageSource));
 		ObjectResolvable resolvable = new ObjectResolvable();
-		messageSource.addMessage(ObjectResolvable.class.getName(), Locale.US, "test");
+		messageSource.addMessage(ObjectResolvable.class.getName(), Locale.getDefault(), "test");
 		String actual = map.get(resolvable).toString();
 		assertThat(actual, is(equalTo("test")));
 	}
@@ -200,7 +200,7 @@ public class MessageSourceMapTest {
 		StaticMessageSource messageSource = new StaticMessageSource();
 		MessageSourceMap map = new TestMessageSourceMap(new DefaultObjectMessageSource(messageSource));
 		ObjectResolvable resolvable = new ObjectResolvable();
-		messageSource.addMessage(ObjectResolvable.class.getName(), Locale.US, "test");
+		messageSource.addMessage(ObjectResolvable.class.getName(), Locale.getDefault(), "test");
 		MessageSourceResolvable value = (MessageSourceResolvable) map.get("x", resolvable);
 		assertThat((String) value.getArguments()[0], is(equalTo("test")));
 	}
@@ -226,7 +226,7 @@ public class MessageSourceMapTest {
 	@Test
 	public void shouldReturnStringWhenRootCannotBeExpanded() throws Exception {
 		StaticMessageSource messageSource = new StaticMessageSource();
-		messageSource.addMessage("test", Locale.US, "test message");
+		messageSource.addMessage("test", Locale.getDefault(), "test message");
 		TestMessageSourceMap map = new TestMessageSourceMap(messageSource);
 		map.setReturnStringWhenPossible(true);
 		Object value = map.get("test");
@@ -237,7 +237,7 @@ public class MessageSourceMapTest {
 	@Test
 	public void shouldReturnStringWhenNestedCannotBeExpanded() throws Exception {
 		StaticMessageSource messageSource = new StaticMessageSource();
-		messageSource.addMessage("test", Locale.US, "test {0} {1} message");
+		messageSource.addMessage("test", Locale.getDefault(), "test {0} {1} message");
 		TestMessageSourceMap map = new TestMessageSourceMap(messageSource);
 		map.setReturnStringWhenPossible(true);
 		Object value = map.get("test", "x", "y");
