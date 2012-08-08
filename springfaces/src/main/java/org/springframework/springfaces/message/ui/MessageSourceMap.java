@@ -115,9 +115,10 @@ public class MessageSourceMap extends AbstractMap<Object, Object> {
 	/**
 	 * Called to handle any {@link NoSuchMessageException} exceptions. The default behavior throws the exception,
 	 * subclasses can override to handle exception differently.
+	 * @param resolvable The message resolvable
 	 * @param exception the exception to handle
 	 */
-	protected void handleNoSuchMessageException(NoSuchMessageException exception) {
+	protected void handleNoSuchMessageException(MessageSourceResolvable resolvable, NoSuchMessageException exception) {
 		throw exception;
 	}
 
@@ -283,7 +284,7 @@ public class MessageSourceMap extends AbstractMap<Object, Object> {
 			try {
 				return MessageSourceMap.this.messageSource.getMessage(this, getLocale());
 			} catch (NoSuchMessageException e) {
-				handleNoSuchMessageException(e);
+				handleNoSuchMessageException(this, e);
 				return this.code;
 			}
 		}

@@ -16,9 +16,11 @@
 package org.springframework.springfaces.message.ui;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ProjectStage;
@@ -32,6 +34,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.springfaces.SpringFacesIntegration;
 import org.springframework.springfaces.message.ObjectMessageSource;
@@ -103,7 +106,7 @@ public class UIMessageSource extends UIComponentBase {
 	 * @return a {@link MessageSourceMap} instance
 	 */
 	private MessageSourceMap createMessageSourceMap(final FacesContext context) {
-		String[] prefixCodes = getPrefixCodes(context);
+		Set<String> prefixCodes = getPrefixCodes(context);
 		MessageSource messageSource = getSource();
 		ApplicationContext applicationContext = getApplicationContext(context);
 		Assert.state(((applicationContext != null) || (messageSource != null)),
@@ -111,7 +114,8 @@ public class UIMessageSource extends UIComponentBase {
 						+ "is enabled or set the 'source' attribute");
 		ObjectMessageSource objectMessageSource = ObjectMessageSourceUtils.getObjectMessageSource(messageSource,
 				applicationContext);
-		return new UIMessageSourceMap(context, objectMessageSource, prefixCodes, isReturnStringsWhenPossible());
+		return new UIMessageSourceMap(context, objectMessageSource,
+				prefixCodes.toArray(new String[prefixCodes.size()]), isReturnStringsWhenPossible());
 	}
 
 	private ApplicationContext getApplicationContext(FacesContext context) {
@@ -128,22 +132,28 @@ public class UIMessageSource extends UIComponentBase {
 	 * @param context the faces context
 	 * @return the prefix codes
 	 */
-	private String[] getPrefixCodes(FacesContext context) {
+	private Set<String> getPrefixCodes(FacesContext context) {
+		Set<String> prefixCodes = new LinkedHashSet<String>();
 		String definedPrefix = getPrefix();
 		if (definedPrefix != null) {
-			return getDefinedPrefixCodes(definedPrefix);
+			prefixCodes.addAll(getDefinedPrefixCodes(definedPrefix));
+		} else {
+			prefixCodes.add(buildPrefixCodeFromViewRoot(context));
 		}
-		return new String[] { buildPrefixCodeFromViewRoot(context) };
+		if (isPrefixOptional()) {
+			prefixCodes.add("");
+		}
+		return prefixCodes;
 	}
 
-	private String[] getDefinedPrefixCodes(String definedPrefix) {
+	private List<String> getDefinedPrefixCodes(String definedPrefix) {
 		List<String> codes = new ArrayList<String>();
 		for (String code : StringUtils.commaDelimitedListToStringArray(definedPrefix)) {
 			if (StringUtils.hasLength(code)) {
 				codes.add(ensureEndsWithDot(code.trim()));
 			}
 		}
-		return codes.toArray(new String[codes.size()]);
+		return codes;
 	}
 
 	/**
@@ -220,8 +230,16 @@ public class UIMessageSource extends UIComponentBase {
 		getStateHelper().put(PropertyKeys.returnStringsWhenPossible, returnStringsWhenPossible);
 	}
 
+	public boolean isPrefixOptional() {
+		return (Boolean) getStateHelper().eval(PropertyKeys.prefixOptional, true);
+	}
+
+	public void setPrefixOptional(boolean prefixOptional) {
+		getStateHelper().put(PropertyKeys.prefixOptional, prefixOptional);
+	}
+
 	private enum PropertyKeys {
-		source, var, prefix, returnStringsWhenPossible
+		source, var, prefix, returnStringsWhenPossible, prefixOptional
 	}
 
 	private class UIMessageSourceMap extends MessageSourceMap {
@@ -243,16 +261,22 @@ public class UIMessageSource extends UIComponentBase {
 		}
 
 		@Override
-		protected void handleNoSuchMessageException(NoSuchMessageException exception) {
+		protected void handleNoSuchMessageException(MessageSourceResolvable resolvable, NoSuchMessageException exception) {
 			if (this.context.isProjectStage(ProjectStage.Production)) {
 				throw exception;
 			}
-			if (UIMessageSource.this.logger.isWarnEnabled()) {
-				UIMessageSource.this.logger.warn(exception.getMessage(), exception);
+			String message = exception.getMessage();
+			String[] codes = resolvable.getCodes();
+			if (codes != null && codes.length > 1) {
+				message = message + " Attempted to resolve message with the following codes '"
+						+ StringUtils.arrayToDelimitedString(codes, ", ") + "'";
 			}
-			FacesMessage message = new FacesMessage(exception.getMessage());
-			message.setSeverity(FacesMessage.SEVERITY_WARN);
-			this.context.addMessage(UIMessageSource.this.getClientId(this.context), message);
+			if (UIMessageSource.this.logger.isWarnEnabled()) {
+				UIMessageSource.this.logger.warn(message, exception);
+			}
+			FacesMessage facesMessage = new FacesMessage(message);
+			facesMessage.setSeverity(FacesMessage.SEVERITY_WARN);
+			this.context.addMessage(UIMessageSource.this.getClientId(this.context), facesMessage);
 		}
 
 		@Override

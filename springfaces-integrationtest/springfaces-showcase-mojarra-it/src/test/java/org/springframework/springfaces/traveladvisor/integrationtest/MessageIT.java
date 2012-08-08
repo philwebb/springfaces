@@ -15,6 +15,7 @@
  */
 package org.springframework.springfaces.traveladvisor.integrationtest;
 
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -76,7 +77,8 @@ public class MessageIT {
 	public void shouldSupportMissingMessage() throws Exception {
 		MissingMessagePage page = this.pages.get(MissingMessagePage.class);
 		assertThat(page.getOutputText(), is("idontexist"));
-		assertThat(page.getErrorMessage(),
-				startsWith("No message found under code 'pages.message.missing.idontexist' for locale "));
+		assertThat(page.getErrorMessage(), startsWith("No message found under code 'idontexist' for locale "));
+		assertThat(page.getErrorMessage(), endsWith("Attempted to resolve message with the following codes "
+				+ "'pages.message.missing.idontexist, idontexist'"));
 	}
 }

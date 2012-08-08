@@ -93,6 +93,7 @@ public class UIMessageSourceTest {
 		this.uiMessageSource = new UIMessageSource();
 		this.uiMessageSource.setVar("msg");
 		this.uiMessageSource.setReturnStringsWhenPossible(false);
+		this.uiMessageSource.setPrefixOptional(false);
 		FacesContextSetter.setCurrentInstance(this.facesContext);
 	}
 
@@ -236,6 +237,16 @@ public class UIMessageSourceTest {
 		MessageSourceMap messageSourceMap = callSetParent();
 		assertThat(this.uiMessageSource.isReturnStringsWhenPossible(), is(true));
 		assertThat(messageSourceMap.returnStringsWhenPossible(), is(true));
+	}
+
+	@Test
+	public void shouldDefaultToPrefixOptional() throws Exception {
+		this.uiMessageSource = new UIMessageSource();
+		this.uiMessageSource.setReturnStringsWhenPossible(false);
+		this.uiMessageSource.setVar("msg");
+		given(this.viewRoot.getViewId()).willReturn("/WEB-INF/pages/example/page.xhtml");
+		assertThat(this.uiMessageSource.isPrefixOptional(), is(true));
+		assertCodes("test", new String[] { "pages.example.page.test", "test" });
 	}
 
 	private MessageSourceMap callSetParent() throws IOException {
