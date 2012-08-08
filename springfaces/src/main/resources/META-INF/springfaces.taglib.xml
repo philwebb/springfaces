@@ -5,10 +5,53 @@
 	version='2.0'>
 	<namespace>http://springframework.org/tags/springfaces</namespace>
 	<tag>
+		<description>Exposes a messages from a Spring MessageSource for use with JSF pages. The specified source is 
+		exposed as a MessageSourceMap under the specified 'var'. If a source is not explicitly defined the current
+		application context will be used. By default the key of message to load is prefixed with a string build 
+		from root view ID as follows: Any 'WEB-INF' prefix is removed, Any file extension is removed, All '/' 
+		characters are converted to '.'.  For example the view "/WEB-INF/pages/spring/example.xhtml" will 
+		use the prefix "pages.spring.example.". Use the 'prefix' attribute if a different prefix is required. If 
+		a prefixed message code is not found resolution is attempted without the prefix (use the 'prefixOptional'
+		attribute to change this behavior).  By default this component will attempt to deduce when a return value 
+		should be a String and when it should be a nested map. This behavior can be changed using the 
+		'returnStringsWhenPossible' attribute.
+		</description>
 		<tag-name>messageSource</tag-name>
 		<component>
 			<component-type>spring.faces.MessageSource</component-type>
 		</component>
+		<attribute>
+			<description></description>
+			<name>source</name>
+			<required>false</required>
+			<type>org.springframework.context.MessageSource</type>
+		</attribute>
+		<attribute>
+			<description>Request-scope variable that stores the message map.</description>
+			<name>var</name>
+			<required>true</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>prefix that will be used when resolving messages. Multiple prefixes can be defined using a 
+			comma separated list.</description>
+			<name>prefix</name>
+			<required>false</required>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>If the component should determine when String values are to be returned. This attribute can 
+			be set to 'false' if components support rendering Object output.  Defaults to 'true' when not specified.</description>
+			<name>returnStringsWhenPossible</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
+			<description>If the prefix is optional (ie an additional empty prefix is added).</description>
+			<name>prefixOptional</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
 	</tag>
 	<tag>
 		<description>Can be used to create a paged DataModel that lazily fetches data from an underlying 

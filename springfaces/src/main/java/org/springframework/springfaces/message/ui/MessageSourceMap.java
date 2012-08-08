@@ -45,7 +45,7 @@ import org.springframework.util.StringUtils;
  * <tt>#{messages[someObject]}</tt> will resolve <tt>someObject</tt> using the
  * {@link ObjectMessageSource#getMessage(Object, Object[], Locale)} method.
  * <p>
- * NOTE: Only the {@link #get(Object)} method can be used on this {@link Map}. All other calls will throw an
+ * NOTE: Only the {@link #get(Object) get} method can be used on this {@link Map}, all other calls will throw an
  * {@link UnsupportedOperationException}.
  * 
  * @author Phillip Webb

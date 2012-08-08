@@ -56,9 +56,10 @@ import org.springframework.util.StringUtils;
  * <li>Any file extension is removed</li>
  * <li>All '/' characters are converted to '.'</li>
  * </ul>
- * For example the prefix the view "<b><tt>/WEB-INF/pages/spring/example.xhtml</tt></b>" will use the prefix "<b>
- * <tt>pages.spring.example.</tt></b> ". Use the {@link #setPrefix(String) prefix} attribute if a different prefix is
- * required.
+ * For example the view "<b><tt>/WEB-INF/pages/spring/example.xhtml</tt></b>" will use the prefix "<b>
+ * <tt>pages.spring.example.</tt></b>". Use the {@link #setPrefix(String) prefix} attribute if a different prefix is
+ * required. If a prefixed message code is not found resolution is attempted without the prefix (use the
+ * {@link #setPrefixOptional(boolean) prefixOptional} attribute to change this behavior).
  * <p>
  * By default this component will attempt to deduce when a return value should be a <tt>String</tt> and when it should
  * be a nested map. This behavior can be changed using the {@link #setReturnStringsWhenPossible(boolean)
@@ -196,44 +197,91 @@ public class UIMessageSource extends UIComponentBase {
 		return s;
 	}
 
-	// FIXME DC getters setters and add to taglib.xml
-
+	/**
+	 * Returns the request-scope variable that stores the message map.
+	 * @return the variable
+	 */
 	public String getVar() {
 		return (String) getStateHelper().eval(PropertyKeys.var);
 	}
 
+	/**
+	 * Sets the request-scope variable that stores the message map.
+	 * @param var the variable
+	 */
 	public void setVar(String var) {
 		getStateHelper().put(PropertyKeys.var, var);
 	}
 
+	/**
+	 * Returns the message source that will be used to resolve messages. If not specified the {@link ApplicationContext}
+	 * will be used.
+	 * @return the message source
+	 */
 	public MessageSource getSource() {
 		return (MessageSource) getStateHelper().eval(PropertyKeys.source);
 	}
 
+	/**
+	 * Sets the message source that will be used to resolve messages. If not specified the {@link ApplicationContext}
+	 * will be used.
+	 * @param source the message source
+	 */
 	public void setSource(MessageSource source) {
 		getStateHelper().put(PropertyKeys.source, source);
 	}
 
+	/**
+	 * Returns the prefix that will be used when resolving messages. Multiple prefixes can be defined using a comma
+	 * separated list.
+	 * @return the prefix
+	 * @see #isPrefixOptional()
+	 */
 	public String getPrefix() {
 		return (String) getStateHelper().eval(PropertyKeys.prefix, null);
 	}
 
+	/**
+	 * Set the prefix that will be used when resolving messages. Multiple prefixes can be defined using a comma
+	 * separated list.
+	 * @param prefix the prefix
+	 * @see #setPrefixOptional(boolean)
+	 */
 	public void setPrefix(String prefix) {
 		getStateHelper().put(PropertyKeys.prefix, prefix);
 	}
 
+	/**
+	 * Returns if the component should determine when <tt>String</tt> values are to be returned. This attribute can be
+	 * set to <tt>false</tt> if components support rendering <tt>Object<tt> output.  Defaults to <tt>true</tt> when not
+	 * specified.
+	 * @return if strings should be returned when possible
+	 */
 	public boolean isReturnStringsWhenPossible() {
 		return (Boolean) getStateHelper().eval(PropertyKeys.returnStringsWhenPossible, true);
 	}
 
+	/**
+	 * Set if the component should determine when <tt>String</tt> values are to be returned. This attribute can be set
+	 * to <tt>false</tt> if components support rendering <tt>Object<tt> output.
+	 * @param returnStringsWhenPossible if strings should be returned when possible
+	 */
 	public void setReturnStringsWhenPossible(boolean returnStringsWhenPossible) {
 		getStateHelper().put(PropertyKeys.returnStringsWhenPossible, returnStringsWhenPossible);
 	}
 
+	/**
+	 * Returns if the prefix is optional (ie an additional empty prefix is added).
+	 * @return if the prefix is optional
+	 */
 	public boolean isPrefixOptional() {
 		return (Boolean) getStateHelper().eval(PropertyKeys.prefixOptional, true);
 	}
 
+	/**
+	 * Set if the prefix is optional (ie an additional <tt>''</tt> prefix is added).
+	 * @param prefixOptional if the prefix is optional
+	 */
 	public void setPrefixOptional(boolean prefixOptional) {
 		getStateHelper().put(PropertyKeys.prefixOptional, prefixOptional);
 	}
