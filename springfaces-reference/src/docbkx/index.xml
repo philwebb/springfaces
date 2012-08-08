@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0" xmlns="http://docbook.org/ns/docbook" xml:id="springfaces-reference"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd">
+	<info>
+		<title>SpringFaces Reference Guide</title>
+		<titleabbrev>SpringFaces</titleabbrev>
+		<productname>SpringFaces</productname>
+		<releaseinfo>Version 0.0.1</releaseinfo>
+		<authorgroup>
+			<author>
+				<firstname>Phillip</firstname>
+				<surname>Webb</surname>
+			</author>
+		</authorgroup>
+		<copyright>
+			<year>2010-2012</year>
+			<holder>Phillip Webb</holder>
+		</copyright>
+		<legalnotice>
+			<para>Copies of this document may be made for your own use and for distribution to others, provided that 
+			you do not charge any fee for such copies and further provided that each copy contains this Copyright 
+			Notice, whether distributed in print or electronically.</para>
+		</legalnotice>
+	</info>
+
+	<toc />
+
+	<preface id="preface">
+		<title>Preface</title>
+		<para>TODO</para>
+	</preface>
+	
+	<part id="part-id">
+		<title>Example Part</title>
+		<partintro>
+			<para>Intro intro intro.</para>
+		</partintro>
+		<chapter id="examplechapter">
+			<title>Chapter Title</title>
+			<section id="examplesection">
+				<title>Example Section</title>
+				<para>Blah <emphasis>blah</emphasis> blah</para>
+				    <remark><para>A remark</para></remark>
+				    <note><para>A note</para></note>
+				    <programlisting language="java">
+public static class Example {
+}
+				    </programlisting>
+			</section>
+		</chapter>
+	</part>
+</book>

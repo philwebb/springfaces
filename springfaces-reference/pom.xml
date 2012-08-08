@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.springfaces</groupId>
+		<artifactId>springfaces-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>springfaces-reference</artifactId>
+	<packaging>pom</packaging>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-reference-html-single</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<targetDirectory>${basedir}/target/docbkx/htmlsingle</targetDirectory>
+							<htmlCustomization>${project.basedir}/src/docbkx/resources/xsl/html-single-custom.xsl</htmlCustomization>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-reference-html</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<targetDirectory>${basedir}/target/docbkx/html</targetDirectory>
+							<htmlCustomization>${project.basedir}/src/docbkx/resources/xsl/html-custom.xsl</htmlCustomization>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-reference-pdf</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-pdf</goal>
+						</goals>
+						<configuration>
+							<targetDirectory>${basedir}/target/docbkx/pdf</targetDirectory>
+							<foCustomization>${project.basedir}/src/docbkx/resources/xsl/pdf-custom.xsl</foCustomization>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>net.sf.docbook</groupId>
+						<artifactId>docbook-xml</artifactId>
+						<version>5.0-all</version>
+						<classifier>resources</classifier>
+						<type>zip</type>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includes>index.xml</includes>
+					<xincludeSupported>true</xincludeSupported>
+					<postProcess>
+						<copy todir="${project.basedir}/target/site/reference">
+							<fileset dir="${project.basedir}/target/docbkx">
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
+							</fileset>
+						</copy>
+						<copy todir="${project.basedir}/target/site/reference/html">
+							<fileset dir="${project.basedir}/src/docbkx/resources">
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+						<copy todir="${project.basedir}/target/site/reference/htmlsingle">
+							<fileset dir="${project.basedir}/src/docbkx/resources">
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+						<move file="${project.basedir}/target/site/reference/pdf/index.pdf"
+							tofile="${project.basedir}/target/site/reference/pdf/${project.artifactId}.pdf"
+							failonerror="false" />
+					</postProcess>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
