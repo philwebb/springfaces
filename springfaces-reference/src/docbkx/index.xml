@@ -49,7 +49,7 @@
 			<para>
 				JSF converters are used to perform the Object-to-String and String-to-Object 
 				conversion required to render and decode component values.  Classically implementations of the 
-				<code>javax.convert.Converter</code> interface are registered in your <code>faces-config.xml</code> 
+				<code>javax.faces.convert.Converter</code> interface are registered in your <code>faces-config.xml</code> 
 				file or marked with the <code>javax.faces.convert.FacesConverter</code> annotation.
 			</para>
  			<sect2>
@@ -61,7 +61,7 @@
 				<para>
 					By default any Spring Bean that implements the <code>javax.faces.Converter</code> interface will 
 					be registered as a JSF converter using the bean name.  The example below shows how a 
-					<code>Converter</code> bean can be accessed from a JSF <code>XHTML</code> page.
+					<code>Converter</code> bean can be referenced from a JSF <code>XHTML</code> page.
 				</para>
 				<programlisting language="java">
 @Component
@@ -74,16 +74,17 @@ public class MyConverterBean implements Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
 		// ...
 	}
+}
 				</programlisting>
 				<programlisting language="xml" >
 &lt;h:inputText ... converter="myConverterBean" /&gt;
 				</programlisting>
 			</sect2>
-			<sect2>
+			<sect2 xml:id="converters-for-class">
 				<title>Registering a converter for a specific Class</title>
 				<para>
-					Converters can also be registered such that they are always used for a particular class.  Using
-					standard JSF annotations this would be achieved using 
+					Converters can also be registered such that they are always used for a particular 
+					<code>Class</code>.  Using standard JSF annotations this would be achieved using 
 					<code>@FacesConverter(forClass=SpecificClass.class)</code>. With spring beans the 
 					<code>org.springframework.springfaces.bean.ForClass</code> annotation can be used.
 				</para>
@@ -178,23 +179,133 @@ public class MyConverterBean implements Converter&lt;SpecificClass&gt; {
 		</sect1>
 		<sect1>
 			<title>Validators</title>
-			<para>TODO</para>
+			<para>
+				JSF <code>Validators</code> can be used to validate user submitted input.  Classically 
+				implementations of the <code>javax.faces.validator.Validator</code> interface are 
+				registered in your <code>faces-config.xml</code> file or marked with the 
+				<code>javax.faces.validator.FacesValidator</code> annotation. 
+			</para>  
 			<sect2>
-				<title>Validators with @ForClass</title>
-				<para>TODO</para>
+ 				<title>JSF Validators as Spring Beans</title>
+				<para>
+					As with the <link linkend="converters"><code>Converter</code></link> 
+					support, SpringFaces allows Spring Beans to be used as JSF <code>Validators</code>.
+				</para>
+				<para>
+					Any Spring Bean that implements the <code>javax.faces.validator.Validator</code> interface
+					will automatically registered as a JSF validator using the bean name.  The example below
+					shows how a <code>Validator</code> can be referenced from a JSF <code>XHTML</code> page.
+				</para>
+				<programlisting language="java">
+@Component
+public class MyValidatorBean implements Validator {
+	    
+	    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+	    	// ...
+	    }
+}
+				</programlisting>
+				<programlisting language="xml" >
+&lt;h:inputText ... validator="myValidatorBean" /&gt;
+				</programlisting>
+			</sect2>
+			<sect2>
+				<title>Registering a Validator for a specific Class</title>
+				<para>
+					The <code>org.springframework.springfaces.bean.ForClass</code> annotation can be used to associate
+					a <code>Validator</code> with a specific <code>Class</code>.  In such cases the validator will be
+					automatically called for all suitable instances, regardless of any validators specified in the JSF
+					mark-up.  
+				</para>
+				<programlisting language="java">
+@Component
+@ForClass(SpecificClass.class)
+public class MyValidatorBean implements Validator {
+	    
+	    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+	    	SpecificClass v = (SpecificClass)value;
+	    	// ...
+	    }
+}
+				</programlisting>
+				<para>
+					As with <link linkend="converters-for-class"><code>Converters</code></link> the 
+					<code>org.springframework.springfaces.bean.ConditionalForClass</code> interface can be used if
+					more complex conditional logic is required.
+				</para>
 			</sect2>
 			<sect2>
 				<title>Support for generics</title>
-				<para>TODO</para>
+				<para>
+					To remove the need to cast the <code>value</code> parameter SpringFaces provides the 
+					alternative <code>org.springframework.springfaces.validator.Validator</code> interface.
+					This variation works in the same way as the standard JSF interface.    
+				</para>
+				<para>
+					When using the generic variant of the <code>Validator</code> interface the value 
+					attribute of <code>@ForClass</code> can be omitted as it can be deduced from the generic. 
+				</para>
+				<programlisting language="java">
+@Component
+@ForClass
+public class MyValidatorBean implements Validator&lt;SpecificClass&gt; {
+	    
+	    public void validate(FacesContext context, UIComponent component, SpecificClass value) throws ValidatorException {
+	    	// ...
+	    }
+}
+				</programlisting>				
 			</sect2>
+			<sect2>
+				<title>Disabling validator support</title>
+				<para>
+					JSF validator support can be disabled if necessary when configuring SpringFaces integration.
+				</para>
+				<programlisting language="xml">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:faces="http://www.springframework.org/schema/springfaces"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/springfaces
+		http://www.springframework.org/schema/springfaces/springfaces.xsd"&gt;
+			
+	&lt;faces:integration validators="false"/&gt;
+&lt;beans/&gt;
+				</programlisting>
+			</sect2>			
+		</sect1>
+		<sect1>
+			<title>Internationlization</title>
+			<para>TODO, ObjectMessageSource, s:messageSource</para>
 		</sect1>
 		<sect1>
 			<title>Exception Handlers</title>
 			<para>TODO</para>
+			<!-- Custom EH, Object Messages -->
 		</sect1>
 		
 	</chapter>
 <!-- 
+
+SPEL Support
+EL Base Classes
+
+Pagination
+
+Select Items
+
+Templating
+- decorate all
+- component info
+  
+Utils
+- FacesUtils
+- FacesVendor
+  
+  
 
 MVC Support
 
@@ -204,17 +315,6 @@ EL Support
 
 SPEL Support
 
-Messages
-- Object message
-- UI Message Source
-
-Pagination
-
-Select Items
-
-Templating
-- decorate all
-- component info
 
 
 MVC: 
