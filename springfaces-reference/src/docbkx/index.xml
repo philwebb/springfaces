@@ -29,18 +29,19 @@
 			</para>
 		</legalnotice>
 	</info>
-
+	
 	<toc />
 
 	<preface xml:id="preface">
 		<title>Preface</title>
 		<para>TODO</para>
 	</preface>
-	
+
 	<chapter>
 		<title>Getting Started</title>
 		<para>TODO maven references, jar structure, namespace</para>
 	</chapter>
+
 	<chapter xml:id="core-spring-faces">
 		<title>JSF Integration</title>
 		<para>TODO</para>
@@ -63,7 +64,7 @@
 					be registered as a JSF converter using the bean name.  The example below shows how a 
 					<code>Converter</code> bean can be referenced from a JSF <code>XHTML</code> page.
 				</para>
-				<programlisting language="java">
+<programlisting language="java">
 @Component
 public class MyConverterBean implements Converter {
 
@@ -74,11 +75,9 @@ public class MyConverterBean implements Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
 		// ...
 	}
-}
-				</programlisting>
-				<programlisting language="xml" >
-&lt;h:inputText ... converter="myConverterBean" /&gt;
-				</programlisting>
+}</programlisting>
+				<programlisting language="xml">
+&lt;h:inputText ... converter="myConverterBean" /&gt;</programlisting>
 			</sect2>
 			<sect2 xml:id="converters-for-class">
 				<title>Registering a converter for a specific Class</title>
@@ -101,8 +100,7 @@ public class MyConverterBean implements Converter {
 		SpecificClass v = (SpecificClass) value;
 		// ...
 	}
-}
-				</programlisting>
+}</programlisting>
 				<para>
 					More complex "for class" registrations can also be supported using the 
 					<code>org.springframework.springfaces.bean.ConditionalForClass</code> interface.  For example,
@@ -125,8 +123,7 @@ public class MyConverterBean implements Converter, ConditionalForClass {
 		SpecificClass v = (SpecificClass) value;
 		// ...
 	}
-}
-				</programlisting>				
+}</programlisting>				
 			</sect2>
 			<sect2>
 				<title>Support for generics</title>
@@ -153,8 +150,7 @@ public class MyConverterBean implements Converter&lt;SpecificClass&gt; {
 	public String getAsString(FacesContext context, UIComponent component, SpecificClass value) {
 		// ...
 	}
-}
-				</programlisting>
+}</programlisting>
 			</sect2>
 			<sect2>
 				<title>Disabling converter support</title>
@@ -173,8 +169,7 @@ public class MyConverterBean implements Converter&lt;SpecificClass&gt; {
 		http://www.springframework.org/schema/springfaces/springfaces.xsd"&gt;
 			
 	&lt;faces:integration converters="false"/&gt;
-&lt;beans/&gt;
-				</programlisting>
+&lt;beans/&gt;</programlisting>
 			</sect2>
 		</sect1>
 		<sect1>
@@ -203,11 +198,9 @@ public class MyValidatorBean implements Validator {
 	    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
 	    	// ...
 	    }
-}
-				</programlisting>
+}</programlisting>
 				<programlisting language="xml" >
-&lt;h:inputText ... validator="myValidatorBean" /&gt;
-				</programlisting>
+&lt;h:inputText ... validator="myValidatorBean" /&gt;</programlisting>
 			</sect2>
 			<sect2>
 				<title>Registering a Validator for a specific Class</title>
@@ -226,8 +219,7 @@ public class MyValidatorBean implements Validator {
 	    	SpecificClass v = (SpecificClass)value;
 	    	// ...
 	    }
-}
-				</programlisting>
+}</programlisting>
 				<para>
 					As with <link linkend="converters-for-class"><code>Converters</code></link> the 
 					<code>org.springframework.springfaces.bean.ConditionalForClass</code> interface can be used if
@@ -253,8 +245,7 @@ public class MyValidatorBean implements Validator&lt;SpecificClass&gt; {
 	    public void validate(FacesContext context, UIComponent component, SpecificClass value) throws ValidatorException {
 	    	// ...
 	    }
-}
-				</programlisting>				
+}</programlisting>				
 			</sect2>
 			<sect2>
 				<title>Disabling validator support</title>
@@ -273,71 +264,213 @@ public class MyValidatorBean implements Validator&lt;SpecificClass&gt; {
 		http://www.springframework.org/schema/springfaces/springfaces.xsd"&gt;
 			
 	&lt;faces:integration validators="false"/&gt;
-&lt;beans/&gt;
-				</programlisting>
+&lt;beans/&gt;</programlisting>
 			</sect2>			
 		</sect1>
 		<sect1>
-			<title>Internationlization</title>
-			<para>TODO, ObjectMessageSource, s:messageSource</para>
+			<title>Internationalization and Localization</title>
+			<para>TODO</para>
+			<sect2>
+				<title>Spring MessageSource</title>
+				<para>
+					The <code>org.springframework.context.MessageSource</code> interface provides a standard way for 
+					Spring applications to support internationalization.  SpringFaces offers support for any
+					<code>MessageSource</code> using the <code>&lt;s:messageSource&gt;</code> component.      
+				</para>
+				<para>
+					The <code>&lt;s:messageSource&gt;</code> component has been designed as a drop-in replacement
+					to the standard <code>&lt;f:loadBundle&gt;</code> JSF Component.  The example below shows 
+					how the component can be used.
+				</para>
+				<programlisting language="xml">
+&lt;s:messageSource source="#{messageSource}" var="messages"/&gt;
+&lt;p&gt;
+	&lt;h:outputText value="#{messages.hello}"/&gt;
+&lt;/p&gt;</programlisting>
+				<para>
+					The source attribute can be any EL expression that resolves to a <code>MessageSource</code> instance. 
+					If the source is not specified the Spring <code>ApplicationContext</code> will be used. The 
+					<code>var</code> attribute is the name of the variable that will be used to access the messages.
+				</para>
+				<sect3>
+					<title>Page IDs</title>
+					<para>
+						Unlike standard JSF, the key of the message to load will be built from the ID of the page 
+						being rendered. For example, assuming the page above is from the file 
+						<code>WEB-INF/pages/messages/simple.xhtml</code>, the key used to load the <code>hello</code>
+						message will be <code>pages.messages.simple.hello</code>. 
+					</para>
+					<para>
+						Using these compound keys prevents message key clashes and keeps the page mark-up nice and 
+						concise. You can use the <code>prefix</code> attribute to override this behaviour if you 
+						need to.
+					</para>
+				</sect3>
+				<sect3>
+					<title>Missing Message Keys</title>
+					<para>
+						If you make reference to message in your XHTML that you have forgotten to define you will 
+						either see a warning message (when in development) or an exception will be thrown 
+						(when in production).
+					</para>
+				</sect3>
+				<sect3>
+					<title>Parameters</title>
+					<para>
+						As with standard JSF, your messages and include place-holders for use with 
+						<code>&lt;h:outputFormat&gt;</code>.
+					</para>
+					<programlisting language="text">
+pages.message.simple.welcome=Welcome to {1} with {0}</programlisting>
+					<programlisting language="xml">
+&lt;h:outputFormat value="#{messages.welcome}"&gt;
+	&lt;f:param value="Spring"/&gt;
+	&lt;f:param value="JSF"/&gt;
+&lt;/h:outputFormat&gt;</programlisting>						
+					<para>
+						The <code>&lt;h:outputFormat&gt;</code> tag is a little bit verbose, so for convenience, 
+						Spring messages can be used as a <code>Map</code>. This allows you to reference place-holders in a 
+						much more concise way:
+					</para>
+					<programlisting language="xml">
+&lt;s:messageSource source="#{messageSource}" var="messages"/&gt;
+&lt;h:outputText value="#{messages.welcome['Spring']['JSF']}"/&gt;</programlisting>
+				</sect3>
+			</sect2>
+			<sect2>
+				<title>ObjectMessageSource</title>
+				<para>
+					Often it is necessary to convert java <code>Objects</code> into localized messages.  Common 
+					scenarios here include converting <code>enum</code> values or displaying messages for a 
+					specific type of <code>Exception</code>.
+				</para>
+				<para>
+					Several of the components provided by SpringFaces implicitly support Object-to-Message 
+					conversion.  The example below shows how the <code>ExampleObject</code> class can
+					be mapped to a message using <code>&lt;s:messageSource&gt;</code>.
+				</para>
+				<programlisting language="java">
+package org.example;
+public class ExampleObject {
+}</programlisting>
+				<programlisting language="xml">
+&lt;s:messageSource source="#{messageSource}" var="messages"/&gt;
+&lt;h:outputText value="#{messages[exampleInstance]}"/&gt;</programlisting>
+				<sect3>
+					<title>Object Message Keys</title>
+					<para>
+						By default objects are mapped to messages using a key constructed from their fully
+						qualified class name.  The <code>ExampleObject</code> above would resolve using the
+						key <code>org.example.ExampleObject</code>
+					</para>
+					<programlisting language="text">
+org.example.ExampleObject=example</programlisting>
+					<para>
+						When resolving an <code>Enum</code> object they key also includes the enum value,
+						for example:
+					</para>
+					<programlisting language="java">
+package org.example;
+
+public enum ExampleObject {
+	ONE, //mapped to message key org.example.ExampleObject.ONE
+	TWO  //mapped to message key org.example.ExampleObject.TWO
+}
+</programlisting>
+				</sect3>
+				<sect3>
+					<title>Message parameters</title>
+					<para>
+						Message values can refer to properties of the Object being resolved using the
+						<code>{name}</code> syntax.  For example:
+					</para>
+					<programlisting language="java">
+package org.example;
+public class PersonName {
+	// ...
+	public String getFirst() {...}
+	public String getLast() {...}
+}
+</programlisting>
+					<programlisting language="text"> 
+org.example.PersonName=Name is {first} {last}</programlisting>
+				</sect3>
+				<sect3>
+					<title>Custom Object Message Stategies</title>
+					<para>
+						Internally the <code>org.springframework.springfaces.message.ObjectMessageSource</code>
+						interface is used to resolve object messages.  If you need to implement a custom object
+						message strategy you can create your own implementation of this interface and register
+						it with Spring using the bean name <code>messageSource</code>.
+					</para>
+					<para>
+						The <code>org.springframework.springfaces.message.DefaultObjectMessageSource</code>
+						class provides a good basis for any custom strategies; override the 
+						<code>resolveCode</code>, <code>resolveMessage</code> or <code>resolveToString</code> 
+						methods.
+					</para>
+				</sect3>
+			</sect2>
+		</sect1>
+		<sect1>
+			<title>Pagination</title>
+			<para>TODO</para>
+		</sect1>
+		<sect1>
+			<title>Select Items</title>
+			<para>TODO</para>
+		</sect1>
+		<sect1>
+			<title>Templating</title>
+			<para>TODO</para>
+			<!-- 
+			- decorate all
+			- component info
+			 -->
 		</sect1>
 		<sect1>
 			<title>Exception Handlers</title>
 			<para>TODO</para>
 			<!-- Custom EH, Object Messages -->
 		</sect1>
-		
+		<sect1>
+			<title>Expression Language</title>
+			<para>TODO</para>
+			<!-- 
+			SPEL Support
+			EL Base Classes
+			-->
+		</sect1>
+		<sect1>
+			<title>Utilities</title>
+			<para>TODO</para>
+			<!-- 
+			- FacesUtils
+			- FacesVendor
+			-->			
+		</sect1>
 	</chapter>
-<!-- 
-
-SPEL Support
-EL Base Classes
-
-Pagination
-
-Select Items
-
-Templating
-- decorate all
-- component info
-  
-Utils
-- FacesUtils
-- FacesVendor
-  
-  
-
-MVC Support
-
-Exception Handler
-
-EL Support
-
-SPEL Support
-
-
-
-MVC: 
-
-Reaching beans
-- Spring beans
-- MVC model
-
-Implicit Variables
-
-Navigation
-
-- implicit
-- to @RequestMappings
-  - With ReverseDataBinder
-- programatic
-
-Converters
-- @FacesConverterId
-  
-
-
- -->
-
-
+	
+	<chapter>
+		<title>JSF with Spring MVC</title>
+		<para>TODO</para>
+		
+		<!-- 
+		Reaching beans
+		- Spring beans
+		- MVC model
+		
+		Implicit Variables
+		
+		Navigation
+		
+		- implicit
+		- to @RequestMappings
+		  - With ReverseDataBinder
+		- programatic
+		
+		Converters
+		- @FacesConverterId
+		 -->
+	</chapter>
 </book>
