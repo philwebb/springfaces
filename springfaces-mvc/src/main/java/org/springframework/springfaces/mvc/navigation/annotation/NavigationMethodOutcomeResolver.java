@@ -59,7 +59,6 @@ import org.springframework.web.bind.support.DefaultDataBinderFactory;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.bind.support.WebBindingInitializer;
 import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.method.HandlerMethodSelector;
 import org.springframework.web.method.annotation.ExpressionValueMethodArgumentResolver;
@@ -409,7 +408,7 @@ public class NavigationMethodOutcomeResolver extends ApplicationObjectSupport im
 		invocable.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 
 		ExternalContext externalContext = facesContext.getExternalContext();
-		NativeWebRequest request = new ServletWebRequest((HttpServletRequest) externalContext.getRequest(),
+		ServletWebRequest request = new ServletWebRequest((HttpServletRequest) externalContext.getRequest(),
 				(HttpServletResponse) externalContext.getResponse());
 		ModelAndViewContainer modelAndViewContainer = new ModelAndViewContainer();
 		invocable.invokeAndHandle(request, modelAndViewContainer);
