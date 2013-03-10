@@ -102,6 +102,7 @@ import org.springframework.util.ObjectUtils;
  * attribute can be used to override this behavior.
  * 
  * @author Phillip Webbb
+ * @author Pedro Casagrande de Campos
  * @see ObjectMessageSource
  * @see SelectItemsConverter
  */
@@ -633,9 +634,19 @@ public class UISelectItems extends UIComponentBase {
 	/**
 	 * Internal JSF {@link Converter} used to convert items from the outer class.
 	 */
-	class UISelectItemsConverter extends SelectItemsConverter {
+	public static class UISelectItemsConverter extends SelectItemsConverter {
+
 		public String getAsString(FacesContext context, UIComponent component, Object value) {
-			return UISelectItems.this.getItemConverterStringValue(value);
+			return getUISelectItems(component).getItemConverterStringValue(value);
+		}
+
+		private UISelectItems getUISelectItems(UIComponent component) {
+			for (UIComponent child : component.getChildren()) {
+				if (child instanceof UISelectItems) {
+					return (UISelectItems) child;
+				}
+			}
+			throw new IllegalStateException("Unable to find UISelectItems in childen of " + component.getClientId());
 		}
 	}
 }

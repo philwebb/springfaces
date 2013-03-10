@@ -27,6 +27,7 @@ import org.springframework.springfaces.integrationtest.selenium.rule.Pages;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectManyEnumSelectItemsPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectManyStringSelectItemsPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectOneBooleanSelectItemsPage;
+import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectOneJpaPartialSelectItemsPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectOneJpaSelectItemsPage;
 import org.springframework.springfaces.traveladvisor.integrationtest.page.selectitems.SelectOption;
 import org.springframework.springfaces.traveladvisor.integrationtest.rule.ShowcasePages;
@@ -43,7 +44,7 @@ public class SelectItemsIT {
 
 	@Test
 	public void shouldSelectOneJpa() throws Exception {
-		SelectOneJpaSelectItemsPage page = pages.get(SelectOneJpaSelectItemsPage.class);
+		SelectOneJpaSelectItemsPage page = this.pages.get(SelectOneJpaSelectItemsPage.class);
 		List<SelectOption> selectOptions = page.getSelectOptions();
 		assertThat(selectOptions.size(), is(28));
 		assertThat(selectOptions.get(0).getValue(), is(""));
@@ -64,8 +65,20 @@ public class SelectItemsIT {
 	}
 
 	@Test
+	public void shouldSelectOneJpaPartial() throws Exception {
+		// Issue #53
+		SelectOneJpaPartialSelectItemsPage page = this.pages.get(SelectOneJpaPartialSelectItemsPage.class);
+		assertThat(page.getSelectOptions().size(), is(28));
+		page.selectSecondOption();
+		page = page.clickUpdateButton();
+		page.selectSecondOptionOnSecondSelect();
+		page = (SelectOneJpaPartialSelectItemsPage) page.clickSubmitButton();
+		assertThat(page.getSelectOptions().get(1).getSelected(), is("true"));
+	}
+
+	@Test
 	public void shouldSelectManyString() throws Exception {
-		SelectManyStringSelectItemsPage page = pages.get(SelectManyStringSelectItemsPage.class);
+		SelectManyStringSelectItemsPage page = this.pages.get(SelectManyStringSelectItemsPage.class);
 		List<SelectOption> selectOptions = page.getSelectOptions();
 		assertThat(selectOptions.size(), is(4));
 		assertThat(selectOptions.get(0).getValue(), is("Framework"));
@@ -87,7 +100,7 @@ public class SelectItemsIT {
 
 	@Test
 	public void shouldSelectOneBoolean() throws Exception {
-		SelectOneBooleanSelectItemsPage page = pages.get(SelectOneBooleanSelectItemsPage.class);
+		SelectOneBooleanSelectItemsPage page = this.pages.get(SelectOneBooleanSelectItemsPage.class);
 		List<SelectOption> selectOptions = page.getSelectOptions();
 		assertThat(selectOptions.size(), is(3));
 		assertThat(selectOptions.get(0).getValue(), is(""));
@@ -112,7 +125,7 @@ public class SelectItemsIT {
 
 	@Test
 	public void shouldSelectManyEnum() throws Exception {
-		SelectManyEnumSelectItemsPage page = pages.get(SelectManyEnumSelectItemsPage.class);
+		SelectManyEnumSelectItemsPage page = this.pages.get(SelectManyEnumSelectItemsPage.class);
 		List<SelectOption> selectOptions = page.getSelectOptions();
 		assertThat(selectOptions.size(), is(3));
 		assertThat(selectOptions.get(0).getValue(), is("JAVA"));

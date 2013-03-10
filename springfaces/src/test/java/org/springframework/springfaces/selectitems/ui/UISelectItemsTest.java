@@ -74,6 +74,7 @@ import org.springframework.springfaces.selectitems.ui.UISelectItems.UISelectItem
  * Tests for {@link UISelectItems}.
  * 
  * @author Phillip Webb
+ * @author Pedro Casagrande de Campos
  */
 public class UISelectItemsTest {
 
@@ -96,6 +97,17 @@ public class UISelectItemsTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.selectItems = new UISelectItems() {
+			@Override
+			public void setParent(UIComponent parent) {
+				if (getParent() != null) {
+					getParent().getChildren().remove(this);
+				}
+				super.setParent(parent);
+				if (getParent() != null) {
+					getParent().getChildren().add(this);
+				}
+			}
+
 			@Override
 			protected TypeDescriptor getTypeDescriptor(ValueExpression valueExpression, ELContext elContext) {
 				return UISelectItemsTest.this.typeDescriptor;
@@ -519,7 +531,6 @@ public class UISelectItemsTest {
 	@Entity
 	static class SampleEntity {
 		@Id
-		@SuppressWarnings("unused")
 		private String id = "ABC";
 	}
 

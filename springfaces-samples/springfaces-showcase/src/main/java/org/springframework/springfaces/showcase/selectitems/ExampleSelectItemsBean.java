@@ -31,6 +31,10 @@ public class ExampleSelectItemsBean implements Serializable {
 
 	private Author author;
 
+	private Author author2;
+
+	private boolean panelVisible;
+
 	public Boolean getBooleanValue() {
 		return this.booleanValue;
 	}
@@ -61,5 +65,21 @@ public class ExampleSelectItemsBean implements Serializable {
 
 	public void setAuthor(Author author) {
 		this.author = author;
+	}
+
+	public Author getAuthor2() {
+		return this.author2;
+	}
+
+	public void setAuthor2(Author author2) {
+		this.author2 = author2;
+	}
+
+	public boolean isPanelVisible() {
+		return this.panelVisible;
+	}
+
+	public void setPanelVisible(boolean panelVisible) {
+		this.panelVisible = panelVisible;
 	}
 }
